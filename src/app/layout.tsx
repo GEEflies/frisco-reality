@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
@@ -38,7 +39,9 @@ export default function RootLayout({
     <html lang="sk" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <Providers>
-          <ScrollToHash />
+          <Suspense fallback={null}>
+            <ScrollToHash />
+          </Suspense>
           <ScrollToTop />
           <Navbar />
           {children}
