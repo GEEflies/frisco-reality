@@ -1,0 +1,162 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { MapPin, ArrowUpRight, ChevronRight, Navigation, Clock } from 'lucide-react';
+
+export const LocationSection = () => {
+    return (
+        <section className="py-12 md:py-20 bg-cream">
+            <div className="container mx-auto px-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-center mb-8 md:mb-12"
+                >
+                    <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy mb-4">
+                        Kde nás nájdete
+                    </h2>
+                    <p className="text-base md:text-lg text-charcoal/70 max-w-2xl mx-auto">
+                        Naša kancelária sa nachádza v centre Seredi, na Námestí Slobody.
+                    </p>
+                </motion.div>
+
+                <div className="grid lg:grid-cols-2 gap-8 items-stretch">
+
+                    {/* Interactive Map / Image Card */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        className="relative rounded-[2rem] overflow-hidden border border-navy/5 shadow-xl min-h-[500px] group"
+                    >
+                        {/* Background Image & Overlay */}
+                        <div className="absolute inset-0">
+                            <img
+                                src="/storefront.jpeg"
+                                alt="Naša kancelária"
+                                className="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-700"
+                            />
+                            {/* Heavier light overlay for "Interaktívna mapa" feel if desired, or keep dark. 
+                                The Billik one has a light overlay. Frisco brand is usually dark overlay. 
+                                User said "Billik seems way better". Billik is Light. 
+                                I will try a lighter look but ensuring text readability. 
+                                Actually, sticking to the current dark overlay but cleaner might be safer for contrast, 
+                                unless I switch to dark text. Let's keep the dark overlay for the Left Card 
+                                as it looks premium, but clean up the text. 
+                            */}
+                            <div className="absolute inset-0 bg-navy/40 mix-blend-multiply transition-colors duration-500 group-hover:bg-navy/30" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent" />
+                        </div>
+
+                        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center p-8">
+                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-md mb-6 border border-white/30 shadow-lg group-hover:scale-110 transition-transform duration-500">
+                                <MapPin className="w-10 h-10 text-white" />
+                            </div>
+                            <h3 className="text-4xl font-bold text-white mb-4 tracking-tight drop-shadow-md">
+                                Interaktívna mapa
+                            </h3>
+                            <p className="text-white/90 mb-10 text-lg font-medium drop-shadow-sm">
+                                Námestie Slobody 1185/30, Sereď
+                            </p>
+                            <a
+                                href="https://maps.app.goo.gl/jBhRQr8HWckRzp5f7"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent-red text-white rounded-lg font-bold hover:bg-accent-red/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto text-base"
+                            >
+                                <ArrowUpRight className="w-5 h-5" />
+                                <span>Navigovať v Google Maps</span>
+                            </a>
+                        </div>
+                    </motion.div>
+
+                    {/* Right Column: Info Card */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="bg-white rounded-[2rem] shadow-xl border border-navy/5 p-8 flex flex-col h-full"
+                    >
+                        {/* Address */}
+                        <div className="pb-8 border-b border-gray-100">
+                            <h3 className="text-xl font-bold text-navy mb-4 flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
+                                    <MapPin className="w-5 h-5 text-accent-red" />
+                                </div>
+                                <span>Adresa prevádzky</span>
+                            </h3>
+                            <div className="pl-[3.25rem] space-y-1.5">
+                                <p className="text-lg font-bold text-navy">FRISCO, s.r.o.</p>
+                                <p className="text-base text-charcoal/80">Námestie Slobody 1185/30</p>
+                                <p className="text-base text-charcoal/80">926 01 Sereď</p>
+                                <p className="text-base text-charcoal/80">Slovenská republika</p>
+                            </div>
+                        </div>
+
+                        {/* Directions */}
+                        <div className="py-8 border-b border-gray-100">
+                            <h3 className="text-xl font-bold text-navy mb-4 flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
+                                    <Navigation className="w-5 h-5 text-accent-red" />
+                                </div>
+                                <span>Ako sa k nám dostanete:</span>
+                            </h3>
+                            <ul className="space-y-4 pl-1">
+                                <ListItem>
+                                    <span className="font-bold text-navy text-sm md:text-base">Autom:</span> <span className="text-sm md:text-base text-charcoal/70">Verejné parkovanie priamo na námestí.</span>
+                                </ListItem>
+                                <ListItem>
+                                    <span className="font-bold text-navy text-sm md:text-base">MHD:</span> <span className="text-sm md:text-base text-charcoal/70">Zastávka "Sereď, nám. Slobody".</span>
+                                </ListItem>
+                            </ul>
+                        </div>
+
+                        {/* Opening Hours & Button */}
+                        <div className="pt-8 mt-auto flex flex-col gap-8">
+                            <div>
+                                <h3 className="text-xl font-bold text-navy mb-4 flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
+                                        <Clock className="w-5 h-5 text-accent-red" />
+                                    </div>
+                                    <span>Otváracie hodiny:</span>
+                                </h3>
+                                <div className="space-y-3 text-sm md:text-base pl-[3.25rem]">
+                                    <div className="flex items-center gap-x-3 border-b border-gray-50 pb-2">
+                                        <span className="font-bold text-navy">Po - Pi:</span>
+                                        <span className="text-charcoal/80">9:00 - 17:00</span>
+                                    </div>
+                                    <div className="flex items-center gap-x-3">
+                                        <span className="font-bold text-navy">So - Ne:</span>
+                                        <span className="text-charcoal/80">Zatvorené</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a
+                                href="https://maps.app.goo.gl/jBhRQr8HWckRzp5f7"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-navy text-white rounded-lg font-bold hover:bg-navy/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-base uppercase tracking-wider"
+                            >
+                                <ArrowUpRight className="w-5 h-5" />
+                                <span>Spustiť navigáciu</span>
+                            </a>
+                        </div>
+
+                    </motion.div>
+                </div>
+            </div >
+        </section >
+    );
+};
+
+const ListItem = ({ children }: { children: React.ReactNode }) => (
+    <li className="flex items-start gap-3 text-base leading-relaxed group pl-2">
+        <ChevronRight className="w-5 h-5 text-accent-red flex-shrink-0 mt-0.5" />
+        <span>{children}</span>
+    </li>
+);

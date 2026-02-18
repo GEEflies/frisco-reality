@@ -1,0 +1,183 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { Heart, Clock, ShieldCheck, Award } from 'lucide-react';
+
+const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1] as const
+        }
+    }
+};
+
+const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.15,
+            delayChildren: 0.1
+        }
+    }
+};
+
+export const FamilyBusinessSection = () => {
+    return (
+        <section className="py-16 md:py-20 bg-white overflow-hidden relative">
+            {/* Background Decor */}
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/5 to-transparent" />
+
+            <div className="container mx-auto px-6">
+                <motion.div
+                    className="flex flex-col items-center text-center max-w-4xl mx-auto"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                    variants={staggerContainer}
+                >
+
+                    {/* Badge */}
+                    <motion.div
+                        variants={fadeInUp}
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-8"
+                    >
+                        <Heart className="w-4 h-4 text-accent-red fill-current" />
+                        <span className="text-xs font-bold tracking-widest text-accent-red uppercase">
+                            <span className="md:hidden">Sme rodinná firma,</span>
+                            <span className="hidden md:inline">Rodinná firma</span>
+                        </span>
+                    </motion.div>
+
+                    {/* Headline */}
+                    <motion.h2
+                        variants={fadeInUp}
+                        className="text-3xl md:text-5xl lg:text-5xl font-bold text-navy mb-12 md:mb-6 leading-tight lg:leading-snug max-w-5xl"
+                    >
+                        <span className="hidden md:inline">Sme rodinná firma, </span>
+                        ktorá si už <br className="hidden md:block" />
+                        <span className="relative inline-block">
+                            <span className="text-accent-red italic font-serif text-4xl md:text-6xl lg:text-6xl font-black relative z-10">18 rokov</span>
+                            <span className="absolute bottom-1 left-0 w-full h-1.5 bg-accent-red/10 overflow-hidden rounded-full">
+                                <motion.span
+                                    className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-accent-red to-transparent opacity-80"
+                                    animate={{ x: ['-100%', '100%'] }}
+                                    transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                                />
+                            </span>
+                        </span> zakladá na kvalite a dôvere.
+                    </motion.h2>
+
+                    {/* Subtitle */}
+                    <motion.p
+                        variants={fadeInUp}
+                        className="text-lg md:text-xl text-charcoal/70 max-w-2xl mb-12 font-light"
+                    >
+                        Pomáhame klientom v Seredi a okolí nájsť ich vysnívaný domov a spravovať nehnuteľnosti bez zbytočných komplikácií.
+                    </motion.p>
+
+                    {/* Animation Wrapper (Replacing Numbers) */}
+                    <motion.div
+                        variants={fadeInUp}
+                        className="w-full max-w-3xl mb-16 md:mb-20 relative h-24 md:h-32 flex items-center justify-center overflow-hidden"
+                    >
+                        {/* Abstract Wave/Trust Animation */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <svg className="w-full h-full text-navy/5" viewBox="0 0 1000 200" preserveAspectRatio="none">
+                                <motion.path
+                                    d="M0 100 Q 250 50 500 100 T 1000 100 T 1500 100 T 2000 100"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    initial={{ pathLength: 0, opacity: 0, x: 0 }}
+                                    whileInView={{ pathLength: 1, opacity: 1 }}
+                                    animate={{ x: -1000 }}
+                                    viewport={{ once: true }}
+                                    transition={{
+                                        pathLength: { duration: 2, ease: "easeInOut" },
+                                        opacity: { duration: 0.5 },
+                                        x: { repeat: Infinity, duration: 20, ease: "linear" }
+                                    }}
+                                />
+                                <motion.path
+                                    d="M0 100 Q 250 150 500 100 T 1000 100 T 1500 100 T 2000 100"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    initial={{ pathLength: 0, opacity: 0, x: 0 }}
+                                    whileInView={{ pathLength: 1, opacity: 1 }}
+                                    animate={{ x: -1000 }}
+                                    viewport={{ once: true }}
+                                    transition={{
+                                        pathLength: { duration: 2, delay: 0.2, ease: "easeInOut" },
+                                        opacity: { duration: 0.5, delay: 0.2 },
+                                        x: { repeat: Infinity, duration: 25, ease: "linear" }
+                                    }}
+                                />
+                            </svg>
+                            {/* Central Frisco Logo Element or Emblem could go here if available, using a simple circle for now */}
+                            <motion.div
+                                initial={{ scale: 0, opacity: 0 }}
+                                whileInView={{ scale: 1, opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
+                                className="absolute w-16 h-16 md:w-20 md:h-20 bg-white rounded-full border border-navy/10 flex items-center justify-center shadow-lg"
+                            >
+                                <span className="font-serif font-bold text-navy text-xl md:text-2xl">18+</span>
+                            </motion.div>
+                        </div>
+                    </motion.div>
+
+                    {/* Benefits Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 w-full">
+                        <BenefitItem
+                            icon={Heart}
+                            color="text-accent-red"
+                            label="Konateľ osobne"
+                            sublabel="pán Križo vždy dostupný"
+                        />
+                        <BenefitItem
+                            icon={Clock}
+                            color="text-yellow-500"
+                            label="Rýchle rozhodnutia"
+                            sublabel='Bez čakania na "centrálu"'
+                        />
+                        <BenefitItem
+                            icon={ShieldCheck}
+                            color="text-blue-500"
+                            label="Miestne korene"
+                            sublabel="Žijeme tam, kde predávame"
+                        />
+                        <BenefitItem
+                            icon={Award}
+                            color="text-purple-500"
+                            label="Dobré meno"
+                            sublabel="Povesť je pre nás všetko"
+                        />
+                    </div>
+
+                </motion.div>
+            </div>
+        </section>
+    );
+};
+
+const BenefitItem = ({ icon: Icon, color, label, sublabel }: { icon: any, color: string, label: string, sublabel: string }) => (
+    <motion.div
+        variants={fadeInUp}
+        className="flex flex-col items-center group"
+    >
+        <div className={`w-12 h-12 rounded-2xl bg-white border border-charcoal/5 shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+            <Icon className={`w-6 h-6 ${color}`} />
+        </div>
+        <h4 className="font-bold text-navy text-lg mb-1">{label}</h4>
+        <p className="text-sm text-charcoal/60">{sublabel}</p>
+
+        {/* Helper visual dot */}
+        <div className={`w-1.5 h-1.5 rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity bg-current ${color}`} />
+    </motion.div>
+);
