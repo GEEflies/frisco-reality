@@ -112,7 +112,7 @@ const ChcemPrenajat = () => {
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
                                         <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                                            <source src="/chcem-prenajat-frisco.mp4" type="video/mp4" />
+                                            <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/chcem-prenajat-frisco_optimized.mp4" type="video/mp4" />
                                         </video>
                                     </div>
                                 </div>

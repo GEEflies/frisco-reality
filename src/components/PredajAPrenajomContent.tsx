@@ -135,7 +135,7 @@ const PredajAPrenajom = () => {
                                         playsInline
                                         className="w-full h-full object-cover"
                                     >
-                                        <source src="/hero-video.mp4" type="video/mp4" />
+                                        <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
                                     </video>
                                 </div>
                             </div>

@@ -106,7 +106,7 @@ const ChcemPredat = () => {
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />
                                     <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                                        <source src="/predaj.mp4?v=2" type="video/mp4" />
+                                        <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
                                     </video>
                                 </div>
                                 <div className="absolute -z-10 -bottom-8 -left-8 w-2/3 h-2/3 bg-accent-red/5 rounded-full blur-3xl" />
