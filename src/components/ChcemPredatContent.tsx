@@ -116,7 +116,7 @@ const ChcemPredat = () => {
                                             alt="FRISCO"
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
-                                        <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+                                        <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover">
                                             <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
                                         </video>
                                     </div>
@@ -150,7 +150,7 @@ const ChcemPredat = () => {
                                         alt="FRISCO"
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />
-                                    <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+                                    <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover">
                                         <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
                                     </video>
                                 </div>

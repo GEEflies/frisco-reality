@@ -76,6 +76,7 @@ const HeroMobile = () => {
                         loop
                         muted
                         playsInline
+                        preload="auto"
                         className="w-full h-full object-cover"
                     >
                         <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
