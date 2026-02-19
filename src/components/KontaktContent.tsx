@@ -99,6 +99,17 @@ const Kontakt = () => {
         {/* Main Content */}
         <section className="py-12 md:py-20 bg-cream">
           <div className="container mx-auto px-6">
+            <div id="kontaktny-formular" className="text-center mb-16 md:mb-20 scroll-mt-32">
+              <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
+                Napíšte nám
+              </span>
+              <h2 className="text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
+                Neváhajte nás <span className="text-accent-red italic">kontaktovať</span>
+              </h2>
+              <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Či už predávate nehnuteľnosť, hľadáte nový domov alebo len premýšľate o ďalšom kroku, sme tu.
+              </p>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
 
               {/* Left: Contact Info */}
@@ -183,8 +194,12 @@ const Kontakt = () => {
 
                     <div className="mb-8">
                       <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">Kontaktný formulár</span>
-                      <h3 className="text-2xl md:text-3xl font-serif font-bold text-navy mt-2">
-                        Pošlite nám správu
+                      <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
+                        Máte otázku?{' '}
+                        <span className="font-serif italic font-normal text-accent-red">
+                          <span className="md:hidden">Ozvite sa</span>
+                          <span className="hidden md:inline">Ozvite sa nám</span>
+                        </span>
                       </h3>
                     </div>
 

@@ -49,8 +49,11 @@ export const ContactForm = () => {
             <div className="mb-8">
                 <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">Kontaktný formulár</span>
                 <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
-                    Don&apos;t hesitate to{' '}
-                    <span className="font-serif italic font-normal text-accent-red">contact us</span>
+                    Máte otázku?{' '}
+                    <span className="font-serif italic font-normal text-accent-red">
+                        <span className="md:hidden">Ozvite sa</span>
+                        <span className="hidden md:inline">Ozvite sa nám</span>
+                    </span>
                 </h3>
                 <p className="text-charcoal/50 text-sm mt-2 font-sans">
                     Odpovieme vám do 24 hodín — nezáväzne a diskrétne.

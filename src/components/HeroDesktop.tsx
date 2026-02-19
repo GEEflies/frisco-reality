@@ -118,7 +118,6 @@ const HeroDesktop = () => {
                 muted
                 playsInline
                 preload="auto"
-                poster="/frisco-reality-sered.jpg"
                 className="w-full h-full object-cover"
               >
                 <source src={HERO_VIDEO_URL} type="video/mp4" />
