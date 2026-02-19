@@ -51,7 +51,7 @@ export function getOrganizationSchema() {
     name: COMPANY_INFO.name,
     legalName: COMPANY_INFO.legalName,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    logo: `${SITE_URL}/frisco-logo.png`,
     image: DEFAULT_OG_IMAGE,
     email: COMPANY_INFO.email,
     telephone: COMPANY_INFO.phone,
