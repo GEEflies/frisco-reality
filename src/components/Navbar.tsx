@@ -69,23 +69,21 @@ export const Navbar = () => {
             style={{ width: 'calc(100% - 2rem)', maxWidth: '1375px' }}
           />
 
-          <div className="relative w-full max-w-[1400px] h-full mx-auto px-6 flex items-center justify-between">
-            {/* Logo - Absolute Left for stability */}
-            <div className="flex-shrink-0 z-20">
-              <Link href="/" onClick={handleHomeClick} className="block relative">
-                <Image
-                  src="/frisco-logo.svg"
-                  alt="FRISCO"
-                  width={96}
-                  height={64}
-                  priority
-                  className="h-14 w-auto object-contain"
-                />
-              </Link>
-            </div>
+          <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
+            {/* Logo */}
+            <Link href="/" onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
+              <Image
+                src="/frisco-logo.svg"
+                alt="FRISCO"
+                width={96}
+                height={64}
+                priority
+                className="h-16 w-auto pl-4 object-contain"
+              />
+            </Link>
 
-            {/* Links - Absolute Center for perfect centering regardless of other elements */}
-            <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-6 2xl:gap-10 flex-nowrap z-10">
+            {/* Links */}
+            <nav className="flex items-center gap-6 2xl:gap-10 flex-nowrap">
               <Link
                 href="/"
                 onClick={handleHomeClick}
@@ -187,8 +185,8 @@ export const Navbar = () => {
               </Link>
             </nav>
 
-            {/* Contact Actions Group - Absolute Right for stability */}
-            <div className="flex items-center gap-2 z-20">
+            {/* Contact Actions Group */}
+            <div className="flex items-center gap-2">
               {/* CTA - Red for critical action */}
               <a
                 href="tel:+421905447220"
