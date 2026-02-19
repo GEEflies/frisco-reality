@@ -4,6 +4,46 @@ import { motion } from 'framer-motion';
 import { useRef } from 'react';
 const teamPhoto = '/team-photo.png';
 import { Award, Phone, Mail } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import type { LanguageCode } from '@/i18n/types';
+
+const teamCopy: Record<LanguageCode, {
+  badge: string;
+  peterRole: string;
+  peterQuote: string;
+  peterCta: string;
+  denisaRole: string;
+  denisaQuote: string;
+  denisaCta: string;
+}> = {
+  sk: {
+    badge: 'Autori',
+    peterRole: 'Konateľ & Broker',
+    peterQuote: 'V každom obchode hľadám nielen číslo, ale príbeh. Mojím cieľom nie je len predať, ale vytvoriť hodnotu, ktorá pretrvá generácie.',
+    peterCta: 'Zavolať Petrovi',
+    denisaRole: 'Senior Agent',
+    denisaQuote: 'Detail robí dizajn. A v realitách je to rovnaké. Každá zmluva, každá obhliadka, každý úsmev musí byť dokonalý.',
+    denisaCta: 'Zavolať Denise',
+  },
+  en: {
+    badge: 'The team',
+    peterRole: 'CEO & Broker',
+    peterQuote: 'In every deal I look not only for a number, but for a story. My goal is not just to sell, but to create value that lasts for generations.',
+    peterCta: 'Call Peter',
+    denisaRole: 'Senior Agent',
+    denisaQuote: 'The detail makes the design. And in real estate it is exactly the same. Every contract, every viewing, every smile must be flawless.',
+    denisaCta: 'Call Denisa',
+  },
+  de: {
+    badge: 'Das Team',
+    peterRole: 'Geschäftsführer & Makler',
+    peterQuote: 'Bei jedem Geschäft suche ich nicht nur eine Zahl, sondern eine Geschichte. Mein Ziel ist es nicht nur zu verkaufen, sondern einen Wert zu schaffen, der Generationen überdauert.',
+    peterCta: 'Peter anrufen',
+    denisaRole: 'Senior-Maklerin',
+    denisaQuote: 'Das Detail macht das Design. Und in der Immobilienbranche ist es genauso. Jeder Vertrag, jede Besichtigung, jedes Lächeln muss perfekt sein.',
+    denisaCta: 'Denisa anrufen',
+  },
+};
 
 const cardVariants = {
   hidden: { opacity: 0, y: 60 },
@@ -20,6 +60,8 @@ const cardVariants = {
 
 export const TeamSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
+  const t = teamCopy[language];
 
   return (
     <section ref={containerRef} id="tim" className="relative min-h-[90vh] md:min-h-[120vh] bg-white flex items-center overflow-hidden">
@@ -50,7 +92,7 @@ export const TeamSection = () => {
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="inline-block text-navy font-mono text-sm tracking-[0.3em] uppercase mb-4 border-b border-navy/30 pb-2"
             >
-              Autori
+              {t.badge}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
@@ -82,14 +124,14 @@ export const TeamSection = () => {
               </div>
 
               <h3 className="text-3xl font-serif font-bold text-navy mb-2">Bc. Peter Križo</h3>
-              <p className="text-accent-red text-sm uppercase tracking-widest mb-6">Konateľ & Broker</p>
+              <p className="text-accent-red text-sm uppercase tracking-widest mb-6">{t.peterRole}</p>
 
               <p className="text-charcoal/70 mb-8 leading-relaxed">
-                "V každom obchode hľadám nielen číslo, ale príbeh. Mojím cieľom nie je len predať, ale vytvoriť hodnotu, ktorá pretrvá generácie."
+                "{t.peterQuote}"
               </p>
 
               <div className="flex items-center gap-6">
-                <SocialLink icon={Phone} href="tel:+421905740700" label="Zavolať Petrovi" />
+                <SocialLink icon={Phone} href="tel:+421905740700" label={t.peterCta} />
                 <SocialLink icon={Mail} href="mailto:info@frisco.sk" label="Email" />
               </div>
             </motion.div>
@@ -110,14 +152,14 @@ export const TeamSection = () => {
               </div>
 
               <h3 className="text-3xl font-serif font-bold text-navy mb-2">Denisa Križová</h3>
-              <p className="text-accent-red text-sm uppercase tracking-widest mb-6">Senior Agent</p>
+              <p className="text-accent-red text-sm uppercase tracking-widest mb-6">{t.denisaRole}</p>
 
               <p className="text-charcoal/70 mb-8 leading-relaxed">
-                "Detail robí dizajn. A v realitách je to rovnaké. Každá zmluva, každá obhliadka, každý úsmev musí byť dokonalý."
+                "{t.denisaQuote}"
               </p>
 
               <div className="flex items-center gap-6">
-                <SocialLink icon={Phone} href="tel:+421905447220" label="Zavolať Denise" />
+                <SocialLink icon={Phone} href="tel:+421905447220" label={t.denisaCta} />
                 <SocialLink icon={Mail} href="mailto:krizovadenka@gmail.com" label="Email" />
               </div>
             </motion.div>

@@ -113,19 +113,204 @@ const seekerTabs = {
 const WhyFriscoHeroSplit = () => {
     const { language } = useLanguage();
     const copy = WHY_FRISCO_COPY[language];
+
+    const tabText = {
+        sk: {
+            owner: {
+                sell: {
+                    headline: 'Predáme Vašu nehnuteľnosť za cenu, ktorú si zaslúži',
+                    subtitle: 'Postaráme sa o celý proces od A po Z. Vy sa nemusíte stresovať.',
+                    cta: 'MÁM ZÁUJEM',
+                    benefits: [
+                        { title: 'Kvalitná prezentácia', description: 'Profesionálne fotky. Ukážeme Vašu nehnuteľnosť tak, aby zaujala na prvý pohľad.' },
+                        { title: 'Efektívny marketing', description: 'Inzerujeme tam, kde ľudia reálne hľadajú. Portály, sociálne siete aj naša databáza kontaktov.' },
+                        { title: 'Vyjednáme pre Vás maximum', description: 'Poznáme ceny v okolí a vieme, kde je priestor na vyjednávanie. Naším cieľom je čo najlepší výsledok pre Vás.' },
+                    ],
+                },
+                rent: {
+                    headline: 'Prenájom bez zbytočných komplikácií',
+                    subtitle: 'Nájdeme spoľahlivého nájomníka a vybavíme všetko potrebné.',
+                    cta: 'MÁM ZÁUJEM',
+                    benefits: [
+                        { title: 'Starostlivý výber nájomníkov', description: 'Záujemcov preverujeme. Zaujíma nás spoľahlivosť aj dlhodobý záujem o bývanie.' },
+                        { title: 'Administratívu riešime za Vás', description: 'Zmluvy, odovzdanie bytu, komunikácia aj riešenie bežných situácií. Nemusíte behať po úradoch.' },
+                        { title: 'Prehľad o príjme', description: 'Máte jasno v tom, čo a kedy prišlo. Všetko prehľadne a bez chaosu.' },
+                    ],
+                },
+            },
+            seeker: {
+                buy: {
+                    headline: 'Nájdeme Vám domov presne podľa Vašich predstáv',
+                    subtitle: 'Bezpečná kúpa a kompletný servis. Od prvej obhliadky až po odovzdanie kľúčov.',
+                    cta: 'MÁM ZÁUJEM',
+                    benefits: [
+                        { title: 'Pomoc s financovaním', description: 'Porovnáme možnosti hypotéky a vysvetlíme vám rozdiely tak, aby ste sa vedeli rozhodnúť pokojne.' },
+                        { title: 'Kontrola dokumentov', description: 'Prejdeme list vlastníctva aj zmluvy, aby ste kupovali bez nepríjemných prekvapení.' },
+                        { title: 'Zastupujeme Vaše záujmy', description: 'Pri vyjednávaní stojíme na Vašej strane. Hľadáme riešenie, ktoré je férové a rozumné.' },
+                    ],
+                },
+                rent: {
+                    headline: 'Nájdeme bývanie, kde sa budete cítiť dobre',
+                    subtitle: 'Overené ponuky a jasné podmienky.',
+                    cta: 'MÁM ZÁUJEM',
+                    benefits: [
+                        { title: 'Preverené nehnuteľnosti', description: 'Obhliadneme stav aj detaily, aby ste vedeli, čo presne si prenajímate.' },
+                        { title: 'Zrozumiteľná zmluva', description: 'Vysvetlíme podmienky jednoducho a bez právnických kľučiek.' },
+                        { title: 'Sme tu aj po podpise', description: 'Ak sa objaví problém alebo otázka, môžete sa na nás obrátiť.' },
+                    ],
+                },
+            },
+        },
+        en: {
+            owner: {
+                sell: {
+                    headline: 'We sell your property for the price it deserves',
+                    subtitle: 'We handle the entire process from A to Z, so you do not have to stress.',
+                    cta: 'I AM INTERESTED',
+                    benefits: [
+                        { title: 'Premium presentation', description: 'Professional photos that make your property stand out at first glance.' },
+                        { title: 'Effective marketing', description: 'We advertise where buyers are actually searching: portals, social media, and our own database.' },
+                        { title: 'Maximum negotiation value', description: 'We know local pricing and where to negotiate. Our goal is the best result for you.' },
+                    ],
+                },
+                rent: {
+                    headline: 'Rent out without unnecessary complications',
+                    subtitle: 'We find a reliable tenant and handle everything needed.',
+                    cta: 'I AM INTERESTED',
+                    benefits: [
+                        { title: 'Careful tenant selection', description: 'We screen applicants with a focus on reliability and long-term intent.' },
+                        { title: 'Administration handled for you', description: 'Contracts, handover, communication, and routine situations—without running around offices.' },
+                        { title: 'Clear income overview', description: 'You always know what was paid and when, clearly and without chaos.' },
+                    ],
+                },
+            },
+            seeker: {
+                buy: {
+                    headline: 'We find a home that matches your needs',
+                    subtitle: 'Safe purchase with full service, from first viewing to key handover.',
+                    cta: 'I AM INTERESTED',
+                    benefits: [
+                        { title: 'Financing support', description: 'We compare mortgage options and explain differences so you can decide calmly.' },
+                        { title: 'Document review', description: 'We check ownership records and contracts so you buy without unpleasant surprises.' },
+                        { title: 'We represent your interests', description: 'We stand on your side in negotiations and seek fair, practical outcomes.' },
+                    ],
+                },
+                rent: {
+                    headline: 'We find a rental where you feel at home',
+                    subtitle: 'Verified offers and clear terms.',
+                    cta: 'I AM INTERESTED',
+                    benefits: [
+                        { title: 'Verified properties', description: 'We check condition and details so you know exactly what you are renting.' },
+                        { title: 'Clear contract terms', description: 'We explain terms simply, without legal jargon.' },
+                        { title: 'Support after signing', description: 'If any issue appears, you can still rely on us.' },
+                    ],
+                },
+            },
+        },
+        de: {
+            owner: {
+                sell: {
+                    headline: 'Wir verkaufen Ihre Immobilie zum Preis, den sie verdient',
+                    subtitle: 'Wir übernehmen den gesamten Prozess von A bis Z, damit Sie keinen Stress haben.',
+                    cta: 'ICH HABE INTERESSE',
+                    benefits: [
+                        { title: 'Hochwertige Präsentation', description: 'Professionelle Fotos zeigen Ihre Immobilie so, dass sie sofort überzeugt.' },
+                        { title: 'Effektives Marketing', description: 'Wir werben dort, wo Interessenten wirklich suchen: Portale, Social Media und unsere Datenbank.' },
+                        { title: 'Maximum in der Verhandlung', description: 'Wir kennen die lokalen Preise und Verhandlungsspielräume. Ziel ist das beste Ergebnis für Sie.' },
+                    ],
+                },
+                rent: {
+                    headline: 'Vermieten ohne unnötige Komplikationen',
+                    subtitle: 'Wir finden einen zuverlässigen Mieter und erledigen alles Notwendige.',
+                    cta: 'ICH HABE INTERESSE',
+                    benefits: [
+                        { title: 'Sorgfältige Mieterauswahl', description: 'Wir prüfen Interessenten auf Zuverlässigkeit und langfristiges Interesse.' },
+                        { title: 'Verwaltung übernehmen wir', description: 'Verträge, Übergabe, Kommunikation und laufende Themen – ohne Behördenstress für Sie.' },
+                        { title: 'Klare Einnahmenübersicht', description: 'Sie wissen jederzeit, was und wann eingegangen ist – übersichtlich und ohne Chaos.' },
+                    ],
+                },
+            },
+            seeker: {
+                buy: {
+                    headline: 'Wir finden ein Zuhause nach Ihren Vorstellungen',
+                    subtitle: 'Sicherer Kauf mit Komplettservice von der ersten Besichtigung bis zur Schlüsselübergabe.',
+                    cta: 'ICH HABE INTERESSE',
+                    benefits: [
+                        { title: 'Hilfe bei der Finanzierung', description: 'Wir vergleichen Hypothekenoptionen und erklären Unterschiede verständlich.' },
+                        { title: 'Prüfung der Unterlagen', description: 'Wir prüfen Eigentumsnachweise und Verträge, damit Sie ohne Überraschungen kaufen.' },
+                        { title: 'Wir vertreten Ihre Interessen', description: 'In Verhandlungen stehen wir auf Ihrer Seite und suchen faire, sinnvolle Lösungen.' },
+                    ],
+                },
+                rent: {
+                    headline: 'Wir finden ein Zuhause zur Miete, in dem Sie sich wohlfühlen',
+                    subtitle: 'Geprüfte Angebote und klare Bedingungen.',
+                    cta: 'ICH HABE INTERESSE',
+                    benefits: [
+                        { title: 'Geprüfte Immobilien', description: 'Wir prüfen Zustand und Details, damit Sie genau wissen, was Sie mieten.' },
+                        { title: 'Verständlicher Vertrag', description: 'Wir erklären Bedingungen einfach und ohne juristische Hürden.' },
+                        { title: 'Auch nach Unterschrift erreichbar', description: 'Wenn Fragen oder Probleme auftreten, sind wir weiterhin für Sie da.' },
+                    ],
+                },
+            },
+        },
+    }[language];
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, { once: true, margin: "-15% 0px -15% 0px" });
     const controls = useAnimation();
     const [cardsRevealed, setCardsRevealed] = useState(false);
 
     const localizedOwnerTabs = {
-        sell: { ...ownerTabs.sell, label: copy.ownerSellLabel },
-        rent: { ...ownerTabs.rent, label: copy.ownerRentLabel },
+        sell: {
+            ...ownerTabs.sell,
+            label: copy.ownerSellLabel,
+            headline: tabText.owner.sell.headline,
+            subtitle: tabText.owner.sell.subtitle,
+            cta: { ...ownerTabs.sell.cta, text: tabText.owner.sell.cta },
+            benefits: ownerTabs.sell.benefits.map((benefit, index) => ({
+                ...benefit,
+                title: tabText.owner.sell.benefits[index].title,
+                description: tabText.owner.sell.benefits[index].description,
+            })),
+        },
+        rent: {
+            ...ownerTabs.rent,
+            label: copy.ownerRentLabel,
+            headline: tabText.owner.rent.headline,
+            subtitle: tabText.owner.rent.subtitle,
+            cta: { ...ownerTabs.rent.cta, text: tabText.owner.rent.cta },
+            benefits: ownerTabs.rent.benefits.map((benefit, index) => ({
+                ...benefit,
+                title: tabText.owner.rent.benefits[index].title,
+                description: tabText.owner.rent.benefits[index].description,
+            })),
+        },
     };
 
     const localizedSeekerTabs = {
-        buy: { ...seekerTabs.buy, label: copy.seekerBuyLabel },
-        rent: { ...seekerTabs.rent, label: copy.seekerRentLabel },
+        buy: {
+            ...seekerTabs.buy,
+            label: copy.seekerBuyLabel,
+            headline: tabText.seeker.buy.headline,
+            subtitle: tabText.seeker.buy.subtitle,
+            cta: { ...seekerTabs.buy.cta, text: tabText.seeker.buy.cta },
+            benefits: seekerTabs.buy.benefits.map((benefit, index) => ({
+                ...benefit,
+                title: tabText.seeker.buy.benefits[index].title,
+                description: tabText.seeker.buy.benefits[index].description,
+            })),
+        },
+        rent: {
+            ...seekerTabs.rent,
+            label: copy.seekerRentLabel,
+            headline: tabText.seeker.rent.headline,
+            subtitle: tabText.seeker.rent.subtitle,
+            cta: { ...seekerTabs.rent.cta, text: tabText.seeker.rent.cta },
+            benefits: seekerTabs.rent.benefits.map((benefit, index) => ({
+                ...benefit,
+                title: tabText.seeker.rent.benefits[index].title,
+                description: tabText.seeker.rent.benefits[index].description,
+            })),
+        },
     };
 
     useEffect(() => {

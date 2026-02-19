@@ -8,6 +8,8 @@ export const SITE_NAME = 'Frisco Reality';
 export const SITE_LOCALE = 'sk_SK';
 export const SITE_LANGUAGE = 'sk';
 
+type SeoLanguage = 'sk' | 'en' | 'de';
+
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 export const COMPANY_INFO = {
@@ -43,7 +45,22 @@ export const COMPANY_INFO = {
 /**
  * JSON-LD: Organization schema
  */
-export function getOrganizationSchema() {
+export function getOrganizationSchema(language: SeoLanguage = 'sk') {
+  const localized = {
+    sk: {
+      areaServed: 'Slovensko',
+      description: 'Prémiová realitná kancelária špecializujúca sa na predaj a prenájom luxusných nehnuteľností na Slovensku. Rodinná firma s osobným prístupom a rokmi skúseností.',
+    },
+    en: {
+      areaServed: 'Slovakia',
+      description: 'Premium real estate agency focused on sales and rentals of high-end properties in Slovakia. Family business with a personal approach and years of experience.',
+    },
+    de: {
+      areaServed: 'Slowakei',
+      description: 'Premium-Immobilienagentur für Verkauf und Vermietung hochwertiger Immobilien in der Slowakei. Familienunternehmen mit persönlichem Ansatz und langjähriger Erfahrung.',
+    },
+  }[language];
+
   return {
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
@@ -88,24 +105,26 @@ export function getOrganizationSchema() {
     ],
     areaServed: {
       '@type': 'Country',
-      name: 'Slovensko',
+      name: localized.areaServed,
     },
     priceRange: '€€€',
-    description: 'Prémiová realitná kancelária špecializujúca sa na predaj a prenájom luxusných nehnuteľností na Slovensku. Rodinná firma s osobným prístupom a rokmi skúseností.',
+    description: localized.description,
   };
 }
 
 /**
  * JSON-LD: WebSite schema with SearchAction
  */
-export function getWebSiteSchema() {
+export function getWebSiteSchema(language: SeoLanguage = 'sk') {
+  const inLanguage = language === 'de' ? 'de' : language === 'en' ? 'en' : SITE_LANGUAGE;
+
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${SITE_URL}/#website`,
     name: SITE_NAME,
     url: SITE_URL,
-    inLanguage: SITE_LANGUAGE,
+    inLanguage,
     publisher: {
       '@id': `${SITE_URL}/#organization`,
     },
@@ -206,7 +225,9 @@ export function getRealEstateListingSchema(listing: {
 /**
  * JSON-LD: LocalBusiness (contact page)
  */
-export function getLocalBusinessSchema() {
+export function getLocalBusinessSchema(language: SeoLanguage = 'sk') {
+  const country = language === 'de' ? 'Slowakei' : language === 'en' ? 'Slovakia' : 'Slovensko';
+
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -248,6 +269,7 @@ export function getLocalBusinessSchema() {
       COMPANY_INFO.social.facebook,
     ],
     hasMap: 'https://www.google.com/maps?cid=12293961476159398039',
+    areaServed: country,
   };
 }
 
@@ -258,7 +280,9 @@ export function getServiceSchema(service: {
   name: string;
   description: string;
   url: string;
-}) {
+}, language: SeoLanguage = 'sk') {
+  const areaServed = language === 'de' ? 'Slowakei' : language === 'en' ? 'Slovakia' : 'Slovensko';
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -270,7 +294,7 @@ export function getServiceSchema(service: {
     },
     areaServed: {
       '@type': 'Country',
-      name: 'Slovensko',
+      name: areaServed,
     },
     serviceType: 'Real Estate',
   };

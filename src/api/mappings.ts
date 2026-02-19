@@ -226,3 +226,232 @@ export const formatArea = (area: number | null): string => {
     if (!area) return '-';
     return `${area.toLocaleString('sk-SK')} m²`;
 };
+
+type MappingLanguage = 'sk' | 'en' | 'de';
+
+const LOCALIZED_TRANSACTION_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        122: 'Purchase',
+        123: 'Rent',
+        124: 'Sublease',
+        125: 'Exchange',
+        126: 'Auction',
+        127: 'Sale',
+    },
+    de: {
+        122: 'Kauf',
+        123: 'Miete',
+        124: 'Untermiete',
+        125: 'Tausch',
+        126: 'Auktion',
+        127: 'Verkauf',
+    },
+};
+
+const LOCALIZED_REAL_ESTATE_STATE_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        136: 'New build',
+        137: 'Partial renovation',
+        138: 'Full renovation',
+        139: 'Original condition',
+        140: 'Under construction',
+        141: 'Project',
+        142: 'For demolition',
+        143: 'Extension',
+    },
+    de: {
+        136: 'Neubau',
+        137: 'Teilrenoviert',
+        138: 'Komplett renoviert',
+        139: 'Originalzustand',
+        140: 'Im Bau',
+        141: 'Projekt',
+        142: 'Zum Abriss',
+        143: 'Aufstockung',
+    },
+};
+
+const LOCALIZED_BUILDING_TYPE_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        411: 'Wood',
+        412: 'Clay',
+        413: 'Stone',
+        414: 'Block construction',
+        415: 'Prefabricated',
+        416: 'Panel',
+        417: 'Skeletal',
+        418: 'Brick',
+        419: 'Mixed',
+        420: 'Reinforced concrete',
+        421: 'Metal',
+        422: 'Other',
+    },
+    de: {
+        411: 'Holz',
+        412: 'Lehm',
+        413: 'Stein',
+        414: 'Blockbau',
+        415: 'Fertigbau',
+        416: 'Plattenbau',
+        417: 'Skelettbau',
+        418: 'Ziegel',
+        419: 'Gemischt',
+        420: 'Stahlbeton',
+        421: 'Metall',
+        422: 'Sonstiges',
+    },
+};
+
+const LOCALIZED_EQUIPMENT_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        533: 'Balcony',
+        534: 'Loggia',
+        535: 'Terrace',
+        536: 'Front garden',
+        537: 'Garage',
+        538: 'Cellar',
+        539: 'Garage space',
+        540: 'Public parking',
+        541: 'Outdoor parking',
+        543: 'Pantry',
+        544: 'Storage',
+        545: 'Technical room',
+        556: 'Elevator',
+    },
+    de: {
+        533: 'Balkon',
+        534: 'Loggia',
+        535: 'Terrasse',
+        536: 'Vorgarten',
+        537: 'Garage',
+        538: 'Keller',
+        539: 'Garagenstellplatz',
+        540: 'Öffentliche Parkplätze',
+        541: 'Außenstellplatz',
+        543: 'Speisekammer',
+        544: 'Lagerraum',
+        545: 'Technikraum',
+        556: 'Aufzug',
+    },
+};
+
+const LOCALIZED_HEATING_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        717: 'Central',
+        722: 'Underfloor',
+        723: 'Local',
+        728: 'Other',
+        729: 'Fireplace',
+        730: 'Air conditioning',
+        732: 'Radiators',
+        30739: 'Unavailable',
+    },
+    de: {
+        717: 'Zentral',
+        722: 'Fußbodenheizung',
+        723: 'Lokal',
+        728: 'Sonstiges',
+        729: 'Kamin',
+        730: 'Klimaanlage',
+        732: 'Heizkörper',
+        30739: 'Nicht verfügbar',
+    },
+};
+
+const LOCALIZED_OWNERSHIP_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        340: 'Cooperative',
+        341: 'Company',
+        342: 'Unsettled',
+        343: 'Municipal',
+        344: 'Private',
+        345: 'State',
+        346: 'Other',
+    },
+    de: {
+        340: 'Genossenschaftlich',
+        341: 'Firmenbesitz',
+        342: 'Ungeklärt',
+        343: 'Kommunal',
+        344: 'Privat',
+        345: 'Staatlich',
+        346: 'Sonstiges',
+    },
+};
+
+const LOCALIZED_CATEGORY_LABELS: Record<Exclude<MappingLanguage, 'sk'>, Record<number, string>> = {
+    en: {
+        11: '1-room apartment',
+        12: '2-room apartment',
+        13: '3-room apartment',
+        14: '4-room apartment',
+        15: '5+ room apartment',
+        16: 'Apartment',
+        20: 'Family house',
+        27: 'Cottage',
+        30: 'Land for family house',
+        32: 'Building plot',
+        37: 'Garden',
+        46: 'Offices',
+        47: 'Retail premises',
+        49: 'Storage premises',
+        65: 'Hotel, guesthouse',
+    },
+    de: {
+        11: '1-Zimmer-Wohnung',
+        12: '2-Zimmer-Wohnung',
+        13: '3-Zimmer-Wohnung',
+        14: '4-Zimmer-Wohnung',
+        15: '5+ Zimmer Wohnung',
+        16: 'Apartment',
+        20: 'Einfamilienhaus',
+        27: 'Ferienhaus',
+        30: 'Grundstück für Einfamilienhaus',
+        32: 'Baugrundstück',
+        37: 'Garten',
+        46: 'Büros',
+        47: 'Geschäftsflächen',
+        49: 'Lagerflächen',
+        65: 'Hotel, Pension',
+    },
+};
+
+export const getLocalizedTransactionLabel = (id: number | undefined, language: MappingLanguage): string => {
+    if (!id) return '-';
+    if (language === 'sk') return transactionLabels[id] || '-';
+    return LOCALIZED_TRANSACTION_LABELS[language][id] || transactionLabels[id] || '-';
+};
+
+export const getLocalizedCategoryLabel = (id: number | undefined, language: MappingLanguage): string => {
+    if (!id) return '-';
+    if (language === 'sk') return categoryLabels[id] || '-';
+    return LOCALIZED_CATEGORY_LABELS[language][id] || categoryLabels[id] || '-';
+};
+
+export const getLocalizedRealEstateStateLabel = (id: number | undefined, language: MappingLanguage): string => {
+    if (!id) return '-';
+    if (language === 'sk') return realEstateStateLabels[id] || '-';
+    return LOCALIZED_REAL_ESTATE_STATE_LABELS[language][id] || realEstateStateLabels[id] || '-';
+};
+
+export const getLocalizedBuildingTypeLabel = (id: number | undefined, language: MappingLanguage): string => {
+    if (!id) return '-';
+    if (language === 'sk') return buildingTypeLabels[id] || '-';
+    return LOCALIZED_BUILDING_TYPE_LABELS[language][id] || buildingTypeLabels[id] || '-';
+};
+
+export const getLocalizedEquipmentLabel = (id: number, language: MappingLanguage): string | undefined => {
+    if (language === 'sk') return equipmentLabels[id];
+    return LOCALIZED_EQUIPMENT_LABELS[language][id] || equipmentLabels[id];
+};
+
+export const getLocalizedHeatingLabel = (id: number, language: MappingLanguage): string | undefined => {
+    if (language === 'sk') return heatingLabels[id];
+    return LOCALIZED_HEATING_LABELS[language][id] || heatingLabels[id];
+};
+
+export const getLocalizedOwnershipLabel = (id: number | undefined, language: MappingLanguage): string => {
+    if (!id) return '-';
+    if (language === 'sk') return ownershipLabels[id] || '-';
+    return LOCALIZED_OWNERSHIP_LABELS[language][id] || ownershipLabels[id] || '-';
+};

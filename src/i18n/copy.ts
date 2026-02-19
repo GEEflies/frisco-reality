@@ -1,4 +1,4 @@
-import type { LanguageCode } from '@/i18n/LanguageProvider';
+import type { LanguageCode } from '@/i18n/types';
 
 export const NAVBAR_COPY: Record<LanguageCode, {
   home: string;

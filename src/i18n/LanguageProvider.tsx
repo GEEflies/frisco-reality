@@ -1,8 +1,12 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-
-export type LanguageCode = 'sk' | 'en' | 'de';
+import {
+  DEFAULT_LANGUAGE,
+  isLanguageCode,
+  LANGUAGE_COOKIE_KEY,
+  type LanguageCode,
+} from '@/i18n/types';
 
 type LanguageContextType = {
   language: LanguageCode;
@@ -11,21 +15,39 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
 
-const STORAGE_KEY = 'frisco-language';
+const STORAGE_KEY = LANGUAGE_COOKIE_KEY;
 
-export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguageState] = useState<LanguageCode>('sk');
+const persistLanguageCookie = (language: LanguageCode) => {
+  document.cookie = `${LANGUAGE_COOKIE_KEY}=${language}; path=/; max-age=31536000; samesite=lax`;
+};
+
+export const LanguageProvider = ({
+  children,
+  initialLanguage = DEFAULT_LANGUAGE,
+}: {
+  children: React.ReactNode;
+  initialLanguage?: LanguageCode;
+}) => {
+  const [language, setLanguageState] = useState<LanguageCode>(initialLanguage);
 
   useEffect(() => {
-    const storedLanguage = window.localStorage.getItem(STORAGE_KEY) as LanguageCode | null;
-    if (storedLanguage === 'sk' || storedLanguage === 'en' || storedLanguage === 'de') {
-      setLanguageState(storedLanguage);
-    }
-  }, []);
+    const searchLanguage = new URLSearchParams(window.location.search).get('lang');
+    const storedLanguage = window.localStorage.getItem(STORAGE_KEY);
+    const resolvedLanguage = isLanguageCode(searchLanguage)
+      ? searchLanguage
+      : isLanguageCode(storedLanguage)
+        ? storedLanguage
+        : initialLanguage;
+
+    setLanguageState(resolvedLanguage);
+    window.localStorage.setItem(STORAGE_KEY, resolvedLanguage);
+    persistLanguageCookie(resolvedLanguage);
+  }, [initialLanguage]);
 
   const setLanguage = (nextLanguage: LanguageCode) => {
     setLanguageState(nextLanguage);
     window.localStorage.setItem(STORAGE_KEY, nextLanguage);
+    persistLanguageCookie(nextLanguage);
   };
 
   const value = useMemo(() => ({ language, setLanguage }), [language]);

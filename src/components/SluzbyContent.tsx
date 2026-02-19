@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Footer } from '@/components/Footer';
 import WhyFriscoHeroSplit from './WhyFriscoHeroSplit';
 import { FamilyBusinessSection } from '@/components/FamilyBusinessSection';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 
 const leftBlueprint = '/left.png';
@@ -140,6 +141,67 @@ const values = [
 
 
 const Sluzby = () => {
+  const { language } = useLanguage();
+  const copy = {
+    sk: {
+      valuesBadge: 'Naše hodnoty',
+      valuesTitleStart: 'Na čom si',
+      valuesTitleAccent: 'zakladáme',
+      valuesSubtitle: 'Princípy, ktoré nás vedú pri každom obchode. Aby ste presne vedeli, čo od nás môžete očakávať.',
+      ctaLabel: 'Ozvite sa nám',
+      ctaTitleStart: 'Radi Vám',
+      ctaTitleAccent: 'poradíme',
+      ctaText: 'Máte otázku o predaji, kúpe alebo prenájme? Zavolajte nám alebo napíšte — odpovieme do 24 hodín.',
+      ctaWrite: 'Napíšte nám',
+      values: [
+        { title: 'Transparentnosť', description: 'Žiadne skryté poplatky, žiadne nepríjemné prekvapenia. Vždy viete, čo sa deje a aké sú ďalšie kroky. Otvorená komunikácia je pre nás samozrejmosťou.' },
+        { title: 'Osobný prístup', description: 'Každý klient má svojho realitného agenta, ktorý pozná jeho situáciu aj priority. Nie ste číslo v databáze, ale náš partner.' },
+        { title: 'Odborná expertíza', description: 'Dlhoročné skúsenosti na lokálnom trhu nám umožňujú správne nastaviť cenu, vyjednávať podmienky a chrániť vaše záujmy.' },
+        { title: 'Vášeň', description: 'Milujeme, čo robíme. Každá nehnuteľnosť je pre nás príbeh a každý klient je náš partner.' },
+      ],
+    },
+    en: {
+      valuesBadge: 'Our values',
+      valuesTitleStart: 'What we',
+      valuesTitleAccent: 'stand for',
+      valuesSubtitle: 'Principles that guide us in every deal, so you always know what to expect from us.',
+      ctaLabel: 'Get in touch',
+      ctaTitleStart: 'We are happy to',
+      ctaTitleAccent: 'advise you',
+      ctaText: 'Have a question about selling, buying, or renting? Call or write to us — we reply within 24 hours.',
+      ctaWrite: 'Write to us',
+      values: [
+        { title: 'Transparency', description: 'No hidden fees and no unpleasant surprises. You always know what is happening and what comes next. Open communication is standard for us.' },
+        { title: 'Personal approach', description: 'Each client has a dedicated agent who understands their situation and priorities. You are not a database entry, but our partner.' },
+        { title: 'Professional expertise', description: 'Years of local market experience help us set the right price, negotiate terms, and protect your interests.' },
+        { title: 'Passion', description: 'We love what we do. Every property is a story for us, and every client is our partner.' },
+      ],
+    },
+    de: {
+      valuesBadge: 'Unsere Werte',
+      valuesTitleStart: 'Worauf wir',
+      valuesTitleAccent: 'bauen',
+      valuesSubtitle: 'Prinzipien, die uns bei jedem Geschäft leiten, damit Sie genau wissen, was Sie von uns erwarten können.',
+      ctaLabel: 'Kontaktieren Sie uns',
+      ctaTitleStart: 'Wir',
+      ctaTitleAccent: 'beraten Sie gerne',
+      ctaText: 'Haben Sie Fragen zu Verkauf, Kauf oder Vermietung? Rufen Sie uns an oder schreiben Sie uns — wir antworten innerhalb von 24 Stunden.',
+      ctaWrite: 'Schreiben Sie uns',
+      values: [
+        { title: 'Transparenz', description: 'Keine versteckten Gebühren, keine unangenehmen Überraschungen. Sie wissen immer, was gerade passiert und was als Nächstes kommt. Offene Kommunikation ist für uns selbstverständlich.' },
+        { title: 'Persönlicher Ansatz', description: 'Jeder Kunde hat einen festen Makler, der seine Situation und Prioritäten kennt. Sie sind keine Nummer in einer Datenbank, sondern unser Partner.' },
+        { title: 'Fachliche Expertise', description: 'Langjährige Erfahrung im lokalen Markt hilft uns, den richtigen Preis zu setzen, Bedingungen zu verhandeln und Ihre Interessen zu schützen.' },
+        { title: 'Leidenschaft', description: 'Wir lieben, was wir tun. Jede Immobilie ist für uns eine Geschichte, und jeder Kunde ist unser Partner.' },
+      ],
+    },
+  }[language];
+
+  const localizedValues = values.map((value, index) => ({
+    ...value,
+    title: copy.values[index]?.title ?? value.title,
+    description: copy.values[index]?.description ?? value.description,
+  }));
+
   return (
     <div className="min-h-screen bg-cream">
         <WhyFriscoHeroSplit />
@@ -165,21 +227,21 @@ const Sluzby = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-6">
                 <Shield className="w-4 h-4 text-accent-red" />
                 <span className="text-xs font-bold tracking-widest text-accent-red uppercase">
-                  Naše hodnoty
+                  {copy.valuesBadge}
                 </span>
               </div>
 
               <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-serif font-bold text-navy tracking-tight mb-5">
-                Na čom si <span className="text-accent-red italic">zakladáme</span>
+                {copy.valuesTitleStart} <span className="text-accent-red italic">{copy.valuesTitleAccent}</span>
               </h2>
               <p className="text-charcoal/60 text-base md:text-lg lg:text-xl leading-relaxed max-w-xl mx-auto">
-                Princípy, ktoré nás vedú pri každom obchode. Aby ste presne vedeli, čo od nás môžete očakávať.
+                {copy.valuesSubtitle}
               </p>
             </motion.div>
 
             <div className="max-w-7xl mx-auto">
               {/* Three core values in a row */}
-              <ValuesSection values={values} fadeInUp={fadeInUp} staggerContainer={staggerContainer} />
+              <ValuesSection values={localizedValues} fadeInUp={fadeInUp} staggerContainer={staggerContainer} />
 
 
             </div>
@@ -203,13 +265,13 @@ const Sluzby = () => {
               <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
                 <div className="text-center lg:text-left">
                   <span className="text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
-                    Ozvite sa nám
+                    {copy.ctaLabel}
                   </span>
                   <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy tracking-tight mb-4">
-                    Radi Vám <span className="text-accent-red italic">poradíme</span>
+                    {copy.ctaTitleStart} <span className="text-accent-red italic">{copy.ctaTitleAccent}</span>
                   </h2>
                   <p className="text-charcoal/60 text-lg max-w-xl">
-                    Máte otázku o predaji, kúpe alebo prenájme? Zavolajte nám alebo napíšte — odpovieme do 24 hodín.
+                    {copy.ctaText}
                   </p>
                 </div>
 
@@ -225,7 +287,7 @@ const Sluzby = () => {
                     href="/kontakt"
                     className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
                   >
-                    <span>Napíšte nám</span>
+                    <span>{copy.ctaWrite}</span>
                     <ArrowUpRight className="w-5 h-5" />
                   </a>
                 </div>

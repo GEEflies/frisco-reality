@@ -2,6 +2,65 @@
 
 import { motion } from 'framer-motion';
 import { Heart, Clock, ShieldCheck, Award } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import type { LanguageCode } from '@/i18n/types';
+
+const copy: Record<LanguageCode, {
+    badgeMobile: string;
+    badgeDesktop: string;
+    headlineDesktopPrefix: string;
+    headlineWhich: string;
+    headlineYears: string;
+    headlineSuffix: string;
+    subtitle: string;
+    benefits: Array<{ label: string; sublabel: string }>;
+}> = {
+    sk: {
+        badgeMobile: 'Sme rodinná firma,',
+        badgeDesktop: 'Rodinná firma',
+        headlineDesktopPrefix: 'Sme rodinná firma, ',
+        headlineWhich: 'ktorá si už',
+        headlineYears: '18 rokov',
+        headlineSuffix: 'zakladá na kvalite a dôvere.',
+        subtitle: 'Pomáhame klientom v Seredi a okolí nájsť ich vysnívaný domov a spravovať nehnuteľnosti bez zbytočných komplikácií.',
+        benefits: [
+            { label: 'Konateľ osobne', sublabel: 'pán Križo vždy dostupný' },
+            { label: 'Rýchle rozhodnutia', sublabel: 'Bez čakania na "centrálu"' },
+            { label: 'Miestne korene', sublabel: 'Žijeme tam, kde predávame' },
+            { label: 'Dobré meno', sublabel: 'Povesť je pre nás všetko' },
+        ],
+    },
+    en: {
+        badgeMobile: 'We are a family business,',
+        badgeDesktop: 'Family business',
+        headlineDesktopPrefix: 'We are a family business ',
+        headlineWhich: 'that for',
+        headlineYears: '18 years',
+        headlineSuffix: 'has been built on quality and trust.',
+        subtitle: 'We help clients in Sereď and the surrounding area find their dream home and manage property without unnecessary complications.',
+        benefits: [
+            { label: 'CEO personally', sublabel: 'Mr. Križo always available' },
+            { label: 'Fast decisions', sublabel: 'No waiting for "headquarters"' },
+            { label: 'Local roots', sublabel: 'We live where we sell' },
+            { label: 'Good reputation', sublabel: 'Our name means everything' },
+        ],
+    },
+    de: {
+        badgeMobile: 'Wir sind ein Familienunternehmen,',
+        badgeDesktop: 'Familienunternehmen',
+        headlineDesktopPrefix: 'Wir sind ein Familienunternehmen, ',
+        headlineWhich: 'das seit',
+        headlineYears: '18 Jahren',
+        headlineSuffix: 'auf Qualität und Vertrauen setzt.',
+        subtitle: 'Wir helfen Kunden in Sereď und Umgebung, ihr Traumhaus zu finden und Immobilien unkompliziert zu verwalten.',
+        benefits: [
+            { label: 'Geschäftsführer persönlich', sublabel: 'Herr Križo immer erreichbar' },
+            { label: 'Schnelle Entscheidungen', sublabel: 'Kein Warten auf die "Zentrale"' },
+            { label: 'Lokale Wurzeln', sublabel: 'Wir leben, wo wir verkaufen' },
+            { label: 'Guter Ruf', sublabel: 'Unser Name ist uns alles' },
+        ],
+    },
+};
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -27,6 +86,9 @@ const staggerContainer = {
 };
 
 export const FamilyBusinessSection = () => {
+    const { language } = useLanguage();
+    const t = copy[language];
+
     return (
         <section className="py-16 md:py-20 bg-white overflow-hidden relative">
             {/* Background Decor */}
@@ -48,8 +110,8 @@ export const FamilyBusinessSection = () => {
                     >
                         <Heart className="w-4 h-4 text-accent-red fill-current" />
                         <span className="text-xs font-bold tracking-widest text-accent-red uppercase">
-                            <span className="md:hidden">Sme rodinná firma,</span>
-                            <span className="hidden md:inline">Rodinná firma</span>
+                            <span className="md:hidden">{t.badgeMobile}</span>
+                            <span className="hidden md:inline">{t.badgeDesktop}</span>
                         </span>
                     </motion.div>
 
@@ -58,10 +120,10 @@ export const FamilyBusinessSection = () => {
                         variants={fadeInUp}
                         className="text-3xl md:text-5xl lg:text-5xl font-bold text-navy mb-12 md:mb-6 leading-tight lg:leading-snug max-w-5xl"
                     >
-                        <span className="hidden md:inline">Sme rodinná firma, </span>
-                        ktorá si už <br className="hidden md:block" />
+                        <span className="hidden md:inline">{t.headlineDesktopPrefix}</span>
+                        {t.headlineWhich} <br className="hidden md:block" />
                         <span className="relative inline-block">
-                            <span className="text-accent-red italic font-serif text-4xl md:text-6xl lg:text-6xl font-black relative z-10">18 rokov</span>
+                            <span className="text-accent-red italic font-serif text-4xl md:text-6xl lg:text-6xl font-black relative z-10">{t.headlineYears}</span>
                             <span className="absolute bottom-1 left-0 w-full h-1.5 bg-accent-red/10 overflow-hidden rounded-full">
                                 <motion.span
                                     className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-accent-red to-transparent opacity-80"
@@ -69,7 +131,7 @@ export const FamilyBusinessSection = () => {
                                     transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
                                 />
                             </span>
-                        </span> zakladá na kvalite a dôvere.
+                        </span> {t.headlineSuffix}
                     </motion.h2>
 
                     {/* Subtitle */}
@@ -77,7 +139,7 @@ export const FamilyBusinessSection = () => {
                         variants={fadeInUp}
                         className="text-lg md:text-xl text-charcoal/70 max-w-2xl mb-12 font-light"
                     >
-                        Pomáhame klientom v Seredi a okolí nájsť ich vysnívaný domov a spravovať nehnuteľnosti bez zbytočných komplikácií.
+                        {t.subtitle}
                     </motion.p>
 
                     {/* Animation Wrapper (Replacing Numbers) */}
@@ -137,26 +199,26 @@ export const FamilyBusinessSection = () => {
                         <BenefitItem
                             icon={Heart}
                             color="text-accent-red"
-                            label="Konateľ osobne"
-                            sublabel="pán Križo vždy dostupný"
+                            label={t.benefits[0].label}
+                            sublabel={t.benefits[0].sublabel}
                         />
                         <BenefitItem
                             icon={Clock}
                             color="text-yellow-500"
-                            label="Rýchle rozhodnutia"
-                            sublabel='Bez čakania na "centrálu"'
+                            label={t.benefits[1].label}
+                            sublabel={t.benefits[1].sublabel}
                         />
                         <BenefitItem
                             icon={ShieldCheck}
                             color="text-blue-500"
-                            label="Miestne korene"
-                            sublabel="Žijeme tam, kde predávame"
+                            label={t.benefits[2].label}
+                            sublabel={t.benefits[2].sublabel}
                         />
                         <BenefitItem
                             icon={Award}
                             color="text-purple-500"
-                            label="Dobré meno"
-                            sublabel="Povesť je pre nás všetko"
+                            label={t.benefits[3].label}
+                            sublabel={t.benefits[3].sublabel}
                         />
                     </div>
 

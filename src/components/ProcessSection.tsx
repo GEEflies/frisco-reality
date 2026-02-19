@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import { MessageCircle, Search, Eye, Key, MapPin, Flag } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -10,26 +10,18 @@ const steps = [
   {
     number: '01',
     icon: MessageCircle,
-    title: 'Prvé stretnutie',
-    description: 'Začneme nezáväzným rozhovorom. Či už chcete predať, prenajať alebo hľadáte nové bývanie, najskôr si vypočujeme vaše predstavy a ciele.',
   },
   {
     number: '02',
     icon: Search,
-    title: 'Dohodneme si plán',
-    description: 'Navrhneme konkrétny postup podľa vašej situácie. Majiteľom nastavíme správnu cenu a stratégiu predaja/prenájmu. Záujemcom pomôžeme nájsť nehnuteľnosť, ktorá dáva zmysel ich potrebám aj rozpočtu.',
   },
   {
     number: '03',
     icon: Eye,
-    title: 'O všetko sa postaráme',
-    description: 'Postaráme sa o celý proces. Od profesionálnej prezentácie a komunikácie so záujemcami až po vyhľadávanie vhodných ponúk a organizovanie obhliadok. Vy sa môžete sústrediť na to podstatné.',
   },
   {
     number: '04',
     icon: Key,
-    title: 'Dotiahneme to do konca',
-    description: 'Zabezpečíme právny servis, zmluvy aj bezpečný prevod. Sprevádzame vás až do momentu, keď sú podpísané papiere a odovzdané kľúče.',
   }
 ];
 

@@ -31,47 +31,101 @@ const staggerContainer = {
     }
 };
 
-const benefits = [
-    {
-        icon: TrendingUp,
-        title: 'Nastavenie ceny a stratégie',
-        text: 'Pozrieme sa na trh, konkurenciu aj reálny dopyt. Cenu neurčujeme „podľa pocitu“, ale podľa dát a skúseností.',
-        bg: 'bg-navy/5', // Special highlight
-        offset: false,
+const benefitsByLanguage = {
+    sk: [
+        { icon: TrendingUp, title: 'Nastavenie ceny a stratégie', text: 'Pozrieme sa na trh, konkurenciu aj reálny dopyt. Cenu neurčujeme „podľa pocitu“, ale podľa dát a skúseností.', bg: 'bg-navy/5', offset: false },
+        { icon: Home, title: 'Príprava nehnuteľnosti', text: 'Poradíme, čo upraviť pred predajom. Často stačia malé zmeny, ktoré pomôžu dosiahnuť lepšiu cenu.', bg: 'bg-cream', offset: true },
+        { icon: Camera, title: 'Fotografie a prezentácia', text: 'Profesionálne fotografie a kvalitný popis sú základ. Prvý dojem rozhoduje o tom, či príde obhliadka.', bg: 'bg-white', offset: false },
+        { icon: Megaphone, title: 'Marketing', text: 'Realitné portály, sociálne siete, vlastná databáza záujemcov. Vašu nehnuteľnosť ukážeme tam, kde má byť.', bg: 'bg-cream', offset: true },
+        { icon: ShieldCheck, title: 'Právny servis', text: 'Zmluvy, úschova peňazí, kataster. Všetko zabezpečíme a dohliadneme na bezpečný priebeh.', bg: 'bg-white', offset: false },
+    ],
+    en: [
+        { icon: TrendingUp, title: 'Pricing and strategy', text: 'We evaluate market data, competition and real demand. Pricing is set by data and experience, not guesswork.', bg: 'bg-navy/5', offset: false },
+        { icon: Home, title: 'Property preparation', text: 'We advise what to improve before listing. Small changes often lead to a stronger final price.', bg: 'bg-cream', offset: true },
+        { icon: Camera, title: 'Photos and presentation', text: 'Professional visuals and quality listing text are essential. First impression decides if a viewing happens.', bg: 'bg-white', offset: false },
+        { icon: Megaphone, title: 'Marketing', text: 'Property portals, social networks and our own buyer database. We put your property where the right people see it.', bg: 'bg-cream', offset: true },
+        { icon: ShieldCheck, title: 'Legal service', text: 'Contracts, escrow and land registry. We handle the legal side and supervise a safe process.', bg: 'bg-white', offset: false },
+    ],
+    de: [
+        { icon: TrendingUp, title: 'Preis und Strategie', text: 'Wir analysieren Markt, Konkurrenz und reale Nachfrage. Der Preis basiert auf Daten und Erfahrung, nicht auf Gefühl.', bg: 'bg-navy/5', offset: false },
+        { icon: Home, title: 'Vorbereitung der Immobilie', text: 'Wir beraten Sie, was vor dem Verkauf angepasst werden sollte. Kleine Änderungen bringen oft einen besseren Preis.', bg: 'bg-cream', offset: true },
+        { icon: Camera, title: 'Fotos und Präsentation', text: 'Professionelle Fotos und ein hochwertiges Exposé sind die Basis. Der erste Eindruck entscheidet über Besichtigungen.', bg: 'bg-white', offset: false },
+        { icon: Megaphone, title: 'Marketing', text: 'Portale, soziale Netzwerke und unsere Interessentendatenbank. Wir platzieren Ihre Immobilie dort, wo sie gesehen wird.', bg: 'bg-cream', offset: true },
+        { icon: ShieldCheck, title: 'Rechtsservice', text: 'Verträge, Treuhand und Grundbuch. Wir übernehmen die rechtliche Abwicklung und achten auf Sicherheit.', bg: 'bg-white', offset: false },
+    ],
+};
+
+const pageCopyByLanguage = {
+    sk: {
+        section1Badge: 'Čo pre vás zabezpečíme',
+        section1Title: 'Predaj, ktorý',
+        section1Accent: 'má systém',
+        section1Text: 'Nerobíme veci náhodne. Každý krok má svoj dôvod – od stanovenia ceny až po podpis zmluvy.',
+        editorialBadge: 'Náš prístup',
+        editorialTitle: 'Každú nehnuteľnosť berieme',
+        editorialAccent: 'osobne',
+        editorialText1: 'Nie je to „ďalší inzerát“. Je to konkrétny byt alebo dom s konkrétnym cieľom – predať ho čo najlepšie.',
+        editorialText2: 'Sme pri obhliadkach, rokujeme o cene a zastupujeme vaše záujmy. Od prvého stretnutia až po odovzdanie kľúčov.',
+        editorialImageAlt: 'Predaj nehnuteľnosti',
+        processBadge: 'Ako prebieha spolupráca',
+        processTitle: 'Predaj bez chaosu a bez',
+        processAccent: 'zbytočných kompromisov',
+        processCta: 'Chcem predať nehnuteľnosť',
+        processSteps: [
+            { title: '1. Stretnutie a plán', text: 'Prejdeme si vaše očakávania, analyzujeme trh a nastavíme cenu aj postup.' },
+            { title: '2. Spustenie predaja', text: 'Pripravíme prezentáciu a spustíme inzerciu. Organizujeme obhliadky a komunikujeme so záujemcami.' },
+            { title: '3. Dohoda a odovzdanie', text: 'Keď nájdeme kupujúceho, pripravíme zmluvy a dohliadneme na bezpečný prevod peňazí. Po zápise na katastri odovzdáme kľúče.' },
+        ],
     },
-    {
-        icon: Home,
-        title: 'Príprava nehnuteľnosti',
-        text: 'Poradíme, čo upraviť pred predajom. Často stačia malé zmeny, ktoré pomôžu dosiahnuť lepšiu cenu.',
-        bg: 'bg-cream',
-        offset: true,
+    en: {
+        section1Badge: 'What we handle for you',
+        section1Title: 'A sale that',
+        section1Accent: 'has a system',
+        section1Text: 'We do not improvise. Every step has a purpose—from pricing to contract signing.',
+        editorialBadge: 'Our approach',
+        editorialTitle: 'We treat every property',
+        editorialAccent: 'personally',
+        editorialText1: 'This is not “just another listing.” It is a specific home with a clear goal: sell it under the best terms.',
+        editorialText2: 'We attend viewings, negotiate price, and represent your interests from the first meeting to key handover.',
+        editorialImageAlt: 'Property sale',
+        processBadge: 'How cooperation works',
+        processTitle: 'A sale without chaos and',
+        processAccent: 'without needless compromises',
+        processCta: 'I want to sell my property',
+        processSteps: [
+            { title: '1. Meeting and plan', text: 'We define your expectations, analyze the market, and set the right price and strategy.' },
+            { title: '2. Launch the sale', text: 'We prepare the presentation and publish listings. We organize viewings and communicate with interested buyers.' },
+            { title: '3. Agreement and handover', text: 'When we find a buyer, we prepare contracts and supervise a safe transfer. After registration, we hand over the keys.' },
+        ],
     },
-    {
-        icon: Camera,
-        title: 'Fotografie a prezentácia',
-        text: 'Profesionálne fotografie a kvalitný popis sú základ. Prvý dojem rozhoduje o tom, či príde obhliadka.',
-        bg: 'bg-white',
-        offset: false,
+    de: {
+        section1Badge: 'Was wir für Sie erledigen',
+        section1Title: 'Ein Verkauf mit',
+        section1Accent: 'klarem System',
+        section1Text: 'Wir arbeiten nicht zufällig. Jeder Schritt hat einen Zweck – von der Preisfestlegung bis zur Unterschrift.',
+        editorialBadge: 'Unser Ansatz',
+        editorialTitle: 'Jede Immobilie behandeln wir',
+        editorialAccent: 'persönlich',
+        editorialText1: 'Es ist nicht „nur ein weiteres Inserat“. Es ist ein konkretes Zuhause mit einem klaren Ziel: bestmöglich verkaufen.',
+        editorialText2: 'Wir sind bei Besichtigungen dabei, verhandeln den Preis und vertreten Ihre Interessen bis zur Schlüsselübergabe.',
+        editorialImageAlt: 'Immobilienverkauf',
+        processBadge: 'So läuft die Zusammenarbeit',
+        processTitle: 'Verkauf ohne Chaos und ohne',
+        processAccent: 'unnötige Kompromisse',
+        processCta: 'Ich möchte meine Immobilie verkaufen',
+        processSteps: [
+            { title: '1. Gespräch und Plan', text: 'Wir klären Ihre Erwartungen, analysieren den Markt und setzen Preis sowie Vorgehen fest.' },
+            { title: '2. Verkaufsstart', text: 'Wir erstellen die Präsentation und starten die Vermarktung. Wir organisieren Besichtigungen und kommunizieren mit Interessenten.' },
+            { title: '3. Abschluss und Übergabe', text: 'Sobald wir einen Käufer finden, bereiten wir die Verträge vor und begleiten die sichere Abwicklung bis zur Übergabe.' },
+        ],
     },
-    {
-        icon: Megaphone,
-        title: 'Marketing',
-        text: 'Realitné portály, sociálne siete, vlastná databáza záujemcov. Vašu nehnuteľnosť ukážeme tam, kde má byť.',
-        bg: 'bg-cream',
-        offset: true,
-    },
-    {
-        icon: ShieldCheck,
-        title: 'Právny servis',
-        text: 'Zmluvy, úschova peňazí, kataster. Všetko zabezpečíme a dohliadneme na bezpečný priebeh.',
-        bg: 'bg-white',
-        offset: false,
-    },
-];
+};
 
 const ChcemPredat = () => {
     const { language } = useLanguage();
     const heroCopy = CHCEM_PREDAT_HERO_COPY[language];
+    const pageCopy = pageCopyByLanguage[language];
+    const benefits = benefitsByLanguage[language];
 
     return (
         <div className="min-h-screen bg-white">
@@ -153,14 +207,14 @@ const ChcemPredat = () => {
                             className="mb-16"
                         >
                             <span className="text-accent-red font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
-                                Čo pre vás zabezpečíme
+                                {pageCopy.section1Badge}
                             </span>
                             <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight max-w-xl">
-                                Predaj, ktorý{' '}
-                                <span className="text-accent-red italic">má systém</span>
+                                {pageCopy.section1Title}{' '}
+                                <span className="text-accent-red italic">{pageCopy.section1Accent}</span>
                             </h2>
                             <p className="text-charcoal/60 mt-6 max-w-lg text-lg font-light leading-relaxed">
-                                Nerobíme veci náhodne. Každý krok má svoj dôvod – od stanovenia ceny až po podpis zmluvy.
+                                {pageCopy.section1Text}
                             </p>
                         </motion.div>
 
@@ -205,7 +259,7 @@ const ChcemPredat = () => {
                             >
                                 <img
                                     src="/frisco-reality-sered.jpg"
-                                    alt="Predaj nehnuteľnosti"
+                                    alt={pageCopy.editorialImageAlt}
                                     className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-r from-navy/20 to-transparent" />
@@ -221,16 +275,16 @@ const ChcemPredat = () => {
                             >
                                 <div className="bg-white rounded-[2rem] shadow-2xl shadow-navy/10 border border-navy/8 p-10 md:p-12 w-full">
                                     <span className="text-navy/40 font-mono text-xs tracking-[0.3em] uppercase mb-6 block">
-                                        Náš prístup
+                                        {pageCopy.editorialBadge}
                                     </span>
                                     <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy leading-tight mb-6">
-                                        Každú nehnuteľnosť berieme <span className="text-accent-red italic">osobne</span>.
+                                        {pageCopy.editorialTitle} <span className="text-accent-red italic">{pageCopy.editorialAccent}</span>.
                                     </h2>
                                     <p className="text-charcoal/65 text-base leading-relaxed mb-6 font-light">
-                                        Nie je to „ďalší inzerát“. Je to konkrétny byt alebo dom s konkrétnym cieľom – predať ho čo najlepšie.
+                                        {pageCopy.editorialText1}
                                     </p>
                                     <p className="text-charcoal/50 text-sm leading-relaxed font-light">
-                                        Sme pri obhliadkach, rokujeme o cene a zastupujeme vaše záujmy. Od prvého stretnutia až po odovzdanie kľúčov.
+                                        {pageCopy.editorialText2}
                                     </p>
                                 </div>
                             </motion.div>
@@ -251,10 +305,10 @@ const ChcemPredat = () => {
                                 className="max-w-3xl"
                             >
                                 <span className="text-accent-red font-mono text-xs tracking-[0.3em] uppercase mb-6 block">
-                                    Ako prebieha spolupráca
+                                    {pageCopy.processBadge}
                                 </span>
                                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold leading-tight">
-                                    Predaj bez chaosu a bez <span className="text-accent-red italic">zbytočných kompromisov</span>.
+                                    {pageCopy.processTitle} <span className="text-accent-red italic">{pageCopy.processAccent}</span>.
                                 </h2>
                             </motion.div>
 
@@ -269,7 +323,7 @@ const ChcemPredat = () => {
                                     href="#kontaktny-formular"
                                     className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-all shadow-lg shadow-accent-red/20 group whitespace-nowrap"
                                 >
-                                    <span>Chcem predať nehnuteľnosť</span>
+                                    <span>{pageCopy.processCta}</span>
                                     <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                 </a>
                             </motion.div>
@@ -290,9 +344,9 @@ const ChcemPredat = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                                     <MessageCircle className="w-7 h-7 text-accent-red" />
                                 </div>
-                                <h3 className="text-xl font-serif font-bold mb-4 text-white">1. Stretnutie a plán</h3>
+                                <h3 className="text-xl font-serif font-bold mb-4 text-white">{pageCopy.processSteps[0].title}</h3>
                                 <p className="text-white/60 leading-relaxed font-light">
-                                    Prejdeme si vaše očakávania, analyzujeme trh a nastavíme cenu aj postup.
+                                    {pageCopy.processSteps[0].text}
                                 </p>
                             </motion.div>
 
@@ -304,9 +358,9 @@ const ChcemPredat = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                                     <Megaphone className="w-7 h-7 text-accent-red" />
                                 </div>
-                                <h3 className="text-xl font-serif font-bold mb-4 text-white">2. Spustenie predaja</h3>
+                                <h3 className="text-xl font-serif font-bold mb-4 text-white">{pageCopy.processSteps[1].title}</h3>
                                 <p className="text-white/60 leading-relaxed font-light">
-                                    Pripravíme prezentáciu a spustíme inzerciu. Organizujeme obhliadky a komunikujeme so záujemcami.
+                                    {pageCopy.processSteps[1].text}
                                 </p>
                             </motion.div>
 
@@ -318,9 +372,9 @@ const ChcemPredat = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                                     <ShieldCheck className="w-7 h-7 text-accent-red" />
                                 </div>
-                                <h3 className="text-xl font-serif font-bold mb-4 text-white">3. Dohoda a odovzdanie</h3>
+                                <h3 className="text-xl font-serif font-bold mb-4 text-white">{pageCopy.processSteps[2].title}</h3>
                                 <p className="text-white/60 leading-relaxed font-light">
-                                    Keď nájdeme kupujúceho, pripravíme zmluvy a dohliadneme na bezpečný prevod peňazí. Po zápise na katastri odovzdáme kľúče.
+                                    {pageCopy.processSteps[2].text}
                                 </p>
                             </motion.div>
                         </motion.div>

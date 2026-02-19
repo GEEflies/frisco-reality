@@ -3,17 +3,25 @@
 import { motion } from 'framer-motion';
 import { Building2, Home, Map, Key, Warehouse } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
-const categories = [
-    { id: 'apartment', label: 'BYTY', icon: Building2, params: { category: 'apartment' } },
-    { id: 'house', label: 'DOMY', icon: Home, params: { category: 'house' } },
-    { id: 'land', label: 'POZEMKY', icon: Map, params: { category: 'land' } },
-    { id: 'rent', label: 'PRENÁJOM', icon: Key, params: { type: 'rent' } },
-    { id: 'other', label: 'INÉ', icon: Warehouse, params: { category: 'other' } },
-];
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export const HeroSearch = ({ className = "" }: { className?: string }) => {
+    const { language } = useLanguage();
     const router = useRouter();
+
+    const labels = {
+        sk: { apartment: 'BYTY', house: 'DOMY', land: 'POZEMKY', rent: 'PRENÁJOM', other: 'INÉ' },
+        en: { apartment: 'APARTMENTS', house: 'HOUSES', land: 'LAND', rent: 'RENT', other: 'OTHER' },
+        de: { apartment: 'WOHNUNGEN', house: 'HÄUSER', land: 'GRUNDSTÜCKE', rent: 'MIETE', other: 'SONSTIGES' },
+    }[language];
+
+    const categories = [
+        { id: 'apartment', label: labels.apartment, icon: Building2, params: { category: 'apartment' } },
+        { id: 'house', label: labels.house, icon: Home, params: { category: 'house' } },
+        { id: 'land', label: labels.land, icon: Map, params: { category: 'land' } },
+        { id: 'rent', label: labels.rent, icon: Key, params: { type: 'rent' } },
+        { id: 'other', label: labels.other, icon: Warehouse, params: { category: 'other' } },
+    ];
 
     const handleSearch = (params: any) => {
         const searchParams = new URLSearchParams(params);

@@ -3,21 +3,43 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Quote, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import type { LanguageCode } from '@/i18n/types';
 
-const testimonials = [
-  {
-    name: 'Mária Kováčová',
-    location: 'Nitra',
-    text: 'Profesionálny prístup, ktorý prekonal moje očakávania. Môj byt sa predal za 3 týždne za výbornú cenu! Peter a Mária ma sprevádzali celým procesom.',
-    role: 'Predávajúci'
-  }
-];
+const testimonials: Record<LanguageCode, Array<{ name: string; location: string; text: string; role: string }>> = {
+  sk: [
+    {
+      name: 'Mária Kováčová',
+      location: 'Nitra',
+      text: 'Profesionálny prístup, ktorý prekonal moje očakávania. Môj byt sa predal za 3 týždne za výbornú cenu! Peter a Mária ma sprevádzali celým procesom.',
+      role: 'Predávajúci',
+    },
+  ],
+  en: [
+    {
+      name: 'Mária Kováčová',
+      location: 'Nitra',
+      text: 'A professional approach that exceeded my expectations. My apartment sold in 3 weeks at an excellent price! Peter and Mária guided me through the entire process.',
+      role: 'Seller',
+    },
+  ],
+  de: [
+    {
+      name: 'Mária Kováčová',
+      location: 'Nitra',
+      text: 'Ein professioneller Ansatz, der meine Erwartungen übertroffen hat. Meine Wohnung wurde in 3 Wochen zu einem hervorragenden Preis verkauft! Peter und Mária haben mich durch den gesamten Prozess begleitet.',
+      role: 'Verkäufer',
+    },
+  ],
+};
 
 export const TestimonialsSection = () => {
+  const { language } = useLanguage();
+  const items = testimonials[language];
   const [current, setCurrent] = useState(0);
 
   const paginate = (newDirection: number) => {
-    setCurrent((prev) => (prev + newDirection + testimonials.length) % testimonials.length);
+    setCurrent((prev) => (prev + newDirection + items.length) % items.length);
   };
 
   useEffect(() => {
@@ -47,12 +69,12 @@ export const TestimonialsSection = () => {
                 className="absolute inset-0 flex flex-col items-center justify-center will-change-transform"
               >
                 <p className="text-3xl md:text-5xl font-serif text-navy leading-tight mb-12">
-                  "{testimonials[current].text}"
+                  "{items[current].text}"
                 </p>
 
                 <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-navy uppercase tracking-widest">{testimonials[current].name}</h4>
-                  <p className="text-accent-red font-mono text-sm">{testimonials[current].role}, {testimonials[current].location}</p>
+                  <h4 className="text-xl font-bold text-navy uppercase tracking-widest">{items[current].name}</h4>
+                  <p className="text-accent-red font-mono text-sm">{items[current].role}, {items[current].location}</p>
                 </div>
               </motion.div>
             </AnimatePresence>

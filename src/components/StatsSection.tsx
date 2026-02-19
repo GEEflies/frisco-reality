@@ -2,15 +2,32 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
-const stats = [
-  { value: '300', suffix: '+', label: 'Spokojných Rodín' },
-  { value: '18', suffix: '', label: 'Rokov Skúseností' },
-  { value: '98', suffix: '%', label: 'Úspešnosť Predaja' },
-  { value: '45', suffix: ' dní', label: 'Priemerný čas predaja' }
-];
+const stats = {
+  sk: [
+    { value: '300', suffix: '+', label: 'Spokojných Rodín' },
+    { value: '18', suffix: '', label: 'Rokov Skúseností' },
+    { value: '98', suffix: '%', label: 'Úspešnosť Predaja' },
+    { value: '45', suffix: ' dní', label: 'Priemerný čas predaja' },
+  ],
+  en: [
+    { value: '300', suffix: '+', label: 'Happy Families' },
+    { value: '18', suffix: '', label: 'Years of Experience' },
+    { value: '98', suffix: '%', label: 'Sales Success Rate' },
+    { value: '45', suffix: ' days', label: 'Average time to sale' },
+  ],
+  de: [
+    { value: '300', suffix: '+', label: 'Zufriedene Familien' },
+    { value: '18', suffix: '', label: 'Jahre Erfahrung' },
+    { value: '98', suffix: '%', label: 'Erfolgsquote beim Verkauf' },
+    { value: '45', suffix: ' Tage', label: 'Durchschnittliche Verkaufszeit' },
+  ],
+};
 
 export const StatsSection = () => {
+  const { language } = useLanguage();
+  const localizedStats = stats[language];
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const { scrollYProgress } = useScroll({
@@ -33,7 +50,7 @@ export const StatsSection = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-0">
 
-          {stats.map((stat, index) => (
+          {localizedStats.map((stat, index) => (
             <motion.div
               key={stat.label}
               style={{ y: !isMobile && index % 2 === 0 ? y : 0 }}

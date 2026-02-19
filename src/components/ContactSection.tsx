@@ -9,6 +9,20 @@ import { CONTACT_SECTION_COPY } from '@/i18n/copy';
 export const ContactSection = () => {
   const { language } = useLanguage();
   const copy = CONTACT_SECTION_COPY[language];
+  const sectionCopy = {
+    sk: {
+      closed: 'Zatvorené',
+      registryNote: 'Zapísaná v Obchodnom registri Okresného súdu Trnava, Oddiel: Sro, Vložka číslo: 21013/T',
+    },
+    en: {
+      closed: 'Closed',
+      registryNote: 'Registered in the Commercial Register of the District Court Trnava, Section: Sro, Insert No.: 21013/T',
+    },
+    de: {
+      closed: 'Geschlossen',
+      registryNote: 'Eingetragen im Handelsregister des Bezirksgerichts Trnava, Abteilung: Sro, Einlage Nr.: 21013/T',
+    },
+  }[language];
 
   return (
     <section className="py-12 md:py-20 bg-cream" id="kontakt">
@@ -83,7 +97,7 @@ export const ContactSection = () => {
                 content={
                   <>
                     <span className="font-bold">{copy.weekdays}</span> 9:00 - 17:00<br />
-                    <span className="font-bold">{copy.weekend}</span> {language === 'sk' ? 'Zatvorené' : language === 'en' ? 'Closed' : 'Geschlossen'}
+                    <span className="font-bold">{copy.weekend}</span> {sectionCopy.closed}
                   </>
                 }
               />
@@ -96,7 +110,7 @@ export const ContactSection = () => {
                     <p>IČO: 43 850 553</p>
                     <p>DIČ: 2022486895</p>
                     <p className="text-[10px] text-charcoal/50 leading-tight mt-2">
-                      Zapísaná v Obchodnom registri Okresného súdu Trnava, Oddiel: Sro, Vložka číslo: 21013/T
+                      {sectionCopy.registryNote}
                     </p>
                   </div>
                 }

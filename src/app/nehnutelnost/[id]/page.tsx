@@ -1,8 +1,10 @@
 import PropertyDetailContent from '@/components/PropertyDetailContent';
 import type { Metadata } from 'next';
 import { fetchListingById, getPrimaryImage } from '@/api/listingsService';
-import { categoryLabels } from '@/api/mappings';
+import { getLocalizedCategoryLabel } from '@/api/mappings';
 import { SITE_URL, DEFAULT_OG_IMAGE, getRealEstateListingSchema, getBreadcrumbSchema } from '@/config/seo';
+import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import type { LanguageCode } from '@/i18n/types';
 
 interface PropertyDetailPageProps {
   params: Promise<{ id: string }>;
@@ -11,33 +13,76 @@ interface PropertyDetailPageProps {
 export async function generateMetadata({ params }: PropertyDetailPageProps): Promise<Metadata> {
   const { id } = await params;
   const listing = await fetchListingById(id);
+  const language = await resolveServerLanguage();
+
+  const copy: Record<LanguageCode, {
+    notFoundTitle: string;
+    notFoundDescription: string;
+    categoryFallback: string;
+    locationIn: string;
+    areaLabel: string;
+    roomsLabel: string;
+    saleIn: string;
+    locale: string;
+  }> = {
+    sk: {
+      notFoundTitle: 'Nehnuteľnosť nenájdená',
+      notFoundDescription: 'Požadovaná nehnuteľnosť nebola nájdená v našej ponuke.',
+      categoryFallback: 'Nehnuteľnosť',
+      locationIn: 'v lokalite',
+      areaLabel: 'Úžitková plocha',
+      roomsLabel: 'izby',
+      saleIn: 'na predaj',
+      locale: 'sk-SK',
+    },
+    en: {
+      notFoundTitle: 'Property not found',
+      notFoundDescription: 'The requested property was not found in our listings.',
+      categoryFallback: 'Property',
+      locationIn: 'in',
+      areaLabel: 'Usable area',
+      roomsLabel: 'rooms',
+      saleIn: 'for sale',
+      locale: 'en-US',
+    },
+    de: {
+      notFoundTitle: 'Immobilie nicht gefunden',
+      notFoundDescription: 'Die angeforderte Immobilie wurde in unserem Angebot nicht gefunden.',
+      categoryFallback: 'Immobilie',
+      locationIn: 'in',
+      areaLabel: 'Nutzfläche',
+      roomsLabel: 'Zimmer',
+      saleIn: 'zu verkaufen',
+      locale: 'de-DE',
+    },
+  };
+  const localized = copy[language];
 
   if (!listing) {
     return {
-      title: 'Nehnuteľnosť nenájdená',
-      description: 'Požadovaná nehnuteľnosť nebola nájdená v našej ponuke.',
+      title: localized.notFoundTitle,
+      description: localized.notFoundDescription,
       robots: { index: false, follow: true },
     };
   }
 
-  const categoryLabel = categoryLabels[listing.category_id] || 'Nehnuteľnosť';
+  const categoryLabel = getLocalizedCategoryLabel(listing.category_id, language) || localized.categoryFallback;
   const location = [listing.location_city, listing.location_district].filter(Boolean).join(', ');
-  const priceFormatted = new Intl.NumberFormat('sk-SK', { style: 'currency', currency: listing.currency || 'EUR', maximumFractionDigits: 0 }).format(listing.price);
+  const priceFormatted = new Intl.NumberFormat(localized.locale, { style: 'currency', currency: listing.currency || 'EUR', maximumFractionDigits: 0 }).format(listing.price);
   
   const title = `${listing.title} | ${categoryLabel}${location ? ` – ${location}` : ''}`;
   const description = listing.description
-    ? `${listing.title} za ${priceFormatted}${location ? ` v lokalite ${location}` : ''}. ${listing.usable_area ? `Úžitková plocha ${listing.usable_area} m².` : ''} ${listing.rooms_count ? `${listing.rooms_count} izby.` : ''} ${listing.description.slice(0, 120)}...`
-    : `${categoryLabel} na predaj${location ? ` v ${location}` : ''} za ${priceFormatted}. Prezrite si detaily a fotografie na Frisco Reality.`;
+    ? `${listing.title} – ${priceFormatted}${location ? ` ${localized.locationIn} ${location}` : ''}. ${listing.usable_area ? `${localized.areaLabel} ${listing.usable_area} m².` : ''} ${listing.rooms_count ? `${listing.rooms_count} ${localized.roomsLabel}.` : ''} ${listing.description.slice(0, 120)}...`
+    : `${categoryLabel} ${localized.saleIn}${location ? ` ${localized.locationIn} ${location}` : ''} – ${priceFormatted}.`;
 
   const primaryImage = getPrimaryImage(listing);
-  const pageUrl = `${SITE_URL}/nehnutelnost/${listing.slug || listing.id}`;
+  const pagePath = `/nehnutelnost/${listing.slug || listing.id}`;
+  const pageUrl = `${SITE_URL}${pagePath}`;
 
   return {
     title,
     description: description.slice(0, 160),
-    alternates: {
-      canonical: pageUrl,
-    },
+    alternates: buildLanguageAlternates(pagePath),
     openGraph: {
       title: `${listing.title} – ${priceFormatted}`,
       description: description.slice(0, 200),
@@ -59,13 +104,17 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { id } = await params;
   const listing = await fetchListingById(id);
+  const language = await resolveServerLanguage();
+  const breadcrumbHome = language === 'de' ? 'Startseite' : language === 'en' ? 'Home' : 'Domov';
+  const breadcrumbOffer = language === 'de' ? 'Angebot' : language === 'en' ? 'Listings' : 'Ponuka';
+  const categoryFallback = language === 'de' ? 'Immobilie' : language === 'en' ? 'Property' : 'Nehnuteľnosť';
 
   const jsonLdScripts = [];
   
   if (listing) {
     const primaryImage = getPrimaryImage(listing);
     const pageUrl = `${SITE_URL}/nehnutelnost/${listing.slug || listing.id}`;
-    const categoryLabel = categoryLabels[listing.category_id] || 'Nehnuteľnosť';
+    const categoryLabel = getLocalizedCategoryLabel(listing.category_id, language) || categoryFallback;
 
     jsonLdScripts.push(
       getRealEstateListingSchema({
@@ -87,8 +136,8 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
     jsonLdScripts.push(
       getBreadcrumbSchema([
-        { name: 'Domov', url: SITE_URL },
-        { name: 'Ponuka', url: `${SITE_URL}/ponuka` },
+        { name: breadcrumbHome, url: SITE_URL },
+        { name: breadcrumbOffer, url: `${SITE_URL}/ponuka` },
         { name: listing.title, url: pageUrl },
       ])
     );

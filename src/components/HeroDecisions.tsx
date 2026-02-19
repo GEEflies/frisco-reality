@@ -1,11 +1,40 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Search, Building2, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export const HeroDecisions = () => {
     const router = useRouter();
+    const { language } = useLanguage();
+
+    const copy = {
+        sk: {
+            owners: 'Majitelia',
+            ownerTitleLine1: 'Chcem predať',
+            ownerTitleLine2: 'nehnuteľnosť',
+            seekers: 'Kupujúci',
+            seekerTitleLine1: 'Hľadám',
+            seekerTitleLine2: 'nehnuteľnosť',
+        },
+        en: {
+            owners: 'Owners',
+            ownerTitleLine1: 'I want to sell',
+            ownerTitleLine2: 'my property',
+            seekers: 'Buyers',
+            seekerTitleLine1: 'I am looking for',
+            seekerTitleLine2: 'a property',
+        },
+        de: {
+            owners: 'Eigentümer',
+            ownerTitleLine1: 'Ich möchte',
+            ownerTitleLine2: 'verkaufen',
+            seekers: 'Käufer',
+            seekerTitleLine1: 'Ich suche',
+            seekerTitleLine2: 'eine Immobilie',
+        },
+    }[language];
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -54,12 +83,12 @@ export const HeroDecisions = () => {
 
                     <div className="relative z-10">
                         <span className="block text-navy/40 text-[10px] font-bold tracking-[0.25em] uppercase mb-3 ml-0.5 group-hover:text-navy/60 transition-colors duration-300">
-                            Majitelia
+                            {copy.owners}
                         </span>
                         <div className="relative overflow-hidden">
                             <span className="block text-2xl font-serif font-medium text-navy tracking-tight group-hover:translate-y-[-2px] transition-transform duration-500">
-                                Chcem predať
-                                <br />nehnuteľnosť
+                                {copy.ownerTitleLine1}
+                                <br />{copy.ownerTitleLine2}
                             </span>
                         </div>
                     </div>
@@ -86,12 +115,12 @@ export const HeroDecisions = () => {
 
                     <div className="relative z-10">
                         <span className="block text-white/40 text-[10px] font-bold tracking-[0.25em] uppercase mb-3 ml-0.5 group-hover:text-white/60 transition-colors duration-300">
-                            Kupujúci
+                            {copy.seekers}
                         </span>
                         <div className="relative overflow-hidden">
                             <span className="block text-2xl font-serif font-medium text-white tracking-tight group-hover:translate-y-[-2px] transition-transform duration-500">
-                                Hľadám
-                                <br />nehnuteľnosť
+                                {copy.seekerTitleLine1}
+                                <br />{copy.seekerTitleLine2}
                             </span>
                         </div>
                     </div>

@@ -2,9 +2,16 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/i18n/LanguageProvider';
 const friscoLogo = '/frisco-logo.png';
 
 export const PagePreloader = ({ onComplete }: { onComplete: () => void }) => {
+  const { language } = useLanguage();
+  const subtitle = language === 'sk'
+    ? 'Realitná Kancelária'
+    : language === 'en'
+      ? 'Real Estate Agency'
+      : 'Immobilienagentur';
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -50,7 +57,7 @@ export const PagePreloader = ({ onComplete }: { onComplete: () => void }) => {
             className="h-12 md:h-14 mx-auto"
           />
           <p className="text-navy text-xs tracking-[0.4em] uppercase mt-3">
-            Realitná Kancelária
+            {subtitle}
           </p>
         </motion.div>
 

@@ -30,36 +30,109 @@ const staggerContainer = {
     }
 };
 
-const managedItems = [
-    'Nájdeme a preverujeme nájomníka',
-    'Pripravíme jasnú a bezpečnú zmluvu',
-    'Strážime platby a termíny',
-    'Komunikujeme s nájomníkmi',
-    'Zabezpečíme opravy a údržbu',
-    'Posielame vám pravidelný prehľad',
-];
-
-const pillars = [
-    {
-        icon: Eye,
-        title: 'Transparentne',
-        text: 'Vždy viete, čo sa s vašou nehnuteľnosťou deje. Žiadne skryté poplatky, žiadne prekvapenia.',
+const pageCopyByLanguage = {
+    sk: {
+        section1Badge: 'Celoročná starostlivosť',
+        section1TitleLine1: 'Vy vlastníte,',
+        section1TitleLine2: 'my sa staráme.',
+        section1Text1: 'Spolupracujeme s desiatkami majiteľov, ktorí nechcú riešiť každodenné starosti okolo prenájmu. Ich cieľ je jednoduchý: aby nájom fungoval a peniaze chodili načas.',
+        section1Text2: 'To je celé.',
+        checklistTitle: 'Čo vybavíme za vás',
+        checklistFooter: 'Vy máte prehľad. Bez toho, aby ste sa museli zapájať do každého detailu.',
+        managedItems: [
+            'Nájdeme a preverujeme nájomníka',
+            'Pripravíme jasnú a bezpečnú zmluvu',
+            'Strážime platby a termíny',
+            'Komunikujeme s nájomníkmi',
+            'Zabezpečíme opravy a údržbu',
+            'Posielame vám pravidelný prehľad',
+        ],
+        paymentBadge: 'Platobná disciplína',
+        paymentHeadline1: 'Klient, ktorý neplatí,',
+        paymentHeadline2: 'u nás neexistuje.',
+        paymentText1: 'Nečakáme týždne, keď niekto mešká. Ak nájomné nepríde načas, riešime to okamžite podľa dohodnutých pravidiel.',
+        paymentText2: 'Systematicky. Každý mesiac. Pri každom nájomníkovi.',
+        paymentCta: 'Chcem sa dozvedieť viac',
+        approachBadge: 'Náš prístup',
+        approachTitle: 'Máte otázky?',
+        pillars: [
+            { icon: Eye, title: 'Transparentne', text: 'Vždy viete, čo sa s vašou nehnuteľnosťou deje. Žiadne skryté poplatky, žiadne prekvapenia.' },
+            { icon: CalendarCheck, title: 'Férové podmienky', text: 'Zmluvy píšeme zrozumiteľne. Podmienky sú jasné pre vás aj pre nájomníka.' },
+            { icon: Key, title: 'Dlhodobá spolupráca', text: 'Nejde nám o jednorazový obchod. Chceme, aby prenájom fungoval roky.' },
+        ],
+        finalText: 'Ozvite sa nám. Všetko vám vysvetlíme osobne a nezäväzne.',
+        finalCta: 'Nezáväzná konzultácia',
     },
-    {
-        icon: CalendarCheck,
-        title: 'Férové podmienky',
-        text: 'Zmluvy píšeme zrozumiteľne. Podmienky sú jasné pre vás aj pre nájomníka.',
+    en: {
+        section1Badge: 'Year-round management',
+        section1TitleLine1: 'You own it,',
+        section1TitleLine2: 'we manage it.',
+        section1Text1: 'We work with owners who do not want daily rental hassles. Their goal is simple: stable tenancy and rent paid on time.',
+        section1Text2: 'That is it.',
+        checklistTitle: 'What we handle for you',
+        checklistFooter: 'You stay informed without having to solve every detail yourself.',
+        managedItems: [
+            'We find and verify tenants',
+            'We prepare clear and secure contracts',
+            'We monitor payments and due dates',
+            'We communicate with tenants',
+            'We coordinate repairs and maintenance',
+            'We send regular reports',
+        ],
+        paymentBadge: 'Payment discipline',
+        paymentHeadline1: 'A tenant who does not pay',
+        paymentHeadline2: 'does not exist in our system.',
+        paymentText1: 'We do not wait for weeks when someone is late. If rent is not paid on time, we act immediately according to agreed rules.',
+        paymentText2: 'Systematically. Every month. For every tenant.',
+        paymentCta: 'I want to learn more',
+        approachBadge: 'Our approach',
+        approachTitle: 'Have questions?',
+        pillars: [
+            { icon: Eye, title: 'Transparency', text: 'You always know what is happening with your property. No hidden fees, no surprises.' },
+            { icon: CalendarCheck, title: 'Fair conditions', text: 'Our contracts are clear and understandable. Terms are transparent for both owner and tenant.' },
+            { icon: Key, title: 'Long-term partnership', text: 'We are not after one quick deal. We want your rental to work for years.' },
+        ],
+        finalText: 'Contact us. We will explain everything clearly and without obligation.',
+        finalCta: 'Non-binding consultation',
     },
-    {
-        icon: Key,
-        title: 'Dlhodobá spolupráca',
-        text: 'Nejde nám o jednorazový obchod. Chceme, aby prenájom fungoval roky.',
+    de: {
+        section1Badge: 'Rundum-Betreuung',
+        section1TitleLine1: 'Sie besitzen,',
+        section1TitleLine2: 'wir kümmern uns.',
+        section1Text1: 'Wir arbeiten mit Eigentümern, die den täglichen Vermietungsaufwand nicht selbst tragen möchten. Ziel: stabile Vermietung und pünktliche Zahlungen.',
+        section1Text2: 'Mehr braucht es nicht.',
+        checklistTitle: 'Was wir für Sie erledigen',
+        checklistFooter: 'Sie behalten den Überblick, ohne jedes Detail selbst lösen zu müssen.',
+        managedItems: [
+            'Wir finden und prüfen Mieter',
+            'Wir erstellen klare und sichere Verträge',
+            'Wir überwachen Zahlungen und Fristen',
+            'Wir kommunizieren mit Mietern',
+            'Wir organisieren Reparaturen und Wartung',
+            'Wir senden regelmäßige Berichte',
+        ],
+        paymentBadge: 'Zahlungsdisziplin',
+        paymentHeadline1: 'Ein Mieter, der nicht zahlt,',
+        paymentHeadline2: 'existiert bei uns nicht.',
+        paymentText1: 'Wir warten nicht wochenlang bei Zahlungsverzug. Wenn die Miete nicht pünktlich eingeht, handeln wir sofort nach klaren Regeln.',
+        paymentText2: 'Systematisch. Jeden Monat. Bei jedem Mieter.',
+        paymentCta: 'Ich möchte mehr erfahren',
+        approachBadge: 'Unser Ansatz',
+        approachTitle: 'Haben Sie Fragen?',
+        pillars: [
+            { icon: Eye, title: 'Transparenz', text: 'Sie wissen immer, was mit Ihrer Immobilie passiert. Keine versteckten Gebühren, keine Überraschungen.' },
+            { icon: CalendarCheck, title: 'Faire Bedingungen', text: 'Unsere Verträge sind verständlich formuliert. Die Konditionen sind für beide Seiten klar.' },
+            { icon: Key, title: 'Langfristige Zusammenarbeit', text: 'Uns geht es nicht um ein schnelles Geschäft. Wir wollen, dass Ihre Vermietung langfristig funktioniert.' },
+        ],
+        finalText: 'Melden Sie sich bei uns. Wir erklären alles persönlich und unverbindlich.',
+        finalCta: 'Unverbindliche Beratung',
     },
-];
+};
 
 const ChcemPrenajat = () => {
     const { language } = useLanguage();
     const heroCopy = CHCEM_PRENAJAT_HERO_COPY[language];
+    const pageCopy = pageCopyByLanguage[language];
 
     return (
         <div className="min-h-screen bg-white">
@@ -167,27 +240,27 @@ const ChcemPrenajat = () => {
                                 {/* Left — text */}
                                 <div className="p-8 md:p-14 lg:p-16 flex flex-col justify-center">
                                     <span className="inline-block text-accent-red font-mono text-xs tracking-[0.3em] uppercase mb-5">
-                                        Celoročná starostlivosť
+                                        {pageCopy.section1Badge}
                                     </span>
                                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight mb-6">
-                                        Vy vlastníte,<br />
-                                        <span className="text-accent-red italic">my sa staráme.</span>
+                                        {pageCopy.section1TitleLine1}<br />
+                                        <span className="text-accent-red italic">{pageCopy.section1TitleLine2}</span>
                                     </h2>
                                     <p className="text-charcoal/65 text-lg leading-relaxed font-light max-w-md">
-                                        Spolupracujeme s desiatkami majiteľov, ktorí nechcú riešiť každodenné starosti okolo prenájmu. Ich cieľ je jednoduchý: aby nájom fungoval a peniaze chodili načas.
+                                        {pageCopy.section1Text1}
                                     </p>
                                     <p className="text-charcoal/45 text-base leading-relaxed font-light max-w-md mt-4">
-                                        To je celé.
+                                        {pageCopy.section1Text2}
                                     </p>
                                 </div>
 
                                 {/* Right — checklist */}
                                 <div className="bg-navy/[0.03] border-l border-navy/8 p-8 md:p-14 lg:p-16 flex flex-col justify-center">
                                     <p className="text-navy/50 font-mono text-xs md:text-sm tracking-[0.25em] uppercase mb-6">
-                                        Čo vybavíme za vás
+                                        {pageCopy.checklistTitle}
                                     </p>
                                     <ul className="space-y-4">
-                                        {managedItems.map((item, i) => (
+                                        {pageCopy.managedItems.map((item, i) => (
                                             <motion.li
                                                 key={i}
                                                 initial={{ opacity: 0, y: 10 }}
@@ -206,7 +279,7 @@ const ChcemPrenajat = () => {
                                         ))}
                                     </ul>
                                     <p className="text-navy/40 text-sm md:text-base leading-relaxed font-light mt-8">
-                                        Vy máte prehľad. Bez toho, aby ste sa museli zapájať do každého detailu.
+                                        {pageCopy.checklistFooter}
                                     </p>
                                 </div>
                             </div>
@@ -232,12 +305,12 @@ const ChcemPrenajat = () => {
                                 <div className="flex items-center gap-4 mb-8">
                                     <ShieldAlert className="w-8 h-8 text-accent-red flex-shrink-0" />
                                     <span className="text-white/50 font-mono text-xs tracking-[0.3em] uppercase">
-                                        Platobná disciplína
+                                        {pageCopy.paymentBadge}
                                     </span>
                                 </div>
                                 <blockquote className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-[1.15]">
-                                    Klient, ktorý neplatí,<br />
-                                    <span className="text-accent-red italic">u nás neexistuje.</span>
+                                    {pageCopy.paymentHeadline1}<br />
+                                    <span className="text-accent-red italic">{pageCopy.paymentHeadline2}</span>
                                 </blockquote>
                             </motion.div>
 
@@ -250,18 +323,17 @@ const ChcemPrenajat = () => {
                                 className="space-y-6"
                             >
                                 <p className="text-white/75 text-lg leading-relaxed font-light">
-                                    Nečakáme týždne, keď niekto mešká.
-                                    Ak nájomné nepríde načas, riešime to okamžite podľa dohodnutých pravidiel.
+                                    {pageCopy.paymentText1}
                                 </p>
                                 <p className="text-white/55 text-base leading-relaxed font-light">
-                                    Systematicky. Každý mesiac. Pri každom nájomníkovi.
+                                    {pageCopy.paymentText2}
                                 </p>
                                 <a
                                     href="#kontaktny-formular"
                                     className="inline-flex items-center gap-3 mt-4 px-7 py-3.5 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-all shadow-lg shadow-accent-red/20 group"
                                 >
                                     <Phone className="w-4 h-4" />
-                                    <span>Chcem sa dozvedieť viac</span>
+                                    <span>{pageCopy.paymentCta}</span>
                                     <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                 </a>
                             </motion.div>
@@ -280,10 +352,10 @@ const ChcemPrenajat = () => {
                             className="text-center mb-16"
                         >
                             <span className="text-navy/40 font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
-                                Náš prístup
+                                {pageCopy.approachBadge}
                             </span>
                             <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight">
-                                Máte otázky?
+                                {pageCopy.approachTitle}
                             </h2>
                         </motion.div>
 
@@ -294,7 +366,7 @@ const ChcemPrenajat = () => {
                             viewport={{ once: true, margin: "-100px" }}
                             variants={staggerContainer}
                         >
-                            {pillars.map((pillar, i) => (
+                            {pageCopy.pillars.map((pillar, i) => (
                                 <motion.div
                                     key={i}
                                     variants={fadeInUp}
@@ -322,13 +394,13 @@ const ChcemPrenajat = () => {
                             className="text-center"
                         >
                             <p className="text-charcoal/60 text-lg mb-6 font-light">
-                                Ozvite sa nám. Všetko vám vysvetlíme osobne a nezäväzne.
+                                {pageCopy.finalText}
                             </p>
                             <a
                                 href="#kontaktny-formular"
                                 className="inline-flex items-center gap-3 px-10 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-all shadow-lg shadow-navy/20 group"
                             >
-                                <span>Nezáväzná konzultácia</span>
+                                <span>{pageCopy.finalCta}</span>
                                 <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                             </a>
                         </motion.div>

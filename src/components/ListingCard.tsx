@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 interface ListingCardProps {
     title: string;
@@ -31,6 +32,8 @@ export const ListingCard = ({
     statusColor = "bg-navy",
     onClick
 }: ListingCardProps) => {
+    const { language } = useLanguage();
+    const detailLabel = language === 'sk' ? 'Zobraziť detail' : language === 'en' ? 'View detail' : 'Details ansehen';
     const [isLiked, setIsLiked] = useState(false);
 
     const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -84,7 +87,7 @@ export const ListingCard = ({
                 {/* Hover Overlay with Text */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center">
                     <span className="text-white font-medium text-lg tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        Zobraziť detail
+                        {detailLabel}
                     </span>
                 </div>
 

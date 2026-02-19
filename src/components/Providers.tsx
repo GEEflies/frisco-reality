@@ -5,14 +5,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
+import type { LanguageCode } from "@/i18n/types";
 import { useState } from "react";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children, initialLanguage }: { children: React.ReactNode; initialLanguage: LanguageCode }) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
+      <LanguageProvider initialLanguage={initialLanguage}>
         <TooltipProvider>
           <Toaster />
           <Sonner />

@@ -14,6 +14,98 @@ const agentsHero = '/agents-hero.png';
 const Kontakt = () => {
   const { language } = useLanguage();
   const copy = KONTAKT_COPY[language];
+  const pageCopy = {
+    sk: {
+      toastTitle: 'Správa odoslaná',
+      toastDescription: 'Ozveme sa vám čoskoro.',
+      heroAlt: 'FRISCO Tím',
+      heroQuote: '"Váš úspech je náš záväzok."',
+      visitUs: 'Navštívte nás',
+      callUs: 'Zavolajte nám',
+      writeUs: 'Napíšte nám',
+      hours: 'Pracovná doba',
+      billing: 'Fakturačné údaje',
+      registryNote: 'Zapísaná v Obchodnom registri Okresného súdu Trnava, Oddiel: Sro, Vložka číslo: 21013/T',
+      followUs: 'Sledujte nás',
+      formBadge: 'Kontaktný formulár',
+      formTitle: 'Máte otázku?',
+      formAccentMobile: 'Ozvite sa',
+      formAccentDesktop: 'Ozvite sa nám',
+      name: 'Meno',
+      namePlaceholder: 'Vaše meno',
+      phone: 'Telefón',
+      email: 'Email',
+      emailPlaceholder: 'vas@email.sk',
+      message: 'Správa',
+      messagePlaceholder: 'Ako vám môžeme pomôcť?',
+      submitting: 'Odosielam...',
+      send: 'Odoslať správu',
+      formFootnote: 'Vaše údaje sú v bezpečí. Odpovieme do 24 hodín.',
+      phoneCtaLabel: 'Preferujete telefonát?',
+      phoneCtaTitle: 'Zavolajte nám priamo',
+      phoneCtaText: 'Radi si s vami pohovoríme osobne. Neváhajte nás kontaktovať kedykoľvek počas pracovnej doby.',
+    },
+    en: {
+      toastTitle: 'Message sent',
+      toastDescription: 'We will get back to you soon.',
+      heroAlt: 'FRISCO Team',
+      heroQuote: '"Your success is our commitment."',
+      visitUs: 'Visit us',
+      callUs: 'Call us',
+      writeUs: 'Write to us',
+      hours: 'Business hours',
+      billing: 'Billing details',
+      registryNote: 'Registered in the Commercial Register of the District Court Trnava, Section: Sro, Insert No.: 21013/T',
+      followUs: 'Follow us',
+      formBadge: 'Contact form',
+      formTitle: 'Have a question?',
+      formAccentMobile: 'Reach out',
+      formAccentDesktop: 'Reach out to us',
+      name: 'Name',
+      namePlaceholder: 'Your name',
+      phone: 'Phone',
+      email: 'Email',
+      emailPlaceholder: 'your@email.com',
+      message: 'Message',
+      messagePlaceholder: 'How can we help you?',
+      submitting: 'Sending...',
+      send: 'Send message',
+      formFootnote: 'Your data is safe. We will reply within 24 hours.',
+      phoneCtaLabel: 'Prefer a call?',
+      phoneCtaTitle: 'Call us directly',
+      phoneCtaText: 'We are happy to talk with you personally. Feel free to contact us anytime during business hours.',
+    },
+    de: {
+      toastTitle: 'Nachricht gesendet',
+      toastDescription: 'Wir melden uns in Kürze bei Ihnen.',
+      heroAlt: 'FRISCO Team',
+      heroQuote: '"Ihr Erfolg ist unser Versprechen."',
+      visitUs: 'Besuchen Sie uns',
+      callUs: 'Rufen Sie uns an',
+      writeUs: 'Schreiben Sie uns',
+      hours: 'Öffnungszeiten',
+      billing: 'Rechnungsdaten',
+      registryNote: 'Eingetragen im Handelsregister des Bezirksgerichts Trnava, Abteilung: Sro, Einlage Nr.: 21013/T',
+      followUs: 'Folgen Sie uns',
+      formBadge: 'Kontaktformular',
+      formTitle: 'Haben Sie eine Frage?',
+      formAccentMobile: 'Melden Sie sich',
+      formAccentDesktop: 'Melden Sie sich bei uns',
+      name: 'Name',
+      namePlaceholder: 'Ihr Name',
+      phone: 'Telefon',
+      email: 'E-Mail',
+      emailPlaceholder: 'ihre@email.de',
+      message: 'Nachricht',
+      messagePlaceholder: 'Wie können wir Ihnen helfen?',
+      submitting: 'Wird gesendet...',
+      send: 'Nachricht senden',
+      formFootnote: 'Ihre Daten sind sicher. Wir antworten innerhalb von 24 Stunden.',
+      phoneCtaLabel: 'Bevorzugen Sie ein Telefonat?',
+      phoneCtaTitle: 'Rufen Sie uns direkt an',
+      phoneCtaText: 'Wir sprechen gerne persönlich mit Ihnen. Kontaktieren Sie uns jederzeit während der Öffnungszeiten.',
+    },
+  }[language];
   const { toast } = useToast();
   const [formState, setFormState] = useState({
     name: '',
@@ -29,8 +121,8 @@ const Kontakt = () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsSubmitting(false);
     toast({
-      title: "Správa odoslaná",
-      description: "Ozveme sa vám čoskoro.",
+      title: pageCopy.toastTitle,
+      description: pageCopy.toastDescription,
     });
     setFormState({ name: '', email: '', phone: '', message: '' });
   };
@@ -77,7 +169,7 @@ const Kontakt = () => {
                 <div className="relative group aspect-[4/3]">
                   <img
                     src={agentsHero}
-                    alt="FRISCO Tím"
+                    alt={pageCopy.heroAlt}
                     className="w-full h-full object-contain object-bottom transform transition-transform duration-1000 group-hover:scale-105 drop-shadow-2xl"
                   />
 
@@ -85,7 +177,7 @@ const Kontakt = () => {
                   <div className="absolute bottom-8 left-8">
                     <div className="w-12 h-1 bg-accent-red mb-4" />
                     <p className="text-charcoal/90 text-sm font-medium tracking-wide">
-                      "Váš úspech je náš záväzok."
+                      {pageCopy.heroQuote}
                     </p>
                   </div>
                 </div>
@@ -121,12 +213,12 @@ const Kontakt = () => {
                 <div className="space-y-6 mb-12">
                   <ContactCard
                     icon={MapPin}
-                    title="Navštívte nás"
+                    title={pageCopy.visitUs}
                     content={<>Námestie Slobody 30/1185<br />926 01 Sereď</>}
                   />
                   <ContactCard
                     icon={Phone}
-                    title="Zavolajte nám"
+                    title={pageCopy.callUs}
                     content={
                       <a href="tel:+421905447220" className="hover:text-accent-red transition-colors">
                         0905 447 220
@@ -135,7 +227,7 @@ const Kontakt = () => {
                   />
                   <ContactCard
                     icon={Mail}
-                    title="Napíšte nám"
+                    title={pageCopy.writeUs}
                     content={
                       <a href="mailto:info@frisco.sk" className="hover:text-accent-red transition-colors">
                         info@frisco.sk
@@ -144,19 +236,23 @@ const Kontakt = () => {
                   />
                   <ContactCard
                     icon={Clock}
-                    title="Pracovná doba"
-                    content={<>Po - Pi: 9:00 - 18:00<br />So: 10:00 - 14:00</>}
+                    title={pageCopy.hours}
+                    content={language === 'sk'
+                      ? <>Po - Pi: 9:00 - 18:00<br />So: 10:00 - 14:00</>
+                      : language === 'en'
+                        ? <>Mon - Fri: 9:00 - 18:00<br />Sat: 10:00 - 14:00</>
+                        : <>Mo - Fr: 9:00 - 18:00<br />Sa: 10:00 - 14:00</>}
                   />
                   <ContactCard
                     icon={FileText}
-                    title="Fakturačné údaje"
+                    title={pageCopy.billing}
                     content={
                       <div className="text-sm space-y-1">
                         <p className="font-bold text-navy">FRISCO, s.r.o.</p>
                         <p>IČO: 43 850 553</p>
                         <p>DIČ: 2022486895</p>
                         <p className="text-[10px] text-charcoal/50 leading-tight mt-2">
-                          Zapísaná v Obchodnom registri Okresného súdu Trnava, Oddiel: Sro, Vložka číslo: 21013/T
+                          {pageCopy.registryNote}
                         </p>
                       </div>
                     }
@@ -165,7 +261,7 @@ const Kontakt = () => {
 
                 {/* Social Links */}
                 <div className="pt-8 border-t border-navy/10">
-                  <h4 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">Sledujte nás</h4>
+                  <h4 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">{pageCopy.followUs}</h4>
                   <div className="flex gap-4">
                     <SocialLink icon={Instagram} label="Instagram" href="https://www.instagram.com/friscoreality/" />
                     <SocialLink icon={Facebook} label="Facebook" href="https://www.facebook.com/Friscorealitka/" />
@@ -196,12 +292,12 @@ const Kontakt = () => {
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-navy/5 to-transparent rounded-bl-3xl pointer-events-none" />
 
                     <div className="mb-8">
-                      <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{language === 'sk' ? 'Kontaktný formulár' : language === 'en' ? 'Contact form' : 'Kontaktformular'}</span>
+                      <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{pageCopy.formBadge}</span>
                       <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
-                        {language === 'sk' ? 'Máte otázku?' : language === 'en' ? 'Have a question?' : 'Haben Sie eine Frage?'}{' '}
+                        {pageCopy.formTitle}{' '}
                         <span className="font-serif italic font-normal text-accent-red">
-                          <span className="md:hidden">{language === 'sk' ? 'Ozvite sa' : language === 'en' ? 'Reach out' : 'Melden Sie sich'}</span>
-                          <span className="hidden md:inline">{language === 'sk' ? 'Ozvite sa nám' : language === 'en' ? 'Reach out to us' : 'Melden Sie sich bei uns'}</span>
+                          <span className="md:hidden">{pageCopy.formAccentMobile}</span>
+                          <span className="hidden md:inline">{pageCopy.formAccentDesktop}</span>
                         </span>
                       </h3>
                     </div>
@@ -209,15 +305,15 @@ const Kontakt = () => {
                     <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormInput
-                          label="Meno"
+                          label={pageCopy.name}
                           type="text"
-                          placeholder="Vaše meno"
+                          placeholder={pageCopy.namePlaceholder}
                           value={formState.name}
                           onChange={(value) => setFormState({ ...formState, name: value })}
                           required
                         />
                         <FormInput
-                          label="Telefón"
+                          label={pageCopy.phone}
                           type="tel"
                           placeholder="+421 XXX XXX XXX"
                           value={formState.phone}
@@ -226,9 +322,9 @@ const Kontakt = () => {
                       </div>
 
                       <FormInput
-                        label="Email"
+                        label={pageCopy.email}
                         type="email"
-                        placeholder="vas@email.sk"
+                        placeholder={pageCopy.emailPlaceholder}
                         value={formState.email}
                         onChange={(value) => setFormState({ ...formState, email: value })}
                         required
@@ -236,14 +332,14 @@ const Kontakt = () => {
 
                       <div>
                         <label className="block text-charcoal/50 text-[10px] uppercase tracking-widest mb-3">
-                          Správa
+                          {pageCopy.message}
                         </label>
                         <textarea
                           rows={4}
                           required
                           value={formState.message}
                           onChange={e => setFormState({ ...formState, message: e.target.value })}
-                          placeholder="Ako vám môžeme pomôcť?"
+                          placeholder={pageCopy.messagePlaceholder}
                           className="w-full bg-cream/50 border border-navy/10 rounded-xl px-4 py-3 text-base text-charcoal placeholder:text-charcoal/30 focus:outline-none focus:border-navy/30 focus:bg-white transition-all duration-300 resize-none font-sans"
                         />
                       </div>
@@ -256,13 +352,13 @@ const Kontakt = () => {
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
 
                         <span className="relative z-10 text-sm font-bold tracking-widest uppercase">
-                          {isSubmitting ? 'Odosielam...' : 'Odoslať správu'}
+                          {isSubmitting ? pageCopy.submitting : pageCopy.send}
                         </span>
                         <ArrowUpRight className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                       </button>
 
                       <p className="text-charcoal/40 text-xs text-center mt-4">
-                        {language === 'sk' ? 'Vaše údaje sú v bezpečí. Odpovieme do 24 hodín.' : language === 'en' ? 'Your data is safe. We will reply within 24 hours.' : 'Ihre Daten sind sicher. Wir antworten innerhalb von 24 Stunden.'}
+                        {pageCopy.formFootnote}
                       </p>
                     </form>
                   </div>
@@ -290,13 +386,13 @@ const Kontakt = () => {
 
               <div className="relative z-10">
                 <span className="text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
-                  Preferujete telefonát?
+                  {pageCopy.phoneCtaLabel}
                 </span>
                 <h2 className="text-3xl md:text-6xl font-serif font-bold text-navy tracking-tight mb-6">
-                  Zavolajte nám priamo
+                  {pageCopy.phoneCtaTitle}
                 </h2>
                 <p className="text-charcoal/60 text-lg mb-8 max-w-xl mx-auto">
-                  Radi si s vami pohovoríme osobne. Neváhajte nás kontaktovať kedykoľvek počas pracovnej doby.
+                  {pageCopy.phoneCtaText}
                 </p>
                 <a
                   href="tel:+421905447220"

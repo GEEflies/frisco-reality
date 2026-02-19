@@ -31,16 +31,17 @@ import {
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
 import { useListing } from '@/hooks/useListings';
+import { useLanguage } from '@/i18n/LanguageProvider';
 import {
-    categoryLabels,
-    transactionLabels,
+    getLocalizedCategoryLabel,
+    getLocalizedTransactionLabel,
     formatPrice,
     formatArea,
-    realEstateStateLabels,
-    buildingTypeLabels,
-    heatingLabels,
-    equipmentLabels,
-    ownershipLabels
+    getLocalizedRealEstateStateLabel,
+    getLocalizedBuildingTypeLabel,
+    getLocalizedHeatingLabel,
+    getLocalizedEquipmentLabel,
+    getLocalizedOwnershipLabel,
 } from '@/api/mappings';
 import { getBestImageUrl } from '@/api/listingsService';
 
@@ -59,6 +60,142 @@ interface PropertyDetailProps {
 }
 
 const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
+    const { language } = useLanguage();
+    const copy = {
+        sk: {
+            propertyFallback: 'Nehnuteľnosť',
+            interestSubject: 'Záujem o:',
+            interestBody: 'Dobrý deň,\n\nmám záujem o nehnuteľnosť: ',
+            interestBodyId: '\nID: ',
+            interestBodyUrl: '\nURL: ',
+            interestBodyEnd: '\n\nProsím kontaktujte ma.\n\nS pozdravom',
+            notFoundTitle: 'Nehnuteľnosť nenájdená',
+            notFoundText: 'Ľutujeme, táto nehnuteľnosť neexistuje alebo bola odstránená.',
+            backToOffer: 'Späť na ponuku',
+            back: 'Späť',
+            home: 'Domov',
+            offer: 'Ponuka',
+            lookingForProperty: 'Hľadám nehnuteľnosť',
+            wantSellRent: 'Chcem predať/prenajať',
+            whyFrisco: 'Prečo Frisco?',
+            contact: 'Kontakt',
+            allPhotos: 'Všetky fotky',
+            forSaleFallback: 'Na predaj',
+            perMonth: '/mesiac',
+            usableArea: 'Úžitková plocha',
+            builtUpArea: 'Zastavaná plocha',
+            landArea: 'Plocha pozemku',
+            roomCount: 'Počet izieb',
+            floor: 'Poschodie',
+            yearBuilt: 'Rok výstavby',
+            heatingPrefix: 'Kúrenie: ',
+            description: 'Popis',
+            equipment: 'Vybavenie',
+            additionalInfo: 'Ďalšie informácie',
+            category: 'Kategória',
+            ownership: 'Vlastníctvo',
+            buildingType: 'Typ budovy',
+            location: 'Poloha',
+            mapTitle: 'Mapa nehnuteľnosti',
+            showOnMap: 'Zobraziť na mape',
+            navigate: 'Navigovať',
+            contactUs: 'Kontaktujte nás',
+            yourPartner: 'Váš realitný partner',
+            phone: 'Telefón',
+            email: 'Email',
+            interested: 'Mám záujem',
+            photo: 'Fotka',
+        },
+        en: {
+            propertyFallback: 'Property',
+            interestSubject: 'Interest in:',
+            interestBody: 'Hello,\n\nI am interested in the property: ',
+            interestBodyId: '\nID: ',
+            interestBodyUrl: '\nURL: ',
+            interestBodyEnd: '\n\nPlease contact me.\n\nBest regards',
+            notFoundTitle: 'Property not found',
+            notFoundText: 'Sorry, this property does not exist or has been removed.',
+            backToOffer: 'Back to offer',
+            back: 'Back',
+            home: 'Home',
+            offer: 'Offer',
+            lookingForProperty: 'Looking for a property',
+            wantSellRent: 'I want to sell/rent',
+            whyFrisco: 'Why Frisco?',
+            contact: 'Contact',
+            allPhotos: 'All photos',
+            forSaleFallback: 'For sale',
+            perMonth: '/month',
+            usableArea: 'Usable area',
+            builtUpArea: 'Built-up area',
+            landArea: 'Land area',
+            roomCount: 'Rooms',
+            floor: 'Floor',
+            yearBuilt: 'Year built',
+            heatingPrefix: 'Heating: ',
+            description: 'Description',
+            equipment: 'Amenities',
+            additionalInfo: 'Additional information',
+            category: 'Category',
+            ownership: 'Ownership',
+            buildingType: 'Building type',
+            location: 'Location',
+            mapTitle: 'Property map',
+            showOnMap: 'Show on map',
+            navigate: 'Navigate',
+            contactUs: 'Contact us',
+            yourPartner: 'Your real estate partner',
+            phone: 'Phone',
+            email: 'Email',
+            interested: 'I am interested',
+            photo: 'Photo',
+        },
+        de: {
+            propertyFallback: 'Immobilie',
+            interestSubject: 'Interesse an:',
+            interestBody: 'Guten Tag,\n\nich interessiere mich für die Immobilie: ',
+            interestBodyId: '\nID: ',
+            interestBodyUrl: '\nURL: ',
+            interestBodyEnd: '\n\nBitte kontaktieren Sie mich.\n\nMit freundlichen Grüßen',
+            notFoundTitle: 'Immobilie nicht gefunden',
+            notFoundText: 'Leider existiert diese Immobilie nicht oder wurde entfernt.',
+            backToOffer: 'Zurück zum Angebot',
+            back: 'Zurück',
+            home: 'Startseite',
+            offer: 'Angebot',
+            lookingForProperty: 'Ich suche eine Immobilie',
+            wantSellRent: 'Ich möchte verkaufen/vermieten',
+            whyFrisco: 'Warum Frisco?',
+            contact: 'Kontakt',
+            allPhotos: 'Alle Fotos',
+            forSaleFallback: 'Zu verkaufen',
+            perMonth: '/Monat',
+            usableArea: 'Nutzfläche',
+            builtUpArea: 'Bebaute Fläche',
+            landArea: 'Grundstücksfläche',
+            roomCount: 'Zimmeranzahl',
+            floor: 'Etage',
+            yearBuilt: 'Baujahr',
+            heatingPrefix: 'Heizung: ',
+            description: 'Beschreibung',
+            equipment: 'Ausstattung',
+            additionalInfo: 'Weitere Informationen',
+            category: 'Kategorie',
+            ownership: 'Eigentum',
+            buildingType: 'Gebäudetyp',
+            location: 'Lage',
+            mapTitle: 'Immobilienkarte',
+            showOnMap: 'Auf Karte anzeigen',
+            navigate: 'Navigieren',
+            contactUs: 'Kontaktieren Sie uns',
+            yourPartner: 'Ihr Immobilienpartner',
+            phone: 'Telefon',
+            email: 'E-Mail',
+            interested: 'Ich habe Interesse',
+            photo: 'Foto',
+        },
+    }[language];
+
     const router = useRouter();
     const [isLiked, setIsLiked] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -87,7 +224,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // Handle share
     const handleShare = async () => {
         const url = window.location.href;
-        const title = listing?.title || 'Nehnuteľnosť';
+        const title = listing?.title || copy.propertyFallback;
 
         if (navigator.share) {
             try {
@@ -105,8 +242,8 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
     // Handle "Mám záujem" button
     const handleInterest = () => {
-        const subject = encodeURIComponent(`Záujem o: ${listing?.title || 'Nehnuteľnosť'}`);
-        const body = encodeURIComponent(`Dobrý deň,\n\nmám záujem o nehnuteľnosť: ${listing?.title}\nID: ${listing?.uc_source_id || listing?.id}\nURL: ${window.location.href}\n\nProsím kontaktujte ma.\n\nS pozdravom`);
+        const subject = encodeURIComponent(`${copy.interestSubject} ${listing?.title || copy.propertyFallback}`);
+        const body = encodeURIComponent(`${copy.interestBody}${listing?.title}${copy.interestBodyId}${listing?.uc_source_id || listing?.id}${copy.interestBodyUrl}${window.location.href}${copy.interestBodyEnd}`);
         window.location.href = `mailto:${CONTACT.email}?subject=${subject}&body=${body}`;
     };
 
@@ -134,14 +271,14 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     if (error || !listing) {
         return (
             <main className="min-h-screen bg-cream flex flex-col items-center justify-center p-8">
-                <h1 className="text-3xl font-serif font-bold text-navy mb-4">Nehnuteľnosť nenájdená</h1>
-                <p className="text-charcoal/60 mb-8">Ľutujeme, táto nehnuteľnosť neexistuje alebo bola odstránená.</p>
+                <h1 className="text-3xl font-serif font-bold text-navy mb-4">{copy.notFoundTitle}</h1>
+                <p className="text-charcoal/60 mb-8">{copy.notFoundText}</p>
                 <button
                     onClick={() => router.push('/ponuka')}
                     className="flex items-center gap-2 px-6 py-3 bg-navy text-white rounded-full hover:bg-navy/90 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Späť na ponuku
+                    {copy.backToOffer}
                 </button>
             </main>
         );
@@ -163,28 +300,30 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // Format price
     const isRent = listing.transaction_id === 123 || listing.transaction_id === 124;
     const priceDisplay = isRent
-        ? `${formatPrice(listing.price)}/mesiac`
+        ? `${formatPrice(listing.price)}${copy.perMonth}`
         : formatPrice(listing.price);
 
     // Build features list
     const features = [];
-    if (listing.usable_area) features.push({ icon: Maximize, label: 'Úžitková plocha', value: formatArea(listing.usable_area) });
-    if (listing.building_area) features.push({ icon: Building2, label: 'Zastavaná plocha', value: formatArea(listing.building_area) });
-    if (listing.land_area) features.push({ icon: Trees, label: 'Plocha pozemku', value: formatArea(listing.land_area) });
-    if (listing.rooms_count) features.push({ icon: Home, label: 'Počet izieb', value: `${listing.rooms_count}` });
-    if (listing.floor) features.push({ icon: Building2, label: 'Poschodie', value: `${listing.floor}.` });
-    if (listing.year_of_construction) features.push({ icon: Calendar, label: 'Rok výstavby', value: `${listing.year_of_construction}` });
+    if (listing.usable_area) features.push({ icon: Maximize, label: copy.usableArea, value: formatArea(listing.usable_area) });
+    if (listing.building_area) features.push({ icon: Building2, label: copy.builtUpArea, value: formatArea(listing.building_area) });
+    if (listing.land_area) features.push({ icon: Trees, label: copy.landArea, value: formatArea(listing.land_area) });
+    if (listing.rooms_count) features.push({ icon: Home, label: copy.roomCount, value: `${listing.rooms_count}` });
+    if (listing.floor) features.push({ icon: Building2, label: copy.floor, value: `${listing.floor}.` });
+    if (listing.year_of_construction) features.push({ icon: Calendar, label: copy.yearBuilt, value: `${listing.year_of_construction}` });
 
     // Build amenities list
     const amenities: string[] = [];
     if (listing.estate_equipment) {
         listing.estate_equipment.forEach(id => {
-            if (equipmentLabels[id]) amenities.push(equipmentLabels[id]);
+            const equipment = getLocalizedEquipmentLabel(id, language);
+            if (equipment) amenities.push(equipment);
         });
     }
     if (listing.heating_system) {
         listing.heating_system.forEach(id => {
-            if (heatingLabels[id]) amenities.push(`Kúrenie: ${heatingLabels[id]}`);
+            const heating = getLocalizedHeatingLabel(id, language);
+            if (heating) amenities.push(`${copy.heatingPrefix}${heating}`);
         });
     }
 
@@ -198,7 +337,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         className="flex items-center gap-2 text-navy hover:text-accent-red transition-colors min-w-[100px]"
                     >
                         <ArrowLeft className="w-5 h-5" />
-                        <span className="font-medium">Späť</span>
+                        <span className="font-medium">{copy.back}</span>
                     </button>
 
                     {/* Desktop Navigation Links - Centered */}
@@ -207,7 +346,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <img src={friscoLogo} alt="FRISCO" className="h-12 w-auto" />
                         </Link>
                         <Link href="/" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
-                            Domov
+                            {copy.home}
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
                         </Link>
 
@@ -217,7 +356,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             onMouseLeave={() => setIsPonukaHovered(false)}
                         >
                             <div className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase cursor-pointer flex items-center gap-1">
-                                Ponuka
+                                {copy.offer}
                                 <svg
                                     className={`w-3 h-3 transition-transform duration-200 ${isPonukaHovered ? 'rotate-180' : ''}`}
                                     fill="none"
@@ -244,14 +383,14 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                 className="block px-5 py-3.5 text-sm font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-charcoal/[0.02] transition-colors border-b border-charcoal/5 whitespace-nowrap text-center"
                                                 onClick={() => setIsPonukaHovered(false)}
                                             >
-                                                Hľadám nehnuteľnosť
+                                                {copy.lookingForProperty}
                                             </Link>
                                             <Link
                                                 href="/predaj-a-prenajom"
                                                 className="block px-5 py-3.5 text-sm font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-charcoal/[0.02] transition-colors whitespace-nowrap text-center"
                                                 onClick={() => setIsPonukaHovered(false)}
                                             >
-                                                Chcem predať/prenajať
+                                                {copy.wantSellRent}
                                             </Link>
                                         </div>
                                     </motion.div>
@@ -260,12 +399,12 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         </div>
 
                         <Link href="/preco-frisco" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
-                            Prečo Frisco?
+                            {copy.whyFrisco}
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
                         </Link>
 
                         <Link href="/kontakt" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
-                            Kontakt
+                            {copy.contact}
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
                         </Link>
                     </nav>
@@ -324,7 +463,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     >
                                         <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg font-medium">
                                             <Grid3X3 className="w-5 h-5" />
-                                            Všetky fotky ({images.length})
+                                                {copy.allPhotos} ({images.length})
                                         </div>
                                     </div>
                                 )}
@@ -388,11 +527,11 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         <div>
                             <div className="flex items-center gap-3 mb-3">
                                 <span className="px-3 py-1 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                                    {transactionLabels[listing.transaction_id] || 'Na predaj'}
+                                    {getLocalizedTransactionLabel(listing.transaction_id, language) || copy.forSaleFallback}
                                 </span>
                                 {listing.real_estate_state && (
                                     <span className="px-3 py-1 bg-accent-red text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                                        {realEstateStateLabels[listing.real_estate_state]}
+                                        {getLocalizedRealEstateStateLabel(listing.real_estate_state, language)}
                                     </span>
                                 )}
                             </div>
@@ -424,7 +563,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         {/* Description */}
                         {listing.description && (
                             <div>
-                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">Popis</h2>
+                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.description}</h2>
                                 <p className="text-charcoal/80 leading-relaxed text-lg whitespace-pre-line">
                                     {listing.description}
                                 </p>
@@ -434,7 +573,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         {/* Amenities */}
                         {amenities.length > 0 && (
                             <div>
-                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">Vybavenie</h2>
+                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.equipment}</h2>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                     {amenities.map((amenity, idx) => (
                                         <div key={idx} className="flex items-center gap-2 text-charcoal/80">
@@ -448,22 +587,22 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                         {/* Additional Info */}
                         <div>
-                            <h2 className="text-2xl font-serif font-bold text-navy mb-4">Ďalšie informácie</h2>
+                            <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.additionalInfo}</h2>
                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div className="flex justify-between py-3 border-b border-black/5">
-                                    <span className="text-charcoal/60">Kategória</span>
-                                    <span className="font-medium">{categoryLabels[listing.category_id] || '-'}</span>
+                                    <span className="text-charcoal/60">{copy.category}</span>
+                                    <span className="font-medium">{getLocalizedCategoryLabel(listing.category_id, language)}</span>
                                 </div>
                                 {listing.ownership && (
                                     <div className="flex justify-between py-3 border-b border-black/5">
-                                        <span className="text-charcoal/60">Vlastníctvo</span>
-                                        <span className="font-medium">{ownershipLabels[listing.ownership]}</span>
+                                        <span className="text-charcoal/60">{copy.ownership}</span>
+                                        <span className="font-medium">{getLocalizedOwnershipLabel(listing.ownership, language)}</span>
                                     </div>
                                 )}
                                 {listing.building_type && listing.building_type[0] && (
                                     <div className="flex justify-between py-3 border-b border-black/5">
-                                        <span className="text-charcoal/60">Typ budovy</span>
-                                        <span className="font-medium">{buildingTypeLabels[listing.building_type[0]]}</span>
+                                        <span className="text-charcoal/60">{copy.buildingType}</span>
+                                        <span className="font-medium">{getLocalizedBuildingTypeLabel(listing.building_type[0], language)}</span>
                                     </div>
                                 )}
                             </div>
@@ -472,7 +611,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         {/* Interactive Map */}
                         {listing.geo_lat && listing.geo_lon && (
                             <div>
-                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">Poloha</h2>
+                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.location}</h2>
                                 <div className="rounded-2xl overflow-hidden border border-black/5 shadow-sm">
                                     <div className="relative w-full aspect-[16/10] md:aspect-[16/9]">
                                         <iframe
@@ -484,14 +623,14 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                             loading="lazy"
                                             referrerPolicy="no-referrer-when-downgrade"
                                             className="absolute inset-0 w-full h-full"
-                                            title="Mapa nehnuteľnosti"
+                                            title={copy.mapTitle}
                                         />
                                     </div>
                                     <div className="bg-white p-4 flex items-center justify-between">
                                         <div className="flex items-center gap-2 text-charcoal/70">
                                             <MapPin className="w-4 h-4 text-accent-red" />
                                             <span className="text-sm font-medium">
-                                                {[listing.street, listing.location_city, listing.location_district].filter(Boolean).join(', ') || 'Zobraziť na mape'}
+                                                {[listing.street, listing.location_city, listing.location_district].filter(Boolean).join(', ') || copy.showOnMap}
                                             </span>
                                         </div>
                                         <a
@@ -501,7 +640,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-accent-red transition-colors"
                                         >
                                             <Navigation className="w-3.5 h-3.5" />
-                                            Navigovať
+                                            {copy.navigate}
                                         </a>
                                     </div>
                                 </div>
@@ -513,7 +652,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                     <div className="lg:col-span-1">
                         <div className="sticky top-24 bg-white rounded-3xl p-8 border border-black/5 shadow-xl shadow-black/5">
                             {/* Changed font for "Kontaktujte nás" - using sans instead of serif */}
-                            <h3 className="text-xl font-sans font-bold text-navy mb-6 tracking-tight">Kontaktujte nás</h3>
+                            <h3 className="text-xl font-sans font-bold text-navy mb-6 tracking-tight">{copy.contactUs}</h3>
 
                             {/* Agent Photo Placeholder - Increased Size */}
                             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-black/5">
@@ -526,7 +665,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 </div>
                                 <div>
                                     <p className="font-bold text-navy text-lg">FRISCO Reality</p>
-                                    <p className="text-sm text-charcoal/60">Váš realitný partner</p>
+                                    <p className="text-sm text-charcoal/60">{copy.yourPartner}</p>
                                 </div>
                             </div>
 
@@ -539,7 +678,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                         <Phone className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-sm text-charcoal/60">Telefón</p>
+                                        <p className="text-sm text-charcoal/60">{copy.phone}</p>
                                         <p className="font-bold text-navy truncate">{CONTACT.phone}</p>
                                     </div>
                                 </a>
@@ -552,7 +691,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                         <Mail className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-sm text-charcoal/60">Email</p>
+                                        <p className="text-sm text-charcoal/60">{copy.email}</p>
                                         <p className="font-bold text-navy truncate">{CONTACT.email}</p>
                                     </div>
                                 </a>
@@ -562,7 +701,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 onClick={handleInterest}
                                 className="w-full py-4 bg-navy text-white font-bold rounded-full hover:bg-navy/90 transition-colors uppercase tracking-widest text-sm"
                             >
-                                Mám záujem
+                                {copy.interested}
                             </button>
 
                             <p className="text-center text-xs text-charcoal/50 mt-4">
@@ -640,7 +779,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         className="fixed inset-0 z-[100] bg-white overflow-y-auto"
                     >
                         <div className="sticky top-0 bg-white border-b border-black/5 px-6 py-4 flex items-center justify-between z-10">
-                            <h2 className="text-xl font-bold">Všetky fotky ({images.length})</h2>
+                            <h2 className="text-xl font-bold">{copy.allPhotos} ({images.length})</h2>
                             <button
                                 onClick={() => setShowAllPhotos(false)}
                                 className="w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors"
@@ -656,7 +795,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
                                     className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity"
                                 >
-                                    <img src={img} alt={`Fotka ${idx + 1}`} className="w-full h-full object-cover" />
+                                    <img src={img} alt={`${copy.photo} ${idx + 1}`} className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>

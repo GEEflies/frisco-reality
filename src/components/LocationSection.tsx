@@ -2,8 +2,73 @@
 
 import { motion } from 'framer-motion';
 import { MapPin, ArrowUpRight, ChevronRight, Navigation, Clock } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export const LocationSection = () => {
+    const { language } = useLanguage();
+    const copy = {
+        sk: {
+            title: 'Kde nás nájdete',
+            subtitle: 'Naša kancelária sa nachádza v centre Seredi, na Námestí Slobody.',
+            mapTitle: 'Interaktívna mapa',
+            mapAddress: 'Námestie Slobody 1185/30, Sereď',
+            mapsCta: 'Navigovať v Google Maps',
+            officeAddress: 'Adresa prevádzky',
+            country: 'Slovenská republika',
+            howToReach: 'Ako sa k nám dostanete:',
+            byCar: 'Autom:',
+            byCarText: 'Verejné parkovanie priamo na námestí.',
+            byTransit: 'MHD:',
+            byTransitText: 'Zastávka "Sereď, nám. Slobody".',
+            openingHours: 'Otváracie hodiny:',
+            weekdays: 'Po - Pi:',
+            weekend: 'So - Ne:',
+            closed: 'Zatvorené',
+            startNav: 'Spustiť navigáciu',
+            officeAlt: 'Naša kancelária',
+        },
+        en: {
+            title: 'Where to find us',
+            subtitle: 'Our office is located in the center of Sereď at Námestie Slobody.',
+            mapTitle: 'Interactive map',
+            mapAddress: 'Námestie Slobody 1185/30, Sereď',
+            mapsCta: 'Navigate in Google Maps',
+            officeAddress: 'Office address',
+            country: 'Slovak Republic',
+            howToReach: 'How to reach us:',
+            byCar: 'By car:',
+            byCarText: 'Public parking is available directly on the square.',
+            byTransit: 'Public transport:',
+            byTransitText: 'Stop "Sereď, nám. Slobody".',
+            openingHours: 'Opening hours:',
+            weekdays: 'Mon - Fri:',
+            weekend: 'Sat - Sun:',
+            closed: 'Closed',
+            startNav: 'Start navigation',
+            officeAlt: 'Our office',
+        },
+        de: {
+            title: 'Wo Sie uns finden',
+            subtitle: 'Unser Büro befindet sich im Zentrum von Sereď am Námestie Slobody.',
+            mapTitle: 'Interaktive Karte',
+            mapAddress: 'Námestie Slobody 1185/30, Sereď',
+            mapsCta: 'In Google Maps navigieren',
+            officeAddress: 'Büroadresse',
+            country: 'Slowakische Republik',
+            howToReach: 'So erreichen Sie uns:',
+            byCar: 'Mit dem Auto:',
+            byCarText: 'Öffentliche Parkplätze direkt am Platz verfügbar.',
+            byTransit: 'ÖPNV:',
+            byTransitText: 'Haltestelle "Sereď, nám. Slobody".',
+            openingHours: 'Öffnungszeiten:',
+            weekdays: 'Mo - Fr:',
+            weekend: 'Sa - So:',
+            closed: 'Geschlossen',
+            startNav: 'Navigation starten',
+            officeAlt: 'Unser Büro',
+        },
+    }[language];
+
     return (
         <section className="py-12 md:py-20 bg-cream">
             <div className="container mx-auto px-6">
@@ -15,10 +80,10 @@ export const LocationSection = () => {
                     className="text-center mb-8 md:mb-12"
                 >
                     <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy mb-4">
-                        Kde nás nájdete
+                        {copy.title}
                     </h2>
                     <p className="text-base md:text-lg text-charcoal/70 max-w-2xl mx-auto">
-                        Naša kancelária sa nachádza v centre Seredi, na Námestí Slobody.
+                        {copy.subtitle}
                     </p>
                 </motion.div>
 
@@ -36,7 +101,7 @@ export const LocationSection = () => {
                         <div className="absolute inset-0">
                             <img
                                 src="/storefront.jpeg"
-                                alt="Naša kancelária"
+                                alt={copy.officeAlt}
                                 className="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-700"
                             />
                             {/* Heavier light overlay for "Interaktívna mapa" feel if desired, or keep dark. 
@@ -56,10 +121,10 @@ export const LocationSection = () => {
                                 <MapPin className="w-10 h-10 text-white" />
                             </div>
                             <h3 className="text-4xl font-bold text-white mb-4 tracking-tight drop-shadow-md">
-                                Interaktívna mapa
+                                {copy.mapTitle}
                             </h3>
                             <p className="text-white/90 mb-10 text-lg font-medium drop-shadow-sm">
-                                Námestie Slobody 1185/30, Sereď
+                                {copy.mapAddress}
                             </p>
                             <a
                                 href="https://maps.app.goo.gl/jBhRQr8HWckRzp5f7"
@@ -68,7 +133,7 @@ export const LocationSection = () => {
                                 className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent-red text-white rounded-lg font-bold hover:bg-accent-red/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto text-base"
                             >
                                 <ArrowUpRight className="w-5 h-5" />
-                                <span>Navigovať v Google Maps</span>
+                                <span>{copy.mapsCta}</span>
                             </a>
                         </div>
                     </motion.div>
@@ -87,13 +152,13 @@ export const LocationSection = () => {
                                 <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
                                     <MapPin className="w-5 h-5 text-accent-red" />
                                 </div>
-                                <span>Adresa prevádzky</span>
+                                <span>{copy.officeAddress}</span>
                             </h3>
                             <div className="pl-[3.25rem] space-y-1.5">
                                 <p className="text-lg font-bold text-navy">FRISCO, s.r.o.</p>
                                 <p className="text-base text-charcoal/80">Námestie Slobody 1185/30</p>
                                 <p className="text-base text-charcoal/80">926 01 Sereď</p>
-                                <p className="text-base text-charcoal/80">Slovenská republika</p>
+                                <p className="text-base text-charcoal/80">{copy.country}</p>
                             </div>
                         </div>
 
@@ -103,14 +168,14 @@ export const LocationSection = () => {
                                 <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
                                     <Navigation className="w-5 h-5 text-accent-red" />
                                 </div>
-                                <span>Ako sa k nám dostanete:</span>
+                                <span>{copy.howToReach}</span>
                             </h3>
                             <ul className="space-y-4 pl-1">
                                 <ListItem>
-                                    <span className="font-bold text-navy text-sm md:text-base">Autom:</span> <span className="text-sm md:text-base text-charcoal/70">Verejné parkovanie priamo na námestí.</span>
+                                    <span className="font-bold text-navy text-sm md:text-base">{copy.byCar}</span> <span className="text-sm md:text-base text-charcoal/70">{copy.byCarText}</span>
                                 </ListItem>
                                 <ListItem>
-                                    <span className="font-bold text-navy text-sm md:text-base">MHD:</span> <span className="text-sm md:text-base text-charcoal/70">Zastávka "Sereď, nám. Slobody".</span>
+                                    <span className="font-bold text-navy text-sm md:text-base">{copy.byTransit}</span> <span className="text-sm md:text-base text-charcoal/70">{copy.byTransitText}</span>
                                 </ListItem>
                             </ul>
                         </div>
@@ -122,16 +187,16 @@ export const LocationSection = () => {
                                     <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
                                         <Clock className="w-5 h-5 text-accent-red" />
                                     </div>
-                                    <span>Otváracie hodiny:</span>
+                                    <span>{copy.openingHours}</span>
                                 </h3>
                                 <div className="space-y-3 text-sm md:text-base pl-[3.25rem]">
                                     <div className="flex items-center gap-x-3 border-b border-gray-50 pb-2">
-                                        <span className="font-bold text-navy">Po - Pi:</span>
+                                        <span className="font-bold text-navy">{copy.weekdays}</span>
                                         <span className="text-charcoal/80">9:00 - 17:00</span>
                                     </div>
                                     <div className="flex items-center gap-x-3">
-                                        <span className="font-bold text-navy">So - Ne:</span>
-                                        <span className="text-charcoal/80">Zatvorené</span>
+                                        <span className="font-bold text-navy">{copy.weekend}</span>
+                                        <span className="text-charcoal/80">{copy.closed}</span>
                                     </div>
                                 </div>
                             </div>
@@ -143,7 +208,7 @@ export const LocationSection = () => {
                                 className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-navy text-white rounded-lg font-bold hover:bg-navy/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-base uppercase tracking-wider"
                             >
                                 <ArrowUpRight className="w-5 h-5" />
-                                <span>Spustiť navigáciu</span>
+                                <span>{copy.startNav}</span>
                             </a>
                         </div>
 

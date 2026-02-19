@@ -2,9 +2,25 @@
 
 import { Star } from 'lucide-react';
 import { useGoogleReviews } from '@/hooks/useGoogleReviews';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export const GoogleReviewsBadge = () => {
+    const { language } = useLanguage();
     const { reviews, isLoading } = useGoogleReviews();
+    const copy = {
+        sk: {
+            basedOn: 'Na základe',
+            reviews: 'recenzií',
+        },
+        en: {
+            basedOn: 'Based on',
+            reviews: 'reviews',
+        },
+        de: {
+            basedOn: 'Basierend auf',
+            reviews: 'Bewertungen',
+        },
+    }[language];
 
     // Calculate full stars and partial star percentage
     const fullStars = Math.floor(reviews.rating);
@@ -78,7 +94,7 @@ export const GoogleReviewsBadge = () => {
 
             {/* Review Count Info */}
             <span className="text-sm text-charcoal/60 mt-1 transition-colors border-b border-transparent">
-                Na základe <strong>{isLoading ? '...' : reviews.totalReviews} recenzií</strong>
+                {copy.basedOn} <strong>{isLoading ? '...' : reviews.totalReviews} {copy.reviews}</strong>
             </span>
         </div>
     );

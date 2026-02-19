@@ -10,8 +10,10 @@ import { useListings, useListingFilters } from '@/hooks/useListings';
 import { categoryLabels, transactionLabels, formatPrice, formatArea, getCategoryType, getStatusColor, statusLabels } from '@/api/mappings';
 import { getPrimaryImage } from '@/api/listingsService';
 import type { ListingFilters } from '@/api/types';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export const PropertiesSection = () => {
+  const { language } = useLanguage();
   const ref = useRef(null);
   const filterWrapperRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
@@ -33,6 +35,111 @@ export const PropertiesSection = () => {
   
   // Floating filter button state (desktop)
   const [showFloatingFilter, setShowFloatingFilter] = useState(false);
+
+  const copy = {
+    sk: {
+      headingLabel: 'Aktuálna ponuka',
+      categoryNames: { apartment: 'Byty', house: 'Domy', land: 'Pozemky', other: 'Iné' },
+      rent: 'Prenájom',
+      featuredStart: 'Vybrané',
+      featuredAccent: 'nehnuteľnosti',
+      filters: { rent: 'Prenájom', apartment: 'Byty', house: 'Domy', land: 'Pozemky', other: 'Iné' },
+      sortTitle: 'Zoradiť',
+      sortBy: 'Zoradiť podľa',
+      sortOptions: {
+        newest: 'Najnovšie',
+        oldest: 'Najstaršie',
+        'price-asc': 'Najlacnejšie',
+        'price-desc': 'Najdrahšie',
+        recommended: 'Odporúčané',
+      },
+      loading: 'Načítavam...',
+      found: (count: number) => `Nájdených ${count} nehnuteľností`,
+      error: 'Nastala chyba pri načítaní nehnuteľností.',
+      retry: 'Skúsiť znova',
+      emptyTitleStart: 'Nenašli ste, čo',
+      emptyTitleAccent: 'hľadáte?',
+      emptyDescription: 'Nič sa nedeje. Ozvite sa nám a spoločne nájdeme niečo podobné.',
+      resetFilters: 'Zrušiť filter a zobraziť všetko',
+      showFilters: 'Zobraziť filtre',
+      statuses: {
+        reserved: 'Rezervované',
+        sold: 'Predané',
+        newBuild: 'Novostavba',
+        rent: 'Prenájom',
+        sale: 'Na predaj',
+      },
+      roomsUnit: 'izby',
+    },
+    en: {
+      headingLabel: 'Current offer',
+      categoryNames: { apartment: 'Apartments', house: 'Houses', land: 'Land', other: 'Other' },
+      rent: 'Rent',
+      featuredStart: 'Featured',
+      featuredAccent: 'properties',
+      filters: { rent: 'Rent', apartment: 'Apartments', house: 'Houses', land: 'Land', other: 'Other' },
+      sortTitle: 'Sort',
+      sortBy: 'Sort by',
+      sortOptions: {
+        newest: 'Newest',
+        oldest: 'Oldest',
+        'price-asc': 'Lowest price',
+        'price-desc': 'Highest price',
+        recommended: 'Recommended',
+      },
+      loading: 'Loading...',
+      found: (count: number) => `${count} properties found`,
+      error: 'An error occurred while loading properties.',
+      retry: 'Try again',
+      emptyTitleStart: "Couldn\'t find what",
+      emptyTitleAccent: 'you are looking for?',
+      emptyDescription: 'No worries. Reach out and we will find something similar together.',
+      resetFilters: 'Clear filters and show all',
+      showFilters: 'Show filters',
+      statuses: {
+        reserved: 'Reserved',
+        sold: 'Sold',
+        newBuild: 'New build',
+        rent: 'Rent',
+        sale: 'For sale',
+      },
+      roomsUnit: 'rooms',
+    },
+    de: {
+      headingLabel: 'Aktuelle Angebote',
+      categoryNames: { apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', other: 'Sonstiges' },
+      rent: 'Miete',
+      featuredStart: 'Ausgewählte',
+      featuredAccent: 'Immobilien',
+      filters: { rent: 'Miete', apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', other: 'Sonstiges' },
+      sortTitle: 'Sortieren',
+      sortBy: 'Sortieren nach',
+      sortOptions: {
+        newest: 'Neueste',
+        oldest: 'Älteste',
+        'price-asc': 'Niedrigster Preis',
+        'price-desc': 'Höchster Preis',
+        recommended: 'Empfohlen',
+      },
+      loading: 'Lädt...',
+      found: (count: number) => `${count} Immobilien gefunden`,
+      error: 'Beim Laden der Immobilien ist ein Fehler aufgetreten.',
+      retry: 'Erneut versuchen',
+      emptyTitleStart: 'Nichts gefunden, was Sie',
+      emptyTitleAccent: 'suchen?',
+      emptyDescription: 'Kein Problem. Kontaktieren Sie uns und wir finden gemeinsam etwas Ähnliches.',
+      resetFilters: 'Filter zurücksetzen und alles anzeigen',
+      showFilters: 'Filter anzeigen',
+      statuses: {
+        reserved: 'Reserviert',
+        sold: 'Verkauft',
+        newBuild: 'Neubau',
+        rent: 'Miete',
+        sale: 'Zu verkaufen',
+      },
+      roomsUnit: 'Zimmer',
+    },
+  }[language];
 
   // Fetch listings with filters
   const { data: listings = [], isLoading, error } = useListings(filters);
@@ -110,11 +217,11 @@ export const PropertiesSection = () => {
 
   // Get status badge info
   const getListingStatus = (listing: typeof listings[0]) => {
-    if (listing.status === 'reserved') return { label: 'Rezervované', color: 'bg-amber-500' };
-    if (listing.status === 'sold') return { label: 'Predané', color: 'bg-red-500' };
-    if (listing.real_estate_state === 136) return { label: 'Novostavba', color: 'bg-emerald-500' };
-    if (listing.transaction_id === 123 || listing.transaction_id === 124) return { label: 'Prenájom', color: 'bg-sky-500' };
-    return { label: 'Na predaj', color: 'bg-navy' };
+    if (listing.status === 'reserved') return { label: copy.statuses.reserved, color: 'bg-amber-500' };
+    if (listing.status === 'sold') return { label: copy.statuses.sold, color: 'bg-red-500' };
+    if (listing.real_estate_state === 136) return { label: copy.statuses.newBuild, color: 'bg-emerald-500' };
+    if (listing.transaction_id === 123 || listing.transaction_id === 124) return { label: copy.statuses.rent, color: 'bg-sky-500' };
+    return { label: copy.statuses.sale, color: 'bg-navy' };
   };
 
   // Get features for listing card
@@ -126,7 +233,7 @@ export const PropertiesSection = () => {
     }
 
     if (listing.rooms_count) {
-      features.push({ icon: Home, label: `${listing.rooms_count} izby` });
+      features.push({ icon: Home, label: `${listing.rooms_count} ${copy.roomsUnit}` });
     }
 
     if (listing.land_area) {
@@ -149,11 +256,11 @@ export const PropertiesSection = () => {
 
   // Sort options for mobile dropdown
   const sortOptions = [
-    { value: 'newest', label: 'Najnovšie' },
-    { value: 'oldest', label: 'Najstaršie' },
-    { value: 'price-asc', label: 'Najlacnejšie' },
-    { value: 'price-desc', label: 'Najdrahšie' },
-    { value: 'recommended', label: 'Odporúčané' },
+    { value: 'newest', label: copy.sortOptions.newest },
+    { value: 'oldest', label: copy.sortOptions.oldest },
+    { value: 'price-asc', label: copy.sortOptions['price-asc'] },
+    { value: 'price-desc', label: copy.sortOptions['price-desc'] },
+    { value: 'recommended', label: copy.sortOptions.recommended },
   ] as const;
 
   return (
@@ -168,7 +275,7 @@ export const PropertiesSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            Aktuálna ponuka
+            {copy.headingLabel}
           </motion.div>
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-navy mb-8"
@@ -178,16 +285,16 @@ export const PropertiesSection = () => {
           >
             {filters.category !== 'all' ? (
               <span className="uppercase">{
-                filters.category === 'apartment' ? 'Byty' :
-                  filters.category === 'house' ? 'Domy' :
-                    filters.category === 'land' ? 'Pozemky' :
-                      filters.category === 'other' ? 'Iné' :
+                filters.category === 'apartment' ? copy.categoryNames.apartment :
+                  filters.category === 'house' ? copy.categoryNames.house :
+                    filters.category === 'land' ? copy.categoryNames.land :
+                      filters.category === 'other' ? copy.categoryNames.other :
                         filters.category
               }</span>
             ) : filters.transaction === 'rent' ? (
-              <span className="uppercase">Prenájom</span>
+              <span className="uppercase">{copy.rent}</span>
             ) : (
-              <>Vybrané <span className="text-accent-red italic">nehnuteľnosti</span></>
+              <>{copy.featuredStart} <span className="text-accent-red italic">{copy.featuredAccent}</span></>
             )}
           </motion.h2>
 
@@ -201,9 +308,9 @@ export const PropertiesSection = () => {
             {/* Mobile grid: 3 on top, 2 on bottom — matching reference */}
             <div className="w-full grid grid-cols-3 gap-3 md:hidden">
               {[
-                { id: 'rent', label: 'Prenájom', icon: Key, isTransaction: true },
-                { id: 'apartment', label: 'Byty', icon: Building2 },
-                { id: 'house', label: 'Domy', icon: Home },
+                { id: 'rent', label: copy.filters.rent, icon: Key, isTransaction: true },
+                { id: 'apartment', label: copy.filters.apartment, icon: Building2 },
+                { id: 'house', label: copy.filters.house, icon: Home },
               ].map((cat) => {
                 const isActive = cat.isTransaction
                   ? filters.transaction === 'rent'
@@ -242,8 +349,8 @@ export const PropertiesSection = () => {
             </div>
             <div className="w-full grid grid-cols-2 gap-3 md:hidden">
               {[
-                { id: 'land', label: 'Pozemky', icon: Map },
-                { id: 'other', label: 'Iné', icon: Warehouse },
+                { id: 'land', label: copy.filters.land, icon: Map },
+                { id: 'other', label: copy.filters.other, icon: Warehouse },
               ].map((cat) => {
                 const isActive = filters.category === cat.id;
 
@@ -274,11 +381,11 @@ export const PropertiesSection = () => {
             {/* Desktop: original horizontal wrap */}
             <div className="hidden md:flex flex-wrap gap-3">
               {[
-                { id: 'rent', label: 'Prenájom', icon: Key, isTransaction: true },
-                { id: 'apartment', label: 'Byty', icon: Building2 },
-                { id: 'house', label: 'Domy', icon: Home },
-                { id: 'land', label: 'Pozemky', icon: Map },
-                { id: 'other', label: 'Iné', icon: Warehouse },
+                { id: 'rent', label: copy.filters.rent, icon: Key, isTransaction: true },
+                { id: 'apartment', label: copy.filters.apartment, icon: Building2 },
+                { id: 'house', label: copy.filters.house, icon: Home },
+                { id: 'land', label: copy.filters.land, icon: Map },
+                { id: 'other', label: copy.filters.other, icon: Warehouse },
               ].map((cat) => {
                 const isActive = cat.isTransaction
                   ? filters.transaction === 'rent'
@@ -357,7 +464,7 @@ export const PropertiesSection = () => {
                     ? 'bg-navy text-white border-navy shadow-md'
                     : 'bg-white text-navy border-navy/10 hover:border-navy/30'
                 }`}
-                title="Zoradiť"
+                title={copy.sortTitle}
               >
                 <ArrowUpDown size={18} strokeWidth={2.5} />
               </button>
@@ -374,7 +481,7 @@ export const PropertiesSection = () => {
                   >
                     <div className="py-2">
                       <div className="px-4 py-2 text-[10px] font-bold tracking-widest uppercase text-charcoal/40">
-                        Zoradiť podľa
+                        {copy.sortBy}
                       </div>
                       {sortOptions.map((option) => (
                         <button
@@ -434,7 +541,7 @@ export const PropertiesSection = () => {
 
         {/* Results Info */}
         <div className={`mb-6 text-charcoal/50 text-sm tracking-widest uppercase ${listings.length === 0 && !isLoading ? 'hidden' : ''}`}>
-          {isLoading ? 'Načítavam...' : `Nájdených ${listings.length} nehnuteľností`}
+          {isLoading ? copy.loading : copy.found(listings.length)}
         </div>
 
         {/* Loading State */}
@@ -447,9 +554,9 @@ export const PropertiesSection = () => {
         {/* Error State */}
         {error && (
           <div className="text-center py-24 border border-dashed border-red-200 rounded-3xl bg-red-50">
-            <p className="text-xl text-red-600 font-serif mb-4">Nastala chyba pri načítaní nehnuteľností.</p>
+            <p className="text-xl text-red-600 font-serif mb-4">{copy.error}</p>
             <button onClick={() => window.location.reload()} className="text-accent-red hover:underline underline-offset-4">
-              Skúsiť znova
+              {copy.retry}
             </button>
           </div>
         )}
@@ -505,11 +612,11 @@ export const PropertiesSection = () => {
             </div>
             
             <h3 className="text-3xl md:text-5xl font-serif font-bold text-navy mb-6 tracking-tight">
-              Nenašli ste, čo <span className="italic text-accent-red">hľadáte?</span>
+              {copy.emptyTitleStart} <span className="italic text-accent-red">{copy.emptyTitleAccent}</span>
             </h3>
             
             <p className="text-lg text-charcoal/60 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Nič sa nedeje. Ozvite sa nám a spoločne nájdeme niečo podobné.
+              {copy.emptyDescription}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-10">
@@ -533,7 +640,7 @@ export const PropertiesSection = () => {
               onClick={resetFilters} 
               className="text-sm font-medium text-charcoal/40 hover:text-navy uppercase tracking-widest border-b border-transparent hover:border-navy transition-all pb-1"
             >
-              Zrušiť filter a zobraziť všetko
+              {copy.resetFilters}
             </button>
           </motion.div>
         )}
@@ -550,7 +657,7 @@ export const PropertiesSection = () => {
             transition={{ duration: 0.3 }}
             onClick={scrollToFilters}
             className="flex fixed bottom-8 right-8 z-50 w-16 h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
-            aria-label="Zobraziť filtre"
+            aria-label={copy.showFilters}
           >
             <SlidersHorizontal size={24} strokeWidth={2.5} />
           </motion.button>

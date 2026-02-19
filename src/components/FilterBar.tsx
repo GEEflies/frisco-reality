@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { X, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 interface FilterBarProps {
     filters: {
@@ -39,6 +40,86 @@ export const FilterBar = ({
     availableTypes = [],
     listingsCount = 0,
 }: FilterBarProps) => {
+    const { language } = useLanguage();
+    const copy = {
+        sk: {
+            all: 'Všetky',
+            labels: {
+                rent: 'Prenájom',
+                apartment: 'Byty',
+                house: 'Domy',
+                land: 'Pozemky',
+                other: 'Iné',
+            },
+            filterOffer: 'Filtrovať ponuku',
+            locality: 'Lokalita',
+            propertyType: 'Typ nehnuteľnosti',
+            priceRange: 'Cenové rozpätie',
+            clearFilters: 'Zrušiť filtre',
+            show: 'Zobraziť',
+            allLocalities: 'Všetky lokality',
+            allTypes: 'Všetky typy',
+            price: 'Cena',
+            sort: 'Zoradiť',
+            recommended: 'Odporúčané',
+            newest: 'Najnovšie',
+            oldest: 'Najstaršie',
+            priceAsc: 'Najlacnejšie',
+            priceDesc: 'Najdrahšie',
+        },
+        en: {
+            all: 'All',
+            labels: {
+                rent: 'Rent',
+                apartment: 'Apartments',
+                house: 'Houses',
+                land: 'Land',
+                other: 'Other',
+            },
+            filterOffer: 'Filter listings',
+            locality: 'Location',
+            propertyType: 'Property type',
+            priceRange: 'Price range',
+            clearFilters: 'Clear filters',
+            show: 'Show',
+            allLocalities: 'All locations',
+            allTypes: 'All types',
+            price: 'Price',
+            sort: 'Sort',
+            recommended: 'Recommended',
+            newest: 'Newest',
+            oldest: 'Oldest',
+            priceAsc: 'Lowest price',
+            priceDesc: 'Highest price',
+        },
+        de: {
+            all: 'Alle',
+            labels: {
+                rent: 'Miete',
+                apartment: 'Wohnungen',
+                house: 'Häuser',
+                land: 'Grundstücke',
+                other: 'Sonstiges',
+            },
+            filterOffer: 'Angebote filtern',
+            locality: 'Standort',
+            propertyType: 'Immobilientyp',
+            priceRange: 'Preisspanne',
+            clearFilters: 'Filter zurücksetzen',
+            show: 'Anzeigen',
+            allLocalities: 'Alle Standorte',
+            allTypes: 'Alle Typen',
+            price: 'Preis',
+            sort: 'Sortieren',
+            recommended: 'Empfohlen',
+            newest: 'Neueste',
+            oldest: 'Älteste',
+            priceAsc: 'Niedrigster Preis',
+            priceDesc: 'Höchster Preis',
+        },
+    }[language];
+    const locale = language === 'sk' ? 'sk-SK' : language === 'de' ? 'de-DE' : 'en-US';
+
     const [isOpen, setIsOpen] = useState(false);
 
     // Temp filter state for the modal (only applied on "Zobraziť")
@@ -73,21 +154,21 @@ export const FilterBar = ({
 
     // Location options from dynamic data
     const locationOptions = [
-        { value: 'all', label: 'Všetky' },
+        { value: 'all', label: copy.all },
         ...localities.map(loc => ({ value: loc, label: loc })),
     ];
 
     // Type options from dynamic data
     const typeLabels: Record<string, string> = {
-        rent: 'Prenájom',
-        apartment: 'Byty',
-        house: 'Domy',
-        land: 'Pozemky',
-        other: 'Iné',
+        rent: copy.labels.rent,
+        apartment: copy.labels.apartment,
+        house: copy.labels.house,
+        land: copy.labels.land,
+        other: copy.labels.other,
     };
     
     const typeOptions = [
-        { value: 'all', label: 'Všetky' },
+        { value: 'all', label: copy.all },
         ...availableTypes.map(type => ({ value: type, label: typeLabels[type] || type })),
     ];
 
@@ -103,7 +184,7 @@ export const FilterBar = ({
                         <div className="w-7 h-7 rounded-full bg-navy/10 flex items-center justify-center text-navy border border-navy/10">
                             <SlidersHorizontal size={13} />
                         </div>
-                        <span className="uppercase tracking-widest text-[11px] font-bold text-charcoal/90">Filtrovať ponuku</span>
+                        <span className="uppercase tracking-widest text-[11px] font-bold text-charcoal/90">{copy.filterOffer}</span>
                     </div>
                     <ChevronDown size={16} className="text-charcoal/50" />
                 </button>
@@ -148,7 +229,7 @@ export const FilterBar = ({
                                     {/* Location Filter */}
                                     <div className="space-y-4">
                                         <label className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider">
-                                            Lokalita
+                                            {copy.locality}
                                         </label>
                                         <div className="flex flex-wrap gap-2">
                                             {locationOptions.map((loc) => (
@@ -170,7 +251,7 @@ export const FilterBar = ({
                                     {/* Type Filter */}
                                     <div className="space-y-4">
                                         <label className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider">
-                                            Typ nehnuteľnosti
+                                            {copy.propertyType}
                                         </label>
                                         <div className="flex flex-wrap gap-2">
                                             {typeOptions.map((type) => (
@@ -192,14 +273,14 @@ export const FilterBar = ({
                                     {/* Price Range Slider */}
                                     <div className="space-y-5">
                                         <label className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider">
-                                            Cenové rozpätie
+                                            {copy.priceRange}
                                         </label>
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm font-medium text-navy">
-                                                €{tempFilters.priceRange[0].toLocaleString('sk-SK')}
+                                                €{tempFilters.priceRange[0].toLocaleString(locale)}
                                             </span>
                                             <span className="text-sm font-medium text-navy">
-                                                €{tempFilters.priceRange[1].toLocaleString('sk-SK')}
+                                                €{tempFilters.priceRange[1].toLocaleString(locale)}
                                             </span>
                                         </div>
                                         <Slider
@@ -213,7 +294,7 @@ export const FilterBar = ({
                                         />
                                         <div className="flex justify-between items-center text-xs text-charcoal/40">
                                             <span>€0</span>
-                                            <span>€{maxPrice.toLocaleString('sk-SK')}</span>
+                                            <span>€{maxPrice.toLocaleString(locale)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -225,13 +306,13 @@ export const FilterBar = ({
                                     onClick={resetAll}
                                     className="text-sm text-charcoal/50 hover:text-charcoal transition-colors font-medium underline-offset-4 hover:underline"
                                 >
-                                    Zrušiť filtre
+                                    {copy.clearFilters}
                                 </button>
                                 <button
                                     onClick={applyFilters}
                                     className="w-full px-10 py-3.5 bg-navy text-white font-bold rounded-xl hover:bg-navy/90 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95"
                                 >
-                                    Zobraziť ({listingsCount})
+                                    {copy.show} ({listingsCount})
                                 </button>
                             </div>
                         </motion.div>
@@ -247,13 +328,13 @@ export const FilterBar = ({
                         <div className="flex flex-col md:flex-row gap-4 lg:gap-8 flex-1">
                             {/* Locality */}
                             <div className="w-full md:w-56 space-y-3">
-                                <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">Lokalita</label>
+                                <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">{copy.locality}</label>
                                 <Select
                                     value={filters.locality}
                                     onValueChange={(value) => setFilters({ ...filters, locality: value })}
                                 >
                                     <SelectTrigger className="bg-white border-2 border-navy/20 text-charcoal focus:ring-2 focus:ring-accent-red/30 rounded-xl h-12 font-medium shadow-sm">
-                                        <SelectValue placeholder="Všetky lokality" />
+                                        <SelectValue placeholder={copy.allLocalities} />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white border-navy/10 text-charcoal">
                                         {locationOptions.map((loc) => (
@@ -267,13 +348,13 @@ export const FilterBar = ({
 
                             {/* Type */}
                             <div className="w-full md:w-56 space-y-3">
-                                <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">Typ nehnuteľnosti</label>
+                                <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">{copy.propertyType}</label>
                                 <Select
                                     value={filters.type}
                                     onValueChange={(value) => setFilters({ ...filters, type: value })}
                                 >
                                     <SelectTrigger className="bg-white border-2 border-navy/20 text-charcoal focus:ring-2 focus:ring-accent-red/30 rounded-xl h-12 font-medium shadow-sm">
-                                        <SelectValue placeholder="Všetky typy" />
+                                        <SelectValue placeholder={copy.allTypes} />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white border-navy/10 text-charcoal">
                                         {typeOptions.map((type) => (
@@ -288,9 +369,9 @@ export const FilterBar = ({
                             {/* Price Range */}
                             <div className="w-full md:flex-1 max-w-md space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">Cena</label>
+                                    <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">{copy.price}</label>
                                     <span className="text-sm text-accent-red font-bold">
-                                        €{filters.priceRange[0].toLocaleString()} - €{filters.priceRange[1].toLocaleString()}
+                                        €{filters.priceRange[0].toLocaleString(locale)} - €{filters.priceRange[1].toLocaleString(locale)}
                                     </span>
                                 </div>
                                 <Slider
@@ -308,20 +389,20 @@ export const FilterBar = ({
                         {/* Sorting & Reset */}
                         <div className="flex items-end gap-3">
                             <div className="w-full md:w-56 space-y-3">
-                                <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">Zoradiť</label>
+                                <label className="text-xs uppercase tracking-widest text-navy/70 font-bold">{copy.sort}</label>
                                 <Select
                                     value={sort}
                                     onValueChange={setSort}
                                 >
                                     <SelectTrigger className="bg-white border-2 border-navy/20 text-charcoal focus:ring-2 focus:ring-accent-red/30 rounded-xl h-12 font-medium shadow-sm">
-                                        <SelectValue placeholder="Odporúčané" />
+                                        <SelectValue placeholder={copy.recommended} />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white border-navy/10 text-charcoal">
-                                        <SelectItem value="recommended">Odporúčané</SelectItem>
-                                        <SelectItem value="newest">Najnovšie</SelectItem>
-                                        <SelectItem value="oldest">Najstaršie</SelectItem>
-                                        <SelectItem value="price-asc">Najlacnejšie</SelectItem>
-                                        <SelectItem value="price-desc">Najdrahšie</SelectItem>
+                                        <SelectItem value="recommended">{copy.recommended}</SelectItem>
+                                        <SelectItem value="newest">{copy.newest}</SelectItem>
+                                        <SelectItem value="oldest">{copy.oldest}</SelectItem>
+                                        <SelectItem value="price-asc">{copy.priceAsc}</SelectItem>
+                                        <SelectItem value="price-desc">{copy.priceDesc}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -329,7 +410,7 @@ export const FilterBar = ({
                             <button
                                 onClick={onReset}
                                 className="h-12 w-12 flex items-center justify-center rounded-xl border-2 border-navy/20 hover:bg-accent-red hover:border-accent-red text-navy hover:text-white transition-all duration-300 shadow-sm"
-                                title="Zrušiť filtre"
+                                title={copy.clearFilters}
                             >
                                 <X size={20} strokeWidth={2.5} />
                             </button>

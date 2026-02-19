@@ -5,6 +5,18 @@ import { supabase, isSupabaseConfigured } from '@/api/supabaseClient';
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Revalidate every hour
 
+const buildAlternates = (path: string) => {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const canonical = `${SITE_URL}${normalized}`;
+  return {
+    languages: {
+      sk: `${canonical}?lang=sk`,
+      en: `${canonical}?lang=en`,
+      de: `${canonical}?lang=de`,
+    },
+  };
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages with their priorities and change frequencies
   const staticPages: MetadataRoute.Sitemap = [
@@ -13,42 +25,49 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
+      alternates: buildAlternates('/'),
     },
     {
       url: `${SITE_URL}/ponuka`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
+      alternates: buildAlternates('/ponuka'),
     },
     {
       url: `${SITE_URL}/predaj-a-prenajom`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
+      alternates: buildAlternates('/predaj-a-prenajom'),
     },
     {
       url: `${SITE_URL}/chcem-predat`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
+      alternates: buildAlternates('/chcem-predat'),
     },
     {
       url: `${SITE_URL}/chcem-prenajat`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
+      alternates: buildAlternates('/chcem-prenajat'),
     },
     {
       url: `${SITE_URL}/preco-frisco`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
+      alternates: buildAlternates('/preco-frisco'),
     },
     {
       url: `${SITE_URL}/kontakt`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
+      alternates: buildAlternates('/kontakt'),
     },
   ];
 
@@ -69,6 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           lastModified: new Date(listing.updated_at),
           changeFrequency: 'weekly' as const,
           priority: 0.6,
+          alternates: buildAlternates(`/nehnutelnost/${listing.slug || listing.id}`),
         }));
       }
     } catch (error) {
