@@ -78,22 +78,22 @@ const ChcemPredat = () => {
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                             <div className="w-full lg:w-[45%]">
-                                <div className="flex items-center gap-4 mb-8">
+                                <div className="flex items-center gap-4 mb-8 animate-fade-in-up stagger-1">
                                     <div className="h-px w-12 bg-navy/20" />
                                     <span className="text-navy/60 font-mono text-xs tracking-[0.3em] uppercase">
                                         Predajte za cenu, ktorá dáva zmysel.
                                     </span>
                                 </div>
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy animate-fade-in-up stagger-2">
                                     Vy riešite svoj život, <br />
                                     my riešime <span className="text-accent-red italic">predaj</span>.
                                 </h1>
-                                <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10">
+                                <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10 animate-fade-in-up stagger-3">
                                     Predaj nie je len o inzeráte. Je to o správnej cene, prezentácii a vyjednávaní. My nastavíme proces tak, aby ste predali dobre a bez zbytočných chýb.
                                 </p>
 
                                 {/* Mobile Video */}
-                                <div className="block lg:hidden mb-8 relative px-2">
+                                <div className="block lg:hidden mb-8 relative px-2 animate-scale-in stagger-4">
                                     <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-2xl shadow-navy/10 bg-gray-100">
                                         <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                         <img
@@ -119,7 +119,7 @@ const ChcemPredat = () => {
                                 </div>
                             </div>
 
-                            <div className="hidden lg:block w-full lg:w-[55%] relative">
+                            <div className="hidden lg:block w-full lg:w-[55%] relative animate-fade-in-right stagger-3">
                                 <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 transform transition-transform hover:scale-[1.01] duration-700 bg-gray-100">
                                     <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                     <img

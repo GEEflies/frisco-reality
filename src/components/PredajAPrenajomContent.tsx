@@ -49,7 +49,7 @@ const PredajAPrenajom = () => {
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="max-w-4xl">
                             <div
-                                className="flex items-center gap-4 mb-8"
+                                className="flex items-center gap-4 mb-8 animate-fade-in-up stagger-1"
                             >
                                 <div className="h-px w-12 bg-white/30" />
                                 <span className="text-white/80 font-mono text-xs tracking-[0.3em] uppercase">
@@ -58,20 +58,21 @@ const PredajAPrenajom = () => {
                             </div>
 
                             <h1
-                                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight leading-[1.1] mb-8"
+                                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight leading-[1.1] mb-8 animate-fade-in-up stagger-2"
                             >
                                 Predajte alebo prenajmite <br />
                                 <span className="text-accent-red italic">bez starostí</span>.
                             </h1>
 
                             <p
-                                className="text-lg md:text-xl text-white/70 max-w-2xl font-light leading-relaxed mb-12"
+                                className="text-lg md:text-xl text-white/70 max-w-2xl font-light leading-relaxed mb-12 animate-fade-in-up stagger-3"
                             >
                                 Získajte profesionálne ocenenie, špičkovú prezentáciu a prístup k overeným klientom.
                                 S nami predáte rýchlejšie a výhodnejšie.
                             </p>
 
                             <div
+                                className="animate-fade-in-up stagger-4"
                             >
                                 <a
                                     href="#kontaktny-formular"

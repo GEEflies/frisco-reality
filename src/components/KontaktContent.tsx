@@ -47,20 +47,20 @@ const Kontakt = () => {
               {/* Text Content */}
               <div className="max-w-2xl">
                 <span
-                  className="inline-block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-6 border-b border-navy/30 pb-2"
+                  className="inline-block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-6 border-b border-navy/30 pb-2 animate-fade-in-up stagger-1"
                 >
                   Kontaktujte nás
                 </span>
 
                 <h1
-                  className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6"
+                  className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 animate-fade-in-up stagger-2"
                 >
                   Poďme spolu <br />
                   <span className="text-accent-red italic">spolupracovať</span>.
                 </h1>
 
                 <p
-                  className="text-lg md:text-xl text-charcoal/70 font-light leading-relaxed mb-8"
+                  className="text-lg md:text-xl text-charcoal/70 font-light leading-relaxed mb-8 animate-fade-in-up stagger-3"
                 >
                   Sme tu pre vás. Či už predávate, kupujete alebo len hľadáte radu –
                   radi vám pomôžeme s akoukoľvek otázkou.
@@ -69,7 +69,7 @@ const Kontakt = () => {
 
               {/* Image Content */}
               <div
-                className="relative hidden lg:block"
+                className="relative hidden lg:block animate-fade-in-right stagger-3"
               >
                 <div className="relative group aspect-[4/3]">
                   <img

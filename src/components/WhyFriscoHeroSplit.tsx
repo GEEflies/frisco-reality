@@ -144,11 +144,8 @@ const WhyFriscoHeroSplit = () => {
 
             {/* HERO HEADING */}
             <section className="relative w-full pt-32 pb-4 px-6 flex flex-col items-center justify-center z-10 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="mb-8"
+                <div
+                    className="mb-8 animate-fade-in-up stagger-1"
                 >
                     <span className="inline-block px-4 py-1.5 rounded-full border border-navy/10 bg-white/60 text-xs font-mono tracking-[0.2em] text-navy uppercase mb-6 backdrop-blur-sm shadow-sm">
                         Prečo Frisco?
@@ -157,16 +154,13 @@ const WhyFriscoHeroSplit = () => {
                         Komplexné <br className="lg:hidden" />
                         <span className="text-accent-red italic pb-2">riešenia</span>
                     </h1>
-                </motion.div>
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-charcoal/70 text-lg md:text-xl max-w-2xl font-light leading-relaxed"
+                </div>
+                <p
+                    className="text-charcoal/70 text-lg md:text-xl max-w-2xl font-light leading-relaxed animate-fade-in-up stagger-2"
                 >
                     <span className="hidden lg:inline">Či predávate, kupujete alebo prenajímate — vieme, čo potrebujete. Vyberte si svoju situáciu.</span>
                     <span className="lg:hidden">Či predávate, kupujete alebo prenajímate, toto sú dôvody, prečo si vybrať FRISCO:</span>
-                </motion.p>
+                </p>
             </section>
 
             {/* ═══════════════════ TRACING BEAM ═══════════════════ */}

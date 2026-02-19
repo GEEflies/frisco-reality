@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from "framer-motion";
 import { Search, Home, Key } from "lucide-react";
 import Link from "next/link";
 
@@ -19,24 +18,18 @@ const HeroDesktop = () => {
           <div className="w-full lg:w-[42%] flex flex-col items-start text-left z-20">
 
             {/* Top Label */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center gap-4 mb-8"
+            <div
+              className="flex items-center gap-4 mb-8 animate-fade-in-up stagger-1"
             >
               <div className="h-px w-12 bg-navy/20" />
               <span className="text-navy/80 font-mono text-xs tracking-[0.3em] uppercase">
                 Realitná Kancelária v Seredi
               </span>
-            </motion.div>
+            </div>
 
             {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap"
+            <h1
+              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap animate-fade-in-up stagger-2"
             >
               Vašu nehnuteľnosť
               <br />
@@ -47,25 +40,19 @@ const HeroDesktop = () => {
                   className="text-accent-red text-left min-w-[200px]" // Red color + styling fix
                 />
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12"
+            <p
+              className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12 animate-fade-in-up stagger-3"
             >
               Sme rodinná firma s 18-ročnou históriou a stovkami úspešných obchodov. Garantujeme vám ľudský prístup a maximálne zhodnotenie vašej nehnuteľnosti.
-            </motion.p>
+            </p>
 
 
             {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-wrap items-center gap-3"
+            <div
+              className="flex flex-wrap items-center gap-3 animate-fade-in-up stagger-4"
             >
               <Link
                 href="/ponuka"
@@ -93,17 +80,14 @@ const HeroDesktop = () => {
                 <Key size={16} strokeWidth={2} />
                 Chcem prenajať
               </Link>
-            </motion.div>
+            </div>
 
             {/* Closing Left Column */}
           </div>
 
           {/* Right Column: Contained Video */}
-          <motion.div
-            className="w-full lg:w-[58%] relative hidden lg:block -mt-8 lg:mt-12 lg:-mr-16" // Pushed to right and down
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          <div
+            className="w-full lg:w-[58%] relative hidden lg:block -mt-8 lg:mt-12 lg:-mr-16 animate-scale-in stagger-3"
           >
             {/* Decorative Frame Border - Navy for light theme */}
             <div className="absolute -top-4 -right-4 w-full h-full border border-navy/10 rounded-[2rem] z-0" />
@@ -129,7 +113,7 @@ const HeroDesktop = () => {
                 <source src="/hero-video.mp4" type="video/mp4" />
               </video>
             </div>
-          </motion.div>
+          </div>
 
         </div>
       </div>

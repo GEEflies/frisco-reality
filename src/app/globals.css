@@ -115,14 +115,22 @@
     }
   }
 
-  /* Prevent white flash on mobile: disable all CSS enter-animations and
-     force framer-motion SSR-rendered elements visible on first paint */
+  /* Prevent white flash from tailwindcss-animate .animate-in class on mobile */
   @media (max-width: 1023px) {
     .animate-in {
       animation: none !important;
       opacity: 1 !important;
     }
   }
+
+  /* ─── Hero animation stagger delays ─────────────────────────────────── */
+  /* These use pure CSS keyframes → SSR-safe (no JS hydration mismatch).  */
+  /* animation-fill-mode: both ensures opacity:0 during the delay period. */
+  .stagger-1 { animation-delay: 0.08s; }
+  .stagger-2 { animation-delay: 0.18s; }
+  .stagger-3 { animation-delay: 0.30s; }
+  .stagger-4 { animation-delay: 0.42s; }
+  .stagger-5 { animation-delay: 0.54s; }
 
   /* Optimize images globally - removed content-visibility to fix layout shifts */
   /* img {
