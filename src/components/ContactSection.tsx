@@ -25,7 +25,7 @@ export const ContactSection = () => {
   }[language];
 
   return (
-    <section className="py-12 md:pb-20 md:pt-0 bg-cream" id="kontakt">
+    <section className="relative z-20 py-12 md:pb-20 md:pt-32 bg-cream" id="kontakt">
       <div className="container mx-auto px-6">
 
         {/* Section Header — CTA */}

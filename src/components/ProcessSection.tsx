@@ -28,7 +28,7 @@ const steps = [
 
 import confetti from 'canvas-confetti';
 
-const S_CURVE_PATH = "M 25 0 C 25 0, 25 18, 50 18 C 75 18, 75 32, 75 32 C 75 32, 75 46, 50 46 C 25 46, 25 60, 25 80, 30 80";
+const S_CURVE_PATH = "M 25 0 C 25 0, 25 18, 50 18 C 75 18, 75 32, 75 32 C 75 32, 75 46, 50 46 C 25 46, 25 60, 31.5 80";
 
 export const ProcessSection = () => {
   const { language } = useLanguage();
