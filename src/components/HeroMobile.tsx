@@ -79,7 +79,7 @@ const HeroMobile = () => {
                         loop
                         muted
                         playsInline
-                        preload="metadata"
+                        preload="auto"
                         className="w-full h-full object-cover"
                     >
                         <source src={HERO_VIDEO_URL} type="video/mp4" />
