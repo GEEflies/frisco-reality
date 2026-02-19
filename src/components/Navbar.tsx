@@ -73,12 +73,9 @@ export const Navbar = () => {
             {/* Logo */}
             <Link href="/" onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
               <Image
-                src="/frisco-logo.svg"
-                alt="FRISCO"
-                width={96}
-                height={64}
-                priority
-                className="h-16 w-auto pl-4 object-contain"
+                src="/frisco-logo-opt.png"
+                alt="Frisco"
+                className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8"
               />
             </Link>
 
