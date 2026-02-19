@@ -6,10 +6,14 @@ import { ArrowUpRight, MapPin, Phone, Mail, Clock, Instagram, Facebook, FileText
 import { useToast } from '@/hooks/use-toast';
 import { Footer } from '@/components/Footer';
 import { LocationSection } from '@/components/LocationSection';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { KONTAKT_COPY } from '@/i18n/copy';
 
 const agentsHero = '/agents-hero.png';
 
 const Kontakt = () => {
+  const { language } = useLanguage();
+  const copy = KONTAKT_COPY[language];
   const { toast } = useToast();
   const [formState, setFormState] = useState({
     name: '',
@@ -49,21 +53,20 @@ const Kontakt = () => {
                 <span
                   className="inline-block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-6 border-b border-navy/30 pb-2 story-soft stagger-1"
                 >
-                  Kontaktujte nás
+                  {copy.heroLabel}
                 </span>
 
                 <h1
                   className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
                 >
-                  Poďme spolu <br />
-                  <span className="text-accent-red italic">spolupracovať</span>.
+                  {copy.heroTitleStart} <br />
+                  <span className="text-accent-red italic">{copy.heroTitleAccent}</span>.
                 </h1>
 
                 <p
                   className="text-lg md:text-xl text-charcoal/70 font-light leading-relaxed mb-8 story-soft stagger-3"
                 >
-                  Sme tu pre vás. Či už predávate, kupujete alebo len hľadáte radu –
-                  radi vám pomôžeme s akoukoľvek otázkou.
+                  {copy.heroSubtitle}
                 </p>
               </div>
 
@@ -101,13 +104,13 @@ const Kontakt = () => {
           <div className="container mx-auto px-6">
             <div id="kontaktny-formular" className="text-center mb-16 md:mb-20 scroll-mt-32 story-soft stagger-1">
               <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
-                Napíšte nám
+                {copy.sectionBadge}
               </span>
               <h2 className="text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
-                Neváhajte nás <span className="text-accent-red italic">kontaktovať</span>
+                {copy.sectionTitleStart} <span className="text-accent-red italic">{copy.sectionTitleAccent}</span>
               </h2>
               <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                Či už predávate nehnuteľnosť, hľadáte nový domov alebo len premýšľate o ďalšom kroku, sme tu.
+                {copy.sectionSubtitle}
               </p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
@@ -193,12 +196,12 @@ const Kontakt = () => {
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-navy/5 to-transparent rounded-bl-3xl pointer-events-none" />
 
                     <div className="mb-8">
-                      <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">Kontaktný formulár</span>
+                      <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{language === 'sk' ? 'Kontaktný formulár' : language === 'en' ? 'Contact form' : 'Kontaktformular'}</span>
                       <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
-                        Máte otázku?{' '}
+                        {language === 'sk' ? 'Máte otázku?' : language === 'en' ? 'Have a question?' : 'Haben Sie eine Frage?'}{' '}
                         <span className="font-serif italic font-normal text-accent-red">
-                          <span className="md:hidden">Ozvite sa</span>
-                          <span className="hidden md:inline">Ozvite sa nám</span>
+                          <span className="md:hidden">{language === 'sk' ? 'Ozvite sa' : language === 'en' ? 'Reach out' : 'Melden Sie sich'}</span>
+                          <span className="hidden md:inline">{language === 'sk' ? 'Ozvite sa nám' : language === 'en' ? 'Reach out to us' : 'Melden Sie sich bei uns'}</span>
                         </span>
                       </h3>
                     </div>
@@ -259,7 +262,7 @@ const Kontakt = () => {
                       </button>
 
                       <p className="text-charcoal/40 text-xs text-center mt-4">
-                        Vaše údaje sú v bezpečí. Odpovieme do 24 hodín.
+                        {language === 'sk' ? 'Vaše údaje sú v bezpečí. Odpovieme do 24 hodín.' : language === 'en' ? 'Your data is safe. We will reply within 24 hours.' : 'Ihre Daten sind sicher. Wir antworten innerhalb von 24 Stunden.'}
                       </p>
                     </form>
                   </div>

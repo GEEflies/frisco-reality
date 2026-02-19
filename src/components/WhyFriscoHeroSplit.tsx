@@ -3,6 +3,8 @@
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { Home, Search, Camera, Megaphone, HandshakeIcon, Users, Building, Receipt, CreditCard, ShieldCheck, FileSignature, HeadphonesIcon, ArrowUpRight, Tag, KeyRound, Banknote, DoorOpen } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { WHY_FRISCO_COPY } from '@/i18n/copy';
 
 /* ═══════════════════ DATA ═══════════════════ */
 const ownerTabs = {
@@ -109,10 +111,22 @@ const seekerTabs = {
 
 /* ═══════════════════ MAIN COMPONENT ═══════════════════ */
 const WhyFriscoHeroSplit = () => {
+    const { language } = useLanguage();
+    const copy = WHY_FRISCO_COPY[language];
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, { once: true, margin: "-15% 0px -15% 0px" });
     const controls = useAnimation();
     const [cardsRevealed, setCardsRevealed] = useState(false);
+
+    const localizedOwnerTabs = {
+        sell: { ...ownerTabs.sell, label: copy.ownerSellLabel },
+        rent: { ...ownerTabs.rent, label: copy.ownerRentLabel },
+    };
+
+    const localizedSeekerTabs = {
+        buy: { ...seekerTabs.buy, label: copy.seekerBuyLabel },
+        rent: { ...seekerTabs.rent, label: copy.seekerRentLabel },
+    };
 
     useEffect(() => {
         if (isInView) {
@@ -146,18 +160,18 @@ const WhyFriscoHeroSplit = () => {
                     className="mb-8 story-rise stagger-1"
                 >
                     <span className="inline-block px-4 py-1.5 rounded-full border border-navy/10 bg-white/60 text-xs font-mono tracking-[0.2em] text-navy uppercase mb-6 backdrop-blur-sm shadow-sm">
-                        Prečo Frisco?
+                        {copy.badge}
                     </span>
                     <h1 className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight leading-none">
-                        Komplexné <br className="lg:hidden" />
-                        <span className="text-accent-red italic pb-2">riešenia</span>
+                        {copy.title} <br className="lg:hidden" />
+                        <span className="text-accent-red italic pb-2">{copy.accent}</span>
                     </h1>
                 </div>
                 <p
                     className="text-charcoal/70 text-lg md:text-xl max-w-2xl font-light leading-relaxed story-soft stagger-2"
                 >
-                    <span className="hidden lg:inline">Či predávate, kupujete alebo prenajímate — vieme, čo potrebujete. Vyberte si svoju situáciu.</span>
-                    <span className="lg:hidden">Či predávate, kupujete alebo prenajímate, toto sú dôvody, prečo si vybrať FRISCO:</span>
+                    <span className="hidden lg:inline">{copy.subtitleDesktop}</span>
+                    <span className="lg:hidden">{copy.subtitleMobile}</span>
                 </p>
             </section>
 
@@ -207,7 +221,7 @@ const WhyFriscoHeroSplit = () => {
             {/* ═══════════════════ CONTENT: TAB TOGGLE CARDS ═══════════════════ */}
             <div className="container mx-auto px-6 pb-16 relative z-10 w-full mt-4 lg:mt-0">
                 {/* Mobile bridge text */}
-                <p className="text-center text-sm text-charcoal/40 font-medium tracking-wide uppercase mb-6 lg:hidden story-soft stagger-3">Vyberte si, čo riešite ↓</p>
+                <p className="text-center text-sm text-charcoal/40 font-medium tracking-wide uppercase mb-6 lg:hidden story-soft stagger-3">{copy.bridge}</p>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 relative">
 
                     {/* LEFT CARD — OWNERS */}
@@ -219,10 +233,10 @@ const WhyFriscoHeroSplit = () => {
                     >
                         <div className="relative rounded-2xl border border-charcoal/[0.08] bg-white shadow-lg shadow-charcoal/[0.04] overflow-hidden">
                             <TabCardContent
-                                tabs={ownerTabs}
+                                tabs={localizedOwnerTabs}
                                 defaultTab="sell"
                                 headerIcon={<Home className="w-5 h-5" />}
-                                headerLabel="Chcem svoju nehnuteľnosť"
+                                headerLabel={copy.ownerHeader}
                             />
                         </div>
                     </div>
@@ -236,10 +250,10 @@ const WhyFriscoHeroSplit = () => {
                     >
                         <div className="relative rounded-2xl border border-charcoal/[0.08] bg-white shadow-lg shadow-charcoal/[0.04] overflow-hidden">
                             <TabCardContent
-                                tabs={seekerTabs}
+                                tabs={localizedSeekerTabs}
                                 defaultTab="buy"
                                 headerIcon={<Search className="w-5 h-5" />}
-                                headerLabel="Chcem si nehnuteľnosť"
+                                headerLabel={copy.seekerHeader}
                             />
                         </div>
                     </div>

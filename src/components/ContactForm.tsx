@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { ArrowUpRight, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export const ContactForm = () => {
+    const { language } = useLanguage();
     const { toast } = useToast();
     const [formState, setFormState] = useState({
         name: '',
@@ -47,16 +49,16 @@ export const ContactForm = () => {
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-navy/5 to-transparent rounded-bl-3xl pointer-events-none" />
 
             <div className="mb-8">
-                <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">Kontaktný formulár</span>
+                <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{language === 'sk' ? 'Kontaktný formulár' : language === 'en' ? 'Contact form' : 'Kontaktformular'}</span>
                 <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
-                    Máte otázku?{' '}
+                    {language === 'sk' ? 'Máte otázku?' : language === 'en' ? 'Have a question?' : 'Haben Sie eine Frage?'}{' '}
                     <span className="font-serif italic font-normal text-accent-red">
-                        <span className="md:hidden">Ozvite sa</span>
-                        <span className="hidden md:inline">Ozvite sa nám</span>
+                        <span className="md:hidden">{language === 'sk' ? 'Ozvite sa' : language === 'en' ? 'Reach out' : 'Melden Sie sich'}</span>
+                        <span className="hidden md:inline">{language === 'sk' ? 'Ozvite sa nám' : language === 'en' ? 'Reach out to us' : 'Melden Sie sich bei uns'}</span>
                     </span>
                 </h3>
                 <p className="text-charcoal/50 text-sm mt-2 font-sans">
-                    Odpovieme vám do 24 hodín — nezáväzne a diskrétne.
+                    {language === 'sk' ? 'Odpovieme vám do 24 hodín — nezáväzne a diskrétne.' : language === 'en' ? 'We respond within 24 hours — with no obligation and full discretion.' : 'Wir antworten innerhalb von 24 Stunden — unverbindlich und diskret.'}
                 </p>
             </div>
 

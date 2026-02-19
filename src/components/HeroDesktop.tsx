@@ -4,10 +4,15 @@ import { Search, Home, Key } from "lucide-react";
 import Link from "next/link";
 
 import RotatingWord from "./RotatingWord";
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { HERO_DESKTOP_COPY } from '@/i18n/copy';
 
 const HERO_VIDEO_URL = "https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4";
 
 const HeroDesktop = () => {
+  const { language } = useLanguage();
+  const copy = HERO_DESKTOP_COPY[language];
+
   return (
     <div className="relative min-h-screen bg-white overflow-hidden flex flex-col">
       {/* Solid Background - Clean White */}
@@ -25,7 +30,7 @@ const HeroDesktop = () => {
             >
               <div className="h-px w-12 bg-navy/20" />
               <span className="text-navy/80 font-mono text-xs tracking-[0.3em] uppercase">
-                Exkluzívna realitná kancelária v Seredi
+                {copy.label}
               </span>
             </div>
 
@@ -33,11 +38,11 @@ const HeroDesktop = () => {
             <h1
               className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap story-rise stagger-2"
             >
-              Vašu nehnuteľnosť
+              {copy.title}
               <br />
               <span className="text-navy/90 flex items-center gap-4">
                 <RotatingWord
-                  words={["nájdeme", "nafotíme", "odprezentujeme", "prenajmeme", "predáme", "alebo odkúpime"]}
+                  words={copy.verbs}
                   interval={3000}
                   className="text-accent-red text-left min-w-[200px]" // Red color + styling fix
                 />
@@ -48,7 +53,7 @@ const HeroDesktop = () => {
             <p
               className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12 story-soft stagger-3"
             >
-              Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.
+              {copy.subtitle}
             </p>
 
 
@@ -64,10 +69,10 @@ const HeroDesktop = () => {
                   <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
                   <Search size={16} strokeWidth={2} className="relative z-10" />
                   <span className="relative z-10 hidden xl:inline">
-                    Pozrieť aktuálnu ponuku
+                    {copy.offerLong}
                   </span>
                   <span className="relative z-10 inline xl:hidden">
-                    Ponuka
+                    {copy.offerShort}
                   </span>
                 </Link>
 
@@ -76,8 +81,8 @@ const HeroDesktop = () => {
                   className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
                 >
                   <Home size={16} strokeWidth={2} className="shrink-0" />
-                  <span className="hidden xl:inline">Chcem predať nehnuteľnosť</span>
-                  <span className="inline xl:hidden">Chcem predať</span>
+                  <span className="hidden xl:inline">{copy.sellLong}</span>
+                  <span className="inline xl:hidden">{copy.sellShort}</span>
                 </Link>
               </div>
 
@@ -86,8 +91,8 @@ const HeroDesktop = () => {
                 className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md w-full flex items-center justify-center gap-2.5 whitespace-nowrap"
               >
                 <Key size={16} strokeWidth={2} className="shrink-0" />
-                <span className="hidden xl:inline">Chcem prenajať svoju nehnuteľnosť</span>
-                <span className="inline xl:hidden">Chcem prenajať</span>
+                <span className="hidden xl:inline">{copy.rentLong}</span>
+                <span className="inline xl:hidden">{copy.rentShort}</span>
               </Link>
             </div>
 

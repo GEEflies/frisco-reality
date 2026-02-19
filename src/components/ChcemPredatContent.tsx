@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight, Home, Camera, Megaphone, ShieldCheck, MessageCircle, TrendingUp } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 import { ContactSection } from '@/components/ContactSection';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { CHCEM_PREDAT_HERO_COPY } from '@/i18n/copy';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -68,6 +70,9 @@ const benefits = [
 ];
 
 const ChcemPredat = () => {
+    const { language } = useLanguage();
+    const heroCopy = CHCEM_PREDAT_HERO_COPY[language];
+
     return (
         <div className="min-h-screen bg-white">
             <div>
@@ -81,15 +86,15 @@ const ChcemPredat = () => {
                                 <div className="flex items-center gap-4 mb-8 story-soft stagger-1">
                                     <div className="h-px w-12 bg-navy/20" />
                                     <span className="text-navy/60 font-mono text-xs tracking-[0.3em] uppercase">
-                                        Predajte za cenu, ktorá dáva zmysel.
+                                        {heroCopy.label}
                                     </span>
                                 </div>
                                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy story-rise stagger-2">
-                                    Vy riešite svoj život, <br />
-                                    my riešime <span className="text-accent-red italic">predaj</span>.
+                                    {heroCopy.titleStart} <br />
+                                    <span className="text-accent-red italic">{heroCopy.titleAccent}</span>.
                                 </h1>
                                 <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10 story-soft stagger-3">
-                                    Predaj nie je len o inzeráte. Je to o správnej cene, prezentácii a vyjednávaní. My nastavíme proces tak, aby ste predali dobre a bez zbytočných chýb.
+                                    {heroCopy.subtitle}
                                 </p>
 
                                 {/* Mobile Video */}
@@ -113,7 +118,7 @@ const ChcemPredat = () => {
                                         className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-all shadow-lg shadow-navy/20 group"
                                     >
                                         <Home className="w-5 h-5" />
-                                        <span>Chcem predať nehnuteľnosť</span>
+                                        <span>{heroCopy.cta}</span>
                                         <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                     </a>
                                 </div>

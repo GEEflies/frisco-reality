@@ -4,10 +4,15 @@ import { Search, Home, Key } from 'lucide-react';
 import Link from 'next/link';
 
 import RotatingWord from "./RotatingWord";
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { HERO_MOBILE_COPY } from '@/i18n/copy';
 const friscoLogo = '/frisco-logo.svg';
 const HERO_VIDEO_URL = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4';
 
 const HeroMobile = () => {
+    const { language } = useLanguage();
+    const copy = HERO_MOBILE_COPY[language];
+
     return (
         <div className="relative min-h-[100svh] bg-white flex flex-col justify-start overflow-hidden pt-28 pb-8">
             {/* Solid Background */}
@@ -19,21 +24,21 @@ const HeroMobile = () => {
                 <div className="flex items-center gap-3 mb-5 story-soft stagger-1">
                     <div className="h-px w-8 bg-navy/20" />
                     <span className="text-navy/70 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase">
-                        Exkluzívna realitka v Seredi
+                        {copy.label}
                     </span>
                 </div>
 
                 {/* Main Headline */}
                 <h1 className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start story-rise stagger-2">
-                    <span className="whitespace-nowrap">Vašu nehnuteľnosť</span>
+                    <span className="whitespace-nowrap">{copy.title}</span>
                     <span className="block h-[2.6rem] sm:h-[3.1rem] md:h-[4.2rem] overflow-hidden text-navy/90">
-                        <RotatingWord words={["nájdeme", "nafotíme", "odprezentujeme", "prenajmeme", "predáme", "alebo odkúpime"]} className="text-accent-red text-left" />
+                        <RotatingWord words={copy.verbs} className="text-accent-red text-left" />
                     </span>
                 </h1>
 
                 {/* Subheadline / Value Prop */}
                 <p className="text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6 story-soft stagger-3">
-                    Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a klientom nájsť miesto, ktoré môžu nazývať domovom.
+                    {copy.subtitle}
                 </p>
 
                 {/* CTA Buttons */}
@@ -44,7 +49,7 @@ const HeroMobile = () => {
                     >
                         <div className="absolute inset-0 w-full h-full bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
                         <Search size={16} strokeWidth={2} className="relative z-10" />
-                        <span className="relative z-10">Pozrieť aktuálnu ponuku</span>
+                        <span className="relative z-10">{copy.offer}</span>
                     </Link>
                     <div className="flex gap-3">
                         <Link
@@ -52,14 +57,14 @@ const HeroMobile = () => {
                             className="group flex-1 px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm md:text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-lg flex items-center justify-center gap-2"
                         >
                             <Home size={16} strokeWidth={2} />
-                            Chcem predať
+                            {copy.sell}
                         </Link>
                         <Link
                             href="/chcem-prenajat"
                             className="group flex-1 px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm md:text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-lg flex items-center justify-center gap-2"
                         >
                             <Key size={16} strokeWidth={2} />
-                            Chcem prenajať
+                            {copy.rent}
                         </Link>
                     </div>
                 </div>

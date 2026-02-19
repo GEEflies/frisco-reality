@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight, Key, CalendarCheck, ShieldAlert, Eye, Phone } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 import { ContactSection } from '@/components/ContactSection';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { CHCEM_PRENAJAT_HERO_COPY } from '@/i18n/copy';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -56,6 +58,9 @@ const pillars = [
 ];
 
 const ChcemPrenajat = () => {
+    const { language } = useLanguage();
+    const heroCopy = CHCEM_PRENAJAT_HERO_COPY[language];
+
     return (
         <div className="min-h-screen bg-white">
             <div>
@@ -73,26 +78,26 @@ const ChcemPrenajat = () => {
                                 >
                                     <div className="h-px w-12 bg-navy/20" />
                                     <span className="text-navy/60 font-mono text-xs tracking-[0.3em] uppercase">
-                                        Prenájom nehnuteľnosti
+                                        {heroCopy.label}
                                     </span>
                                 </div>
                                 <h1
                                     className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy story-rise stagger-2"
                                 >
-                                    Prenajmite <br />
-                                    <span className="text-accent-red italic">bez starostí.</span>
+                                    {heroCopy.titleStart} <br />
+                                    <span className="text-accent-red italic">{heroCopy.titleAccent}</span>
                                 </h1>
                                 <p
                                     className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-4 story-soft stagger-3"
                                 >
-                                    Máte byt alebo dom na prenájom? Postaráme sa o všetko – od výberu nájomníka až po pravidelnú kontrolu platieb.
+                                    {heroCopy.subtitle}
                                 </p>
 
 
                                 <p
                                     className="hidden lg:block text-base text-charcoal/50 max-w-lg font-light leading-relaxed mb-10"
                                 >
-                                    Žiadne naháňanie nájomníkov. Žiadne zbytočné telefonáty. Žiadne stratené víkendy.
+                                    {heroCopy.secondary}
                                 </p>
 
                                 {/* Mobile Video - Inserted after texts */}
@@ -114,7 +119,7 @@ const ChcemPrenajat = () => {
                                 <p
                                     className="block lg:hidden text-base text-charcoal/50 max-w-lg font-light leading-relaxed mb-10"
                                 >
-                                    Žiadne naháňanie nájomníkov. Žiadne zbytočné telefonáty. Žiadne stratené víkendy.
+                                    {heroCopy.secondary}
                                 </p>
                                 <div className="story-soft stagger-5">
                                     <a
@@ -122,7 +127,7 @@ const ChcemPrenajat = () => {
                                         className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-all shadow-lg shadow-navy/20 group"
                                     >
                                         <Key className="w-5 h-5" />
-                                        <span>Chcem prenajať svoju nehnuteľnosť</span>
+                                        <span>{heroCopy.cta}</span>
                                         <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                     </a>
                                 </div>
