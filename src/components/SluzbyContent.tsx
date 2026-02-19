@@ -283,8 +283,6 @@ const ValuesSection = ({ values, fadeInUp, staggerContainer }: { values: any[], 
       <motion.div
         ref={containerRef}
         className="flex md:grid md:grid-cols-3 gap-6 lg:gap-8 w-max md:w-auto px-4 md:px-0"
-        initial="hidden"
-        whileInView="visible"
         viewport={{ once: true, margin: "0px" }}
         variants={staggerContainer}
       >

@@ -172,12 +172,8 @@ const MockListingCardMobile = ({ listing, index }: { listing: typeof MOCK_LISTIN
 
 export const MainListings = () => {
     return (
-        <motion.section
+        <section
             className="pt-12 lg:pt-24 pb-12 bg-cream relative z-10 border-b border-black/5"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         >
             <div className="container mx-auto px-6">
 
@@ -251,6 +247,6 @@ export const MainListings = () => {
                 </motion.div>
 
             </div>
-        </motion.section>
+        </section>
     );
 };

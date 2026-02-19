@@ -109,8 +109,8 @@
     }
   }
 
-  /* Optimize images globally */
-  img {
+  /* Optimize images globally - removed content-visibility to fix layout shifts */
+  /* img {
     content-visibility: auto;
-  }
+  } */
 }

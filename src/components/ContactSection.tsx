@@ -33,12 +33,7 @@ export const ContactSection = () => {
 
 
           {/* Left: Contact Info — this column is tall and scrolls normally */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
+          <div>
             {/* Contact Cards */}
             <motion.div
               className="space-y-6 mb-12"
@@ -126,14 +121,9 @@ export const ContactSection = () => {
 
           {/* Right: Contact Form — sticky so it locks in place */}
           <div className="lg:sticky lg:top-28 self-start">
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
+            <div>
               <ContactForm />
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
