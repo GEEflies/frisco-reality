@@ -20,6 +20,7 @@ const Kontakt = () => {
       toastDescription: 'Ozveme sa vám čoskoro.',
       heroAlt: 'FRISCO Tím',
       heroQuote: '"Váš úspech je náš záväzok."',
+      imagePlaceholder: 'sem dáme vašu fotku',
       visitUs: 'Navštívte nás',
       callUs: 'Zavolajte nám',
       writeUs: 'Napíšte nám',
@@ -50,6 +51,7 @@ const Kontakt = () => {
       toastDescription: 'We will get back to you soon.',
       heroAlt: 'FRISCO Team',
       heroQuote: '"Your success is our commitment."',
+      imagePlaceholder: 'We will replace this with your image.',
       visitUs: 'Visit us',
       callUs: 'Call us',
       writeUs: 'Write to us',
@@ -80,6 +82,7 @@ const Kontakt = () => {
       toastDescription: 'Wir melden uns in Kürze bei Ihnen.',
       heroAlt: 'FRISCO Team',
       heroQuote: '"Ihr Erfolg ist unser Versprechen."',
+      imagePlaceholder: 'Wir werden dies durch Ihr Bild ersetzen.',
       visitUs: 'Besuchen Sie uns',
       callUs: 'Rufen Sie uns an',
       writeUs: 'Schreiben Sie uns',
@@ -162,25 +165,14 @@ const Kontakt = () => {
                 </p>
               </div>
 
-              {/* Image Content */}
+              {/* Image Content - Placeholder */}
               <div
-                className="relative hidden lg:block story-media stagger-4"
+                className="relative hidden lg:flex flex-col items-center justify-center story-media stagger-4 aspect-[4/3] bg-navy/5 rounded-3xl border border-navy/10"
               >
-                <div className="relative group aspect-[4/3]">
-                  <img
-                    src={agentsHero}
-                    alt={pageCopy.heroAlt}
-                    className="w-full h-full object-contain object-bottom transform transition-transform duration-1000 group-hover:scale-105 drop-shadow-2xl"
-                  />
-
-                  {/* Decorative Elements */}
-                  <div className="absolute bottom-8 left-8">
-                    <div className="w-12 h-1 bg-accent-red mb-4" />
-                    <p className="text-charcoal/90 text-sm font-medium tracking-wide">
-                      {pageCopy.heroQuote}
-                    </p>
-                  </div>
-                </div>
+                <h2 className="font-serif italic text-6xl text-navy mb-4 uppercase">FRISCO</h2>
+                <p className="text-charcoal/60 text-center px-8 font-sans max-w-md">
+                  {pageCopy.imagePlaceholder}
+                </p>
 
                 {/* Decorative Elements around image */}
                 <div className="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-navy/20 rounded-tr-3xl -z-10" />
@@ -294,7 +286,7 @@ const Kontakt = () => {
                     <div className="mb-8">
                       <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{pageCopy.formBadge}</span>
                       <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
-                        {pageCopy.formTitle}{' '}
+                        {pageCopy.formTitle}{language === 'de' ? <br /> : ' '}
                         <span className="font-serif italic font-normal text-accent-red">
                           <span className="md:hidden">{pageCopy.formAccentMobile}</span>
                           <span className="hidden md:inline">{pageCopy.formAccentDesktop}</span>

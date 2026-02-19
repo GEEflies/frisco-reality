@@ -28,7 +28,7 @@ const steps = [
 
 import confetti from 'canvas-confetti';
 
-const S_CURVE_PATH = "M 25 0 C 25 0, 25 20, 50 20 C 75 20, 75 35, 75 35 C 75 35, 75 50, 50 50 C 25 50, 25 65, 25 65 C 25 65, 25 85, 50 85 C 75 85, 85 95, 85 95";
+const S_CURVE_PATH = "M 25 0 C 25 0, 25 18, 50 18 C 75 18, 75 32, 75 32 C 75 32, 75 46, 50 46 C 25 46, 25 60, 25 80, 30 80";
 
 export const ProcessSection = () => {
   const { language } = useLanguage();
@@ -38,14 +38,14 @@ export const ProcessSection = () => {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 65%", "end 90%"] // Finishes drawing sooner — when last card is visible
+    offset: ["start 60%", "center 60%"] // Finishes drawing much sooner
   });
 
   // Optimized spring configuration for "butter smooth" no-overshoot tracking
   const smoothProgress = useSpring(scrollYProgress, {
-    mass: 0.2,       // Low mass = Low inertia (stops quickly when scroll stops)
-    stiffness: 50,   // Responsive but loose enough to smooth out mouse wheel steps
-    damping: 10,     // Over-damped (Critical ~4.5) to absolutely prevent "bouncing back"
+    mass: 0.1,       // Very low mass -> highly responsive
+    stiffness: 30,   // Soft stiffness -> smooth
+    damping: 10,     // Over-damped to prevent jitter/overshoot
     restDelta: 0.001
   });
 
@@ -65,7 +65,7 @@ export const ProcessSection = () => {
       particleCount: 40,
       angle: 120,
       spread: 60,
-      origin: { x: 0.85, y: 0.85 },
+      origin: { x: 0.3, y: 0.8 },
       colors,
       disableForReducedMotion: true,
       zIndex: 100,
@@ -88,7 +88,7 @@ export const ProcessSection = () => {
   });
 
   return (
-    <section ref={containerRef} className="relative pt-16 md:pt-24 pb-12 md:pb-60 bg-cream overflow-hidden">
+    <section ref={containerRef} className="relative pt-16 md:pt-24 pb-0 md:pb-0 -mb-32 md:-mb-64 bg-cream overflow-hidden">
       {/* Background Noise & ambient light */}
       <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light pointer-events-none" />
       <div
@@ -107,31 +107,17 @@ export const ProcessSection = () => {
         }}
       >
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            <mask id="draw-mask">
-              {/* This path acts as the mask. It draws white (visible) as you scroll. */}
-              <motion.path
-                d={S_CURVE_PATH}
-                stroke="white"
-                strokeWidth="5" /* Thick enough to fully cover the underlying line */
-                fill="none"
-                style={{
-                  pathLength,
-                  willChange: 'stroke-dashoffset' // Optimize paint
-                }}
-              />
-            </mask>
-          </defs>
-
-          {/* The visible dashed line, revealed by the mask */}
-          <path
+          {/* Solid line that draws itself - better performance than masking */}
+          <motion.path
             d={S_CURVE_PATH}
             stroke="#D92323"
             strokeWidth="1"
             fill="none"
-            strokeDasharray="4 4"
             className="opacity-70"
-            mask="url(#draw-mask)"
+            style={{
+              pathLength,
+              willChange: 'stroke-dashoffset' // Optimize paint
+            }}
           />
         </svg>
 
@@ -147,7 +133,7 @@ export const ProcessSection = () => {
 
         {/* End Icon (Flag) - synchronized with path completion */}
         <motion.div
-          className="absolute bottom-[5%] left-[85%] -translate-x-1/2 translate-y-1/2"
+          className="absolute bottom-[20%] left-[30%] -translate-x-1/2 translate-y-1/2"
           style={{
             opacity: iconOpacity,
             scale: iconScale,
@@ -190,8 +176,8 @@ export const ProcessSection = () => {
             // Previous margins: 0, -128/-260, -128/-24, -64/-48
             let translateClass = "";
             if (index === 1) translateClass = "md:-translate-y-32 lg:-translate-y-40";
-            if (index === 2) translateClass = "md:-translate-y-32 lg:-translate-y-6";
-            if (index === 3) translateClass = "md:-translate-y-16 lg:-translate-y-12";
+            if (index === 2) translateClass = "md:-translate-y-44 lg:-translate-y-36";
+            if (index === 3) translateClass = "md:-translate-y-36 lg:-translate-y-[13.5rem]";
 
             return (
               <motion.div

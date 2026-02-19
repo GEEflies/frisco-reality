@@ -69,10 +69,13 @@ const HeroDesktop = () => {
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <LocaleLink
                   href="/ponuka"
-                  className="group relative px-6 py-4 bg-navy text-white font-sans font-medium text-base tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
+                  className={`group relative bg-navy text-white font-sans font-medium text-base tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex-1 flex items-center justify-center gap-2.5 ${language === 'de'
+                      ? 'px-6 py-3 min-h-[56px] h-auto leading-tight'
+                      : 'px-6 py-4 whitespace-nowrap'
+                    }`}
                 >
                   <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-                  <Search size={16} strokeWidth={2} className="relative z-10" />
+                  <Search size={16} strokeWidth={2} className="relative z-10 shrink-0" />
                   <span className="relative z-10 hidden xl:inline">
                     {copy.offerLong}
                   </span>
@@ -83,7 +86,10 @@ const HeroDesktop = () => {
 
                 <LocaleLink
                   href="/chcem-predat"
-                  className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
+                  className={`group border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex-1 flex items-center justify-center gap-2.5 ${language === 'de'
+                      ? 'px-6 py-3 min-h-[56px] h-auto leading-tight'
+                      : 'px-6 py-4 whitespace-nowrap'
+                    }`}
                 >
                   <Home size={16} strokeWidth={2} className="shrink-0" />
                   <span className="hidden xl:inline">{copy.sellLong}</span>
@@ -93,7 +99,10 @@ const HeroDesktop = () => {
 
               <LocaleLink
                 href="/chcem-prenajat"
-                className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md w-full flex items-center justify-center gap-2.5 whitespace-nowrap"
+                className={`group border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md w-full flex items-center justify-center gap-2.5 ${language === 'de'
+                    ? 'px-6 py-3 min-h-[56px] h-auto leading-tight'
+                    : 'px-6 py-4 whitespace-nowrap'
+                  }`}
               >
                 <Key size={16} strokeWidth={2} className="shrink-0" />
                 <span className="hidden xl:inline">{copy.rentLong}</span>

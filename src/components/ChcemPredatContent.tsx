@@ -144,7 +144,7 @@ const ChcemPredat = () => {
                                     </span>
                                 </div>
                                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy story-rise stagger-2">
-                                    {heroCopy.titleStart} <br />
+                                    {heroCopy.titleStart} {language === 'de' ? ' ' : <br />}
                                     <span className="text-accent-red italic">{heroCopy.titleAccent}</span>.
                                 </h1>
                                 <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10 story-soft stagger-3">

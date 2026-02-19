@@ -139,7 +139,7 @@ export const ContactForm = () => {
             <div className="mb-8">
                 <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{t.formLabel}</span>
                 <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
-                    {t.heading}{' '}
+                    {t.heading}{language === 'de' ? <br /> : ' '}
                     <span className="font-serif italic font-normal text-accent-red">
                         <span className="md:hidden">{t.headingAccentMobile}</span>
                         <span className="hidden md:inline">{t.headingAccent}</span>

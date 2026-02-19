@@ -54,8 +54,8 @@ export const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -145,11 +145,11 @@ export const Navbar = () => {
       </AnimatePresence>
 
       {/* Desktop Navbar */}
-      <div className={`fixed top-0 left-0 right-0 z-50 flex-col transition-all duration-300 ${isPropertyDetailPage ? 'hidden' : 'hidden xl:flex'}`}>
+      <div className={`fixed top-0 left-0 right-0 z-[99] flex-col transition-all duration-300 ${isPropertyDetailPage ? 'hidden' : 'hidden xl:flex'}`}>
         <header className="relative w-full flex items-center justify-center h-24">
           <div
             className={`absolute left-1/2 -translate-x-1/2 inset-y-3 rounded-full transition-all duration-500 ${isNavActive ? 'bg-white/95 backdrop-blur-xl border border-navy/10 shadow-lg opacity-100' : 'opacity-0'}`}
-            style={{ width: 'calc(100% - 2rem)', maxWidth: '1375px' }}
+            style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}
           />
           <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
             <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
@@ -241,12 +241,11 @@ export const Navbar = () => {
                   <button
                     type="button"
                     onClick={() => setIsLanguageOpen((prev) => !prev)}
-                    className="h-10 pl-2 pr-2.5 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center gap-1.5 text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300"
+                    className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300"
                     aria-label="Change language"
                     aria-expanded={isLanguageOpen}
                   >
-                    <activeLanguage.Flag className="h-3.5 w-5 rounded-[2px] object-cover" />
-                    <Globe size={18} strokeWidth={2} />
+                    <activeLanguage.Flag className="h-3.5 w-5 rounded-[2px] object-cover shadow-sm" />
                   </button>
                   <AnimatePresence>
                     {isLanguageOpen && (
