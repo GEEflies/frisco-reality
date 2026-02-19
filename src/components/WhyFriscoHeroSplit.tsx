@@ -112,16 +112,14 @@ const WhyFriscoHeroSplit = () => {
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, { once: true, margin: "-15% 0px -15% 0px" });
     const controls = useAnimation();
-    // Initialize to 'both' to be visible by default (better for SSR/mobile)
-    const [activeSide, setActiveSide] = useState<'none' | 'both'>('both');
+    const [cardsRevealed, setCardsRevealed] = useState(false);
 
     useEffect(() => {
         if (isInView) {
-            // Mobile check: skip animation on screens smaller than lg (1024px)
-            const isMobile = window.innerWidth < 1024;
+            const isDesktop = window.innerWidth >= 1024;
 
-            if (isMobile) {
-                // Already visible by default, nothing to do
+            if (!isDesktop) {
+                setCardsRevealed(true);
                 return;
             }
 
@@ -132,7 +130,7 @@ const WhyFriscoHeroSplit = () => {
                     controls.start('horizontalDraw'),
                     controls.start('dotsOut')
                 ]);
-                setActiveSide('both');
+                setCardsRevealed(true);
             };
             sequence();
         }
@@ -213,11 +211,11 @@ const WhyFriscoHeroSplit = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 relative">
 
                     {/* LEFT CARD — OWNERS */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: '-50px' }}
-                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    <div
+                        className={`animate-fade-in-up stagger-1 lg:transition-all lg:duration-700 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${cardsRevealed
+                            ? 'lg:opacity-100 lg:translate-y-0 lg:pointer-events-auto'
+                            : 'lg:opacity-0 lg:translate-y-8 lg:pointer-events-none'
+                            }`}
                     >
                         <div className="relative rounded-2xl border border-charcoal/[0.08] bg-white shadow-lg shadow-charcoal/[0.04] overflow-hidden">
                             <TabCardContent
@@ -227,14 +225,14 @@ const WhyFriscoHeroSplit = () => {
                                 headerLabel="Chcem svoju nehnuteľnosť"
                             />
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* RIGHT CARD — SEEKERS */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: '-50px' }}
-                        transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                    <div
+                        className={`animate-fade-in-up stagger-2 lg:transition-all lg:duration-700 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${cardsRevealed
+                            ? 'lg:opacity-100 lg:translate-y-0 lg:pointer-events-auto'
+                            : 'lg:opacity-0 lg:translate-y-8 lg:pointer-events-none'
+                            }`}
                     >
                         <div className="relative rounded-2xl border border-charcoal/[0.08] bg-white shadow-lg shadow-charcoal/[0.04] overflow-hidden">
                             <TabCardContent
@@ -244,7 +242,7 @@ const WhyFriscoHeroSplit = () => {
                                 headerLabel="Chcem si nehnuteľnosť"
                             />
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
