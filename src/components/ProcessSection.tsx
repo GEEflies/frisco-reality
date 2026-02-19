@@ -28,7 +28,7 @@ const steps = [
 
 import confetti from 'canvas-confetti';
 
-const S_CURVE_PATH = "M 25 0 C 25 0, 25 18, 50 18 C 75 18, 75 32, 75 32 C 75 32, 75 46, 50 46 C 25 46, 25 60, 31.5 80";
+const S_CURVE_PATH = "M 25 0 C 25 0, 25 18, 50 18 C 75 18, 75 32, 75 32 C 75 32, 75 46, 50 46 C 25 46, 25 60, 32.5 80";
 
 export const ProcessSection = () => {
   const { language } = useLanguage();
@@ -88,7 +88,7 @@ export const ProcessSection = () => {
   });
 
   return (
-    <section ref={containerRef} className="relative pt-16 md:pt-24 pb-0 md:pb-0 -mb-32 md:-mb-64 bg-cream overflow-hidden">
+    <section ref={containerRef} className="relative pt-16 md:pt-24 pb-0 md:pb-0 -mb-32 md:-mb-32 bg-cream overflow-hidden">
       {/* Background Noise & ambient light */}
       <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light pointer-events-none" />
       <div
