@@ -91,10 +91,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/frisco-logo-comrpessed.png", type: "image/png" },
+      { url: "/frisco-favicon.png", type: "image/png" },
     ],
     apple: [
-      { url: "/frisco-logo-comrpessed.png", sizes: "180x180", type: "image/png" },
+      { url: "/frisco-favicon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   manifest: "/manifest.webmanifest",
@@ -115,12 +115,13 @@ export default function RootLayout({
   return (
     <html lang="sk" suppressHydrationWarning>
       <head>
+        <link rel="dns-prefetch" href="//fcvswlurtchqorgnwclw.supabase.co" />
+        <link rel="preconnect" href="https://fcvswlurtchqorgnwclw.supabase.co" crossOrigin="" />
         <link
           rel="preload"
           as="video"
           href="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4"
           type="video/mp4"
-          media="(min-width: 1024px)"
         />
         <script
           type="application/ld+json"
