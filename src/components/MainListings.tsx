@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ChevronRight, Maximize, Home, MapPin, Clock } from 'lucide-react';
 
@@ -47,28 +48,31 @@ const MockListingCard = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0];
     <motion.div
         key={listing.id}
         className="min-w-[calc(33.333%-1.33rem)] flex-shrink-0"
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }} // Simplified initial state
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
         transition={{
-            duration: 0.6,
-            delay: 0.5 + index * 0.12,
-            ease: [0.4, 0, 0.2, 1],
+            duration: 0.5, // Faster duration
+            delay: index * 0.1, // Tighter stagger
+            ease: "easeOut", // Simpler ease
         }}
     >
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group">
 
             {/* Image placeholder */}
             <div className={`relative h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center`}>
-                <img src="/frisco-reality-sered.jpg" alt={listing.title} className="absolute inset-0 w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500" />
+                <Image
+                    src="/frisco-reality-sered.jpg"
+                    alt={listing.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                    className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 {/* Badge */}
                 <span className={`absolute top-4 left-4 ${listing.badgeColor} text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm z-20`}>
                     {listing.badge}
                 </span>
-
-                {/* Watermark logo */}
-                {/* Watermark logo - Removed */}
 
                 {/* Overlay only - no text/icon */}
                 <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px] z-10" />
@@ -111,24 +115,29 @@ const MockListingCard = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0];
 const MockListingCardMobile = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0]; index: number }) => (
     <motion.div
         key={listing.id}
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-20px' }}
         transition={{
             duration: 0.5,
-            delay: 0.5 + index * 0.15,
-            ease: [0.4, 0, 0.2, 1],
+            delay: index * 0.1,
+            ease: "easeOut",
         }}
     >
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col relative">
             {/* Image placeholder */}
             <div className={`relative h-[220px] overflow-hidden bg-gray-100 flex items-center justify-center`}>
-                <img src="/frisco-reality-sered.jpg" alt={listing.title} className="absolute inset-0 w-full h-full object-cover opacity-90" />
+                <Image
+                    src="/frisco-reality-sered.jpg"
+                    alt={listing.title}
+                    fill
+                    sizes="100vw"
+                    className="object-cover opacity-90"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <span className={`absolute top-4 left-4 ${listing.badgeColor} text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm z-20`}>
                     {listing.badge}
                 </span>
-                {/* Watermark logo - Removed */}
 
                 {/* Overlay only - no text/icon */}
                 <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px] z-10" />

@@ -32,29 +32,12 @@ const steps = [
 ];
 
 
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import confetti from 'canvas-confetti';
-
-// Configuration for granular control of each card's vertical position (in pixels)
-// Use plain numbers. Negative numbers move the card UP.
-const cardMargins = [
-  { md: 0, lg: 0 },            // 01: Prvý Kontakt
-  { md: -128, lg: -160 },      // 02: Stratégia (Adjusted: was -224, set to -260 for visibility)
-  { md: -128, lg: -24 },      // 03: Realizácia
-  { md: -64, lg: -48 },        // 04: Grand Finále (moved down)
-];
 
 const S_CURVE_PATH = "M 25 0 C 25 0, 25 20, 50 20 C 75 20, 75 35, 75 35 C 75 35, 75 50, 50 50 C 25 50, 25 65, 25 65 C 25 65, 25 85, 50 85 C 75 85, 85 95, 85 95";
 
 export const ProcessSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const isTablet = useMediaQuery("(min-width: 768px)");
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -207,16 +190,16 @@ export const ProcessSection = () => {
           </motion.h2>
         </div>
 
-        {/* Adjust vertical spacing with extreme -margin to pull them closer */}
+        {/* Adjust vertical spacing with transforms instead of margins for smoothness */}
         <div className="flex flex-col space-y-8 md:space-y-0 relative max-w-[85rem] mx-auto pb-12">
           {steps.map((step, index) => {
-            // Calculate margin based on screen size (only after mount to avoid hydration mismatch)
-            let marginTop = 0;
-            if (mounted && isDesktop && cardMargins[index]) {
-              marginTop = cardMargins[index].lg;
-            } else if (mounted && isTablet && cardMargins[index]) {
-              marginTop = cardMargins[index].md;
-            }
+            // Apply staggering using Tailwind translate classes
+            // These correspond roughly to the previous margin values but use GPU-accelerated transforms
+            // Previous margins: 0, -128/-260, -128/-24, -64/-48
+            let translateClass = "";
+            if (index === 1) translateClass = "md:-translate-y-32 lg:-translate-y-40";
+            if (index === 2) translateClass = "md:-translate-y-32 lg:-translate-y-6";
+            if (index === 3) translateClass = "md:-translate-y-16 lg:-translate-y-12";
 
             return (
               <motion.div
@@ -225,11 +208,10 @@ export const ProcessSection = () => {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
                 viewport={{ once: true, margin: "-50px" }}
-                style={mounted ? { marginTop: marginTop ? `${marginTop}px` : undefined } : undefined}
                 className={`relative md:w-[48%] ${index % 2 === 0
                   ? 'md:mr-auto' // Left Column
                   : 'md:ml-auto' // Right Column
-                  } 
+                  } ${translateClass}
               `}
               >
                 {/* Redesigned Card */}
