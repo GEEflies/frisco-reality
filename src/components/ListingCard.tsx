@@ -104,14 +104,14 @@ export const ListingCard = ({
             {/* Content */}
             <div className="p-6 flex flex-col flex-grow text-left">
                 {/* Title First & Bigger */}
-                <h4 className="text-2xl font-poppins font-bold text-black mb-1 line-clamp-2 leading-tight">
+                <h3 className="text-2xl font-poppins font-bold text-black mb-1 line-clamp-2 leading-tight">
                     {title}
-                </h4>
+                </h3>
 
                 {/* Price Smaller & Red */}
-                <h3 className="text-lg font-bold text-accent-red mb-4">
+                <div className="text-lg font-bold text-accent-red mb-4">
                     {price}
-                </h3>
+                </div>
 
                 {/* Location */}
                 <div className="flex items-center gap-2 text-charcoal/60 text-sm mb-4">

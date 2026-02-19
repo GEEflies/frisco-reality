@@ -100,7 +100,7 @@ export const ContactSection = () => {
 
             {/* Social Links */}
             <div className="pt-8 border-t border-navy/10">
-              <h4 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">Sledujte nás</h4>
+              <h3 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">Sledujte nás</h3>
               <div className="flex gap-4">
                 <SocialLink icon={Instagram} label="Instagram" href="https://www.instagram.com/friscoreality/" />
                 <SocialLink icon={Facebook} label="Facebook" href="https://www.facebook.com/Friscorealitka/" />
@@ -117,7 +117,9 @@ export const ContactSection = () => {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+
                 className="absolute inset-0 w-full h-full"
+                title="Kde nás nájdete - Mapa Frisco Reality"
               />
             </div>
           </motion.div>
@@ -152,7 +154,7 @@ const ContactCard = ({ icon: Icon, title, content }: { icon: any; title: string;
       <Icon className="w-5 h-5 text-navy" />
     </div>
     <div>
-      <h4 className="text-charcoal/50 uppercase tracking-widest text-[10px] mb-2">{title}</h4>
+      <h3 className="text-charcoal/50 uppercase tracking-widest text-xs mb-2">{title}</h3>
       <div className="text-charcoal font-sans text-lg">{content}</div>
     </div>
   </motion.div>

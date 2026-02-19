@@ -37,7 +37,7 @@ export const Footer = () => {
           {/* COLUMN 2: NAVIGATION */}
           {/* Mobile: 1 col (side-by-side with Services), lg: 2 cols (row 1), xl: 2 cols */}
           <div className="col-span-1 lg:col-span-2 lg:pl-4 xl:pl-8">
-            <h4 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Navigácia</h4>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Navigácia</h3>
             <ul className="space-y-3">
               {[
                 { label: 'Domov', href: '/' },
@@ -57,7 +57,7 @@ export const Footer = () => {
           {/* COLUMN 3: SERVICES */}
           {/* Mobile: 1 col (side-by-side with Nav), lg: 2 cols (row 1), xl: 2 cols */}
           <div className="col-span-1 lg:col-span-2 xl:pl-4">
-            <h4 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Služby</h4>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Služby</h3>
             <ul className="space-y-3">
               {['Predaj nehnuteľností', 'Prenájom', 'Development', 'Investície'].map(item => (
                 <li key={item}>
@@ -70,7 +70,7 @@ export const Footer = () => {
           {/* COLUMN 4: CONTACT */}
           {/* Mobile: full width, lg: 5 cols (row 1 with Logo+Nav+Services), xl: 3 cols */}
           <div className="col-span-2 lg:col-span-5 xl:col-span-3 lg:pl-4 xl:pl-6 xl:pr-12">
-            <h4 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Kontakt</h4>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Kontakt</h3>
             <ul className="space-y-5">
               <li className="flex items-start gap-4">
                 <MapPin className="w-5 h-5 text-accent-red shrink-0 mt-1" strokeWidth={1.5} />
@@ -85,7 +85,7 @@ export const Footer = () => {
                   <div className="flex items-center justify-start gap-4 pl-2">
                     <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold opacity-90">Zavolajte nám</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">Zavolajte nám</span>
                       <span className="font-bold text-lg whitespace-nowrap">0905 447 220</span>
                     </div>
                   </div>
@@ -95,7 +95,7 @@ export const Footer = () => {
                   <div className="flex items-center gap-4">
                     <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold opacity-90">Zavolajte nám</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">Zavolajte nám</span>
                       <span className="font-bold text-lg whitespace-nowrap">0905 447 220</span>
                     </div>
                   </div>
@@ -107,7 +107,10 @@ export const Footer = () => {
                   <div className="flex items-center justify-start gap-4 pl-2">
                     <Mail className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold opacity-60">Alebo nám napíšte</span>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[10px] uppercase tracking-widest font-bold">Alebo nám napíšte</span>
+                        <span className="font-bold text-lg">info@frisco.sk</span>
+                      </div>
                       <span className="font-bold text-lg">info@frisco.sk</span>
                     </div>
                   </div>
@@ -117,7 +120,7 @@ export const Footer = () => {
                   <div className="flex items-center gap-4">
                     <Mail className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold opacity-60">Alebo nám napíšte</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">Alebo nám napíšte</span>
                       <span className="font-bold text-base">info@frisco.sk</span>
                     </div>
                   </div>
@@ -129,7 +132,7 @@ export const Footer = () => {
           {/* COLUMN 5: CONNECT / SOCIAL */}
           {/* Mobile: full width, lg: full 12 cols (row 2, horizontal), xl: 2 cols (single row, vertical) */}
           <div className="col-span-2 lg:col-span-12 xl:col-span-2 lg:border-t lg:border-navy/5 lg:pt-8 xl:border-0 xl:pt-0">
-            <h4 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Spojte sa s nami</h4>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Spojte sa s nami</h3>
 
             {/* Horizontal at sm+, vertical at xl (narrow column) */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:gap-8 lg:gap-12 xl:flex-col xl:gap-0">
@@ -137,10 +140,10 @@ export const Footer = () => {
               <div className="mb-6 sm:mb-0 xl:mb-6">
                 <span className="block text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-3 lg:hidden xl:hidden">Sociálne siete</span>
                 <div className="flex gap-4">
-                  <a href="https://www.facebook.com/Friscorealitka/" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-navy/15 flex items-center justify-center text-navy hover:bg-navy hover:text-white transition-all">
+                  <a href="https://www.facebook.com/Friscorealitka/" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-navy/15 flex items-center justify-center text-navy hover:bg-navy hover:text-white transition-all" aria-label="Facebook">
                     <Facebook size={20} />
                   </a>
-                  <a href="https://www.instagram.com/friscoreality/" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-navy/15 flex items-center justify-center text-navy hover:bg-navy hover:text-white transition-all">
+                  <a href="https://www.instagram.com/friscoreality/" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-navy/15 flex items-center justify-center text-navy hover:bg-navy hover:text-white transition-all" aria-label="Instagram">
                     <Instagram size={20} />
                   </a>
                 </div>

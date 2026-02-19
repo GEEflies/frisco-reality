@@ -322,6 +322,7 @@ export const Navbar = () => {
           <button
             className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center text-black active:scale-95 transition-all duration-300 hover:bg-black/10 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -353,6 +354,7 @@ export const Navbar = () => {
               <button
                 className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close menu"
               >
                 <X size={24} />
               </button>
