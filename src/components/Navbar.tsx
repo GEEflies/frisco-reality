@@ -69,18 +69,23 @@ export const Navbar = () => {
             style={{ width: 'calc(100% - 2rem)', maxWidth: '1375px' }}
           />
 
-          <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
-            {/* Logo */}
-            <Link href="/" onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
-              <img
-                src={"/frisco-logo.svg"}
-                alt="FRISCO"
-                className="h-16 pl-4"
-              />
-            </Link>
+          <div className="relative w-full max-w-[1400px] h-full mx-auto px-6 flex items-center justify-between">
+            {/* Logo - Absolute Left for stability */}
+            <div className="flex-shrink-0 z-20">
+              <Link href="/" onClick={handleHomeClick} className="block relative">
+                <Image
+                  src="/frisco-logo.svg"
+                  alt="FRISCO"
+                  width={96}
+                  height={64}
+                  priority
+                  className="h-14 w-auto object-contain"
+                />
+              </Link>
+            </div>
 
-            {/* Links */}
-            <nav className="flex items-center gap-6 2xl:gap-10 flex-nowrap">
+            {/* Links - Absolute Center for perfect centering regardless of other elements */}
+            <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-6 2xl:gap-10 flex-nowrap z-10">
               <Link
                 href="/"
                 onClick={handleHomeClick}
@@ -182,8 +187,8 @@ export const Navbar = () => {
               </Link>
             </nav>
 
-            {/* Contact Actions Group */}
-            <div className="flex items-center gap-2">
+            {/* Contact Actions Group - Absolute Right for stability */}
+            <div className="flex items-center gap-2 z-20">
               {/* CTA - Red for critical action */}
               <a
                 href="tel:+421905447220"
@@ -290,7 +295,14 @@ export const Navbar = () => {
       {/* Mobile Navbar */}
       <header className="fixed top-0 left-0 right-0 z-50 xl:hidden flex justify-between items-center px-6 h-[80px] bg-white backdrop-blur-xl border-b border-black/5 transition-all duration-300">
         <Link href="/" onClick={handleHomeClick} className="relative z-10 flex items-center">
-          <img src={"/frisco-logo.svg"} alt="FRISCO" className="h-14 w-auto object-contain" />
+          <Image
+            src="/frisco-logo.svg"
+            alt="FRISCO"
+            width={72}
+            height={48}
+            priority
+            className="h-14 w-auto object-contain"
+          />
         </Link>
         <div className="flex items-center gap-3">
           {/* Mobile Email & Phone Icons */}
@@ -331,10 +343,13 @@ export const Navbar = () => {
             {/* Header in Overlay */}
             <div className="flex justify-between items-center px-6 h-[80px] border-b border-white/10">
               <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                <img
-                  src={"/frisco-logo.svg"}
+                <Image
+                  src="/frisco-logo.svg"
                   alt="FRISCO"
-                  className="h-16 w-auto brightness-0 invert"
+                  width={80}
+                  height={54}
+                  priority
+                  className="h-16 w-auto brightness-0 invert object-contain"
                 />
               </Link>
               <button
