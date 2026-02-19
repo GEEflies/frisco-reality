@@ -117,7 +117,7 @@ export const ContactSection = () => {
                 title="Kde nás nájdete - Mapa Frisco Reality"
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Right: Contact Form — sticky so it locks in place */}
           <div className="lg:sticky lg:top-28 self-start">
