@@ -1,4 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Stránka nenájdená (404)',
+  description: 'Požadovaná stránka nebola nájdená. Vráťte sa na úvodnú stránku Frisco Reality.',
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NotFound() {
   return (
@@ -6,7 +16,7 @@ export default function NotFound() {
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold">404</h1>
         <p className="mb-4 text-xl text-muted-foreground">
-          Oops! Stránka nebola nájdená
+          Ups! Stránka nebola nájdená
         </p>
         <Link
           href="/"

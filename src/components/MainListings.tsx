@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { ChevronRight, Maximize, Home, MapPin, Clock } from 'lucide-react';
+import { ChevronRight, Maximize, Home, MapPin } from 'lucide-react';
 
 // Mockup data that mimics real listings
 const MOCK_LISTINGS = [
@@ -45,17 +44,9 @@ const MOCK_LISTINGS = [
 ];
 
 const MockListingCard = ({ listing, index, priority = false }: { listing: typeof MOCK_LISTINGS[0]; index: number; priority?: boolean }) => (
-    <motion.div
+    <div
         key={listing.id}
-        className="min-w-[calc(33.333%-1.33rem)] flex-shrink-0"
-        initial={{ opacity: 0, scale: 0.95, y: 20 }} // Simplified initial state
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        viewport={{ once: true, margin: '-50px' }}
-        transition={{
-            duration: 0.5, // Faster duration
-            delay: index * 0.1, // Tighter stagger
-            ease: "easeOut", // Simpler ease
-        }}
+        className={`min-w-[calc(33.333%-1.33rem)] flex-shrink-0 animate-fade-in-up ${index === 0 ? 'stagger-1' : index === 1 ? 'stagger-2' : 'stagger-3'}`}
     >
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group">
 
@@ -76,7 +67,7 @@ const MockListingCard = ({ listing, index, priority = false }: { listing: typeof
                 </span>
 
                 {/* Overlay only - no text/icon */}
-                <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px] z-10" />
+                <div className="absolute inset-0 bg-white/20 z-10" />
             </div>
 
             {/* Card content */}
@@ -110,7 +101,7 @@ const MockListingCard = ({ listing, index, priority = false }: { listing: typeof
                 </div>
             </div>
         </div>
-    </motion.div>
+    </div>
 );
 
 const MockListingCardMobile = ({ listing, index, priority = false }: { listing: typeof MOCK_LISTINGS[0]; index: number; priority?: boolean }) => (
@@ -134,7 +125,7 @@ const MockListingCardMobile = ({ listing, index, priority = false }: { listing: 
                 </span>
 
                 {/* Overlay only - no text/icon */}
-                <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px] z-10" />
+                <div className="absolute inset-0 bg-white/20 z-10" />
             </div>
 
             {/* Card content */}
@@ -172,12 +163,8 @@ export const MainListings = () => {
             <div className="container mx-auto px-6">
 
                 {/* Header */}
-                <motion.div
-                    className="flex justify-between items-end mb-12"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-50px' }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
+                <div
+                    className="flex justify-between items-end mb-12 animate-fade-in-up stagger-1"
                 >
                     <div>
                         <span className="text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4 block">
@@ -187,28 +174,20 @@ export const MainListings = () => {
                             Aktuálna ponuka
                         </h2>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Desktop — 3 mockup cards */}
-                <motion.div
+                <div
                     className="hidden lg:flex gap-8"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
                 >
                     {MOCK_LISTINGS.map((listing, index) => (
-                        <MockListingCard key={listing.id} listing={listing} index={index} />
+                        <MockListingCard key={listing.id} listing={listing} index={index} priority={index === 0} />
                     ))}
-                </motion.div>
+                </div>
 
                 {/* Desktop CTA */}
-                <motion.div
-                    className="hidden lg:flex justify-center mt-12"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                <div
+                    className="hidden lg:flex justify-center mt-12 animate-fade-in-up stagger-4"
                 >
                     <a
                         href="/ponuka"
@@ -218,7 +197,7 @@ export const MainListings = () => {
                         <span className="relative z-10 uppercase tracking-widest text-sm font-bold">Zobraziť celú ponuku</span>
                         <ChevronRight className="relative z-10 w-4 h-4" />
                     </a>
-                </motion.div>
+                </div>
 
                 {/* Mobile — 2 mockup cards */}
                 <div

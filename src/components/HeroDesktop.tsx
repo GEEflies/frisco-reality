@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import RotatingWord from "./RotatingWord";
 
+const HERO_VIDEO_URL = "https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4";
+
 const HeroDesktop = () => {
   return (
     <div className="relative min-h-screen bg-white overflow-hidden flex flex-col">
@@ -23,7 +25,7 @@ const HeroDesktop = () => {
             >
               <div className="h-px w-12 bg-navy/20" />
               <span className="text-navy/80 font-mono text-xs tracking-[0.3em] uppercase">
-                Realitná Kancelária v Seredi
+                Exkluzívna realitná kancelária v Seredi
               </span>
             </div>
 
@@ -46,39 +48,46 @@ const HeroDesktop = () => {
             <p
               className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12 animate-fade-in-up stagger-3"
             >
-              Sme rodinná firma s 18-ročnou históriou a stovkami úspešných obchodov. Garantujeme vám ľudský prístup a maximálne zhodnotenie vašej nehnuteľnosti.
+              Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.
             </p>
 
 
             {/* Action Buttons */}
             <div
-              className="flex flex-wrap items-center gap-3 animate-fade-in-up stagger-4"
+              className="flex flex-col gap-3 w-full max-w-[600px] animate-fade-in-up stagger-4"
             >
-              <Link
-                href="/ponuka"
-                className="group relative px-5 py-3.5 bg-navy text-white font-sans font-medium text-sm tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap"
-              >
-                <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-                <Search size={16} strokeWidth={2} className="relative z-10" />
-                <span className="relative z-10">
-                  Aktuálna ponuka
-                </span>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Link
+                  href="/ponuka"
+                  className="group relative px-6 py-4 bg-navy text-white font-sans font-medium text-base tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
+                >
+                  <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                  <Search size={16} strokeWidth={2} className="relative z-10" />
+                  <span className="relative z-10 hidden xl:inline">
+                    Pozrieť aktuálnu ponuku
+                  </span>
+                  <span className="relative z-10 inline xl:hidden">
+                    Ponuka
+                  </span>
+                </Link>
 
-              <Link
-                href="/chcem-predat"
-                className="group px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex items-center justify-center gap-2.5 whitespace-nowrap"
-              >
-                <Home size={16} strokeWidth={2} />
-                Chcem predať
-              </Link>
+                <Link
+                  href="/chcem-predat"
+                  className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
+                >
+                  <Home size={16} strokeWidth={2} className="shrink-0" />
+                  <span className="hidden xl:inline">Chcem predať nehnuteľnosť</span>
+                  <span className="inline xl:hidden">Chcem predať</span>
+                </Link>
+              </div>
 
               <Link
                 href="/chcem-prenajat"
-                className="group px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex items-center justify-center gap-2.5 whitespace-nowrap"
+                className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md w-full flex items-center justify-center gap-2.5 whitespace-nowrap"
               >
-                <Key size={16} strokeWidth={2} />
-                Chcem prenajať
+                <Key size={16} strokeWidth={2} className="shrink-0" />
+                <span className="hidden xl:inline">Chcem prenajať svoju nehnuteľnosť</span>
+                <span className="inline xl:hidden">Chcem prenajať</span>
               </Link>
             </div>
 
@@ -108,9 +117,11 @@ const HeroDesktop = () => {
                 loop
                 muted
                 playsInline
+                preload="auto"
+                poster="/frisco-reality-sered.jpg"
                 className="w-full h-full object-cover"
               >
-                <source src="/hero-video.mp4" type="video/mp4" />
+                <source src={HERO_VIDEO_URL} type="video/mp4" />
               </video>
             </div>
           </div>
