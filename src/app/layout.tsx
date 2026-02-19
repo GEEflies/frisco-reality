@@ -42,15 +42,15 @@ const LAYOUT_SEO: Record<LanguageCode, {
   locale: string;
 }> = {
   sk: {
-    defaultTitle: 'Frisco Reality | Prémiové nehnuteľnosti na Slovensku',
-    description: 'Prémiová realitná kancelária špecializujúca sa na predaj a prenájom luxusných nehnuteľností na Slovensku. Rodinná firma s osobným prístupom, bezplatné ohodnotenie a profesionálna prezentácia.',
+    defaultTitle: 'Frisco Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
+    description: 'Exkluzívna realitná kancelária špecializujúca sa na predaj a prenájom nehnuteľností. Rodinná firma s osobným prístupom.',
     keywords: [
       'reality Slovensko', 'nehnuteľnosti predaj', 'nehnuteľnosti prenájom', 'luxusné byty Slovensko', 'domy na predaj', 'realitná kancelária',
       'Frisco Reality', 'prémiové nehnuteľnosti', 'predaj bytov', 'prenájom bytov', 'Sereď', 'rodinné domy', 'pozemky', 'komerčné priestory',
     ],
-    ogTitle: 'Frisco Reality | Prémiové nehnuteľnosti na Slovensku',
-    ogDescription: 'Prémiová realitná kancelária pre predaj a prenájom nehnuteľností na Slovensku. Nájdite svoj vysnívaný domov.',
-    ogAlt: 'Frisco Reality – Prémiové nehnuteľnosti na Slovensku',
+    ogTitle: 'Frisco Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
+    ogDescription: 'Exkluzívna realitná kancelária špecializujúca sa na predaj a prenájom nehnuteľností. Rodinná firma s osobným prístupom.',
+    ogAlt: 'Frisco Reality – Exkluzívne nehnuteľnosti v Seredi a okolí',
     locale: SITE_LOCALE,
   },
   en: {

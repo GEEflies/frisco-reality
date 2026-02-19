@@ -7,10 +7,10 @@ import type { LanguageCode } from '@/i18n/types';
 
 const HOME_SEO: Record<LanguageCode, { title: string; description: string; ogTitle: string; ogDescription: string; breadcrumbHome: string }> = {
   sk: {
-    title: 'Frisco Reality | Prémiové nehnuteľnosti na Slovensku – Predaj & Prenájom',
-    description: 'Hľadáte luxusnú nehnuteľnosť na Slovensku? Frisco Reality je prémiová rodinná realitná kancelária – predaj bytov, domov, pozemkov a komerčných priestorov. Bezplatné ohodnotenie, home staging, profesionálna prezentácia.',
-    ogTitle: 'Frisco Reality | Prémiové nehnuteľnosti na Slovensku',
-    ogDescription: 'Prémiová realitná kancelária špecializujúca sa na predaj a prenájom luxusných nehnuteľností. Rodinná firma s osobným prístupom.',
+    title: 'Frisco Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
+    description: 'Exkluzívna realitná kancelária špecializujúca sa na predaj a prenájom nehnuteľností. Rodinná firma s osobným prístupom.',
+    ogTitle: 'Frisco Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
+    ogDescription: 'Exkluzívna realitná kancelária špecializujúca sa na predaj a prenájom nehnuteľností. Rodinná firma s osobným prístupom.',
     breadcrumbHome: 'Domov',
   },
   en: {
@@ -58,7 +58,7 @@ export default async function Home() {
     { name: localized.breadcrumbHome, url: SITE_URL },
   ]);
 
-  
+
 
   return (
     <main className="overflow-x-clip">
