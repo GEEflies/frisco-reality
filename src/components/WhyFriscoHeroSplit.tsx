@@ -143,7 +143,7 @@ const WhyFriscoHeroSplit = () => {
             {/* HERO HEADING */}
             <section className="relative w-full pt-32 pb-4 px-6 flex flex-col items-center justify-center z-10 text-center">
                 <div
-                    className="mb-8 animate-fade-in-up stagger-1"
+                    className="mb-8 story-rise stagger-1"
                 >
                     <span className="inline-block px-4 py-1.5 rounded-full border border-navy/10 bg-white/60 text-xs font-mono tracking-[0.2em] text-navy uppercase mb-6 backdrop-blur-sm shadow-sm">
                         Prečo Frisco?
@@ -154,7 +154,7 @@ const WhyFriscoHeroSplit = () => {
                     </h1>
                 </div>
                 <p
-                    className="text-charcoal/70 text-lg md:text-xl max-w-2xl font-light leading-relaxed animate-fade-in-up stagger-2"
+                    className="text-charcoal/70 text-lg md:text-xl max-w-2xl font-light leading-relaxed story-soft stagger-2"
                 >
                     <span className="hidden lg:inline">Či predávate, kupujete alebo prenajímate — vieme, čo potrebujete. Vyberte si svoju situáciu.</span>
                     <span className="lg:hidden">Či predávate, kupujete alebo prenajímate, toto sú dôvody, prečo si vybrať FRISCO:</span>
@@ -207,12 +207,12 @@ const WhyFriscoHeroSplit = () => {
             {/* ═══════════════════ CONTENT: TAB TOGGLE CARDS ═══════════════════ */}
             <div className="container mx-auto px-6 pb-16 relative z-10 w-full mt-4 lg:mt-0">
                 {/* Mobile bridge text */}
-                <p className="text-center text-sm text-charcoal/40 font-medium tracking-wide uppercase mb-6 lg:hidden">Vyberte si, čo riešite ↓</p>
+                <p className="text-center text-sm text-charcoal/40 font-medium tracking-wide uppercase mb-6 lg:hidden story-soft stagger-3">Vyberte si, čo riešite ↓</p>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 relative">
 
                     {/* LEFT CARD — OWNERS */}
                     <div
-                        className={`animate-fade-in-up stagger-1 lg:transition-all lg:duration-700 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${cardsRevealed
+                        className={`story-rise stagger-4 lg:transition-all lg:duration-700 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${cardsRevealed
                             ? 'lg:opacity-100 lg:translate-y-0 lg:pointer-events-auto'
                             : 'lg:opacity-0 lg:translate-y-8 lg:pointer-events-none'
                             }`}
@@ -229,7 +229,7 @@ const WhyFriscoHeroSplit = () => {
 
                     {/* RIGHT CARD — SEEKERS */}
                     <div
-                        className={`animate-fade-in-up stagger-2 lg:transition-all lg:duration-700 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${cardsRevealed
+                        className={`story-rise stagger-5 lg:transition-all lg:duration-700 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${cardsRevealed
                             ? 'lg:opacity-100 lg:translate-y-0 lg:pointer-events-auto'
                             : 'lg:opacity-0 lg:translate-y-8 lg:pointer-events-none'
                             }`}

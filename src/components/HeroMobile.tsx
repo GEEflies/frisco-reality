@@ -16,7 +16,7 @@ const HeroMobile = () => {
             <div className="container mx-auto px-6 relative z-10 flex flex-col items-start text-left">
 
                 {/* Brand / Trust Label */}
-                <div className="flex items-center gap-3 mb-5 animate-fade-in-up stagger-1">
+                <div className="flex items-center gap-3 mb-5 story-soft stagger-1">
                     <div className="h-px w-8 bg-navy/20" />
                     <span className="text-navy/70 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase">
                         Exkluzívna realitka v Seredi
@@ -24,7 +24,7 @@ const HeroMobile = () => {
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start animate-fade-in-up stagger-2">
+                <h1 className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start story-rise stagger-2">
                     <span className="whitespace-nowrap">Vašu nehnuteľnosť</span>
                     <span className="block h-[2.6rem] sm:h-[3.1rem] md:h-[4.2rem] overflow-hidden text-navy/90">
                         <RotatingWord words={["nájdeme", "nafotíme", "odprezentujeme", "prenajmeme", "predáme", "alebo odkúpime"]} className="text-accent-red text-left" />
@@ -32,12 +32,12 @@ const HeroMobile = () => {
                 </h1>
 
                 {/* Subheadline / Value Prop */}
-                <p className="text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6 animate-fade-in-up stagger-3">
+                <p className="text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6 story-soft stagger-3">
                     Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a klientom nájsť miesto, ktoré môžu nazývať domovom.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col w-full gap-3 mb-8 animate-fade-in-up stagger-4">
+                <div className="flex flex-col w-full gap-3 mb-8 story-soft stagger-4">
                     <Link
                         href="/ponuka"
                         className="group relative px-5 py-3.5 bg-navy text-white font-sans font-medium text-sm md:text-base tracking-wide overflow-hidden text-center rounded-lg shadow-lg shadow-navy/10 transition-all duration-300 flex items-center justify-center gap-2.5"
@@ -67,7 +67,7 @@ const HeroMobile = () => {
                 {/* Mobile Video Container */}
 
                 {/* Mobile Video Container */}
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5 bg-navy/5 animate-scale-in stagger-5">
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5 bg-navy/5 story-media stagger-5">
                     {/* Corner Logo Watermark */}
                     <img
                         src={friscoLogo}

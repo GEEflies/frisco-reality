@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes story-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes story-soft {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes story-media {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @layer base {
   :root {
     /* Light theme foundations */
@@ -131,6 +164,33 @@
   .stagger-3 { animation-delay: 0.30s; }
   .stagger-4 { animation-delay: 0.42s; }
   .stagger-5 { animation-delay: 0.54s; }
+  .stagger-6 { animation-delay: 0.66s; }
+  .stagger-7 { animation-delay: 0.78s; }
+
+  .story-rise,
+  .story-soft,
+  .story-media {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .story-rise {
+    animation-name: story-rise;
+    animation-duration: 0.82s;
+  }
+
+  .story-soft {
+    animation-name: story-soft;
+    animation-duration: 0.72s;
+  }
+
+  .story-media {
+    animation-name: story-media;
+    animation-duration: 0.9s;
+  }
 
   /* Optimize images globally - removed content-visibility to fix layout shifts */
   /* img {

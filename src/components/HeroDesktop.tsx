@@ -21,7 +21,7 @@ const HeroDesktop = () => {
 
             {/* Top Label */}
             <div
-              className="flex items-center gap-4 mb-8 animate-fade-in-up stagger-1"
+              className="flex items-center gap-4 mb-8 story-soft stagger-1"
             >
               <div className="h-px w-12 bg-navy/20" />
               <span className="text-navy/80 font-mono text-xs tracking-[0.3em] uppercase">
@@ -31,7 +31,7 @@ const HeroDesktop = () => {
 
             {/* Main Headline */}
             <h1
-              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap animate-fade-in-up stagger-2"
+              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap story-rise stagger-2"
             >
               Vašu nehnuteľnosť
               <br />
@@ -46,7 +46,7 @@ const HeroDesktop = () => {
 
             {/* Subtitle */}
             <p
-              className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12 animate-fade-in-up stagger-3"
+              className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12 story-soft stagger-3"
             >
               Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.
             </p>
@@ -54,7 +54,7 @@ const HeroDesktop = () => {
 
             {/* Action Buttons */}
             <div
-              className="flex flex-col gap-3 w-full max-w-[600px] animate-fade-in-up stagger-4"
+              className="flex flex-col gap-3 w-full max-w-[600px] story-soft stagger-4"
             >
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Link
@@ -96,7 +96,7 @@ const HeroDesktop = () => {
 
           {/* Right Column: Contained Video */}
           <div
-            className="w-full lg:w-[58%] relative hidden lg:block -mt-8 lg:mt-12 lg:-mr-16 animate-scale-in stagger-3"
+            className="w-full lg:w-[58%] relative hidden lg:block -mt-8 lg:mt-12 lg:-mr-16 story-media stagger-4"
           >
             {/* Decorative Frame Border - Navy for light theme */}
             <div className="absolute -top-4 -right-4 w-full h-full border border-navy/10 rounded-[2rem] z-0" />

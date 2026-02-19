@@ -47,20 +47,20 @@ const Kontakt = () => {
               {/* Text Content */}
               <div className="max-w-2xl">
                 <span
-                  className="inline-block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-6 border-b border-navy/30 pb-2 animate-fade-in-up stagger-1"
+                  className="inline-block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-6 border-b border-navy/30 pb-2 story-soft stagger-1"
                 >
                   Kontaktujte nás
                 </span>
 
                 <h1
-                  className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 animate-fade-in-up stagger-2"
+                  className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
                 >
                   Poďme spolu <br />
                   <span className="text-accent-red italic">spolupracovať</span>.
                 </h1>
 
                 <p
-                  className="text-lg md:text-xl text-charcoal/70 font-light leading-relaxed mb-8 animate-fade-in-up stagger-3"
+                  className="text-lg md:text-xl text-charcoal/70 font-light leading-relaxed mb-8 story-soft stagger-3"
                 >
                   Sme tu pre vás. Či už predávate, kupujete alebo len hľadáte radu –
                   radi vám pomôžeme s akoukoľvek otázkou.
@@ -69,7 +69,7 @@ const Kontakt = () => {
 
               {/* Image Content */}
               <div
-                className="relative hidden lg:block animate-fade-in-right stagger-3"
+                className="relative hidden lg:block story-media stagger-4"
               >
                 <div className="relative group aspect-[4/3]">
                   <img
@@ -99,7 +99,7 @@ const Kontakt = () => {
         {/* Main Content */}
         <section className="py-12 md:py-20 bg-cream">
           <div className="container mx-auto px-6">
-            <div id="kontaktny-formular" className="text-center mb-16 md:mb-20 scroll-mt-32">
+            <div id="kontaktny-formular" className="text-center mb-16 md:mb-20 scroll-mt-32 story-soft stagger-1">
               <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
                 Napíšte nám
               </span>
