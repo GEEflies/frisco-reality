@@ -75,7 +75,7 @@ export const Navbar = () => {
               <Image
                 src="/frisco-logo-opt.png"
                 alt="Frisco"
-                className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8"
+                className="max-h-12 lg:max-h-16 w-auto object-contain object-left"
               />
             </Link>
 
@@ -291,7 +291,7 @@ export const Navbar = () => {
       <header className="fixed top-0 left-0 right-0 z-50 xl:hidden flex justify-between items-center px-6 h-[80px] bg-white backdrop-blur-xl border-b border-black/5 transition-all duration-300">
         <Link href="/" onClick={handleHomeClick} className="relative z-10 flex items-center">
           <Image
-            src="/frisco-logo.svg"
+            src="/frisco-logo-opt.png"
             alt="FRISCO"
             width={72}
             height={48}
@@ -340,7 +340,7 @@ export const Navbar = () => {
             <div className="flex justify-between items-center px-6 h-[80px] border-b border-white/10">
               <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
                 <Image
-                  src="/frisco-logo.svg"
+                  src="/frisco-logo-opt.png"
                   alt="FRISCO"
                   width={80}
                   height={54}
