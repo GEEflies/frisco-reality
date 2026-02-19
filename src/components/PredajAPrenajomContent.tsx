@@ -33,7 +33,7 @@ const benefits = [
 const PredajAPrenajom = () => {
     return (
         <div className="min-h-screen bg-white">
-            <div className="animate-in fade-in duration-500">
+            <div>
 
                 {/* Custom Hero Section for Sellers */}
                 <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-navy text-white">
@@ -48,42 +48,30 @@ const PredajAPrenajom = () => {
 
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="max-w-4xl">
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6 }}
+                            <div
                                 className="flex items-center gap-4 mb-8"
                             >
                                 <div className="h-px w-12 bg-white/30" />
                                 <span className="text-white/80 font-mono text-xs tracking-[0.3em] uppercase">
                                     Pre majiteľov nehnuteľností
                                 </span>
-                            </motion.div>
+                            </div>
 
-                            <motion.h1
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8, delay: 0.1 }}
-                                className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight leading-[1.1] mb-8"
+                            <h1
+                                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight leading-[1.1] mb-8"
                             >
                                 Predajte alebo prenajmite <br />
                                 <span className="text-accent-red italic">bez starostí</span>.
-                            </motion.h1>
+                            </h1>
 
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8, delay: 0.2 }}
+                            <p
                                 className="text-lg md:text-xl text-white/70 max-w-2xl font-light leading-relaxed mb-12"
                             >
                                 Získajte profesionálne ocenenie, špičkovú prezentáciu a prístup k overeným klientom.
                                 S nami predáte rýchlejšie a výhodnejšie.
-                            </motion.p>
+                            </p>
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8, delay: 0.3 }}
+                            <div
                             >
                                 <a
                                     href="#kontaktny-formular"
@@ -92,7 +80,7 @@ const PredajAPrenajom = () => {
                                     <span>Chcem nezáväznú konzultáciu</span>
                                     <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                 </a>
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -133,10 +121,9 @@ const PredajAPrenajom = () => {
                                         loop
                                         muted
                                         playsInline
-                                        preload="auto"
                                         className="w-full h-full object-cover"
                                     >
-                                        <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
+                                        <source src="/hero-video.mp4" type="video/mp4" />
                                     </video>
                                 </div>
                             </div>

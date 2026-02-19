@@ -142,13 +142,12 @@ const values = [
 const Sluzby = () => {
   return (
     <div className="min-h-screen bg-cream">
-      <div className="animate-in fade-in duration-700">
         <WhyFriscoHeroSplit />
 
         <FamilyBusinessSection />
 
         {/* Values Section */}
-        <section className="py-16 md:py-20 bg-gradient-to-b from-cream to-white relative overflow-hidden">
+        <section className="py-16 md:py-20 bg-gradient-to-b from-cream to-white relative overflow-visible">
           {/* Decorative background elements */}
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/10 to-transparent" />
           <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-accent-red/[0.03] rounded-full blur-[100px] pointer-events-none" />
@@ -236,7 +235,6 @@ const Sluzby = () => {
         </section>
 
         <Footer />
-      </div>
     </div>
   );
 };
@@ -265,9 +263,10 @@ const ValuesSection = ({ values, fadeInUp, staggerContainer }: { values: any[], 
             scrollTrigger: {
               trigger: sectionRef.current,
               pin: true,
-              scrub: 1,
-              start: "center center",
-              end: () => "+=" + (totalWidth),
+              pinSpacing: true,
+              scrub: 0.8,
+              start: "top 20%",
+              end: () => "+=" + (totalWidth * 0.8),
               invalidateOnRefresh: true,
             }
           });
@@ -287,18 +286,15 @@ const ValuesSection = ({ values, fadeInUp, staggerContainer }: { values: any[], 
   }, []);
 
   return (
-    <div ref={sectionRef} className="max-w-7xl mx-auto overflow-hidden md:overflow-visible py-10 md:py-0">
-      <motion.div
+    <div ref={sectionRef} className="max-w-7xl mx-auto overflow-visible py-10 md:py-0">
+      <div
         ref={containerRef}
         className="flex md:grid md:grid-cols-3 gap-6 lg:gap-8 w-max md:w-auto px-4 md:px-0"
-        viewport={{ once: true, margin: "0px" }}
-        variants={staggerContainer}
       >
         {/* We map specific items like in the original code: [0,1,2] */}
         {[values[0], values[1], values[2]].map((value, index) => (
-          <motion.div
+          <div
             key={value.id}
-            variants={fadeInUp}
             className="flex-shrink-0 w-[85vw] md:w-auto h-auto group relative bg-white rounded-[2rem] p-6 md:p-10 border border-navy/[0.06] shadow-[0_4px_24px_-6px_rgba(30,58,95,0.08)] hover:shadow-[0_12px_48px_-12px_rgba(30,58,95,0.15)] transition-all duration-500"
           >
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${index === 0 ? 'bg-navy/[0.06] text-navy group-hover:bg-navy/[0.1]' :
@@ -315,9 +311,9 @@ const ValuesSection = ({ values, fadeInUp, staggerContainer }: { values: any[], 
             <p className="text-charcoal/60 leading-relaxed text-[15px] md:text-base lg:text-[1.05rem]">
               {value.description}
             </p>
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 };

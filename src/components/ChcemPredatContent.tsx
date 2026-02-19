@@ -70,7 +70,7 @@ const benefits = [
 const ChcemPredat = () => {
     return (
         <div className="min-h-screen bg-white">
-            <div className="animate-in fade-in duration-700">
+            <div>
 
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">

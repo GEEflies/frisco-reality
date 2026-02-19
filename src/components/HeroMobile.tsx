@@ -32,7 +32,7 @@ const HeroMobile = () => {
 
                 {/* Subheadline / Value Prop */}
                 <p className="text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6">
-                    Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.
+                    Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a klientom nájsť miesto, ktoré môžu nazývať domovom.
                 </p>
 
                 {/* CTA Buttons */}

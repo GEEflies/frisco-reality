@@ -58,49 +58,42 @@ const pillars = [
 const ChcemPrenajat = () => {
     return (
         <div className="min-h-screen bg-white">
-            <div className="animate-in fade-in duration-700">
+            <div>
 
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
                     <div className="absolute top-0 right-0 w-1/2 h-full bg-navy/5 -skew-x-12 transform origin-top-right z-0" />
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-                            <motion.div
+                            <div
                                 className="w-full lg:w-[45%]"
-                                initial="hidden"
-                                animate="visible"
-                                variants={staggerContainer}
                             >
-                                <motion.div
-                                    variants={fadeInUp}
+                                <div
                                     className="flex items-center gap-4 mb-8"
                                 >
                                     <div className="h-px w-12 bg-navy/20" />
                                     <span className="text-navy/60 font-mono text-xs tracking-[0.3em] uppercase">
                                         Prenájom nehnuteľnosti
                                     </span>
-                                </motion.div>
-                                <motion.h1
-                                    variants={fadeInUp}
+                                </div>
+                                <h1
                                     className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy"
                                 >
                                     Prenajmite <br />
                                     <span className="text-accent-red italic">bez starostí.</span>
-                                </motion.h1>
-                                <motion.p
-                                    variants={fadeInUp}
+                                </h1>
+                                <p
                                     className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-4"
                                 >
                                     Máte byt alebo dom na prenájom? Postaráme sa o všetko – od výberu nájomníka až po pravidelnú kontrolu platieb.
-                                </motion.p>
+                                </p>
 
 
-                                <motion.p
-                                    variants={fadeInUp}
+                                <p
                                     className="hidden lg:block text-base text-charcoal/50 max-w-lg font-light leading-relaxed mb-10"
                                 >
                                     Žiadne naháňanie nájomníkov. Žiadne zbytočné telefonáty. Žiadne stratené víkendy.
-                                </motion.p>
+                                </p>
 
                                 {/* Mobile Video - Inserted after texts */}
                                 <div className="block lg:hidden mb-8 relative px-2">
@@ -118,14 +111,12 @@ const ChcemPrenajat = () => {
                                 </div>
 
                                 {/* Mobile Only: "No chasing" text BELOW video */}
-                                <motion.p
-                                    variants={fadeInUp}
+                                <p
                                     className="block lg:hidden text-base text-charcoal/50 max-w-lg font-light leading-relaxed mb-10"
                                 >
                                     Žiadne naháňanie nájomníkov. Žiadne zbytočné telefonáty. Žiadne stratené víkendy.
-                                </motion.p>
-                                <motion.div
-                                    variants={fadeInUp}
+                                </p>
+                                <div
                                 >
                                     <a
                                         href="#kontaktny-formular"
@@ -135,13 +126,10 @@ const ChcemPrenajat = () => {
                                         <span>Chcem prenajať svoju nehnuteľnosť</span>
                                         <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                     </a>
-                                </motion.div>
-                            </motion.div>
+                                </div>
+                            </div>
 
-                            <motion.div
-                                initial={{ opacity: 0, x: 20, scale: 0.95 }}
-                                animate={{ opacity: 1, x: 0, scale: 1 }}
-                                transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
+                            <div
                                 className="hidden lg:block w-full lg:w-[55%] relative"
                             >
                                 <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 transform transition-transform hover:scale-[1.01] duration-700">
@@ -156,7 +144,7 @@ const ChcemPrenajat = () => {
                                     </video>
                                 </div>
                                 <div className="absolute -z-10 -bottom-8 -left-8 w-2/3 h-2/3 bg-accent-red/5 rounded-full blur-3xl" />
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
                 </section>

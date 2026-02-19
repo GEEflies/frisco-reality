@@ -107,10 +107,7 @@ export const Footer = () => {
                   <div className="flex items-center justify-start gap-4 pl-2">
                     <Mail className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <div className="flex flex-col items-start">
-                        <span className="text-[10px] uppercase tracking-widest font-bold">Alebo nám napíšte</span>
-                        <span className="font-bold text-lg">info@frisco.sk</span>
-                      </div>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">Alebo nám napíšte</span>
                       <span className="font-bold text-lg">info@frisco.sk</span>
                     </div>
                   </div>

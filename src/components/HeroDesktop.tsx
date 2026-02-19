@@ -12,7 +12,7 @@ const HeroDesktop = () => {
       {/* Solid Background - Clean White */}
       <div className="absolute inset-0 bg-white" />
 
-      <div className="container mx-auto px-8 relative z-10 flex-grow flex flex-col justify-start pt-32 lg:pt-36">
+      <div className="container mx-auto px-8 relative z-10 flex-grow flex flex-col justify-start pt-32 lg:pt-40">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
 
           {/* Left Column: Text & Search */}
@@ -27,7 +27,7 @@ const HeroDesktop = () => {
             >
               <div className="h-px w-12 bg-navy/20" />
               <span className="text-navy/80 font-mono text-xs tracking-[0.3em] uppercase">
-                Exkluzívna realitná kancelária v Seredi
+                Realitná Kancelária v Seredi
               </span>
             </motion.div>
 
@@ -56,7 +56,7 @@ const HeroDesktop = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-lg text-charcoal/80 font-normal max-w-xl leading-relaxed mb-12"
             >
-              Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.
+              Sme rodinná firma s 18-ročnou históriou a stovkami úspešných obchodov. Garantujeme vám ľudský prístup a maximálne zhodnotenie vašej nehnuteľnosti.
             </motion.p>
 
 
@@ -65,40 +65,33 @@ const HeroDesktop = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-col gap-3 w-full max-w-[600px]"
+              className="flex flex-wrap items-center gap-3"
             >
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Link
-                  href="/ponuka"
-                  className="group relative px-6 py-4 bg-navy text-white font-sans font-medium text-base tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
-                >
-                  <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-                  <Search size={16} strokeWidth={2} className="relative z-10" />
-                  <span className="relative z-10 hidden xl:inline">
-                    Pozrieť aktuálnu ponuku
-                  </span>
-                  <span className="relative z-10 inline xl:hidden">
-                    Ponuka
-                  </span>
-                </Link>
+              <Link
+                href="/ponuka"
+                className="group relative px-5 py-3.5 bg-navy text-white font-sans font-medium text-sm tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap"
+              >
+                <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                <Search size={16} strokeWidth={2} className="relative z-10" />
+                <span className="relative z-10">
+                  Aktuálna ponuka
+                </span>
+              </Link>
 
-                <Link
-                  href="/chcem-predat"
-                  className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
-                >
-                  <Home size={16} strokeWidth={2} className="shrink-0" />
-                  <span className="hidden xl:inline">Chcem predať nehnuteľnosť</span>
-                  <span className="inline xl:hidden">Chcem predať</span>
-                </Link>
-              </div>
+              <Link
+                href="/chcem-predat"
+                className="group px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex items-center justify-center gap-2.5 whitespace-nowrap"
+              >
+                <Home size={16} strokeWidth={2} />
+                Chcem predať
+              </Link>
 
               <Link
                 href="/chcem-prenajat"
-                className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md w-full flex items-center justify-center gap-2.5 whitespace-nowrap"
+                className="group px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex items-center justify-center gap-2.5 whitespace-nowrap"
               >
-                <Key size={16} strokeWidth={2} className="shrink-0" />
-                <span className="hidden xl:inline">Chcem prenajať svoju nehnuteľnosť</span>
-                <span className="inline xl:hidden">Chcem prenajať</span>
+                <Key size={16} strokeWidth={2} />
+                Chcem prenajať
               </Link>
             </motion.div>
 
@@ -131,10 +124,9 @@ const HeroDesktop = () => {
                 loop
                 muted
                 playsInline
-                preload="auto"
                 className="w-full h-full object-cover"
               >
-                <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
+                <source src="/hero-video.mp4" type="video/mp4" />
               </video>
             </div>
           </motion.div>

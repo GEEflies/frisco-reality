@@ -13,10 +13,10 @@ export const ContactSection = () => {
         <motion.div
           id="kontaktny-formular"
           className="text-center mb-16 md:mb-20 scroll-mt-32"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
             Napíšte nám
@@ -34,10 +34,10 @@ export const ContactSection = () => {
 
           {/* Left: Contact Info — this column is tall and scrolls normally */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
           >
             {/* Contact Cards */}
             <motion.div
@@ -125,10 +125,10 @@ export const ContactSection = () => {
           {/* Right: Contact Form — sticky so it locks in place */}
           <div className="lg:sticky lg:top-28 self-start">
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
             >
               <ContactForm />
             </motion.div>

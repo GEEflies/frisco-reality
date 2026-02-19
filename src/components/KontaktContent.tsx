@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ArrowUpRight, MapPin, Phone, Mail, Clock, Instagram, Facebook, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Footer } from '@/components/Footer';
+import { LocationSection } from '@/components/LocationSection';
 
 const agentsHero = '/agents-hero.png';
 
@@ -32,7 +33,7 @@ const Kontakt = () => {
 
   return (
     <div className="min-h-screen bg-cream">
-      <div className="animate-in fade-in duration-500">
+      <div>
 
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 md:pt-40 md:py-32 overflow-hidden min-h-[80vh] flex items-center bg-white">
@@ -45,41 +46,29 @@ const Kontakt = () => {
 
               {/* Text Content */}
               <div className="max-w-2xl">
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
+                <span
                   className="inline-block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-6 border-b border-navy/30 pb-2"
                 >
                   Kontaktujte nás
-                </motion.span>
+                </span>
 
-                <motion.h1
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
+                <h1
                   className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6"
                 >
                   Poďme spolu <br />
                   <span className="text-accent-red italic">spolupracovať</span>.
-                </motion.h1>
+                </h1>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
+                <p
                   className="text-lg md:text-xl text-charcoal/70 font-light leading-relaxed mb-8"
                 >
                   Sme tu pre vás. Či už predávate, kupujete alebo len hľadáte radu –
                   radi vám pomôžeme s akoukoľvek otázkou.
-                </motion.p>
+                </p>
               </div>
 
               {/* Image Content */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+              <div
                 className="relative hidden lg:block"
               >
                 <div className="relative group aspect-[4/3]">
@@ -101,7 +90,7 @@ const Kontakt = () => {
                 {/* Decorative Elements around image */}
                 <div className="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-navy/20 rounded-tr-3xl -z-10" />
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-navy/20 rounded-bl-3xl -z-10" />
-              </motion.div>
+              </div>
 
             </div>
           </div>
@@ -113,11 +102,7 @@ const Kontakt = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
 
               {/* Left: Contact Info */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
+              <div>
                 {/* Contact Cards */}
                 <div className="space-y-6 mb-12">
                   <ContactCard
@@ -186,14 +171,10 @@ const Kontakt = () => {
                     className="absolute inset-0 w-full h-full"
                   />
                 </div>
-              </motion.div>
+              </div>
 
               {/* Right: Contact Form */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
+              <div>
                 <div className="sticky top-32">
                   <div className="relative p-8 md:p-10 rounded-3xl bg-white border border-navy/10 shadow-lg">
                     {/* Decorative corner accent */}
@@ -268,137 +249,13 @@ const Kontakt = () => {
                     </form>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* How to Find Us - Sereď Location */}
-        <section className="py-12 md:py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy mb-4">
-                Kde nás nájdete
-              </h2>
-              <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
-                Naša kancelária sa nachádza v centre Serede, na Námestí Slobody. Budova sa nachádza v blízkosti Domu kultúry a mestského parku.
-              </p>
-            </motion.div>
-
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-              
-              {/* Interactive Map */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative rounded-3xl overflow-hidden border border-navy/10 bg-gradient-to-br from-navy/5 to-cream p-8 md:p-12"
-              >
-                <div className="relative z-10 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-navy mb-6 shadow-lg shadow-navy/30">
-                    <MapPin className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-3xl font-serif font-bold text-navy mb-2">
-                    Oficiálna adresa
-                  </h3>
-                  <p className="text-charcoal/70 mb-8 max-w-xs mx-auto text-lg leading-relaxed">
-                    Námestie Slobody 30/1185<br/>926 01 Sereď
-                  </p>
-                  <a
-                    href="https://www.google.com/maps/dir/?api=1&destination=Námestie+Slobody+30/1185,+926+01+Sereď"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold hover:bg-accent-red/90 transition-all shadow-lg shadow-accent-red/20 group w-full sm:w-auto"
-                  >
-                    <ArrowUpRight className="w-5 h-5 transition-transform group-hover:rotate-45" />
-                    <span>Navigovať</span>
-                  </a>
-                </div>
-
-                {/* Decorative background */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-accent-red/5 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-navy/5 rounded-full blur-2xl pointer-events-none" />
-              </motion.div>
-
-              {/* Directions Info - Right Column */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-col justify-center space-y-8 h-full py-4"
-              >
-                 {/* Car Info */}
-                 <div className="flex gap-5 group">
-                  <div className="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-navy/10 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-navy">
-                      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-                      <circle cx="7" cy="17" r="2" />
-                      <circle cx="17" cy="17" r="2" />
-                      <path d="M5 17h2v-6h10v6h2" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-navy mb-1 group-hover:text-accent-red transition-colors">Parkovanie</h4>
-                    <p className="text-charcoal/70 leading-relaxed text-sm md:text-base">
-                      Verejné parkovanie je dostupné priamo na Námestí Slobody. K dispozícii sú aj miesta v priľahlých uliciach v rámci centra mesta.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bus Info */}
-                <div className="flex gap-5 group">
-                  <div className="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-navy/10 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-navy">
-                      <path d="M8 6v6" />
-                      <path d="M15 6v6" />
-                      <path d="M2 12h19.6" />
-                      <path d="M18 18h3s.5-1.7.8-2.8c.4-1.5.2-3.2.2-3.2H1" />
-                      <rect x="2" y="3" width="20" height="9" rx="2" />
-                      <circle cx="7" cy="18" r="2" />
-                      <circle cx="17" cy="18" r="2" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-navy mb-1 group-hover:text-accent-red transition-colors">Autobusové spojenie</h4>
-                    <p className="text-charcoal/70 leading-relaxed text-sm md:text-base">
-                      Najbližšia zastávka <strong>"Sereď, nám. Slobody"</strong> je vzdialená len pár krokov. Hlavná autobusová stanica je dostupná 5 minútovou prechádzkou.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Opening Hours Info */}
-                 <div className="flex gap-5 group">
-                  <div className="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-navy/10 transition-colors">
-                    <Clock className="w-6 h-6 text-navy" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-navy mb-1 group-hover:text-accent-red transition-colors">Otváracie hodiny</h4>
-                    <div className="text-charcoal/70 text-sm md:text-base">
-                      <div className="flex justify-between gap-8 mb-1">
-                        <span>Pondelok - Piatok</span>
-                        <span className="font-semibold text-navy">9:00 - 17:00</span>
-                      </div>
-                      <div className="flex justify-between gap-8">
-                        <span>Víkendy</span>
-                        <span className="font-semibold text-navy">Na dohodu</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        <LocationSection />
 
         {/* CTA Section */}
         <section className="py-12 md:py-32 bg-white">

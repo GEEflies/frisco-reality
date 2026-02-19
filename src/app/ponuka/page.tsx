@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Ponuka() {
   return (
     <main className="min-h-screen bg-cream">
-      <div className="animate-in fade-in duration-500">
+      <div>
         <div className="pt-20">
           <Suspense fallback={
             <div className="flex items-center justify-center min-h-[400px]">

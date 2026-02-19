@@ -115,11 +115,12 @@
     }
   }
 
-  /* Prevent white flash on mobile by ensuring backgrounds render immediately */
-  @media (max-width: 1024px) {
-    /* Force GPU compositing on mobile overlays to prevent paint flash */
-    [data-framer-appear], [style*="opacity"] {
-      will-change: opacity, transform;
+  /* Prevent white flash on mobile: disable all CSS enter-animations and
+     force framer-motion SSR-rendered elements visible on first paint */
+  @media (max-width: 1023px) {
+    .animate-in {
+      animation: none !important;
+      opacity: 1 !important;
     }
   }
 
