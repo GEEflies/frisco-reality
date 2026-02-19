@@ -17,7 +17,7 @@ export const GoogleReviewsBadge = () => {
             {/* Header: Google Logo + Rating */}
             <div className="flex items-center gap-2 mb-1">
                 <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                    src="/google-logo.svg"
                     alt="Google"
                     className="w-5 h-5 bg-white rounded-full"
                 />
@@ -38,7 +38,7 @@ export const GoogleReviewsBadge = () => {
                             className="text-[#FBBC05]"
                         />
                     ))}
-                    
+
                     {/* Partial star if needed */}
                     {fullStars < 5 && (
                         <div className="relative">
@@ -47,8 +47,8 @@ export const GoogleReviewsBadge = () => {
                                 fill="#e5e7eb"
                                 className="text-gray-200"
                             />
-                            <div 
-                                className="absolute top-0 left-0 overflow-hidden" 
+                            <div
+                                className="absolute top-0 left-0 overflow-hidden"
                                 style={{ width: `${partialStarPercentage}%` }}
                             >
                                 <Star
@@ -59,7 +59,7 @@ export const GoogleReviewsBadge = () => {
                             </div>
                         </div>
                     )}
-                    
+
                     {/* Empty stars */}
                     {[...Array(Math.max(0, 4 - fullStars))].map((_, i) => (
                         <Star
