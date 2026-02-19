@@ -198,10 +198,14 @@ const ChcemPrenajat = () => {
                                         {managedItems.map((item, i) => (
                                             <motion.li
                                                 key={i}
-                                                initial={{ opacity: 0, x: 20 }}
-                                                whileInView={{ opacity: 1, x: 0 }}
-                                                viewport={{ once: true }}
-                                                transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] as const }}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                whileInView={{ opacity: 1, y: 0 }}
+                                                viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                                                transition={{
+                                                    duration: 0.4,
+                                                    delay: i * 0.05,
+                                                    ease: "easeOut"
+                                                }}
                                                 className="flex items-center gap-4"
                                             >
                                                 <span className="flex-shrink-0 w-2 h-2 rounded-full bg-accent-red" />
