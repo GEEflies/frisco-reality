@@ -3,8 +3,13 @@
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Instagram, Facebook, FileText } from 'lucide-react';
 import { ContactForm } from '@/components/ContactForm';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { CONTACT_SECTION_COPY } from '@/i18n/copy';
 
 export const ContactSection = () => {
+  const { language } = useLanguage();
+  const copy = CONTACT_SECTION_COPY[language];
+
   return (
     <section className="py-12 md:py-20 bg-cream" id="kontakt">
       <div className="container mx-auto px-6">
@@ -19,13 +24,13 @@ export const ContactSection = () => {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
-            Napíšte nám
+            {copy.badge}
           </span>
           <h2 className="text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
-            Neváhajte nás <span className="text-accent-red italic">kontaktovať</span>
+            {copy.titleStart} <span className="text-accent-red italic">{copy.titleAccent}</span>
           </h2>
           <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Či už predávate nehnuteľnosť, hľadáte nový domov alebo len premýšľate o ďalšom kroku, sme tu.
+            {copy.subtitle}
           </p>
         </motion.div>
 
@@ -51,12 +56,12 @@ export const ContactSection = () => {
             >
               <ContactCard
                 icon={MapPin}
-                title="Navštívte nás"
+                title={copy.visit}
                 content={<>Námestie Slobody 1185/30<br />926 01 Sereď</>}
               />
               <ContactCard
                 icon={Phone}
-                title="Zavolajte nám"
+                title={copy.call}
                 content={
                   <a href="tel:+421905447220" className="hover:text-accent-red transition-colors">
                     0905 447 220
@@ -65,7 +70,7 @@ export const ContactSection = () => {
               />
               <ContactCard
                 icon={Mail}
-                title="Napíšte nám"
+                title={copy.write}
                 content={
                   <a href="mailto:info@frisco.sk" className="hover:text-accent-red transition-colors">
                     info@frisco.sk
@@ -74,17 +79,17 @@ export const ContactSection = () => {
               />
               <ContactCard
                 icon={Clock}
-                title="Pracovná doba"
+                title={copy.hours}
                 content={
                   <>
-                    <span className="font-bold">Po - Pi:</span> 9:00 - 17:00<br />
-                    <span className="font-bold">So - Ne:</span> Zatvorené
+                    <span className="font-bold">{copy.weekdays}</span> 9:00 - 17:00<br />
+                    <span className="font-bold">{copy.weekend}</span> {language === 'sk' ? 'Zatvorené' : language === 'en' ? 'Closed' : 'Geschlossen'}
                   </>
                 }
               />
               <ContactCard
                 icon={FileText}
-                title="Fakturačné údaje"
+                title={copy.billing}
                 content={
                   <div className="text-sm space-y-1">
                     <p className="font-bold text-navy">FRISCO, s.r.o.</p>
@@ -100,7 +105,7 @@ export const ContactSection = () => {
 
             {/* Social Links */}
             <div className="pt-8 border-t border-navy/10">
-              <h4 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">Sledujte nás</h4>
+              <h4 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">{copy.follow}</h4>
               <div className="flex gap-4">
                 <SocialLink icon={Instagram} label="Instagram" href="https://www.instagram.com/friscoreality/" />
                 <SocialLink icon={Facebook} label="Facebook" href="https://www.facebook.com/Friscorealitka/" />

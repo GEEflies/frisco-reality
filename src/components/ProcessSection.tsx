@@ -3,6 +3,8 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import { MessageCircle, Search, Eye, Key, MapPin, Flag } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { PROCESS_COPY } from '@/i18n/copy';
 
 const steps = [
   {
@@ -37,6 +39,9 @@ import confetti from 'canvas-confetti';
 const S_CURVE_PATH = "M 25 0 C 25 0, 25 20, 50 20 C 75 20, 75 35, 75 35 C 75 35, 75 50, 50 50 C 25 50, 25 65, 25 65 C 25 65, 25 85, 50 85 C 75 85, 85 95, 85 95";
 
 export const ProcessSection = () => {
+  const { language } = useLanguage();
+  const copy = PROCESS_COPY[language];
+  const localizedSteps = steps.map((step, index) => ({ ...step, ...copy.steps[index] }));
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -171,13 +176,13 @@ export const ProcessSection = () => {
           <span
             className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4"
           >
-            Náš Postup
+            {copy.badge}
           </span>
           <h2
             className="text-5xl md:text-7xl font-serif font-bold text-navy"
           >
-            Ako to u nás <span className="italic relative inline-block">
-              funguje
+            {copy.titleStart} <span className="italic relative inline-block">
+              {copy.titleAccent}
               <svg className="absolute w-full h-3 -bottom-1 left-0 text-accent-red opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none">
                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="3" fill="none" />
               </svg>
@@ -187,7 +192,7 @@ export const ProcessSection = () => {
 
         {/* Adjust vertical spacing with transforms instead of margins for smoothness */}
         <div className="flex flex-col space-y-8 md:space-y-0 relative max-w-[85rem] mx-auto pb-12">
-          {steps.map((step, index) => {
+          {localizedSteps.map((step, index) => {
             // Apply staggering using Tailwind translate classes
             // These correspond roughly to the previous margin values but use GPU-accelerated transforms
             // Previous margins: 0, -128/-260, -128/-24, -64/-48

@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { ChevronRight, Maximize, Home, MapPin } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { MAIN_LISTINGS_COPY } from '@/i18n/copy';
 
 // Mockup data that mimics real listings
 const MOCK_LISTINGS = [
@@ -156,6 +158,13 @@ const MockListingCardMobile = ({ listing, index, priority = false }: { listing: 
 );
 
 export const MainListings = () => {
+    const { language } = useLanguage();
+    const copy = MAIN_LISTINGS_COPY[language];
+    const localizedListings = MOCK_LISTINGS.map((listing, index) => ({
+        ...listing,
+        ...copy.cards[index],
+    }));
+
     return (
         <section
             className="pt-12 lg:pt-24 pb-12 bg-cream relative z-10 border-b border-black/5 min-h-[800px] lg:min-h-[600px]"
@@ -168,10 +177,10 @@ export const MainListings = () => {
                 >
                     <div>
                         <span className="text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4 block">
-                            Exkluzívny výber
+                            {copy.badge}
                         </span>
                         <h2 className="text-4xl md:text-5xl font-serif font-extrabold text-black leading-tight tracking-tight">
-                            Aktuálna ponuka
+                            {copy.title}
                         </h2>
                     </div>
                 </div>
@@ -180,7 +189,7 @@ export const MainListings = () => {
                 <div
                     className="hidden lg:flex gap-8"
                 >
-                    {MOCK_LISTINGS.map((listing, index) => (
+                    {localizedListings.map((listing, index) => (
                         <MockListingCard key={listing.id} listing={listing} index={index} priority={index === 0} />
                     ))}
                 </div>
@@ -194,7 +203,7 @@ export const MainListings = () => {
                         className="group relative px-8 py-4 bg-navy text-white font-sans font-medium tracking-wide overflow-hidden rounded-full shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex items-center gap-3"
                     >
                         <div className="absolute inset-0 w-full h-full bg-accent-red/10 group-hover:bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-                        <span className="relative z-10 uppercase tracking-widest text-sm font-bold">Zobraziť celú ponuku</span>
+                        <span className="relative z-10 uppercase tracking-widest text-sm font-bold">{copy.cta}</span>
                         <ChevronRight className="relative z-10 w-4 h-4" />
                     </a>
                 </div>
@@ -203,7 +212,7 @@ export const MainListings = () => {
                 <div
                     className="lg:hidden flex flex-col gap-6"
                 >
-                    {MOCK_LISTINGS.slice(0, 2).map((listing, index) => (
+                    {localizedListings.slice(0, 2).map((listing, index) => (
                         <MockListingCardMobile key={listing.id} listing={listing} index={index} priority={true} />
                     ))}
 
@@ -211,7 +220,7 @@ export const MainListings = () => {
                         href="/ponuka"
                         className="w-full py-4 mt-4 bg-navy rounded-full text-white font-bold hover:bg-navy/90 transition-colors duration-300 uppercase tracking-widest text-sm text-center block shadow-lg shadow-navy/20"
                     >
-                        Zobraziť celú ponuku
+                        {copy.cta}
                     </a>
                 </div>
 

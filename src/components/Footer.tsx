@@ -4,8 +4,13 @@ import { ArrowUpRight, Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-r
 import Link from 'next/link';
 const friscoLogo = '/frisco-logo.png';
 import { GoogleReviewsBadge } from './GoogleReviewsBadge';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { FOOTER_COPY } from '@/i18n/copy';
 
 export const Footer = () => {
+  const { language } = useLanguage();
+  const copy = FOOTER_COPY[language];
+
   return (
     <footer className="bg-cream pt-12 lg:pt-24 pb-8 border-t border-navy/10 relative overflow-hidden contain-layout">
 
@@ -22,14 +27,11 @@ export const Footer = () => {
           <div className="col-span-2 lg:col-span-3 flex flex-col lg:pr-6 xl:pr-10">
             <img src={friscoLogo} alt="Frisco" className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8" />
             <h2 className="text-3xl sm:text-4xl xl:text-4xl font-serif font-bold text-navy leading-tight mb-8">
-              O vašu <br className="hidden lg:block" />
-              nehnuteľnosť <br className="hidden lg:block" />
-              sa postaráme <br className="hidden lg:block" />
-              ako <span className="text-accent-red italic">o vlastnú.</span>
+              {copy.title} <span className="text-accent-red italic">{copy.titleAccent}</span>
             </h2>
 
             <Link href="/kontakt#kontaktny-formular" className="group inline-flex items-center gap-4 text-navy hover:text-accent-red transition-colors w-fit">
-              <span className="text-sm uppercase tracking-widest border-b border-navy/20 group-hover:border-accent-red pb-1 font-bold">Kontaktujte nás</span>
+              <span className="text-sm uppercase tracking-widest border-b border-navy/20 group-hover:border-accent-red pb-1 font-bold">{copy.contactUs}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </Link>
           </div>
@@ -37,14 +39,9 @@ export const Footer = () => {
           {/* COLUMN 2: NAVIGATION */}
           {/* Mobile: 1 col (side-by-side with Services), lg: 2 cols (row 1), xl: 2 cols */}
           <div className="col-span-1 lg:col-span-2 lg:pl-4 xl:pl-8">
-            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Navigácia</h3>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">{copy.navigation}</h3>
             <ul className="space-y-3">
-              {[
-                { label: 'Domov', href: '/' },
-                { label: 'Prečo Frisco?', href: '/preco-frisco' },
-                { label: 'Ponuka', href: '/ponuka' },
-                { label: 'Kontakt', href: '/kontakt' },
-              ].map(item => (
+              {copy.navItems.map(item => (
                 <li key={item.label}>
                   <Link href={item.href} className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">
                     {item.label}
@@ -57,9 +54,9 @@ export const Footer = () => {
           {/* COLUMN 3: SERVICES */}
           {/* Mobile: 1 col (side-by-side with Nav), lg: 2 cols (row 1), xl: 2 cols */}
           <div className="col-span-1 lg:col-span-2 xl:pl-4">
-            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Služby</h3>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">{copy.services}</h3>
             <ul className="space-y-3">
-              {['Predaj nehnuteľností', 'Prenájom', 'Development', 'Investície'].map(item => (
+              {copy.servicesItems.map(item => (
                 <li key={item}>
                   <a href="#" className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">{item}</a>
                 </li>
@@ -70,7 +67,7 @@ export const Footer = () => {
           {/* COLUMN 4: CONTACT */}
           {/* Mobile: full width, lg: 5 cols (row 1 with Logo+Nav+Services), xl: 3 cols */}
           <div className="col-span-2 lg:col-span-5 xl:col-span-3 lg:pl-4 xl:pl-6 xl:pr-12">
-            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Kontakt</h3>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">{copy.contact}</h3>
             <ul className="space-y-5">
               <li className="flex items-start gap-4">
                 <MapPin className="w-5 h-5 text-accent-red shrink-0 mt-1" strokeWidth={1.5} />
@@ -85,7 +82,7 @@ export const Footer = () => {
                   <div className="flex items-center justify-start gap-4 pl-2">
                     <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold">Zavolajte nám</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">{copy.callUs}</span>
                       <span className="font-bold text-lg whitespace-nowrap">0905 447 220</span>
                     </div>
                   </div>
@@ -95,7 +92,7 @@ export const Footer = () => {
                   <div className="flex items-center gap-4">
                     <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold">Zavolajte nám</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">{copy.callUs}</span>
                       <span className="font-bold text-lg whitespace-nowrap">0905 447 220</span>
                     </div>
                   </div>
@@ -107,7 +104,7 @@ export const Footer = () => {
                   <div className="flex items-center justify-start gap-4 pl-2">
                     <Mail className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold">Alebo nám napíšte</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">{copy.writeUs}</span>
                       <span className="font-bold text-lg">info@frisco.sk</span>
                     </div>
                   </div>
@@ -117,7 +114,7 @@ export const Footer = () => {
                   <div className="flex items-center gap-4">
                     <Mail className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold">Alebo nám napíšte</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">{copy.writeUs}</span>
                       <span className="font-bold text-base">info@frisco.sk</span>
                     </div>
                   </div>
@@ -129,13 +126,13 @@ export const Footer = () => {
           {/* COLUMN 5: CONNECT / SOCIAL */}
           {/* Mobile: full width, lg: full 12 cols (row 2, horizontal), xl: 2 cols (single row, vertical) */}
           <div className="col-span-2 lg:col-span-12 xl:col-span-2 lg:border-t lg:border-navy/5 lg:pt-8 xl:border-0 xl:pt-0">
-            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">Spojte sa s nami</h3>
+            <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">{copy.connect}</h3>
 
             {/* Horizontal at sm+, vertical at xl (narrow column) */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:gap-8 lg:gap-12 xl:flex-col xl:gap-0">
               {/* Social Icons */}
               <div className="mb-6 sm:mb-0 xl:mb-6">
-                <span className="block text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-3 lg:hidden xl:hidden">Sociálne siete</span>
+                <span className="block text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-3 lg:hidden xl:hidden">{copy.social}</span>
                 <div className="flex gap-4">
                   <a href="https://www.facebook.com/Friscorealitka/" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-navy/15 flex items-center justify-center text-navy hover:bg-navy hover:text-white transition-all" aria-label="Facebook">
                     <Facebook size={20} />
@@ -148,7 +145,7 @@ export const Footer = () => {
 
               {/* Partner Section */}
               <div className="mb-6 sm:mb-0 xl:mb-6">
-                <span className="block text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-3">Spolupracujeme s portálom</span>
+                <span className="block text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-3">{copy.partner}</span>
                 <a
                   href="https://www.nehnutelnosti.sk/realitna-kancelaria/frisco-sro/centrala/inzeraty/405dc32c-f8f7-4378-8da1-fac1fbecbe6f"
                   target="_blank"
@@ -171,12 +168,12 @@ export const Footer = () => {
         {/* Bottom Footer: Legal */}
         <div className="flex flex-col md:flex-row justify-between items-center text-charcoal/40 text-xs lg:text-xs gap-4 pt-6 border-t border-navy/5">
           <div className="flex flex-col items-center md:items-start gap-1">
-            <p>&copy; {new Date().getFullYear()} Frisco. Rodinná firma, nie korporát.</p>
-            <p>Sereď & Nitra</p>
+            <p>&copy; {new Date().getFullYear()} {copy.copyright}</p>
+            <p>{copy.city}</p>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-navy transition-colors">Ochrana osobných údajov</a>
-            <a href="#" className="hover:text-navy transition-colors">Cookies</a>
+            <a href="#" className="hover:text-navy transition-colors">{copy.privacy}</a>
+            <a href="#" className="hover:text-navy transition-colors">{copy.cookies}</a>
           </div>
         </div>
 
