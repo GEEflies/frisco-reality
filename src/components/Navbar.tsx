@@ -24,12 +24,7 @@ export const Navbar = () => {
   // Combined state for active/scrolled navbar appearance
   const isNavActive = isScrolled || isPonukaHovered || isChcemPredatPage;
 
-  // Open Ponuka dropdown automatically when mobile menu opens
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      setIsPonukaOpen(true);
-    }
-  }, [isMobileMenuOpen]);
+  // Open Ponuka dropdown automatically when mobile menu opens - handled in click handler now
 
   const handleHomeClick = (e: React.MouseEvent) => {
     if (pathname === '/') {

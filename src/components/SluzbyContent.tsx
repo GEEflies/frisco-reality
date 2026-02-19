@@ -2,6 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Home, Key, Briefcase, Building2, ArrowUpRight, Check, Phone, TrendingUp, Camera, FileText, Shield, Users, BarChart3, Landmark, Wrench, Receipt, MapPin, Target, Megaphone, ShoppingBag, Headphones, Award, Heart } from 'lucide-react';
+import { useRef, useLayoutEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Footer } from '@/components/Footer';
 import WhyFriscoHeroSplit from './WhyFriscoHeroSplit';
 import { FamilyBusinessSection } from '@/components/FamilyBusinessSection';
@@ -177,36 +180,7 @@ const Sluzby = () => {
 
             <div className="max-w-7xl mx-auto">
               {/* Three core values in a row */}
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                variants={staggerContainer}
-              >
-                {[values[0], values[1], values[2]].map((value, index) => (
-                  <motion.div
-                    key={value.id}
-                    variants={fadeInUp}
-                    className="group relative bg-white rounded-[2rem] p-6 md:p-10 border border-navy/[0.06] shadow-[0_4px_24px_-6px_rgba(30,58,95,0.08)] hover:shadow-[0_12px_48px_-12px_rgba(30,58,95,0.15)] transition-all duration-500"
-                  >
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${index === 0 ? 'bg-navy/[0.06] text-navy group-hover:bg-navy/[0.1]' :
-                      index === 1 ? 'bg-accent-red/[0.08] text-accent-red group-hover:bg-accent-red/[0.12]' :
-                        'bg-navy/[0.06] text-navy group-hover:bg-navy/[0.1]'
-                      }`}>
-                      <value.icon className="w-7 h-7" strokeWidth={1.5} />
-                    </div>
-
-                    <h3 className="text-2xl md:text-2xl lg:text-[1.65rem] font-serif font-bold text-navy mb-3">
-                      {value.title}
-                    </h3>
-
-                    <p className="text-charcoal/60 leading-relaxed text-[15px] md:text-base lg:text-[1.05rem]">
-                      {value.description}
-                    </p>
-                  </motion.div>
-                ))}
-              </motion.div>
+              <ValuesSection values={values} fadeInUp={fadeInUp} staggerContainer={staggerContainer} />
 
 
             </div>
@@ -263,6 +237,81 @@ const Sluzby = () => {
 
         <Footer />
       </div>
+    </div>
+  );
+};
+
+const ValuesSection = ({ values, fadeInUp, staggerContainer }: { values: any[], fadeInUp: any, staggerContainer: any }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Only run GSAP context on mobile/tablet
+    const ctx = gsap.context(() => {
+      ScrollTrigger.matchMedia({
+        // Mobile only (up to 768px for safety, matching md breakpoint)
+        "(max-width: 767px)": function () {
+          if (!containerRef.current || !sectionRef.current) return;
+
+          const container = containerRef.current;
+          const totalWidth = container.scrollWidth;
+          const viewportWidth = container.offsetWidth;
+
+          gsap.to(container, {
+            x: () => -(totalWidth - viewportWidth + 48), // 48px padding buffer
+            ease: "none",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              pin: true,
+              scrub: 1,
+              start: "center center",
+              end: () => "+=" + (totalWidth),
+              invalidateOnRefresh: true,
+            }
+          });
+        }
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={sectionRef} className="max-w-7xl mx-auto overflow-hidden md:overflow-visible py-10 md:py-0">
+      <motion.div
+        ref={containerRef}
+        className="flex md:grid md:grid-cols-3 gap-6 lg:gap-8 w-max md:w-auto px-4 md:px-0"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "0px" }}
+        variants={staggerContainer}
+      >
+        {/* We map specific items like in the original code: [0,1,2] */}
+        {[values[0], values[1], values[2]].map((value, index) => (
+          <motion.div
+            key={value.id}
+            variants={fadeInUp}
+            className="flex-shrink-0 w-[85vw] md:w-auto h-auto group relative bg-white rounded-[2rem] p-6 md:p-10 border border-navy/[0.06] shadow-[0_4px_24px_-6px_rgba(30,58,95,0.08)] hover:shadow-[0_12px_48px_-12px_rgba(30,58,95,0.15)] transition-all duration-500"
+          >
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${index === 0 ? 'bg-navy/[0.06] text-navy group-hover:bg-navy/[0.1]' :
+              index === 1 ? 'bg-accent-red/[0.08] text-accent-red group-hover:bg-accent-red/[0.12]' :
+                'bg-navy/[0.06] text-navy group-hover:bg-navy/[0.1]'
+              }`}>
+              <value.icon className="w-7 h-7" strokeWidth={1.5} />
+            </div>
+
+            <h3 className="text-2xl md:text-2xl lg:text-[1.65rem] font-serif font-bold text-navy mb-3">
+              {value.title}
+            </h3>
+
+            <p className="text-charcoal/60 leading-relaxed text-[15px] md:text-base lg:text-[1.05rem]">
+              {value.description}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 };

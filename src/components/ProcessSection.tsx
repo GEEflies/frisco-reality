@@ -207,7 +207,7 @@ export const ProcessSection = () => {
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, margin: "0px" }}
                 className={`relative md:w-[48%] ${index % 2 === 0
                   ? 'md:mr-auto' // Left Column
                   : 'md:ml-auto' // Right Column

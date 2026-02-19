@@ -117,7 +117,7 @@ const MockListingCardMobile = ({ listing, index }: { listing: typeof MOCK_LISTIN
         key={listing.id}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-20px' }}
+        viewport={{ once: true, margin: '0px' }}
         transition={{
             duration: 0.5,
             delay: index * 0.1,
@@ -204,7 +204,7 @@ export const MainListings = () => {
                     className="hidden lg:flex gap-8"
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-50px' }}
+                    viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 >
                     {MOCK_LISTINGS.map((listing, index) => (
@@ -235,7 +235,7 @@ export const MainListings = () => {
                     className="lg:hidden flex flex-col gap-6"
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-50px' }}
+                    viewport={{ once: true, margin: '0px' }}
                     transition={{ duration: 0.8, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 >
                     {MOCK_LISTINGS.slice(0, 2).map((listing, index) => (

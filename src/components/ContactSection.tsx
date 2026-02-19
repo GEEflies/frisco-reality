@@ -117,8 +117,8 @@ export const ContactSection = () => {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-
-                className="absolute inset-0 w-full h-full"
+                className="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-700 data-[loaded=true]:opacity-100"
+                onLoad={(e) => e.currentTarget.setAttribute('data-loaded', 'true')}
                 title="Kde nás nájdete - Mapa Frisco Reality"
               />
             </div>
