@@ -16,9 +16,15 @@ export const contentType = 'image/png';
 
 // Image generation
 export default async function Image() {
-    // Load logo using fs (Node.js runtime)
-    const logoPath = join(process.cwd(), 'public', 'frisco-logo-opt.png');
-    const logoSrc = readFileSync(logoPath);
+    let logoSrc: Buffer | null = null;
+
+    try {
+        // Load logo using fs (Node.js runtime)
+        const logoPath = join(process.cwd(), 'public', 'frisco-logo-opt.png');
+        logoSrc = readFileSync(logoPath);
+    } catch (e) {
+        console.error('Failed to load logo image:', e);
+    }
 
     return new ImageResponse(
         (
@@ -36,14 +42,26 @@ export default async function Image() {
             >
                 {/* Logo Container */}
                 <div style={{ display: 'flex' }}>
-                    {/* @ts-ignore */}
-                    <img
-                        src={logoSrc.buffer as any}
-                        width="500"
-                        style={{
-                            objectFit: 'contain',
-                        }}
-                    />
+                    {logoSrc ? (
+                        /* @ts-ignore */
+                        <img
+                            src={logoSrc.buffer as any}
+                            width="500"
+                            style={{
+                                objectFit: 'contain',
+                            }}
+                        />
+                    ) : (
+                        <div style={{
+                            fontSize: 60,
+                            color: 'white',
+                            fontFamily: 'sans-serif',
+                            fontWeight: 'bold',
+                            letterSpacing: '-0.02em',
+                        }}>
+                            FRISCO REALITY
+                        </div>
+                    )}
                 </div>
             </div>
         ),
