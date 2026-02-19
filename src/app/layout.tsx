@@ -82,7 +82,7 @@ const LAYOUT_SEO: Record<LanguageCode, {
 export async function generateMetadata(): Promise<Metadata> {
   const language = await resolveServerLanguage();
   const localized = LAYOUT_SEO[language];
-  const alternates = buildLanguageAlternates('/');
+  const alternates = buildLanguageAlternates('/', language);
 
   return {
     metadataBase: new URL(SITE_URL),

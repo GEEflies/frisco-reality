@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: copy.title,
     description: copy.description,
-    alternates: buildLanguageAlternates(path),
+    alternates: buildLanguageAlternates(path, language),
     openGraph: {
       title: copy.ogTitle,
       description: copy.ogDescription,
@@ -77,18 +77,16 @@ export default async function Ponuka() {
   return (
     <main className="min-h-screen bg-cream">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
-      <div>
-        <div className="pt-20">
-          <Suspense fallback={
-            <div className="flex items-center justify-center min-h-[400px]">
-              <Loader2 className="h-8 w-8 animate-spin text-navy/20" />
-            </div>
-          }>
-            <PropertiesSection />
-          </Suspense>
-        </div>
-        <Footer />
+      <div className="pt-20">
+        <Suspense fallback={
+          <div className="flex items-center justify-center min-h-[400px]">
+            <Loader2 className="h-8 w-8 animate-spin text-navy/20" />
+          </div>
+        }>
+          <PropertiesSection />
+        </Suspense>
       </div>
+      <Footer />
     </main>
   );
 }

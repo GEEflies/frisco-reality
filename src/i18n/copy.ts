@@ -56,7 +56,8 @@ export const NAVBAR_COPY: Record<LanguageCode, {
 
 export const HERO_DESKTOP_COPY: Record<LanguageCode, {
   label: string;
-  title: string;
+  titleLine1: string;
+  titleLine3?: string;
   verbs: string[];
   subtitle: string;
   offerLong: string;
@@ -68,7 +69,7 @@ export const HERO_DESKTOP_COPY: Record<LanguageCode, {
 }> = {
   sk: {
     label: 'Exkluzívna realitná kancelária v Seredi',
-    title: 'Vašu nehnuteľnosť',
+    titleLine1: 'Vašu nehnuteľnosť',
     verbs: ['nájdeme', 'nafotíme', 'odprezentujeme', 'prenajmeme', 'predáme', 'alebo odkúpime'],
     subtitle: 'Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.',
     offerLong: 'Pozrieť aktuálnu ponuku',
@@ -80,8 +81,9 @@ export const HERO_DESKTOP_COPY: Record<LanguageCode, {
   },
   en: {
     label: 'Exclusive real estate agency in Sered',
-    title: 'Your property',
-    verbs: ['we will find', 'we will photograph', 'we will present', 'we will rent', 'we will sell', 'or we will buy'],
+    titleLine1: 'We will',
+    titleLine3: 'your property',
+    verbs: ['find', 'photograph', 'present', 'rent out', 'sell', 'or buy'],
     subtitle: 'For 18 years we have helped owners sell and rent their properties under the best conditions and helped buyers find a place they can call home.',
     offerLong: 'View current listings',
     offerShort: 'Listings',
@@ -92,8 +94,9 @@ export const HERO_DESKTOP_COPY: Record<LanguageCode, {
   },
   de: {
     label: 'Exklusive Immobilienagentur in Sered',
-    title: 'Ihre Immobilie',
-    verbs: ['wir finden', 'wir fotografieren', 'wir präsentieren', 'wir vermieten', 'wir verkaufen', 'oder wir kaufen'],
+    titleLine1: 'Wir werden',
+    titleLine3: 'Ihre Immobilie',
+    verbs: ['finden', 'fotografieren', 'präsentieren', 'vermieten', 'verkaufen', 'oder kaufen'],
     subtitle: 'Seit 18 Jahren helfen wir Eigentümern, ihre Immobilien zu den besten Bedingungen zu verkaufen und zu vermieten, und Interessenten, ein Zuhause zu finden.',
     offerLong: 'Aktuelle Angebote ansehen',
     offerShort: 'Angebot',
@@ -107,6 +110,7 @@ export const HERO_DESKTOP_COPY: Record<LanguageCode, {
 export const HERO_MOBILE_COPY: Record<LanguageCode, {
   label: string;
   title: string;
+  verbPrefix?: string;
   verbs: string[];
   subtitle: string;
   offer: string;
@@ -124,8 +128,9 @@ export const HERO_MOBILE_COPY: Record<LanguageCode, {
   },
   en: {
     label: 'Exclusive real estate agency in Sered',
-    title: 'Your property',
-    verbs: ['we will find', 'we will photograph', 'we will present', 'we will rent', 'we will sell', 'or we will buy'],
+    title: 'Your property will',
+    verbPrefix: 'be',
+    verbs: ['found', 'photographed', 'presented', 'rented out', 'sold', 'or bought'],
     subtitle: 'For 18 years we have helped owners sell and rent under the best conditions and helped clients find a place they can call home.',
     offer: 'View current listings',
     sell: 'I want to sell',
@@ -133,8 +138,9 @@ export const HERO_MOBILE_COPY: Record<LanguageCode, {
   },
   de: {
     label: 'Exklusive Immobilienagentur in Sered',
-    title: 'Ihre Immobilie',
-    verbs: ['wir finden', 'wir fotografieren', 'wir präsentieren', 'wir vermieten', 'wir verkaufen', 'oder wir kaufen'],
+    title: 'Ihre Immobilie wird',
+    verbPrefix: '',
+    verbs: ['gefunden', 'fotografiert', 'präsentiert', 'vermietet', 'verkauft', 'oder gekauft'],
     subtitle: 'Seit 18 Jahren helfen wir Eigentümern beim Verkauf und der Vermietung zu besten Bedingungen und Kunden beim Finden eines Zuhauses.',
     offer: 'Aktuelle Angebote ansehen',
     sell: 'Ich möchte verkaufen',

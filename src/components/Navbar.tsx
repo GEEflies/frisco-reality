@@ -1,158 +1,204 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback, type ComponentType, type SVGProps } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, Instagram, Facebook, Mail, Search, Home, Key, Globe } from 'lucide-react';
-import Image from 'next/image';
+import { DE, GB, SK } from 'country-flag-icons/react/3x2';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { NAVBAR_COPY } from '@/i18n/copy';
+import type { LanguageCode } from '@/i18n/types';
 
+type FlagComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
+const LANGUAGES: { code: LanguageCode; label: string; Flag: FlagComponent }[] = [
+  { code: 'sk', label: 'Sloven\u010Dina', Flag: SK as FlagComponent },
+  { code: 'en', label: 'English', Flag: GB as FlagComponent },
+  { code: 'de', label: 'Deutsch', Flag: DE as FlagComponent },
+];
+
+const stripLanguagePrefix = (path: string) => {
+  const stripped = path.replace(/^\/(sk|en|de)(?=\/|$)/, '');
+  return stripped.length > 0 ? stripped : '/';
+};
+
+const withLanguagePrefix = (path: string, lang: LanguageCode) => {
+  if (path === '/') return `/${lang}`;
+  return `/${lang}${path}`;
+};
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isPonukaOpen, setIsPonukaOpen] = useState(true); // Mobile state
-  const [isPonukaHovered, setIsPonukaHovered] = useState(false); // Desktop state
+  const [isPonukaOpen, setIsPonukaOpen] = useState(true);
+  const [isPonukaHovered, setIsPonukaHovered] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [isLanguageSwitching, setIsLanguageSwitching] = useState(false);
+  const languageMenuRef = useRef<HTMLDivElement | null>(null);
+  const { language } = useLanguage();
   const pathname = usePathname();
-  const router = useRouter();
-  const isPonukaPage = pathname?.includes('/ponuka');
+  const navCopy = NAVBAR_COPY[language];
   const isPropertyDetailPage = pathname?.includes('/nehnutelnost');
   const isChcemPredatPage = pathname?.includes('/chcem-predat');
-
-  // Combined state for active/scrolled navbar appearance
+  const activeLanguage = LANGUAGES.find((o) => o.code === language) ?? LANGUAGES[0];
   const isNavActive = isScrolled || isPonukaHovered || isChcemPredatPage;
 
-  // Open Ponuka dropdown automatically when mobile menu opens - handled in click handler now
-
-  const handleHomeClick = (e: React.MouseEvent) => {
-    if (pathname === '/') {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      e.preventDefault();
-      router.push('/');
-    }
-  };
+  const l = useCallback(
+    (path: string) => (path === '/' ? `/${language}` : `/${language}${path}`),
+    [language],
+  );
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    if (isMobileMenuOpen) setIsPonukaOpen(true);
+  }, [isMobileMenuOpen]);
 
-    // Check initial scroll position
-    handleScroll();
-
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      if (!languageMenuRef.current?.contains(e.target as Node)) {
+        setIsLanguageOpen(false);
+      }
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsLanguageOpen(false);
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+    document.addEventListener('keydown', onEscape);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+      document.removeEventListener('keydown', onEscape);
+    };
+  }, []);
+
+  const handleHomeClick = (e: React.MouseEvent) => {
+    const bare = stripLanguagePrefix(pathname ?? '/');
+    if (bare === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleLanguageSelect = (code: LanguageCode) => {
+    if (code === language) {
+      setIsLanguageOpen(false);
+      setIsMobileMenuOpen(false);
+      return;
+    }
+    setIsLanguageOpen(false);
+    setIsMobileMenuOpen(false);
+    setIsLanguageSwitching(true);
+
+    document.cookie = `frisco-language=${code}; path=/; max-age=31536000; samesite=lax`;
+    try { localStorage.setItem('frisco-language', code); } catch { /* noop */ }
+
+    const bare = stripLanguagePrefix(pathname ?? '/');
+    const nextPathname = withLanguagePrefix(bare, code);
+    const params = new URLSearchParams(window.location.search);
+    params.delete('lang');
+    const qs = params.toString();
+    const hash = window.location.hash;
+    const nextUrl = `${nextPathname}${qs ? `?${qs}` : ''}${hash}`;
+
+    setTimeout(() => {
+      window.location.href = nextUrl;
+    }, 450);
+  };
+
   return (
     <>
-      {/* Desktop & Tablet Navbar */}
-      <div className={`fixed top-0 left-0 right-0 z-50 flex-col ${isPropertyDetailPage ? 'hidden' : 'hidden xl:flex'}`}>
-        <header
-          className="relative w-full flex items-center justify-center h-24"
-        >
-          {/* Animated background container */}
+      {/* Language Switch Overlay */}
+      <AnimatePresence>
+        {isLanguageSwitching && (
+          <motion.div
+            className="fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05, duration: 0.35 }}
+              className="flex flex-col items-center"
+            >
+              <img src="/frisco-logo.svg" alt="FRISCO" className="h-12 md:h-14 mb-6" />
+              <div className="w-40 h-[2px] bg-navy/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-navy rounded-full"
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Desktop Navbar */}
+      <div className={`fixed top-0 left-0 right-0 z-50 flex-col transition-all duration-300 ${isPropertyDetailPage ? 'hidden' : 'hidden xl:flex'}`}>
+        <header className="relative w-full flex items-center justify-center h-24">
           <div
-            className={`absolute left-1/2 -translate-x-1/2 inset-y-3 rounded-full transition-all duration-500 ${isNavActive
-              ? 'bg-white/95 backdrop-blur-xl border border-navy/10 shadow-lg opacity-100'
-              : 'opacity-0'
-              }`}
+            className={`absolute left-1/2 -translate-x-1/2 inset-y-3 rounded-full transition-all duration-500 ${isNavActive ? 'bg-white/95 backdrop-blur-xl border border-navy/10 shadow-lg opacity-100' : 'opacity-0'}`}
             style={{ width: 'calc(100% - 2rem)', maxWidth: '1375px' }}
           />
-
           <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
-            {/* Logo */}
-            <Link href="/" onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
-              <Image
-                src="/frisco-logo-opt.png"
-                alt="Frisco"
-                width={160}
-                height={64}
-                className="max-h-12 lg:max-h-16 w-auto object-contain object-left"
-              />
+            <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
+              <img src="/frisco-logo.svg" alt="FRISCO" className="h-16 pl-4" />
             </Link>
 
-            {/* Links */}
             <nav className="flex items-center gap-6 2xl:gap-10 flex-nowrap">
-              <Link
-                href="/"
-                onClick={handleHomeClick}
-                className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'
-                  }`}
-              >
-                Domov
+              <Link href={l('/')} onClick={handleHomeClick} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+                {navCopy.home}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
               </Link>
 
               {/* Ponuka Dropdown */}
-              <div
-                className="relative w-max h-full flex items-center"
-                onMouseEnter={() => setIsPonukaHovered(true)}
-                onMouseLeave={() => setIsPonukaHovered(false)}
-              >
-                <div
-                  className={`text-base font-sans font-medium transition-colors relative py-2 tracking-[0.2em] uppercase whitespace-nowrap cursor-pointer flex items-center gap-1.5 group ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'
-                    }`}
-                >
-                  Ponuka
-                  <svg
-                    className={`w-3.5 h-3.5 transition-transform duration-200 ${isPonukaHovered ? 'rotate-180' : ''}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+              <div className="relative w-max h-full flex items-center" onMouseEnter={() => setIsPonukaHovered(true)} onMouseLeave={() => setIsPonukaHovered(false)}>
+                <div className={`text-base font-sans font-medium transition-colors relative py-2 tracking-[0.2em] uppercase whitespace-nowrap cursor-pointer flex items-center gap-1.5 group ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+                  {navCopy.offer}
+                  <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${isPonukaHovered ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                   <span className="absolute bottom-0 left-0 right-4 h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
                 </div>
-
                 <AnimatePresence>
                   {isPonukaHovered && (
                     <motion.div
-                      initial={{ opacity: 0, y: -8, x: "-50%", scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                      exit={{ opacity: 0, y: -8, x: "-50%", scale: 0.96 }}
+                      initial={{ opacity: 0, y: -8, x: '-50%', scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, x: '-50%', scale: 1 }}
+                      exit={{ opacity: 0, y: -8, x: '-50%', scale: 0.96 }}
                       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                       className="absolute top-full left-1/2 pt-1"
                       role="menu"
                     >
                       <div className="bg-white shadow-lg border border-charcoal/5 min-w-[280px] rounded-xl overflow-hidden">
-                        <Link
-                          href="/ponuka"
-                          className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group"
-                          role="menuitem"
-                          onClick={() => setIsPonukaHovered(false)}
-                        >
+                        <Link href={l('/ponuka')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group" role="menuitem" onClick={() => setIsPonukaHovered(false)}>
                           <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-red group-hover:text-white transition-colors duration-200">
                             <Search size={16} className="text-navy/60 group-hover:text-white transition-colors duration-200" />
                           </div>
-                          Aktuálna ponuka
+                          {navCopy.currentOffer}
                         </Link>
-                        <Link
-                          href="/chcem-predat"
-                          className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group"
-                          role="menuitem"
-                          onClick={() => setIsPonukaHovered(false)}
-                        >
+                        <Link href={l('/chcem-predat')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group" role="menuitem" onClick={() => setIsPonukaHovered(false)}>
                           <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-red group-hover:text-white transition-colors duration-200">
                             <Home size={16} className="text-navy/60 group-hover:text-white transition-colors duration-200" />
                           </div>
-                          Chcem predať
+                          {navCopy.sell}
                         </Link>
-                        <Link
-                          href="/chcem-prenajat"
-                          className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 whitespace-normal group"
-                          role="menuitem"
-                          onClick={() => setIsPonukaHovered(false)}
-                        >
+                        <Link href={l('/chcem-prenajat')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 whitespace-normal group" role="menuitem" onClick={() => setIsPonukaHovered(false)}>
                           <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-red group-hover:text-white transition-colors duration-200">
                             <Key size={16} className="text-navy/60 group-hover:text-white transition-colors duration-200" />
                           </div>
-                          Chcem prenajať
+                          {navCopy.rent}
                         </Link>
                       </div>
                     </motion.div>
@@ -160,102 +206,70 @@ export const Navbar = () => {
                 </AnimatePresence>
               </div>
 
-              <Link
-                href="/preco-frisco"
-                className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'
-                  }`}
-              >
-                Prečo Frisco?
+              <Link href={l('/preco-frisco')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+                {navCopy.whyFrisco}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
               </Link>
 
-              <Link
-                href="/kontakt"
-                className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'
-                  }`}
-              >
-                Kontakt
+              <Link href={l('/kontakt')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+                {navCopy.contact}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
               </Link>
             </nav>
 
-            {/* Contact Actions Group */}
+            {/* Contact actions */}
             <div className="flex items-center gap-2">
-              {/* CTA - Red for critical action */}
-              <a
-                href="tel:+421905447220"
-                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] transition-all duration-300 whitespace-nowrap flex-shrink-0 ${isNavActive
-                  ? 'bg-accent-red text-white hover:bg-accent-red hover:scale-105 hover:shadow-xl hover:shadow-accent-red/30 shadow-lg shadow-accent-red/20'
-                  : 'bg-accent-red text-white hover:bg-accent-red hover:scale-105 hover:shadow-xl hover:shadow-accent-red/30 shadow-lg shadow-accent-red/20'
-                  }`}
-              >
+              <a href="tel:+421905447220" className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] bg-accent-red text-white hover:scale-105 hover:shadow-xl hover:shadow-accent-red/30 shadow-lg shadow-accent-red/20 transition-all duration-300 whitespace-nowrap flex-shrink-0">
                 <Phone size={16} className="flex-shrink-0" />
                 <span>0905 447 220</span>
               </a>
-
-              {/* Email CTA - Outline style */}
-              <a
-                href="mailto:info@frisco.sk"
-                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] transition-all duration-300 whitespace-nowrap flex-shrink-0 border bg-white/50 border-accent-red text-accent-red hover:bg-accent-red hover:text-white group ${isNavActive
-                  ? 'shadow-sm hover:shadow-md'
-                  : 'shadow-sm hover:shadow-md'
-                  }`}
-              >
+              <a href="mailto:info@frisco.sk" className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] border bg-white/50 border-accent-red text-accent-red hover:bg-accent-red hover:text-white group shadow-sm hover:shadow-md transition-all duration-300 whitespace-nowrap flex-shrink-0">
                 <Mail size={16} className="flex-shrink-0 group-hover:text-white transition-colors" />
                 <span>info@frisco.sk</span>
               </a>
 
-              {/* Social Icons */}
               <div className="flex items-center gap-2.5 flex-shrink-0 ml-1">
-                <a
-                  href="https://www.facebook.com/Friscorealitka/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300"
-                  aria-label="Facebook"
-                >
+                <a href="https://www.facebook.com/Friscorealitka/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300" aria-label="Facebook">
                   <Facebook size={18} strokeWidth={2} />
                 </a>
-                <a
-                  href="https://www.instagram.com/friscoreality/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300"
-                  aria-label="Instagram"
-                >
+                <a href="https://www.instagram.com/friscoreality/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300" aria-label="Instagram">
                   <Instagram size={18} strokeWidth={2} />
                 </a>
 
                 {/* Language Switcher */}
-                <div
-                  className="relative"
-                  onMouseEnter={() => setIsLanguageOpen(true)}
-                  onMouseLeave={() => setIsLanguageOpen(false)}
-                >
+                <div ref={languageMenuRef} className="relative">
                   <button
-                    className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300"
+                    type="button"
+                    onClick={() => setIsLanguageOpen((prev) => !prev)}
+                    className="h-10 pl-2 pr-2.5 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center gap-1.5 text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300"
                     aria-label="Change language"
+                    aria-expanded={isLanguageOpen}
                   >
+                    <activeLanguage.Flag className="h-3.5 w-5 rounded-[2px] object-cover" />
                     <Globe size={18} strokeWidth={2} />
                   </button>
-
                   <AnimatePresence>
                     {isLanguageOpen && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10, x: "-50%" }}
-                        animate={{ opacity: 1, y: 0, x: "-50%" }}
-                        exit={{ opacity: 0, y: 10, x: "-50%" }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-1/2 mt-2 z-50"
+                        initial={{ opacity: 0, y: 4, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.97 }}
+                        transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                        className="absolute top-full right-0 z-[100] pt-2"
                       >
-                        <div className="bg-white shadow-lg border border-charcoal/5 rounded-xl overflow-hidden py-1 min-w-[140px] flex flex-col">
-                          {['Slovenčina', 'English', 'Deutsch'].map((lang, index) => (
+                        <div className="bg-white shadow-xl border border-charcoal/8 rounded-xl overflow-hidden py-1.5 min-w-[180px] flex flex-col">
+                          {LANGUAGES.map((opt) => (
                             <button
-                              key={lang}
-                              className={`px-4 py-2 text-left text-sm font-sans font-medium hover:bg-navy/5 hover:text-navy transition-colors ${index === 0 ? 'text-navy font-bold' : 'text-charcoal/70'}`}
-                              onClick={() => setIsLanguageOpen(false)}
+                              key={opt.code}
+                              type="button"
+                              className={`px-4 py-2.5 text-left text-sm font-sans font-medium hover:bg-navy/5 hover:text-navy transition-colors flex items-center gap-3 ${language === opt.code ? 'text-navy font-bold bg-navy/[0.03]' : 'text-charcoal/70'}`}
+                              onClick={() => handleLanguageSelect(opt.code)}
                             >
-                              {lang}
+                              <opt.Flag className="h-4 w-6 rounded-[2px] object-cover shadow-sm" />
+                              {opt.label}
+                              {language === opt.code && (
+                                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-accent-red" />
+                              )}
                             </button>
                           ))}
                         </div>
@@ -269,58 +283,24 @@ export const Navbar = () => {
         </header>
       </div>
 
-      {/* Ponuka Backdrop Overlay */}
+      {/* Ponuka Backdrop */}
       <AnimatePresence>
         {isPonukaHovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/20 z-40 hidden xl:block"
-          // Intentionally no onMouseEnter here to prevent accidental closing
-          // We rely on the parent navbar container mouse leave or explicit clicks
-          />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 bg-black/20 z-40 hidden xl:block" />
         )}
       </AnimatePresence>
 
       {/* Mobile Navbar */}
-      <header className="fixed top-0 left-0 right-0 z-50 xl:hidden flex justify-between items-center px-6 h-[80px] bg-white backdrop-blur-xl border-b border-black/5 transition-all duration-300">
-        <Link href="/" onClick={handleHomeClick} className="relative z-10 flex items-center">
-          <Image
-            src="/frisco-logo-opt.png"
-            alt="FRISCO"
-            width={72}
-            height={48}
-            priority
-            className="h-14 w-auto object-contain"
-          />
+      <header className="fixed top-0 left-0 right-0 z-50 xl:hidden flex justify-between items-center px-6 h-[80px] border-b border-black/5 transition-colors duration-300" style={{ transform: 'translateZ(0)', backgroundColor: isMobileMenuOpen ? '#000' : '#fff' }}>
+        <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex items-center">
+          <img src="/frisco-logo.svg" alt="FRISCO" className={`h-11 w-auto object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0 invert' : ''}`} />
         </Link>
-        <div className="flex items-center gap-3">
-          {/* Mobile Email & Phone Icons */}
-          <a
-            href="mailto:info@frisco.sk"
-            className="w-12 h-12 rounded-full bg-navy/5 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white transition-colors"
-            aria-label="Email"
-          >
-            <Mail size={22} />
-          </a>
-          <a
-            href="tel:+421905447220"
-            className="w-12 h-12 rounded-full bg-accent-red flex items-center justify-center text-white shadow-lg shadow-accent-red/20 active:scale-95 transition-all"
-            aria-label="Call"
-          >
-            <Phone size={22} />
-          </a>
-
-          <button
-            className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center text-black active:scale-95 transition-all duration-300 hover:bg-black/10 backdrop-blur-sm"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        <button
+          className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 ${isMobileMenuOpen ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-black/5 text-black hover:bg-black/10'}`}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </header>
 
       {/* Mobile Menu Overlay */}
@@ -330,117 +310,63 @@ export const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed inset-0 z-[60] bg-black flex flex-col xl:hidden"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden"
           >
-            {/* Header in Overlay */}
-            <div className="flex justify-between items-center px-6 h-[80px] border-b border-white/10">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                <Image
-                  src="/frisco-logo-opt.png"
-                  alt="FRISCO"
-                  width={80}
-                  height={54}
-                  priority
-                  className="h-16 w-auto brightness-0 invert object-contain"
-                />
-              </Link>
-              <button
-                className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Close menu"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            {/* Links */}
             <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
-              <Link
-                href="/"
-                className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight"
-                onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}
-              >
-                Domov
+              <Link href={l('/')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
+                {navCopy.home}
               </Link>
 
-              {/* Mobile Ponuka Accordion */}
               <div className="flex flex-col">
-                <button
-                  onClick={() => setIsPonukaOpen(!isPonukaOpen)}
-                  className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight"
-                >
-                  Ponuka
-                  <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>▼</span>
+                <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
+                  {navCopy.offer}
+                  <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>{'\u25BC'}</span>
                 </button>
                 <AnimatePresence>
                   {isPonukaOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden pl-4 flex flex-col space-y-4 mt-4"
-                    >
-                      <Link
-                        href="/ponuka"
-                        className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Search size={18} className="text-accent-red" />
-                        Aktuálna ponuka
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden pl-4 flex flex-col space-y-4 mt-4">
+                      <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Search size={18} className="text-accent-red" /> {navCopy.currentOffer}
                       </Link>
-                      <Link
-                        href="/chcem-predat"
-                        className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Home size={18} className="text-accent-red" />
-                        Chcem predať
+                      <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Home size={18} className="text-accent-red" /> {navCopy.sell}
                       </Link>
-                      <Link
-                        href="/chcem-prenajat"
-                        className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Key size={18} className="text-accent-red" />
-                        Chcem prenajať
+                      <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Key size={18} className="text-accent-red" /> {navCopy.rent}
                       </Link>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              <Link
-                href="/preco-frisco"
-                className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Prečo Frisco?
+              <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+                {navCopy.whyFrisco}
               </Link>
-              <Link
-                href="/kontakt"
-                className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Kontakt
+              <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+                {navCopy.contact}
               </Link>
             </div>
 
-            {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="p-8 border-t border-white/10"
-            >
-              <a
-                href="tel:+421905447220"
-                className="flex items-center justify-center gap-3 w-full py-4 bg-accent-red text-white text-center font-bold font-sans uppercase tracking-widest rounded-full hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+            {/* Bottom: Globe + Language Switcher + CTA */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.25 }} className="p-8 border-t border-white/10">
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Globe size={18} className="text-white/50 mr-1" />
+                {LANGUAGES.map((opt) => (
+                  <button
+                    key={opt.code}
+                    type="button"
+                    onClick={() => handleLanguageSelect(opt.code)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 ${language === opt.code ? 'bg-white text-navy shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20'}`}
+                  >
+                    <opt.Flag className="h-4 w-6 rounded-[2px] object-cover" />
+                    <span className="tracking-wide">{opt.code.toUpperCase()}</span>
+                  </button>
+                ))}
+              </div>
+              <a href="tel:+421905447220" className="flex items-center justify-center gap-3 w-full py-4 bg-accent-red text-white text-center font-bold font-sans uppercase tracking-widest rounded-full hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20" onClick={() => setIsMobileMenuOpen(false)}>
                 <Phone size={20} className="mb-0.5" />
-                <span>Zavolajte nám</span>
+                <span>{language === 'sk' ? 'Zavolajte n\u00E1m' : language === 'en' ? 'Call us' : 'Rufen Sie uns an'}</span>
               </a>
             </motion.div>
           </motion.div>

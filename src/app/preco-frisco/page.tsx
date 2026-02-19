@@ -70,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: copy.title,
     description: copy.description,
-    alternates: buildLanguageAlternates(path),
+    alternates: buildLanguageAlternates(path, language),
     openGraph: {
       title: copy.ogTitle,
       description: copy.ogDescription,
@@ -103,7 +103,6 @@ export default async function SluzbyPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <SluzbyContent />
     </>

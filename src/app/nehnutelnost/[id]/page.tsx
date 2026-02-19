@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
   return {
     title,
     description: description.slice(0, 160),
-    alternates: buildLanguageAlternates(pagePath),
+    alternates: buildLanguageAlternates(pagePath, language),
     openGraph: {
       title: `${listing.title} – ${priceFormatted}`,
       description: description.slice(0, 200),

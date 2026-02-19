@@ -28,17 +28,23 @@ export const resolveServerLanguage = async (): Promise<LanguageCode> => {
   return parseAcceptLanguage(headersStore.get('accept-language'));
 };
 
-export const buildLanguageAlternates = (path: string) => {
+const withLanguagePrefix = (path: string, language: LanguageCode) => {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  const canonical = `${SITE_URL}${normalizedPath}`;
+  if (normalizedPath === '/') return `/${language}`;
+  return `/${language}${normalizedPath}`;
+};
+
+export const buildLanguageAlternates = (path: string, currentLanguage: LanguageCode = DEFAULT_LANGUAGE) => {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const canonical = `${SITE_URL}${withLanguagePrefix(normalizedPath, currentLanguage)}`;
 
   return {
     canonical,
     languages: {
-      sk: `${canonical}?lang=sk`,
-      en: `${canonical}?lang=en`,
-      de: `${canonical}?lang=de`,
-      'x-default': canonical,
+      sk: `${SITE_URL}${withLanguagePrefix(normalizedPath, 'sk')}`,
+      en: `${SITE_URL}${withLanguagePrefix(normalizedPath, 'en')}`,
+      de: `${SITE_URL}${withLanguagePrefix(normalizedPath, 'de')}`,
+      'x-default': `${SITE_URL}${withLanguagePrefix(normalizedPath, DEFAULT_LANGUAGE)}`,
     },
   };
 };

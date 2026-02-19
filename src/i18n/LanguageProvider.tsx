@@ -31,10 +31,13 @@ export const LanguageProvider = ({
   const [language, setLanguageState] = useState<LanguageCode>(initialLanguage);
 
   useEffect(() => {
+    const fromPath = window.location.pathname.match(/^\/(sk|en|de)(?=\/|$)/)?.[1] ?? null;
     const searchLanguage = new URLSearchParams(window.location.search).get('lang');
     const storedLanguage = window.localStorage.getItem(STORAGE_KEY);
-    const resolvedLanguage = isLanguageCode(searchLanguage)
-      ? searchLanguage
+    const resolvedLanguage = isLanguageCode(fromPath)
+      ? fromPath
+      : isLanguageCode(searchLanguage)
+        ? searchLanguage
       : isLanguageCode(storedLanguage)
         ? storedLanguage
         : initialLanguage;

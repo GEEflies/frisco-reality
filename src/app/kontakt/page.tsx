@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: copy.title,
     description: copy.description,
-    alternates: buildLanguageAlternates(path),
+    alternates: buildLanguageAlternates(path, language),
     openGraph: {
       title: copy.ogTitle,
       description: copy.ogDescription,
@@ -73,7 +73,6 @@ export default async function KontaktPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <KontaktContent />
     </>
   );

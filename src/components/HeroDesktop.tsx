@@ -1,9 +1,9 @@
 'use client';
 
 import { Search, Home, Key } from "lucide-react";
-import Link from "next/link";
 
 import RotatingWord from "./RotatingWord";
+import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_DESKTOP_COPY } from '@/i18n/copy';
 
@@ -38,15 +38,20 @@ const HeroDesktop = () => {
             <h1
               className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap story-rise stagger-2"
             >
-              {copy.title}
+              {copy.titleLine1}
               <br />
               <span className="text-navy/90 flex items-center gap-4">
                 <RotatingWord
                   words={copy.verbs}
                   interval={3000}
-                  className="text-accent-red text-left min-w-[200px]" // Red color + styling fix
+                  className="text-accent-red text-left min-w-[200px]"
                 />
               </span>
+              {copy.titleLine3 && (
+                <>
+                  <span className="text-navy">{copy.titleLine3}</span>
+                </>
+              )}
             </h1>
 
             {/* Subtitle */}
@@ -62,7 +67,7 @@ const HeroDesktop = () => {
               className="flex flex-col gap-3 w-full max-w-[600px] story-soft stagger-4"
             >
               <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Link
+                <LocaleLink
                   href="/ponuka"
                   className="group relative px-6 py-4 bg-navy text-white font-sans font-medium text-base tracking-wide overflow-hidden text-center rounded-md shadow-lg shadow-navy/10 hover:shadow-navy/20 transition-all duration-300 flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
                 >
@@ -74,26 +79,26 @@ const HeroDesktop = () => {
                   <span className="relative z-10 inline xl:hidden">
                     {copy.offerShort}
                   </span>
-                </Link>
+                </LocaleLink>
 
-                <Link
+                <LocaleLink
                   href="/chcem-predat"
                   className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md flex-1 flex items-center justify-center gap-2.5 whitespace-nowrap"
                 >
                   <Home size={16} strokeWidth={2} className="shrink-0" />
                   <span className="hidden xl:inline">{copy.sellLong}</span>
                   <span className="inline xl:hidden">{copy.sellShort}</span>
-                </Link>
+                </LocaleLink>
               </div>
 
-              <Link
+              <LocaleLink
                 href="/chcem-prenajat"
                 className="group px-6 py-4 border border-navy/20 text-navy font-sans font-medium text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-md w-full flex items-center justify-center gap-2.5 whitespace-nowrap"
               >
                 <Key size={16} strokeWidth={2} className="shrink-0" />
                 <span className="hidden xl:inline">{copy.rentLong}</span>
                 <span className="inline xl:hidden">{copy.rentShort}</span>
-              </Link>
+              </LocaleLink>
             </div>
 
             {/* Closing Left Column */}

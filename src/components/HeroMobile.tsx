@@ -1,9 +1,9 @@
 'use client';
 
 import { Search, Home, Key } from 'lucide-react';
-import Link from 'next/link';
 
 import RotatingWord from "./RotatingWord";
+import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_MOBILE_COPY } from '@/i18n/copy';
 const friscoLogo = '/frisco-logo.svg';
@@ -31,7 +31,10 @@ const HeroMobile = () => {
                 {/* Main Headline */}
                 <h1 className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start story-rise stagger-2">
                     <span className="whitespace-nowrap">{copy.title}</span>
-                    <span className="block h-[2.6rem] sm:h-[3.1rem] md:h-[4.2rem] overflow-hidden text-navy/90">
+                    <span className="block h-[2.6rem] sm:h-[3.1rem] md:h-[4.2rem] overflow-hidden text-navy/90 flex items-center gap-2">
+                        {copy.verbPrefix && (
+                            <span className="text-charcoal">{copy.verbPrefix}</span>
+                        )}
                         <RotatingWord words={copy.verbs} className="text-accent-red text-left" />
                     </span>
                 </h1>
@@ -43,29 +46,29 @@ const HeroMobile = () => {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col w-full gap-3 mb-8 story-soft stagger-4">
-                    <Link
+                    <LocaleLink
                         href="/ponuka"
                         className="group relative px-5 py-3.5 bg-navy text-white font-sans font-medium text-sm md:text-base tracking-wide overflow-hidden text-center rounded-lg shadow-lg shadow-navy/10 transition-all duration-300 flex items-center justify-center gap-2.5"
                     >
                         <div className="absolute inset-0 w-full h-full bg-accent-red transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
                         <Search size={16} strokeWidth={2} className="relative z-10" />
                         <span className="relative z-10">{copy.offer}</span>
-                    </Link>
+                    </LocaleLink>
                     <div className="flex gap-3">
-                        <Link
+                        <LocaleLink
                             href="/chcem-predat"
                             className="group flex-1 px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm md:text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-lg flex items-center justify-center gap-2"
                         >
                             <Home size={16} strokeWidth={2} />
                             {copy.sell}
-                        </Link>
-                        <Link
+                        </LocaleLink>
+                        <LocaleLink
                             href="/chcem-prenajat"
                             className="group flex-1 px-5 py-3.5 border border-navy/20 text-navy font-sans font-medium text-sm md:text-base tracking-wide hover:border-accent-red hover:text-accent-red transition-all duration-300 text-center rounded-lg flex items-center justify-center gap-2"
                         >
                             <Key size={16} strokeWidth={2} />
                             {copy.rent}
-                        </Link>
+                        </LocaleLink>
                     </div>
                 </div>
 

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
+
   // Enable trailing slash consistency for SEO (prevents duplicate URLs)
   trailingSlash: false,
   
