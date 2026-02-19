@@ -44,7 +44,9 @@ export default function RootLayout({
           </Suspense>
           <ScrollToTop />
           <Navbar />
-          {children}
+          <div id="app-wrapper">
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

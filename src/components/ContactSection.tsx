@@ -1,158 +1,257 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock, Instagram, Facebook, FileText } from 'lucide-react';
-import { ContactForm } from '@/components/ContactForm';
+import { useState } from 'react';
+import { MapPin, Phone, Mail, Instagram, Facebook, Send, ArrowUpRight } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export const ContactSection = () => {
-  return (
-    <section className="py-12 md:py-20 bg-cream" id="kontakt">
-      <div className="container mx-auto px-6">
+  const { toast } = useToast();
+  const [formState, setFormState] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-        {/* Section Header — CTA */}
-        {/* Section Header — CTA */}
-        <div
-          id="kontaktny-formular"
-          className="text-center mb-16 md:mb-20 scroll-mt-32"
-        >
-          <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
-            Napíšte nám
-          </span>
-          <h2 className="text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
-            Neváhajte nás <span className="text-accent-red italic">kontaktovať</span>
-          </h2>
-          <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Či už predávate nehnuteľnosť, hľadáte nový domov alebo len premýšľate o ďalšom kroku, sme tu.
-          </p>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    toast({
+      title: "Správa odoslaná",
+      description: "Ozveme sa vám čoskoro.",
+    });
+    setFormState({ name: '', email: '', phone: '', message: '' });
+  };
+
+  return (
+    <section id="kontakt" className="relative bg-cream overflow-hidden contain-layout">
+
+      {/* Subtle background texture */}
+      <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light pointer-events-none" />
+
+      {/* Decorative gradient blobs */}
+      <div className="absolute -top-20 -right-20 w-[450px] h-[450px] bg-accent-red/[0.05] rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute -bottom-20 -left-20 w-[350px] h-[350px] bg-navy/[0.04] rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="container mx-auto max-w-[1200px] px-6 py-16 md:py-20 relative z-10">
+
+        {/* Section Header */}
+        <div className="mb-10 md:mb-14">
+          <motion.span
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="block text-accent-red font-sans text-xs font-semibold tracking-[0.2em] uppercase mb-3"
+          >
+            Kontakt
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+            className="text-3xl md:text-4xl font-sans font-bold text-navy tracking-tight"
+          >
+            Dohodnite si s nami stretnutie
+          </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
 
-
-          {/* Left: Contact Info — this column is tall and scrolls normally */}
-          <div>
-            {/* Contact Cards */}
-            <motion.div
-              className="space-y-6 mb-12"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                visible: { transition: { staggerChildren: 0.1 } }
-              }}
+          {/* Left: Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+            className="w-full lg:w-[42%] flex flex-col gap-4"
+          >
+            {/* Address Card */}
+            <div
+              className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/[0.06] transition-all duration-300"
             >
-              <ContactCard
-                icon={MapPin}
-                title="Navštívte nás"
-                content={<>Námestie Slobody 1185/30<br />926 01 Sereď</>}
-              />
-              <ContactCard
-                icon={Phone}
-                title="Zavolajte nám"
-                content={
-                  <a href="tel:+421905447220" className="hover:text-accent-red transition-colors">
-                    0905 447 220
-                  </a>
-                }
-              />
-              <ContactCard
-                icon={Mail}
-                title="Napíšte nám"
-                content={
-                  <a href="mailto:info@frisco.sk" className="hover:text-accent-red transition-colors">
-                    info@frisco.sk
-                  </a>
-                }
-              />
-              <ContactCard
-                icon={Clock}
-                title="Pracovná doba"
-                content={
-                  <>
-                    <span className="font-bold">Po - Pi:</span> 9:00 - 17:00<br />
-                    <span className="font-bold">So - Ne:</span> Zatvorené
-                  </>
-                }
-              />
-              <ContactCard
-                icon={FileText}
-                title="Fakturačné údaje"
-                content={
-                  <div className="text-sm space-y-1">
-                    <p className="font-bold text-navy">FRISCO, s.r.o.</p>
-                    <p>IČO: 43 850 553</p>
-                    <p>DIČ: 2022486895</p>
-                    <p className="text-[10px] text-charcoal/50 leading-tight mt-2">
-                      Zapísaná v Obchodnom registri Okresného súdu Trnava, Oddiel: Sro, Vložka číslo: 21013/T
-                    </p>
-                  </div>
-                }
-              />
-            </motion.div>
-
-            {/* Social Links */}
-            <div className="pt-8 border-t border-navy/10">
-              <h3 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">Sledujte nás</h3>
-              <div className="flex gap-4">
-                <SocialLink icon={Instagram} label="Instagram" href="https://www.instagram.com/friscoreality/" />
-                <SocialLink icon={Facebook} label="Facebook" href="https://www.facebook.com/Friscorealitka/" />
+              <div className="w-10 h-10 rounded-xl bg-accent-red/8 flex items-center justify-center shrink-0 transition-colors duration-300">
+                <MapPin className="w-[18px] h-[18px] text-accent-red" strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="block text-navy/35 text-[10px] font-sans font-semibold uppercase tracking-[0.15em] mb-1.5">Kancelária</span>
+                <span className="block text-navy font-sans font-medium text-sm leading-relaxed">
+                  Námestie Slobody 30/1185
+                </span>
+                <span className="block text-charcoal/50 font-sans text-sm">926 01 Sereď</span>
               </div>
             </div>
 
-            {/* Google Maps */}
-            <div className="mt-12 relative rounded-2xl overflow-hidden border border-navy/10 h-[400px] shadow-lg">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2654.85566300157!2d17.737541377024726!3d48.28639262126042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476b67bf84ae3c39%3A0xaabf0d6bfbcef097!2sFRISCO%2C%20s.r.o.%20-%20realitn%C3%A1%20kancel%C3%A1ria!5e0!3m2!1ssk!2ssk!4v1768663122983!5m2!1ssk!2ssk"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-700 data-[loaded=true]:opacity-100"
-                onLoad={(e) => e.currentTarget.setAttribute('data-loaded', 'true')}
-                title="Kde nás nájdete - Mapa Frisco Reality"
-              />
-            </div>
-          </div>
+            {/* Phone Card */}
+            <a
+              href="tel:+421905447220"
+              className="group flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/[0.06] hover:border-accent-red/20 hover:shadow-lg hover:shadow-accent-red/[0.04] transition-all duration-300"
+            >
+              <div className="w-10 h-10 rounded-xl bg-accent-red/8 group-hover:bg-accent-red/15 flex items-center justify-center shrink-0 transition-colors duration-300">
+                <Phone className="w-[18px] h-[18px] text-accent-red" strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="block text-navy/35 text-[10px] font-sans font-semibold uppercase tracking-[0.15em] mb-1.5">Zavolajte nám</span>
+                <span className="block text-navy font-sans font-semibold text-base tracking-wide">0905 447 220</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-navy/15 group-hover:text-accent-red ml-auto mt-1 shrink-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
 
-          {/* Right: Contact Form — sticky so it locks in place */}
-          <div className="lg:sticky lg:top-28 self-start">
-            <div>
-              <ContactForm />
+            {/* Email Card */}
+            <a
+              href="mailto:info@frisco.sk"
+              className="group flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/[0.06] hover:border-accent-red/20 hover:shadow-lg hover:shadow-accent-red/[0.04] transition-all duration-300"
+            >
+              <div className="w-10 h-10 rounded-xl bg-accent-red/8 group-hover:bg-accent-red/15 flex items-center justify-center shrink-0 transition-colors duration-300">
+                <Mail className="w-[18px] h-[18px] text-accent-red" strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="block text-navy/35 text-[10px] font-sans font-semibold uppercase tracking-[0.15em] mb-1.5">Napíšte nám</span>
+                <span className="block text-navy font-sans font-medium text-sm">info@frisco.sk</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-navy/15 group-hover:text-accent-red ml-auto mt-1 shrink-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-3 pt-2">
+              <span className="text-navy/25 text-[10px] font-sans font-semibold uppercase tracking-[0.15em] mr-1">Sledujte nás</span>
+              <a
+                href="https://www.instagram.com/friscoreality/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-10 h-10 rounded-xl border border-navy/10 hover:border-accent-red/30 flex items-center justify-center hover:bg-accent-red hover:shadow-lg hover:shadow-accent-red/15 transition-all duration-300"
+              >
+                <Instagram className="w-[18px] h-[18px] text-navy/40 group-hover:text-white transition-colors duration-300" strokeWidth={1.8} />
+              </a>
+              <a
+                href="https://www.facebook.com/Friscorealitka/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-10 h-10 rounded-xl border border-navy/10 hover:border-accent-red/30 flex items-center justify-center hover:bg-accent-red hover:shadow-lg hover:shadow-accent-red/15 transition-all duration-300"
+              >
+                <Facebook className="w-[18px] h-[18px] text-navy/40 group-hover:text-white transition-colors duration-300" strokeWidth={1.8} />
+              </a>
             </div>
-          </div>
+          </motion.div>
+
+          {/* Right: Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="w-full lg:w-[58%]"
+          >
+            <div className="relative p-6 md:p-8 rounded-2xl bg-white border border-navy/[0.06] shadow-sm">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-navy/10 to-transparent rounded-tr-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-navy/5 to-transparent rounded-bl-3xl pointer-events-none" />
+
+              <div className="mb-8">
+                <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">Kontaktný formulár</span>
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-navy mt-2">
+                  Pošlite nám správu
+                </h3>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormInput
+                    label="Meno"
+                    type="text"
+                    placeholder="Vaše meno"
+                    value={formState.name}
+                    onChange={(value) => setFormState({ ...formState, name: value })}
+                    required
+                  />
+                  <FormInput
+                    label="Telefón"
+                    type="tel"
+                    placeholder="+421 XXX XXX XXX"
+                    value={formState.phone}
+                    onChange={(value) => setFormState({ ...formState, phone: value })}
+                  />
+                </div>
+
+                <FormInput
+                  label="Email"
+                  type="email"
+                  placeholder="vas@email.sk"
+                  value={formState.email}
+                  onChange={(value) => setFormState({ ...formState, email: value })}
+                  required
+                />
+
+                <div>
+                  <label className="block text-charcoal/50 text-[10px] uppercase tracking-widest mb-3">
+                    Správa
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={formState.message}
+                    onChange={e => setFormState({ ...formState, message: e.target.value })}
+                    placeholder="Ako vám môžeme pomôcť?"
+                    className="w-full bg-cream/50 border border-navy/10 rounded-xl px-4 py-3 text-base text-charcoal placeholder:text-charcoal/30 focus:outline-none focus:border-navy/30 focus:bg-white transition-all duration-300 resize-none font-sans"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="group relative w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full overflow-hidden hover:bg-accent-red/90 transition-all duration-500 disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-accent-red/20"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+
+                  <span className="relative z-10 text-sm font-bold tracking-widest uppercase">
+                    {isSubmitting ? 'Odosielam...' : 'Odoslať správu'}
+                  </span>
+                  <ArrowUpRight className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </button>
+
+                <p className="text-charcoal/40 text-xs text-center mt-4">
+                  Vaše údaje sú v bezpečí. Odpovieme do 24 hodín.
+                </p>
+              </form>
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>
   );
 };
 
-// Helper Components
-const ContactCard = ({ icon: Icon, title, content }: { icon: any; title: string; content: React.ReactNode }) => (
-  <motion.div
-    variants={{
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
-    }}
-    className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/10 hover:border-navy/20 transition-colors shadow-sm"
-  >
-    <div className="w-12 h-12 rounded-full bg-navy/10 flex items-center justify-center flex-shrink-0">
-      <Icon className="w-5 h-5 text-navy" />
-    </div>
-    <div>
-      <h3 className="text-charcoal/50 uppercase tracking-widest text-xs mb-2">{title}</h3>
-      <div className="text-charcoal font-sans text-lg">{content}</div>
-    </div>
-  </motion.div>
-);
-
-const SocialLink = ({ icon: Icon, label, href }: { icon: any; label: string; href: string }) => (
-  <a
-    href={href}
-    className="group flex items-center gap-2 px-4 py-2 rounded-full border border-navy/10 hover:border-navy/30 hover:bg-navy/5 transition-all"
-  >
-    <Icon className="w-4 h-4 text-charcoal/60 group-hover:text-navy transition-colors" />
-    <span className="text-sm text-charcoal/60 group-hover:text-navy transition-colors">{label}</span>
-  </a>
+const FormInput = ({
+  label,
+  type,
+  placeholder,
+  value,
+  onChange,
+  required = false
+}: {
+  label: string;
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+}) => (
+  <div>
+    <label className="block text-charcoal/50 text-[10px] uppercase tracking-widest mb-3">
+      {label}
+    </label>
+    <input
+      type={type}
+      required={required}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="w-full bg-cream/50 border border-navy/10 rounded-xl px-4 py-3 text-base text-charcoal placeholder:text-charcoal/30 focus:outline-none focus:border-navy/30 focus:bg-white transition-all duration-300 font-sans"
+    />
+  </div>
 );

@@ -44,7 +44,7 @@ const MOCK_LISTINGS = [
     },
 ];
 
-const MockListingCard = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0]; index: number }) => (
+const MockListingCard = ({ listing, index, priority = false }: { listing: typeof MOCK_LISTINGS[0]; index: number; priority?: boolean }) => (
     <motion.div
         key={listing.id}
         className="min-w-[calc(33.333%-1.33rem)] flex-shrink-0"
@@ -66,6 +66,7 @@ const MockListingCard = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0];
                     alt={listing.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 33vw"
+                    priority={priority}
                     className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -112,17 +113,9 @@ const MockListingCard = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0];
     </motion.div>
 );
 
-const MockListingCardMobile = ({ listing, index }: { listing: typeof MOCK_LISTINGS[0]; index: number }) => (
-    <motion.div
+const MockListingCardMobile = ({ listing, index, priority = false }: { listing: typeof MOCK_LISTINGS[0]; index: number; priority?: boolean }) => (
+    <div
         key={listing.id}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '0px' }}
-        transition={{
-            duration: 0.5,
-            delay: index * 0.1,
-            ease: "easeOut",
-        }}
     >
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col relative">
             {/* Image placeholder */}
@@ -132,6 +125,7 @@ const MockListingCardMobile = ({ listing, index }: { listing: typeof MOCK_LISTIN
                     alt={listing.title}
                     fill
                     sizes="100vw"
+                    priority={priority}
                     className="object-cover opacity-90"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -167,7 +161,7 @@ const MockListingCardMobile = ({ listing, index }: { listing: typeof MOCK_LISTIN
                 </div>
             </div>
         </div>
-    </motion.div>
+    </div>
 );
 
 export const MainListings = () => {
@@ -180,10 +174,10 @@ export const MainListings = () => {
                 {/* Header */}
                 <motion.div
                     className="flex justify-between items-end mb-12"
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-100px' }}
-                    transition={{ duration: 0.7, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                    viewport={{ once: true, margin: '-50px' }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                 >
                     <div>
                         <span className="text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4 block">
@@ -198,10 +192,10 @@ export const MainListings = () => {
                 {/* Desktop — 3 mockup cards */}
                 <motion.div
                     className="hidden lg:flex gap-8"
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
                 >
                     {MOCK_LISTINGS.map((listing, index) => (
                         <MockListingCard key={listing.id} listing={listing} index={index} />
@@ -227,15 +221,11 @@ export const MainListings = () => {
                 </motion.div>
 
                 {/* Mobile — 2 mockup cards */}
-                <motion.div
+                <div
                     className="lg:hidden flex flex-col gap-6"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '0px' }}
-                    transition={{ duration: 0.8, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 >
                     {MOCK_LISTINGS.slice(0, 2).map((listing, index) => (
-                        <MockListingCardMobile key={listing.id} listing={listing} index={index} />
+                        <MockListingCardMobile key={listing.id} listing={listing} index={index} priority={true} />
                     ))}
 
                     <a
@@ -244,7 +234,7 @@ export const MainListings = () => {
                     >
                         Zobraziť celú ponuku
                     </a>
-                </motion.div>
+                </div>
 
             </div>
         </section>

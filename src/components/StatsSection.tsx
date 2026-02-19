@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 const stats = [
   { value: '300', suffix: '+', label: 'Spokojných Rodín' },
@@ -12,12 +12,20 @@ const stats = [
 
 export const StatsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   return (
     <section ref={containerRef} className="relative py-32 bg-white overflow-hidden border-t border-navy/10 contain-layout">
@@ -28,14 +36,14 @@ export const StatsSection = () => {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              style={{ y: index % 2 === 0 ? y : 0 }}
+              style={{ y: !isMobile && index % 2 === 0 ? y : 0 }}
               className="relative flex flex-col justify-between h-64 md:h-80 md:border-r border-navy/10 last:border-0 md:pl-12 will-change-transform"
             >
               <div className="overflow-hidden">
                 <motion.span
                   initial={{ y: "100%" }}
                   whileInView={{ y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
                   viewport={{ once: true }}
                   className="block text-[8rem] md:text-[10rem] font-serif font-light leading-[0.8] tracking-tighter text-accent-red"
                 >

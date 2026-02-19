@@ -78,54 +78,36 @@ const ChcemPredat = () => {
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                             <div className="w-full lg:w-[45%]">
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
-                                    className="flex items-center gap-4 mb-8"
-                                >
+                                <div className="flex items-center gap-4 mb-8">
                                     <div className="h-px w-12 bg-navy/20" />
                                     <span className="text-navy/60 font-mono text-xs tracking-[0.3em] uppercase">
                                         Predajte za cenu, ktorá dáva zmysel.
                                     </span>
-                                </motion.div>
-                                <motion.h1
-                                    initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] as const }}
-                                    className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy"
-                                >
+                                </div>
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy">
                                     Vy riešite svoj život, <br />
                                     my riešime <span className="text-accent-red italic">predaj</span>.
-                                </motion.h1>
-                                <motion.p
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
-                                    className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10"
-                                >
+                                </h1>
+                                <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10">
                                     Predaj nie je len o inzeráte. Je to o správnej cene, prezentácii a vyjednávaní. My nastavíme proces tak, aby ste predali dobre a bez zbytočných chýb.
-                                </motion.p>
+                                </p>
 
                                 {/* Mobile Video */}
                                 <div className="block lg:hidden mb-8 relative px-2">
-                                    <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-2xl shadow-navy/10">
+                                    <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-2xl shadow-navy/10 bg-gray-100">
                                         <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                         <img
                                             src="/frisco-logo.svg"
                                             alt="FRISCO"
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
-                                        <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover">
+                                        <video autoPlay loop muted playsInline preload="auto" poster="/frisco-video-poster.jpg" className="w-full h-full object-cover">
                                             <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
                                         </video>
                                     </div>
                                 </div>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
-                                >
+
+                                <div>
                                     <a
                                         href="#kontaktny-formular"
                                         className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-all shadow-lg shadow-navy/20 group"
@@ -134,28 +116,23 @@ const ChcemPredat = () => {
                                         <span>Chcem predať nehnuteľnosť</span>
                                         <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                     </a>
-                                </motion.div>
+                                </div>
                             </div>
 
-                            <motion.div
-                                initial={{ opacity: 0, x: 20, scale: 0.95 }}
-                                animate={{ opacity: 1, x: 0, scale: 1 }}
-                                transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
-                                className="hidden lg:block w-full lg:w-[55%] relative"
-                            >
-                                <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 transform transition-transform hover:scale-[1.01] duration-700">
+                            <div className="hidden lg:block w-full lg:w-[55%] relative">
+                                <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 transform transition-transform hover:scale-[1.01] duration-700 bg-gray-100">
                                     <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                     <img
                                         src="/frisco-logo.svg"
                                         alt="FRISCO"
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />
-                                    <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover">
+                                    <video autoPlay loop muted playsInline preload="auto" poster="/frisco-video-poster.jpg" className="w-full h-full object-cover">
                                         <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
                                     </video>
                                 </div>
                                 <div className="absolute -z-10 -bottom-8 -left-8 w-2/3 h-2/3 bg-accent-red/5 rounded-full blur-3xl" />
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
                 </section>

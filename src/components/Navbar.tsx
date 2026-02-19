@@ -70,6 +70,8 @@ export const Navbar = () => {
               <Image
                 src="/frisco-logo-opt.png"
                 alt="Frisco"
+                width={160}
+                height={64}
                 className="max-h-12 lg:max-h-16 w-auto object-contain object-left"
               />
             </Link>

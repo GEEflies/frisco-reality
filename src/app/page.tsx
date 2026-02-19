@@ -10,15 +10,12 @@ const Footer = dynamic(() => import('@/components/Footer').then(mod => mod.Foote
 export default function Home() {
   return (
     <main className="overflow-x-clip">
-      <div className="animate-in fade-in duration-700">
-        <HeroSection />
-        <MainListings />
-        <AboutSection />
-
-        <ProcessSection />
-        <ContactSection />
-        <Footer />
-      </div>
+      <HeroSection />
+      <MainListings />
+      <AboutSection />
+      <ProcessSection />
+      <ContactSection />
+      <Footer />
     </main>
   );
 }

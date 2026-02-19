@@ -2,45 +2,9 @@
 
 import { Search, Home, Key } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 
 import RotatingWord from "./RotatingWord";
 const friscoLogo = '/frisco-logo.svg';
-
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.15,
-            delayChildren: 0.1
-        }
-    }
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1] as const
-        }
-    }
-};
-
-const videoVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-        opacity: 1,
-        scale: 1,
-        transition: {
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1] as const
-        }
-    }
-};
 
 const HeroMobile = () => {
     return (
@@ -48,36 +12,31 @@ const HeroMobile = () => {
             {/* Solid Background */}
             <div className="absolute inset-0 bg-white" />
 
-            <motion.div
-                className="container mx-auto px-6 relative z-10 flex flex-col items-start text-left"
-                initial="hidden"
-                animate="visible"
-                variants={containerVariants}
-            >
+            <div className="container mx-auto px-6 relative z-10 flex flex-col items-start text-left">
 
                 {/* Brand / Trust Label */}
-                <motion.div variants={itemVariants} className="flex items-center gap-3 mb-5">
+                <div className="flex items-center gap-3 mb-5">
                     <div className="h-px w-8 bg-navy/20" />
                     <span className="text-navy/70 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase">
                         Exkluzívna realitka v Seredi
                     </span>
-                </motion.div>
+                </div>
 
                 {/* Main Headline */}
-                <motion.h1 variants={itemVariants} className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start">
+                <h1 className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start">
                     <span className="whitespace-nowrap">Vašu nehnuteľnosť</span>
                     <span className="block h-[2.6rem] sm:h-[3.1rem] md:h-[4.2rem] overflow-hidden text-navy/90">
                         <RotatingWord words={["nájdeme", "nafotíme", "odprezentujeme", "prenajmeme", "predáme", "alebo odkúpime"]} className="text-accent-red text-left" />
                     </span>
-                </motion.h1>
+                </h1>
 
                 {/* Subheadline / Value Prop */}
-                <motion.p variants={itemVariants} className="max-w-[320px] md:max-w-[800px] text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6">
-                    Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok.
-                </motion.p>
+                <p className="text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6">
+                    Už 18 rokov pomáhame majiteľom predať a prenajať ich nehnuteľnosti za najlepších podmienok a záujemcom nájsť miesto, ktoré môžu nazývať domovom.
+                </p>
 
                 {/* CTA Buttons */}
-                <motion.div variants={itemVariants} className="flex flex-col w-full gap-3 mb-8">
+                <div className="flex flex-col w-full gap-3 mb-8">
                     <Link
                         href="/ponuka"
                         className="group relative px-5 py-3.5 bg-navy text-white font-sans font-medium text-sm md:text-base tracking-wide overflow-hidden text-center rounded-lg shadow-lg shadow-navy/10 transition-all duration-300 flex items-center justify-center gap-2.5"
@@ -102,10 +61,12 @@ const HeroMobile = () => {
                             Chcem prenajať
                         </Link>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Mobile Video Container */}
-                <motion.div variants={videoVariants} className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5">
+
+                {/* Mobile Video Container */}
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5 bg-navy/5">
                     {/* Corner Logo Watermark */}
                     <img
                         src={friscoLogo}
@@ -117,13 +78,14 @@ const HeroMobile = () => {
                         loop
                         muted
                         playsInline
-                        preload="auto"
+                        preload="metadata"
+                        poster="/frisco-video-poster.jpg"
                         className="w-full h-full object-cover"
                     >
                         <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
                     </video>
-                </motion.div>
-            </motion.div>
+                </div>
+            </div>
         </div>
     );
 };

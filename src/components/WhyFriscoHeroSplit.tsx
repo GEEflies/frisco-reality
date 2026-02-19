@@ -112,7 +112,8 @@ const WhyFriscoHeroSplit = () => {
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, { once: true, margin: "-15% 0px -15% 0px" });
     const controls = useAnimation();
-    const [activeSide, setActiveSide] = useState<'none' | 'both'>('none');
+    // Initialize to 'both' to be visible by default (better for SSR/mobile)
+    const [activeSide, setActiveSide] = useState<'none' | 'both'>('both');
 
     useEffect(() => {
         if (isInView) {
@@ -120,7 +121,7 @@ const WhyFriscoHeroSplit = () => {
             const isMobile = window.innerWidth < 1024;
 
             if (isMobile) {
-                setActiveSide('both');
+                // Already visible by default, nothing to do
                 return;
             }
 
@@ -220,7 +221,8 @@ const WhyFriscoHeroSplit = () => {
                     {/* LEFT CARD — OWNERS */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
-                        animate={activeSide === 'both' ? { opacity: 1, y: 0 } : {}}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                     >
                         <div className="relative rounded-2xl border border-charcoal/[0.08] bg-white shadow-lg shadow-charcoal/[0.04] overflow-hidden">
@@ -236,7 +238,8 @@ const WhyFriscoHeroSplit = () => {
                     {/* RIGHT CARD — SEEKERS */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
-                        animate={activeSide === 'both' ? { opacity: 1, y: 0 } : {}}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
                         transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
                     >
                         <div className="relative rounded-2xl border border-charcoal/[0.08] bg-white shadow-lg shadow-charcoal/[0.04] overflow-hidden">

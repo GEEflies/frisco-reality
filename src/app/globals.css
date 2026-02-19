@@ -94,7 +94,13 @@
   }
 
   body {
-    @apply bg-background text-foreground overflow-x-clip min-h-[100dvh];
+    @apply bg-background text-foreground min-h-[100dvh];
+  }
+
+  /* Clip horizontal overflow on a non-body wrapper to avoid iOS Safari
+     breaking position:fixed when overflow is set on <body> */
+  #app-wrapper {
+    overflow-x: clip;
   }
 
   /* Reduce motion for users who prefer it */
@@ -106,6 +112,14 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Prevent white flash on mobile by ensuring backgrounds render immediately */
+  @media (max-width: 1024px) {
+    /* Force GPU compositing on mobile overlays to prevent paint flash */
+    [data-framer-appear], [style*="opacity"] {
+      will-change: opacity, transform;
     }
   }
 
