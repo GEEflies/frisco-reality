@@ -168,17 +168,12 @@ export const ProcessSection = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12 md:mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
+          <span
             className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4"
           >
             Náš Postup
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+          </span>
+          <h2
             className="text-5xl md:text-7xl font-serif font-bold text-navy"
           >
             Ako to u nás <span className="italic relative inline-block">
@@ -187,7 +182,7 @@ export const ProcessSection = () => {
                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="3" fill="none" />
               </svg>
             </span>
-          </motion.h2>
+          </h2>
         </div>
 
         {/* Adjust vertical spacing with transforms instead of margins for smoothness */}

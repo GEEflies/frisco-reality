@@ -10,13 +10,10 @@ export const ContactSection = () => {
       <div className="container mx-auto px-6">
 
         {/* Section Header — CTA */}
-        <motion.div
+        {/* Section Header — CTA */}
+        <div
           id="kontaktny-formular"
           className="text-center mb-16 md:mb-20 scroll-mt-32"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
             Napíšte nám
@@ -27,7 +24,7 @@ export const ContactSection = () => {
           <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Či už predávate nehnuteľnosť, hľadáte nový domov alebo len premýšľate o ďalšom kroku, sme tu.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
 

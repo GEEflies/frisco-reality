@@ -275,7 +275,15 @@ const ValuesSection = ({ values, fadeInUp, staggerContainer }: { values: any[], 
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    // Force refresh after a small delay to handle hydration layout shifts
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
+
+    return () => {
+      ctx.revert();
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
