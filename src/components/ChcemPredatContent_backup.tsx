@@ -259,3 +259,4 @@ const ChcemPredat = () => {
 };
 
 export default ChcemPredat;
+
