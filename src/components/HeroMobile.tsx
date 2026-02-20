@@ -7,8 +7,8 @@ import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_MOBILE_COPY } from '@/i18n/copy';
 const friscoLogo = '/frisco-logo-hq.png';
-// Mobile-optimised video: 480p, CRF 35, ~660 KB (vs 5.5 MB original)
-const HERO_VIDEO_URL = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-mobile.mp4';
+// Mobile-optimised video: 720p, CRF 28, ~2.3 MB (vs 5.5 MB original)
+const HERO_VIDEO_URL = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-mobile-720p.mp4';
 
 const HeroMobile = () => {
     const { language } = useLanguage();
