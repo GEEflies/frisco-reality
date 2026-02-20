@@ -63,8 +63,8 @@
 @keyframes menu-item-smooth-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 18px, 0) scale(0.985);
-    filter: blur(4px);
+    transform: translate3d(0, 26px, 0) scale(0.982);
+    filter: blur(3px);
   }
   to {
     opacity: 1;
@@ -74,15 +74,15 @@
 }
 
 .menu-item-enter {
-  animation: menu-item-smooth-in 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: menu-item-smooth-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform, opacity, filter;
 }
 
-.menu-delay-1 { animation-delay: 0.04s; }
-.menu-delay-2 { animation-delay: 0.10s; }
-.menu-delay-3 { animation-delay: 0.16s; }
-.menu-delay-4 { animation-delay: 0.22s; }
-.menu-delay-5 { animation-delay: 0.30s; }
+.menu-delay-1 { animation-delay: 0.08s; }
+.menu-delay-2 { animation-delay: 0.18s; }
+.menu-delay-3 { animation-delay: 0.28s; }
+.menu-delay-4 { animation-delay: 0.38s; }
+.menu-delay-5 { animation-delay: 0.50s; }
 
 @layer base {
   :root {
