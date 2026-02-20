@@ -35,14 +35,14 @@ export const ManifestoSection = ({ id, label, title, description, features, cta 
 
                     {/* Left Column - Intro */}
                     <div className="w-full lg:w-5/12">
-                        <span className="block text-navy font-mono text-sm tracking-[0.2em] mb-4 uppercase">
+                        <span className="rv-child block text-navy font-mono text-sm tracking-[0.2em] mb-4 uppercase">
                             {label}
                         </span>
-                        <h2 className="text-5xl md:text-7xl font-serif font-bold text-navy leading-tight md:leading-[0.9] tracking-tighter mb-8">
+                        <h2 className="rv-child text-5xl md:text-7xl font-serif font-bold text-navy leading-tight md:leading-[0.9] tracking-tighter mb-8">
                             {title}
                         </h2>
                         {description && (
-                            <p className="text-charcoal/70 text-lg md:text-xl leading-relaxed mb-12 max-w-xl">
+                            <p className="rv-child text-charcoal/70 text-lg md:text-xl leading-relaxed mb-12 max-w-xl">
                                 {description}
                             </p>
                         )}

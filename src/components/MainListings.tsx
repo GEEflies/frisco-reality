@@ -48,7 +48,7 @@ const MOCK_LISTINGS = [
 const MockListingCard = ({ listing, index, priority = false }: { listing: typeof MOCK_LISTINGS[0]; index: number; priority?: boolean }) => (
     <div
         key={listing.id}
-        className={`min-w-[calc(33.333%-1.33rem)] flex-shrink-0 animate-fade-in-up ${index === 0 ? 'stagger-1' : index === 1 ? 'stagger-2' : 'stagger-3'}`}
+        className={`min-w-[calc(33.333%-1.33rem)] flex-shrink-0 rv-child`}
     >
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group">
 
@@ -173,7 +173,7 @@ export const MainListings = () => {
 
                 {/* Header */}
                 <div
-                    className="flex justify-between items-end mb-12 animate-fade-in-up stagger-1"
+                    className="flex justify-between items-end mb-12 rv-child"
                 >
                     <div>
                         <span className="text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4 block">
@@ -196,7 +196,7 @@ export const MainListings = () => {
 
                 {/* Desktop CTA */}
                 <div
-                    className="hidden lg:flex justify-center mt-12 animate-fade-in-up stagger-4"
+                    className="hidden lg:flex justify-center mt-12 rv-child"
                 >
                     <a
                         href="/ponuka"
@@ -213,12 +213,14 @@ export const MainListings = () => {
                     className="lg:hidden flex flex-col gap-6"
                 >
                     {localizedListings.slice(0, 2).map((listing, index) => (
-                        <MockListingCardMobile key={listing.id} listing={listing} index={index} priority={true} />
+                        <div key={listing.id} className="rv-child">
+                            <MockListingCardMobile listing={listing} index={index} priority={true} />
+                        </div>
                     ))}
 
                     <a
                         href="/ponuka"
-                        className="w-full py-4 mt-4 bg-navy rounded-full text-white font-bold hover:bg-navy/90 transition-colors duration-300 uppercase tracking-widest text-sm text-center block shadow-lg shadow-navy/20"
+                        className="rv-child w-full py-4 mt-4 bg-navy rounded-full text-white font-bold hover:bg-navy/90 transition-colors duration-300 uppercase tracking-widest text-sm text-center block shadow-lg shadow-navy/20"
                     >
                         {copy.cta}
                     </a>

@@ -261,37 +261,77 @@
 
   /* ─── Scroll-reveal: pure CSS + IntersectionObserver ──────────────── */
   /* Elements with .reveal start hidden; when JS adds .revealed, they  */
-  /* animate in. On mobile FM is suppressed, so this is the animation  */
-  /* system for below-fold sections.                                    */
+  /* animate in. Child elements with .rv-child inside a .revealed       */
+  /* parent auto-stagger with cascading delays for premium feel.        */
+
   @keyframes reveal-up {
-    from { opacity: 0; transform: translate3d(0, 32px, 0); }
+    from { opacity: 0; transform: translate3d(0, 40px, 0); }
     to   { opacity: 1; transform: translate3d(0, 0, 0); }
   }
   @keyframes reveal-scale {
-    from { opacity: 0; transform: scale(0.96) translate3d(0, 16px, 0); }
+    from { opacity: 0; transform: scale(0.94) translate3d(0, 20px, 0); }
     to   { opacity: 1; transform: scale(1) translate3d(0, 0, 0); }
   }
+  @keyframes reveal-slide-left {
+    from { opacity: 0; transform: translate3d(-40px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+  @keyframes reveal-slide-right {
+    from { opacity: 0; transform: translate3d(40px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
 
-  .reveal {
-    opacity: 0;
-    will-change: transform, opacity;
-  }
-  .reveal.revealed {
-    animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
+  .reveal,
   .reveal-scale {
     opacity: 0;
     will-change: transform, opacity;
   }
+
+  .reveal.revealed {
+    animation: reveal-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
   .reveal-scale.revealed {
-    animation: reveal-scale 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: reveal-scale 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  /* Stagger delays for reveal groups */
-  .reveal-delay-1 { animation-delay: 0.1s; }
-  .reveal-delay-2 { animation-delay: 0.2s; }
-  .reveal-delay-3 { animation-delay: 0.3s; }
-  .reveal-delay-4 { animation-delay: 0.4s; }
+  /* ── Auto-stagger children ── */
+  /* Add .rv-child to any element inside a .reveal section.             */
+  /* They stay invisible until the parent gets .revealed, then cascade. */
+  .rv-child {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .revealed .rv-child {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* Ascending delays for up to 8 children */
+  .revealed .rv-child:nth-child(1) { transition-delay: 0.05s; }
+  .revealed .rv-child:nth-child(2) { transition-delay: 0.12s; }
+  .revealed .rv-child:nth-child(3) { transition-delay: 0.19s; }
+  .revealed .rv-child:nth-child(4) { transition-delay: 0.26s; }
+  .revealed .rv-child:nth-child(5) { transition-delay: 0.33s; }
+  .revealed .rv-child:nth-child(6) { transition-delay: 0.40s; }
+  .revealed .rv-child:nth-child(7) { transition-delay: 0.47s; }
+  .revealed .rv-child:nth-child(8) { transition-delay: 0.54s; }
+
+  /* Explicit delay utilities (for non-sibling stagger) */
+  .reveal-delay-1 { animation-delay: 0.12s; }
+  .reveal-delay-2 { animation-delay: 0.24s; }
+  .reveal-delay-3 { animation-delay: 0.36s; }
+  .reveal-delay-4 { animation-delay: 0.48s; }
+
+  /* Slide variants for special elements */
+  .reveal-left.revealed  { animation: reveal-slide-left  0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .reveal-right.revealed { animation: reveal-slide-right 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .reveal-left,
+  .reveal-right {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
 
   /* Optimize images globally - removed content-visibility to fix layout shifts */
   /* img {

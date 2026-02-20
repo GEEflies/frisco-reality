@@ -32,13 +32,13 @@ export const ContactSection = () => {
           id="kontaktny-formular"
           className="reveal text-center mb-16 md:mb-20 scroll-mt-32"
         >
-          <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
+          <span className="rv-child block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
             {copy.badge}
           </span>
-          <h2 className="text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
+          <h2 className="rv-child text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
             {copy.titleStart} <span className="text-accent-red italic">{copy.titleAccent}</span>
           </h2>
-          <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="rv-child text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             {copy.subtitle}
           </p>
         </div>

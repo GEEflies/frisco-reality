@@ -154,12 +154,12 @@ export const ProcessSection = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12 md:mb-16">
           <span
-            className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4"
+            className="rv-child block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4"
           >
             {copy.badge}
           </span>
           <h2
-            className="text-5xl md:text-7xl font-serif font-bold text-navy"
+            className="rv-child text-5xl md:text-7xl font-serif font-bold text-navy"
           >
             {copy.titleStart} <span className="italic relative inline-block">
               {copy.titleAccent}
@@ -185,7 +185,7 @@ export const ProcessSection = () => {
               <div
                 key={step.number}
                 data-process-step
-                className={`process-step relative md:w-[48%] ${index % 2 === 0
+                className={`rv-child process-step relative md:w-[48%] ${index % 2 === 0
                   ? 'md:mr-auto' // Left Column
                   : 'md:ml-auto' // Right Column
                   } ${translateClass}

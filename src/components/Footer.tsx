@@ -12,7 +12,7 @@ export const Footer = () => {
   const copy = FOOTER_COPY[language];
 
   return (
-    <footer className="bg-cream pt-12 lg:pt-24 pb-8 border-t border-navy/10 relative overflow-hidden contain-layout">
+    <footer className="reveal bg-cream pt-12 lg:pt-24 pb-8 border-t border-navy/10 relative overflow-hidden contain-layout">
 
       {/* Background Noise - reduced opacity for performance */}
       <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light pointer-events-none will-change-auto" />

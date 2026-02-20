@@ -34,8 +34,8 @@ export function useScrollReveal() {
       }
     );
 
-    // Observe all current .reveal / .reveal-scale elements
-    const elements = document.querySelectorAll('.reveal:not(.revealed), .reveal-scale:not(.revealed)');
+    // Observe all current .reveal / .reveal-scale / .reveal-left / .reveal-right elements
+    const elements = document.querySelectorAll('.reveal:not(.revealed), .reveal-scale:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed)');
     elements.forEach((el) => observer.observe(el));
 
     // Also watch for elements added later (e.g. lazy-loaded sections)
@@ -44,13 +44,13 @@ export function useScrollReveal() {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
             if (
-              (node.classList.contains('reveal') || node.classList.contains('reveal-scale')) &&
+              (node.classList.contains('reveal') || node.classList.contains('reveal-scale') || node.classList.contains('reveal-left') || node.classList.contains('reveal-right')) &&
               !node.classList.contains('revealed')
             ) {
               observer.observe(node);
             }
             // Also check descendants
-            node.querySelectorAll?.('.reveal:not(.revealed), .reveal-scale:not(.revealed)').forEach((el) => {
+            node.querySelectorAll?.('.reveal:not(.revealed), .reveal-scale:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed)').forEach((el) => {
               observer.observe(el);
             });
           }
