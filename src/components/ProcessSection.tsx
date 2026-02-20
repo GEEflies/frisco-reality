@@ -170,16 +170,18 @@ export const ProcessSection = () => {
           </h2>
         </div>
 
-        {/* Adjust vertical spacing with transforms instead of margins for smoothness */}
+        {/* Adjust vertical spacing with negative margins (not transforms)       */}
+        {/* because the .rv-child reveal animation sets transform via             */}
+        {/* animation-fill-mode: both, which overrides Tailwind translate-y.      */}
         <div className="flex flex-col space-y-8 md:space-y-0 relative max-w-[85rem] mx-auto pb-12">
           {localizedSteps.map((step, index) => {
-            // Apply staggering using Tailwind translate classes
-            // These correspond roughly to the previous margin values but use GPU-accelerated transforms
-            // Previous margins: 0, -128/-260, -128/-24, -64/-48
-            let translateClass = "";
-            if (index === 1) translateClass = "md:-translate-y-32 lg:-translate-y-40";
-            if (index === 2) translateClass = "md:-translate-y-44 lg:-translate-y-36";
-            if (index === 3) translateClass = "md:-translate-y-36 lg:-translate-y-[13.5rem]";
+            // Use negative margin-top instead of -translate-y so the
+            // rv-child CSS animation (which ends at translate3d(0,0,0))
+            // doesn't clobber the positional offset.
+            let offsetClass = "";
+            if (index === 1) offsetClass = "md:-mt-32 lg:-mt-[10rem]";
+            if (index === 2) offsetClass = "md:-mt-44 lg:-mt-36";
+            if (index === 3) offsetClass = "md:-mt-36 lg:-mt-[13.5rem]";
 
             return (
               <div
@@ -188,7 +190,7 @@ export const ProcessSection = () => {
                 className={`rv-child process-step relative md:w-[48%] ${index % 2 === 0
                   ? 'md:mr-auto' // Left Column
                   : 'md:ml-auto' // Right Column
-                  } ${translateClass}
+                  } ${offsetClass}
               `}
               >
                 {/* Redesigned Card */}
