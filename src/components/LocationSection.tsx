@@ -3,9 +3,11 @@
 import { motion } from 'framer-motion';
 import { MapPin, ArrowUpRight, ChevronRight, Navigation, Clock } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 export const LocationSection = () => {
     const { language } = useLanguage();
+    const isDesktop = useIsDesktop();
     const copy = {
         sk: {
             title: 'Kde nás nájdete',
@@ -73,11 +75,13 @@ export const LocationSection = () => {
         <section className="reveal py-12 md:py-20 bg-cream">
             <div className="container mx-auto px-6">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-center mb-8 md:mb-12"
+                    {...(isDesktop ? {
+                        initial: { opacity: 0, y: 30 },
+                        whileInView: { opacity: 1, y: 0 },
+                        viewport: { once: true },
+                        transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+                    } : {})}
+                    className={`text-center mb-8 md:mb-12 ${!isDesktop ? 'rv-child' : ''}`}
                 >
                     <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy mb-4">
                         {copy.title}
@@ -91,11 +95,13 @@ export const LocationSection = () => {
 
                     {/* Interactive Map / Image Card */}
                     <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative rounded-[2rem] overflow-hidden border border-navy/5 shadow-xl min-h-[500px] group"
+                        {...(isDesktop ? {
+                            initial: { opacity: 0, x: -30 },
+                            whileInView: { opacity: 1, x: 0 },
+                            viewport: { once: true },
+                            transition: { duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] },
+                        } : {})}
+                        className={`relative rounded-[2rem] overflow-hidden border border-navy/5 shadow-xl min-h-[500px] group ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         {/* Background Image & Overlay */}
                         <div className="absolute inset-0">
@@ -142,11 +148,13 @@ export const LocationSection = () => {
 
                     {/* Right Column: Info Card */}
                     <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="bg-white rounded-[2rem] shadow-xl border border-navy/5 p-8 flex flex-col h-full"
+                        {...(isDesktop ? {
+                            initial: { opacity: 0, x: 30 },
+                            whileInView: { opacity: 1, x: 0 },
+                            viewport: { once: true },
+                            transition: { duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] },
+                        } : {})}
+                        className={`bg-white rounded-[2rem] shadow-xl border border-navy/5 p-8 flex flex-col h-full ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         {/* Address */}
                         <div className="pb-8 border-b border-gray-100">

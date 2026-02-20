@@ -23,7 +23,14 @@ export function useScrollReveal() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
+            // Use rAF to ensure the browser has painted the initial (hidden)
+            // state before adding .revealed — without this, CSS animations
+            // on .rv-child elements can silently skip when the element is
+            // already in-viewport the moment it's first observed (e.g. after
+            // a dynamic import mounts).
+            requestAnimationFrame(() => {
+              entry.target.classList.add('revealed');
+            });
             observer.unobserve(entry.target);
           }
         });

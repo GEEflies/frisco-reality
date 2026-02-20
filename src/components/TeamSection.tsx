@@ -5,6 +5,7 @@ import { useRef } from 'react';
 const teamPhoto = '/team-photo.jpg';
 import { Award, Phone, Mail } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import type { LanguageCode } from '@/i18n/types';
 
 const teamCopy: Record<LanguageCode, {
@@ -62,9 +63,10 @@ export const TeamSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
   const t = teamCopy[language];
+  const isDesktop = useIsDesktop();
 
   return (
-    <section ref={containerRef} id="tim" className="relative min-h-[90vh] md:min-h-[120vh] bg-white flex items-center overflow-hidden">
+    <section ref={containerRef} id="tim" className="reveal relative min-h-[90vh] md:min-h-[120vh] bg-white flex items-center overflow-hidden">
 
       {/* Background Image - static for performance */}
       <div className="absolute inset-0 z-0 h-[60vh] md:h-full">
@@ -86,20 +88,24 @@ export const TeamSection = () => {
           {/* Header */}
           <div className="mb-24 text-center md:text-left">
             <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="inline-block text-navy font-mono text-sm tracking-[0.3em] uppercase mb-4 border-b border-navy/30 pb-2"
+              {...(isDesktop ? {
+                initial: { opacity: 0, y: 20 },
+                whileInView: { opacity: 1, y: 0 },
+                viewport: { once: true, margin: "-100px" },
+                transition: { duration: 0.5, ease: "easeOut" },
+              } : {})}
+              className={`inline-block text-navy font-mono text-sm tracking-[0.3em] uppercase mb-4 border-b border-navy/30 pb-2 ${!isDesktop ? 'rv-child' : ''}`}
             >
               {t.badge}
             </motion.span>
             <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-              className="text-7xl md:text-9xl font-serif font-bold text-navy tracking-tighter"
+              {...(isDesktop ? {
+                initial: { opacity: 0, y: 30 },
+                whileInView: { opacity: 1, y: 0 },
+                viewport: { once: true, margin: "-100px" },
+                transition: { duration: 0.5, delay: 0.1, ease: "easeOut" },
+              } : {})}
+              className={`text-7xl md:text-9xl font-serif font-bold text-navy tracking-tighter ${!isDesktop ? 'rv-child' : ''}`}
             >
               Peter & Denisa
             </motion.h2>
@@ -110,13 +116,15 @@ export const TeamSection = () => {
 
             {/* Peter's Card */}
             <motion.div
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              custom={0.15}
-              style={{ willChange: 'transform, opacity' }}
-              className="bg-white border border-navy/10 p-8 md:p-12 rounded-lg shadow-xl"
+              {...(isDesktop ? {
+                variants: cardVariants,
+                initial: "hidden",
+                whileInView: "visible",
+                viewport: { once: true, margin: "-50px" },
+                custom: 0.15,
+                style: { willChange: 'transform, opacity' },
+              } : {})}
+              className={`bg-white border border-navy/10 p-8 md:p-12 rounded-lg shadow-xl ${!isDesktop ? 'rv-child' : ''}`}
             >
               <div className="flex items-start justify-between mb-8">
                 <span className="text-4xl font-serif text-navy italic">01</span>
@@ -138,13 +146,15 @@ export const TeamSection = () => {
 
             {/* Denisa's Card - Offset */}
             <motion.div
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              custom={0.3}
-              style={{ willChange: 'transform, opacity' }}
-              className="md:mt-32 bg-white border border-navy/10 p-8 md:p-12 rounded-lg shadow-xl"
+              {...(isDesktop ? {
+                variants: cardVariants,
+                initial: "hidden",
+                whileInView: "visible",
+                viewport: { once: true, margin: "-50px" },
+                custom: 0.3,
+                style: { willChange: 'transform, opacity' },
+              } : {})}
+              className={`md:mt-32 bg-white border border-navy/10 p-8 md:p-12 rounded-lg shadow-xl ${!isDesktop ? 'rv-child' : ''}`}
             >
               <div className="flex items-start justify-between mb-8">
                 <span className="text-4xl font-serif text-navy italic">02</span>

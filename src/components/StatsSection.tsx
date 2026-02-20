@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 const stats = {
   sk: [
@@ -29,6 +30,7 @@ export const StatsSection = () => {
   const { language } = useLanguage();
   const localizedStats = stats[language];
   const containerRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
   const [isMobile, setIsMobile] = useState(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -53,15 +55,17 @@ export const StatsSection = () => {
           {localizedStats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              style={{ y: !isMobile && index % 2 === 0 ? y : 0 }}
-              className="relative flex flex-col justify-between h-64 md:h-80 md:border-r border-navy/10 last:border-0 md:pl-12 will-change-transform"
+              style={isDesktop ? { y: index % 2 === 0 ? y : 0 } : undefined}
+              className={`relative flex flex-col justify-between h-64 md:h-80 md:border-r border-navy/10 last:border-0 md:pl-12 will-change-transform ${!isDesktop ? 'rv-child' : ''}`}
             >
               <div className="overflow-hidden">
                 <motion.span
-                  initial={{ y: "100%" }}
-                  whileInView={{ y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                  viewport={{ once: true }}
+                  {...(isDesktop ? {
+                    initial: { y: "100%" },
+                    whileInView: { y: 0 },
+                    transition: { duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] },
+                    viewport: { once: true },
+                  } : {})}
                   className="block text-[8rem] md:text-[10rem] font-serif font-light leading-[0.8] tracking-tighter text-accent-red"
                 >
                   {stat.value}

@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import WhyFriscoHeroSplit from './WhyFriscoHeroSplit';
 import { FamilyBusinessSection } from '@/components/FamilyBusinessSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 
 
@@ -138,6 +139,7 @@ const values = [
 
 const Sluzby = () => {
   const { language } = useLanguage();
+  const isDesktop = useIsDesktop();
   const copy = {
     sk: {
       valuesBadge: 'Naše hodnoty',
@@ -213,11 +215,13 @@ const Sluzby = () => {
 
           <div className="container mx-auto px-6 relative z-10">
             <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeInUp}
-              className="text-center max-w-3xl mx-auto mb-14 md:mb-20"
+              {...(isDesktop ? {
+                initial: "hidden",
+                whileInView: "visible",
+                viewport: { once: true, margin: "-100px" },
+                variants: fadeInUp,
+              } : {})}
+              className={`text-center max-w-3xl mx-auto mb-14 md:mb-20 ${!isDesktop ? 'rv-child' : ''}`}
             >
               {/* Badge — matching FamilyBusinessSection */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-6">
@@ -250,11 +254,13 @@ const Sluzby = () => {
         <section className="reveal py-16 md:py-20 bg-cream">
           <div className="container mx-auto px-6">
             <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-              className="relative rounded-3xl bg-gradient-to-br from-navy/5 via-white to-white border border-navy/10 p-8 md:p-20 overflow-hidden shadow-lg"
+              {...(isDesktop ? {
+                initial: "hidden",
+                whileInView: "visible",
+                viewport: { once: true },
+                variants: fadeInUp,
+              } : {})}
+              className={`relative rounded-3xl bg-gradient-to-br from-navy/5 via-white to-white border border-navy/10 p-8 md:p-20 overflow-hidden shadow-lg ${!isDesktop ? 'rv-child' : ''}`}
             >
               <div className="absolute top-0 right-0 w-96 h-96 bg-navy/5 rounded-full blur-3xl pointer-events-none" />
 

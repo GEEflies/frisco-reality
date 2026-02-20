@@ -169,7 +169,7 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row md:justify-between md:items-center text-charcoal/40 text-xs gap-3 pt-6 border-t border-navy/5">
           {/* Row 1 (mobile) / Left (desktop): copyright on one line */}
           <p className="whitespace-nowrap">
-            &copy; {new Date().getFullYear()} {copy.copyright} {copy.city}
+            &copy; {new Date().getFullYear()} {copy.copyright}
           </p>
 
           {/* Row 2 (mobile) / Right (desktop): karchi + privacy + cookies */}

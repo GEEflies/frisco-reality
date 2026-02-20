@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Heart, Clock, ShieldCheck, Award } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import type { LanguageCode } from '@/i18n/types';
 
 const copy: Record<LanguageCode, {
@@ -88,6 +89,7 @@ const staggerContainer = {
 export const FamilyBusinessSection = () => {
     const { language } = useLanguage();
     const t = copy[language];
+    const isDesktop = useIsDesktop();
 
     return (
         <section className="reveal py-16 md:py-20 bg-white overflow-hidden relative">
@@ -97,16 +99,18 @@ export const FamilyBusinessSection = () => {
             <div className="container mx-auto px-6">
                 <motion.div
                     className="flex flex-col items-center text-center max-w-4xl mx-auto"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    variants={staggerContainer}
+                    {...(isDesktop ? {
+                        initial: "hidden",
+                        whileInView: "visible",
+                        viewport: { once: true, margin: "-100px" },
+                        variants: staggerContainer,
+                    } : {})}
                 >
 
                     {/* Badge */}
                     <motion.div
-                        variants={fadeInUp}
-                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-8"
+                        {...(isDesktop ? { variants: fadeInUp } : {})}
+                        className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-8 ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         <Heart className="w-4 h-4 text-accent-red fill-current" />
                         <span className="text-xs font-bold tracking-widest text-accent-red uppercase">
@@ -117,8 +121,8 @@ export const FamilyBusinessSection = () => {
 
                     {/* Headline */}
                     <motion.h2
-                        variants={fadeInUp}
-                        className="text-3xl md:text-5xl lg:text-5xl font-bold text-navy mb-12 md:mb-6 leading-tight lg:leading-snug max-w-5xl"
+                        {...(isDesktop ? { variants: fadeInUp } : {})}
+                        className={`text-3xl md:text-5xl lg:text-5xl font-bold text-navy mb-12 md:mb-6 leading-tight lg:leading-snug max-w-5xl ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         <span className="hidden md:inline">{t.headlineDesktopPrefix}</span>
                         {t.headlineWhich} <br className="hidden md:block" />
@@ -136,16 +140,16 @@ export const FamilyBusinessSection = () => {
 
                     {/* Subtitle */}
                     <motion.p
-                        variants={fadeInUp}
-                        className="text-lg md:text-xl text-charcoal/70 max-w-2xl mb-12 font-light"
+                        {...(isDesktop ? { variants: fadeInUp } : {})}
+                        className={`text-lg md:text-xl text-charcoal/70 max-w-2xl mb-12 font-light ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         {t.subtitle}
                     </motion.p>
 
                     {/* Animation Wrapper (Replacing Numbers) */}
                     <motion.div
-                        variants={fadeInUp}
-                        className="w-full max-w-3xl mb-16 md:mb-20 relative h-24 md:h-32 flex items-center justify-center overflow-hidden"
+                        {...(isDesktop ? { variants: fadeInUp } : {})}
+                        className={`w-full max-w-3xl mb-16 md:mb-20 relative h-24 md:h-32 flex items-center justify-center overflow-hidden ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         {/* Abstract Wave/Trust Animation */}
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -201,24 +205,28 @@ export const FamilyBusinessSection = () => {
                             color="text-accent-red"
                             label={t.benefits[0].label}
                             sublabel={t.benefits[0].sublabel}
+                            useFM={isDesktop}
                         />
                         <BenefitItem
                             icon={Clock}
                             color="text-yellow-500"
                             label={t.benefits[1].label}
                             sublabel={t.benefits[1].sublabel}
+                            useFM={isDesktop}
                         />
                         <BenefitItem
                             icon={ShieldCheck}
                             color="text-blue-500"
                             label={t.benefits[2].label}
                             sublabel={t.benefits[2].sublabel}
+                            useFM={isDesktop}
                         />
                         <BenefitItem
                             icon={Award}
                             color="text-purple-500"
                             label={t.benefits[3].label}
                             sublabel={t.benefits[3].sublabel}
+                            useFM={isDesktop}
                         />
                     </div>
 
@@ -228,10 +236,10 @@ export const FamilyBusinessSection = () => {
     );
 };
 
-const BenefitItem = ({ icon: Icon, color, label, sublabel }: { icon: any, color: string, label: string, sublabel: string }) => (
+const BenefitItem = ({ icon: Icon, color, label, sublabel, useFM }: { icon: any, color: string, label: string, sublabel: string, useFM: boolean }) => (
     <motion.div
-        variants={fadeInUp}
-        className="flex flex-col items-center group"
+        {...(useFM ? { variants: fadeInUp } : {})}
+        className={`flex flex-col items-center group ${!useFM ? 'rv-child' : ''}`}
     >
         <div className={`w-12 h-12 rounded-2xl bg-white border border-charcoal/5 shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
             <Icon className={`w-6 h-6 ${color}`} />

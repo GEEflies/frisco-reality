@@ -210,18 +210,11 @@
     }
   }
 
-  /* ─── Mobile anti-flicker ─────────────────────────────────────────── */
-  /* Kill Framer Motion hydration flicker on mobile.                     */
-  /* FM sets inline opacity:0 during React hydration (via `initial`),   */
-  /* then animates back to 1 on scroll — causing a visible flash.       */
-  /* Force opacity:1 on all sectioned content so nothing ever hides.    */
-  /* Transform animations (slide-up) still fire normally.               */
-  /* Elements outside <section> (navbar, dialogs, preloader) unaffected.*/
-  @media (max-width: 1023px) {
-    section [style] {
-      opacity: 1 !important;
-    }
-  }
+  /* ─── Mobile Framer Motion guard ──────────────────────────────────── */
+  /* On mobile (<lg), Framer Motion entrance animations are replaced    */
+  /* by the CSS reveal system. Components conditionally pass             */
+  /* initial={false} on mobile so FM doesn't set inline opacity:0.      */
+  /* No nuclear override needed — handled per-component.                */
 
   /* ─── Hero animation stagger delays ─────────────────────────────────── */
   /* These use pure CSS keyframes → SSR-safe (no JS hydration mismatch).  */
@@ -295,28 +288,39 @@
   }
 
   /* ── Auto-stagger children ── */
-  /* Add .rv-child to any element inside a .reveal section.             */
-  /* They stay invisible until the parent gets .revealed, then cascade. */
+  /* Add .rv-child to any element inside a .reveal wrapper.             */
+  /* Uses CSS ANIMATIONS (not transitions) so the entrance always       */
+  /* replays reliably even when .revealed is added in the same frame    */
+  /* the element first paints — transitions silently skip in that case. */
+
+  @keyframes rv-child-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 28px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
   .rv-child {
     opacity: 0;
-    transform: translate3d(0, 28px, 0);
-    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
   }
   .revealed .rv-child {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+    animation: rv-child-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   /* Ascending delays for up to 8 children */
-  .revealed .rv-child:nth-child(1) { transition-delay: 0.05s; }
-  .revealed .rv-child:nth-child(2) { transition-delay: 0.12s; }
-  .revealed .rv-child:nth-child(3) { transition-delay: 0.19s; }
-  .revealed .rv-child:nth-child(4) { transition-delay: 0.26s; }
-  .revealed .rv-child:nth-child(5) { transition-delay: 0.33s; }
-  .revealed .rv-child:nth-child(6) { transition-delay: 0.40s; }
-  .revealed .rv-child:nth-child(7) { transition-delay: 0.47s; }
-  .revealed .rv-child:nth-child(8) { transition-delay: 0.54s; }
+  .revealed .rv-child:nth-child(1) { animation-delay: 0.05s; }
+  .revealed .rv-child:nth-child(2) { animation-delay: 0.12s; }
+  .revealed .rv-child:nth-child(3) { animation-delay: 0.19s; }
+  .revealed .rv-child:nth-child(4) { animation-delay: 0.26s; }
+  .revealed .rv-child:nth-child(5) { animation-delay: 0.33s; }
+  .revealed .rv-child:nth-child(6) { animation-delay: 0.40s; }
+  .revealed .rv-child:nth-child(7) { animation-delay: 0.47s; }
+  .revealed .rv-child:nth-child(8) { animation-delay: 0.54s; }
 
   /* Explicit delay utilities (for non-sibling stagger) */
   .reveal-delay-1 { animation-delay: 0.12s; }
