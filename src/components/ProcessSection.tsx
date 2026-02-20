@@ -90,7 +90,7 @@ export const ProcessSection = () => {
   /* ── Mobile: cards visible immediately, no GSAP scroll-lock ── */
 
   return (
-    <section ref={containerRef} className="reveal relative pt-16 md:pt-24 pb-12 md:pb-0 mb-0 md:-mb-32 bg-cream overflow-hidden">
+    <section ref={containerRef} className="reveal smooth-reveal relative pt-16 md:pt-24 pb-12 md:pb-0 mb-0 md:-mb-32 bg-cream overflow-hidden">
       {/* Background Noise & ambient light */}
       <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light pointer-events-none" />
       <div

@@ -381,6 +381,35 @@
     will-change: transform, opacity;
   }
 
+  .smooth-reveal.reveal.revealed {
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .smooth-reveal.revealed .rv-child {
+    animation-duration: 0.84s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .smooth-reveal.reveal-left.revealed,
+  .smooth-reveal.reveal-right.revealed {
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (max-width: 1023px) {
+    .smooth-reveal.reveal.revealed,
+    .smooth-reveal.reveal-scale.revealed,
+    .smooth-reveal.reveal-left.revealed,
+    .smooth-reveal.reveal-right.revealed {
+      animation-duration: 0.82s;
+    }
+
+    .smooth-reveal.revealed .rv-child {
+      animation-duration: 0.72s;
+    }
+  }
+
   /* Optimize images globally - removed content-visibility to fix layout shifts */
   /* img {
     content-visibility: auto;

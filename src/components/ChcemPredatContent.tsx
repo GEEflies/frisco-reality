@@ -178,7 +178,7 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 1: Čo pre vás urobíme — staggered cards ───────────────── */}
-                <section className="reveal py-20 md:py-32 bg-cream overflow-hidden">
+                <section className="reveal smooth-reveal py-20 md:py-32 bg-cream overflow-hidden">
                     <div className="container mx-auto px-6">
                         <div className="rv-child mb-16">
                             <span className="text-accent-red font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
@@ -214,7 +214,7 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 2: Vaša nehnuteľnosť si zaslúži viac — editorial ─────── */}
-                <section className="reveal py-20 md:py-32 bg-white overflow-hidden">
+                <section className="reveal smooth-reveal py-20 md:py-32 bg-white overflow-hidden">
                     <div className="container mx-auto px-6">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[480px]">
                             {/* Image — spans 7 columns */}
@@ -251,7 +251,7 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 3: Ako to prebieha — Dark Process Steps ───────────────── */}
-                <section className="reveal py-20 md:py-32 bg-navy text-white overflow-hidden relative">
+                <section className="reveal smooth-reveal py-20 md:py-32 bg-navy text-white overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-24">

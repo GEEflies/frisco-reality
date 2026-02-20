@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowUpRight, Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 const friscoLogo = '/frisco-logo-hq.png';
@@ -7,12 +8,67 @@ import { GoogleReviewsBadge } from './GoogleReviewsBadge';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { FOOTER_COPY } from '@/i18n/copy';
 
+const TYPEWRITER_SPEED_MS = 45;
+
 export const Footer = () => {
   const { language } = useLanguage();
   const copy = FOOTER_COPY[language];
+  const footerRef = useRef<HTMLElement>(null);
+  const [typedHeadline, setTypedHeadline] = useState('');
+  const [hasStartedTypewriter, setHasStartedTypewriter] = useState(false);
+
+  const fullHeadline = useMemo(
+    () => `${copy.title} ${copy.titleAccent}`.trim(),
+    [copy.title, copy.titleAccent]
+  );
+  const accentStartIndex = copy.title.length + 1;
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer || hasStartedTypewriter) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        setHasStartedTypewriter(true);
+        observer.disconnect();
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [hasStartedTypewriter]);
+
+  useEffect(() => {
+    if (!hasStartedTypewriter) {
+      return;
+    }
+
+    let currentIndex = 0;
+    const interval = window.setInterval(() => {
+      currentIndex += 1;
+      setTypedHeadline(fullHeadline.slice(0, currentIndex));
+
+      if (currentIndex >= fullHeadline.length) {
+        window.clearInterval(interval);
+      }
+    }, TYPEWRITER_SPEED_MS);
+
+    return () => window.clearInterval(interval);
+  }, [fullHeadline, hasStartedTypewriter]);
+
+  const typedMain = typedHeadline.slice(0, Math.min(typedHeadline.length, accentStartIndex));
+  const typedAccent = typedHeadline.slice(Math.min(typedHeadline.length, accentStartIndex));
+  const isTypewriterRunning = hasStartedTypewriter && typedHeadline.length < fullHeadline.length;
 
   return (
-    <footer className="reveal bg-cream pt-12 lg:pt-24 pb-8 border-t border-navy/10 relative overflow-hidden contain-layout">
+    <footer ref={footerRef} className="bg-cream pt-12 lg:pt-24 pb-8 border-t border-navy/10 relative overflow-hidden contain-layout">
 
       {/* Background Noise - reduced opacity for performance */}
       <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light pointer-events-none will-change-auto" />
@@ -26,8 +82,10 @@ export const Footer = () => {
           {/* Mobile: full width, lg: 3 cols (row 1), xl: 3 cols */}
           <div className="col-span-2 lg:col-span-3 flex flex-col lg:pr-6 xl:pr-10">
             <img src={friscoLogo} alt="Frisco" loading="lazy" decoding="async" className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8" />
-            <h2 className="text-3xl sm:text-4xl xl:text-4xl font-serif font-bold text-navy leading-tight mb-8">
-              {copy.title} <span className="text-accent-red italic">{copy.titleAccent}</span>
+            <h2 className="text-3xl sm:text-4xl xl:text-4xl font-serif font-bold text-navy leading-tight mb-8 min-h-[2.6em]">
+              {typedMain}
+              <span className="text-accent-red italic">{typedAccent}</span>
+              {isTypewriterRunning && <span className="animate-blink-cursor">|</span>}
             </h2>
 
             <Link href="/kontakt#kontaktny-formular" className="group inline-flex items-center gap-4 text-navy hover:text-accent-red transition-colors w-fit">

@@ -18,6 +18,11 @@ const OBSERVER_OPTIONS = {
 } as const;
 
 function markAsRevealed(target: Element): void {
+  if (target instanceof HTMLElement) {
+    target.classList.remove('revealed');
+    void target.offsetHeight;
+  }
+
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       target.classList.add('revealed');

@@ -24,13 +24,13 @@ export const ContactSection = () => {
   }[language];
 
   return (
-    <section className="reveal relative z-20 py-12 md:pb-20 md:pt-48 bg-cream" id="kontakt">
+    <section className="reveal smooth-reveal relative z-20 py-12 md:pb-20 md:pt-48 bg-cream" id="kontakt">
       <div className="container mx-auto px-6">
 
         {/* Section Header — CTA */}
         <div
           id="kontaktny-formular"
-          className="reveal text-center mb-16 md:mb-20 scroll-mt-32"
+          className="reveal smooth-reveal text-center mb-16 md:mb-20 scroll-mt-32"
         >
           <span className="rv-child block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
             {copy.badge}
@@ -47,7 +47,7 @@ export const ContactSection = () => {
 
 
           {/* Left: Contact Info */}
-          <div className="reveal reveal-delay-1">
+          <div className="reveal smooth-reveal reveal-delay-1">
             {/* Contact Cards */}
             <div className="space-y-6 mb-12">
               <ContactCard
@@ -125,7 +125,7 @@ export const ContactSection = () => {
 
           {/* Right: Contact Form — sticky */}
           <div className="lg:sticky lg:top-28 self-start">
-            <div className="reveal reveal-delay-2">
+            <div className="reveal smooth-reveal reveal-delay-2">
               <ContactForm />
             </div>
           </div>

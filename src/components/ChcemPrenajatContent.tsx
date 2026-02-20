@@ -209,7 +209,7 @@ const ChcemPrenajat = () => {
                 </section>
 
                 {/* ─── SECTION 1: Celoročná starostlivosť ─────────────────────────────── */}
-                <section className="reveal py-20 md:py-32 bg-cream overflow-hidden">
+                <section className="reveal smooth-reveal py-20 md:py-32 bg-cream overflow-hidden">
                     <div className="container mx-auto px-6">
                         <div
                             className="rv-child rounded-[2.5rem] bg-white border border-navy/8 shadow-xl shadow-navy/5 overflow-hidden"
@@ -258,7 +258,7 @@ const ChcemPrenajat = () => {
                 </section>
 
                 {/* ─── SECTION 2: Peniaze vždy načas ─────────────────────────────────── */}
-                <section className="reveal py-20 md:py-32 bg-navy overflow-hidden relative">
+                <section className="reveal smooth-reveal py-20 md:py-32 bg-navy overflow-hidden relative">
                     {/* Subtle texture */}
                     <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none" />
                     <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent-red" />
@@ -301,7 +301,7 @@ const ChcemPrenajat = () => {
                 </section>
 
                 {/* ─── SECTION 3: Transparentnosť — tri piliere ───────────────────────── */}
-                <section className="reveal py-20 md:py-32 bg-white">
+                <section className="reveal smooth-reveal py-20 md:py-32 bg-white">
                     <div className="container mx-auto px-6">
                         <div className="rv-child text-center mb-16">
                             <span className="text-navy/40 font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
