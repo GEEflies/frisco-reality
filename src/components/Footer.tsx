@@ -177,6 +177,20 @@ export const Footer = () => {
           </div>
         </div>
 
+        {/* Karchi signature */}
+        <div className="flex items-center justify-center gap-2 mt-6 pt-5 border-t border-navy/5">
+          <span className="text-charcoal/30 text-[11px] tracking-wide">{copy.madeBy}</span>
+          <a
+            href="https://www.karchi.xyz/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-charcoal/40 hover:text-charcoal/80 transition-colors duration-300 text-[13px] font-black tracking-tight leading-none"
+            aria-label="karchi. digital agency"
+          >
+            karchi.
+          </a>
+        </div>
+
       </div>
     </footer>
   );

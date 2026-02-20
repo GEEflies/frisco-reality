@@ -510,6 +510,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
   city: string;
   privacy: string;
   cookies: string;
+  madeBy: string;
   navItems: Array<{ label: string; href: string }>;
   servicesItems: string[];
 }> = {
@@ -529,6 +530,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
     city: 'Sereď & Nitra',
     privacy: 'Ochrana osobných údajov',
     cookies: 'Cookies',
+    madeBy: 'Vytvorené s láskou od',
     navItems: [
       { label: 'Domov', href: '/' },
       { label: 'Prečo Frisco?', href: '/preco-frisco' },
@@ -553,6 +555,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
     city: 'Sereď & Nitra',
     privacy: 'Privacy policy',
     cookies: 'Cookies',
+    madeBy: 'Made with love by',
     navItems: [
       { label: 'Home', href: '/' },
       { label: 'Why Frisco?', href: '/preco-frisco' },
@@ -577,6 +580,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
     city: 'Sereď & Nitra',
     privacy: 'Datenschutz',
     cookies: 'Cookies',
+    madeBy: 'Erstellt mit Liebe von',
     navItems: [
       { label: 'Startseite', href: '/' },
       { label: 'Warum Frisco?', href: '/preco-frisco' },
