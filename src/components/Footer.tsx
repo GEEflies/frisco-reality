@@ -165,30 +165,30 @@ export const Footer = () => {
 
         </div>
 
-        {/* Bottom Footer: Legal */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-charcoal/40 text-xs lg:text-xs gap-4 pt-6 border-t border-navy/5">
-          <div className="flex flex-col items-center md:items-start gap-1">
-            <p>&copy; {new Date().getFullYear()} {copy.copyright}</p>
-            <p>{copy.city}</p>
-          </div>
-          <div className="flex gap-6">
+        {/* Bottom Footer: Legal + Karchi */}
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center text-charcoal/40 text-xs gap-3 pt-6 border-t border-navy/5">
+          {/* Row 1 (mobile) / Left (desktop): copyright on one line */}
+          <p className="whitespace-nowrap">
+            &copy; {new Date().getFullYear()} {copy.copyright} {copy.city}
+          </p>
+
+          {/* Row 2 (mobile) / Right (desktop): karchi + privacy + cookies */}
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-charcoal/30 text-[11px] tracking-wide">{copy.madeBy}</span>
+              <a
+                href="https://www.karchi.xyz/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-charcoal/40 hover:text-charcoal/80 transition-colors duration-300 text-[13px] font-black tracking-tight leading-none"
+                aria-label="karchi. digital agency"
+              >
+                karchi.
+              </a>
+            </div>
             <Link href="/ochrana-osobnych-udajov" className="hover:text-navy transition-colors">{copy.privacy}</Link>
             <Link href="/cookies" className="hover:text-navy transition-colors">{copy.cookies}</Link>
           </div>
-        </div>
-
-        {/* Karchi signature */}
-        <div className="flex items-center justify-center gap-2 mt-6 pt-5 border-t border-navy/5">
-          <span className="text-charcoal/30 text-[11px] tracking-wide">{copy.madeBy}</span>
-          <a
-            href="https://www.karchi.xyz/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-charcoal/40 hover:text-charcoal/80 transition-colors duration-300 text-[13px] font-black tracking-tight leading-none"
-            aria-label="karchi. digital agency"
-          >
-            karchi.
-          </a>
         </div>
 
       </div>
