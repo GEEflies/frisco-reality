@@ -55,21 +55,40 @@ export const ManifestoSection = ({ id, label, title, description, features, cta 
                         )}
                     </div>
 
-                    {/* Right Column - Infinite Marquee (Treadmill) */}
-                    <div className="w-full lg:w-7/12 relative overflow-hidden mask-fade-sides">
-                        {/* Gradient Masks for fading edges */}
-                        <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent z-10" />
-                        <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent z-10" />
+                    {/* Right Column - Infinite Marquee (Desktop) / Snap Carousel (Mobile) */}
+                    <div className="w-full lg:w-7/12 relative overflow-hidden lg:mask-fade-sides">
+                        {/* Gradient Masks for fading edges — desktop only */}
+                        <div className="hidden lg:block absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent z-10" />
+                        <div className="hidden lg:block absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent z-10" />
 
+                        {/* Mobile: snap-scroll carousel */}
                         <div
-                            className="flex gap-6 w-max animate-marquee hover:[animation-play-state:paused]"
-                            style={{ cursor: 'grab' }}
+                            className="flex gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none scrollbar-hide lg:w-max lg:animate-marquee lg:hover:[animation-play-state:paused] -mx-6 px-6 lg:mx-0 lg:px-0 pb-4 lg:pb-0"
+                            style={{ WebkitOverflowScrolling: 'touch' }}
                         >
-                            {/* Duplicate features multiple times for smooth infinite loop */}
+                            {/* On mobile: show features once; on desktop: 4× for marquee loop */}
+                            {features.map((feature, index) => (
+                                <div
+                                    key={`${feature.id}-m-${index}`}
+                                    className="w-[280px] md:w-[320px] shrink-0 bg-white border border-navy/10 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 select-none snap-start lg:snap-align-none lg:hidden"
+                                >
+                                    <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center mb-5 text-navy border border-navy/5`}>
+                                        <feature.icon className="w-6 h-6" strokeWidth={1.5} />
+                                    </div>
+                                    <h3 className="text-xl font-serif font-bold text-navy mb-2">{feature.title}</h3>
+                                    <p className="text-charcoal/70 mb-6 leading-relaxed text-base">{feature.description}</p>
+
+                                    <div className="flex items-baseline gap-2 pt-3 border-t border-navy/5">
+                                        <span className="text-2xl font-light text-navy">{feature.stat}</span>
+                                        <span className="text-xs text-charcoal/40 uppercase tracking-widest">{feature.statLabel}</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {/* Desktop: 4× duplicated for marquee */}
                             {[...features, ...features, ...features, ...features].map((feature, index) => (
                                 <div
-                                    key={`${feature.id}-${index}`}
-                                    className="w-[300px] md:w-[320px] shrink-0 bg-white border border-navy/10 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 select-none"
+                                    key={`${feature.id}-d-${index}`}
+                                    className="w-[300px] md:w-[320px] shrink-0 bg-white border border-navy/10 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 select-none hidden lg:block"
                                 >
                                     <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center mb-5 text-navy border border-navy/5`}>
                                         <feature.icon className="w-6 h-6" strokeWidth={1.5} />

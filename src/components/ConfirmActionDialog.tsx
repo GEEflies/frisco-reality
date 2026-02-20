@@ -103,7 +103,7 @@ export const ConfirmActionDialog = ({ isOpen, onClose, actionType }: ConfirmActi
 
   return (
     <div
-      className={`fixed inset-0 z-[300] flex items-end sm:items-center justify-center px-4 sm:px-6 pb-6 sm:pb-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`fixed inset-0 z-[300] flex items-center justify-center px-6 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isOpen
           ? 'opacity-100 visible'
           : 'opacity-0 invisible pointer-events-none'
@@ -122,52 +122,49 @@ export const ConfirmActionDialog = ({ isOpen, onClose, actionType }: ConfirmActi
 
       {/* Dialog card */}
       <div
-        className={`relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-7 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`relative bg-white rounded-2xl shadow-2xl max-w-[300px] w-full p-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isOpen
             ? 'scale-100 translate-y-0 opacity-100'
-            : 'scale-95 translate-y-8 opacity-0'
+            : 'scale-95 translate-y-4 opacity-0'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-charcoal/5 flex items-center justify-center text-charcoal/40 hover:text-charcoal hover:bg-charcoal/10 transition-colors active:scale-95"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-charcoal/5 flex items-center justify-center text-charcoal/40 hover:text-charcoal hover:bg-charcoal/10 transition-colors active:scale-95"
           aria-label="Close"
         >
-          <X size={18} />
+          <X size={16} />
         </button>
 
         {/* Icon */}
-        <div className={`w-16 h-16 ${actionType === 'call' ? 'bg-accent-red' : 'bg-navy'} rounded-2xl flex items-center justify-center mb-6 shadow-lg ${actionType === 'call' ? 'shadow-accent-red/20' : 'shadow-navy/20'}`}>
-          <IconComponent className="w-7 h-7 text-white" strokeWidth={1.8} />
+        <div className={`w-12 h-12 ${actionType === 'call' ? 'bg-accent-red' : 'bg-navy'} rounded-xl flex items-center justify-center mb-4 shadow-md ${actionType === 'call' ? 'shadow-accent-red/20' : 'shadow-navy/20'}`}>
+          <IconComponent className="w-5 h-5 text-white" strokeWidth={1.8} />
         </div>
 
         {/* Title */}
-        <h3 className="text-2xl font-sans font-bold text-navy mb-2 tracking-tight">
+        <h3 className="text-lg font-sans font-bold text-navy mb-1.5 tracking-tight">
           {copy.title}
         </h3>
 
         {/* Message */}
-        <p className="text-charcoal/70 text-[15px] leading-relaxed mb-2">
+        <p className="text-charcoal/60 text-sm leading-relaxed mb-5">
           {copy.message}
-        </p>
-        <p className="text-charcoal/40 text-xs leading-relaxed mb-7">
-          {copy.detail}
         </p>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           <button
             onClick={handleConfirm}
-            className={`w-full py-3.5 px-5 rounded-xl ${confirmBg} text-white font-sans font-bold text-[15px] shadow-lg transition-all hover:shadow-xl active:scale-[0.98] flex items-center justify-center gap-2.5`}
+            className={`w-full py-3 px-4 rounded-xl ${confirmBg} text-white font-sans font-bold text-sm shadow-lg transition-all hover:shadow-xl active:scale-[0.98] flex items-center justify-center gap-2`}
           >
-            <IconComponent size={18} />
+            <IconComponent size={16} />
             {copy.confirm}
           </button>
           <button
             onClick={onClose}
-            className="w-full py-3 px-4 rounded-xl text-charcoal/50 font-sans font-medium text-sm hover:text-charcoal/70 hover:bg-charcoal/5 transition-colors"
+            className="w-full py-2.5 px-4 rounded-xl text-charcoal/50 font-sans font-medium text-xs hover:text-charcoal/70 hover:bg-charcoal/5 transition-colors"
           >
             {copy.cancel}
           </button>

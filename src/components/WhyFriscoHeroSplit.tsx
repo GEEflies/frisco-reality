@@ -5,8 +5,6 @@ import { Home, Search, Camera, Megaphone, HandshakeIcon, Users, Building, Receip
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { WHY_FRISCO_COPY } from '@/i18n/copy';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 /* ═══════════════════ DATA ═══════════════════ */
 const ownerTabs = {
@@ -471,57 +469,11 @@ const TabCardContent = ({ tabs, defaultTab, headerIcon, headerLabel }: TabCardPr
     const [activeTab, setActiveTab] = useState(defaultTab);
     const tabKeys = Object.keys(tabs);
     const current = tabs[activeTab];
-    const cardRef = useRef<HTMLDivElement>(null);
 
-    /* ── GSAP mobile scroll-lock for benefits ── */
-    useEffect(() => {
-        if (typeof window === 'undefined' || window.innerWidth >= 1024) return;
-        const el = cardRef.current;
-        if (!el) return;
-
-        gsap.registerPlugin(ScrollTrigger);
-
-        const benefits = el.querySelectorAll('.mobile-benefit');
-        const ctaEl = el.querySelector('.mobile-cta');
-        if (!benefits.length) return;
-
-        // Start hidden
-        gsap.set(benefits, { autoAlpha: 0, y: 24 });
-        if (ctaEl) gsap.set(ctaEl, { autoAlpha: 0, y: 12 });
-
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: el,
-                start: 'top 80px',
-                end: () => `+=${benefits.length * window.innerHeight * 0.4}`,
-                pin: true,
-                pinSpacing: true,
-                scrub: 0.5,
-                anticipatePin: 1,
-            },
-        });
-
-        // Reveal each benefit one by one
-        benefits.forEach((benefit) => {
-            tl.to(benefit, { autoAlpha: 1, y: 0, duration: 1, ease: 'power2.out' });
-            tl.to({}, { duration: 0.4 }); // breathing room
-        });
-
-        // Show CTA after all benefits
-        if (ctaEl) {
-            tl.to(ctaEl, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' });
-        }
-
-        return () => {
-            tl.scrollTrigger?.kill();
-            tl.kill();
-            gsap.set(benefits, { clearProps: 'all' });
-            if (ctaEl) gsap.set(ctaEl, { clearProps: 'all' });
-        };
-    }, [activeTab]);
+    /* ── Mobile: no scroll-lock, benefits visible immediately ── */
 
     return (
-        <div ref={cardRef}>
+        <div>
             {/* HEADER ROW: Label (Left) + Tabs (Right) */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 lg:px-8 pt-6 lg:pt-8 pb-3 lg:pb-4 border-b border-charcoal/[0.04]">
                 {/* Left: Icon + Label */}

@@ -51,6 +51,20 @@
   animation: tab-slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Mobile menu item entrance — staggered slide-up */
+@keyframes menu-item-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.menu-item-enter {
+  animation: menu-item-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.menu-delay-1 { animation-delay: 0.05s; }
+.menu-delay-2 { animation-delay: 0.1s; }
+.menu-delay-3 { animation-delay: 0.15s; }
+.menu-delay-4 { animation-delay: 0.2s; }
+.menu-delay-5 { animation-delay: 0.28s; }
+
 @layer base {
   :root {
     /* Light theme foundations */
@@ -110,6 +124,15 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
+  }
+
+  /* Hide scrollbar for snap carousels */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   /* Optimized blur - uses smaller blur radius for better performance */
@@ -180,9 +203,17 @@
   }
 
   /* ─── Mobile anti-flicker ─────────────────────────────────────────── */
-  /* Keep tailwindcss-animate ruled out on mobile (above).               */
-  /* Framer Motion whileInView animations are left intact — they only    */
-  /* fire on scroll so they never cause a load-time flash.               */
+  /* Kill Framer Motion hydration flicker on mobile.                     */
+  /* FM sets inline opacity:0 during React hydration (via `initial`),   */
+  /* then animates back to 1 on scroll — causing a visible flash.       */
+  /* Force opacity:1 on all sectioned content so nothing ever hides.    */
+  /* Transform animations (slide-up) still fire normally.               */
+  /* Elements outside <section> (navbar, dialogs, preloader) unaffected.*/
+  @media (max-width: 1023px) {
+    section [style] {
+      opacity: 1 !important;
+    }
+  }
 
   /* ─── Hero animation stagger delays ─────────────────────────────────── */
   /* These use pure CSS keyframes → SSR-safe (no JS hydration mismatch).  */

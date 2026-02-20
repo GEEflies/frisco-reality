@@ -1,12 +1,10 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import { MessageCircle, Search, Eye, Key, MapPin, Flag } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { PROCESS_COPY } from '@/i18n/copy';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const steps = [
   {
@@ -89,38 +87,7 @@ export const ProcessSection = () => {
     }
   });
 
-  /* ── GSAP mobile scroll-reveal for step cards ── */
-  useEffect(() => {
-    if (typeof window === 'undefined' || window.innerWidth >= 768) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const cards = containerRef.current?.querySelectorAll('.process-step');
-    if (!cards?.length) return;
-
-    cards.forEach((card) => {
-      gsap.fromTo(
-        card,
-        { autoAlpha: 0, y: 40, scale: 0.97 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.7,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  /* ── Mobile: cards visible immediately, no GSAP scroll-lock ── */
 
   return (
     <section ref={containerRef} className="relative pt-16 md:pt-24 pb-12 md:pb-0 mb-0 md:-mb-32 bg-cream overflow-hidden">

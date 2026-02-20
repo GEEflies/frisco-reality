@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Search, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -36,40 +35,11 @@ export const HeroDecisions = () => {
         },
     }[language];
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.2,
-                delayChildren: 0.4
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 30 },
-        show: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.46, 0.45, 0.94] as any
-            }
-        }
-    };
-
     return (
         <div className="w-full">
-            <motion.div
-                className="flex flex-col sm:flex-row gap-6 w-full"
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-            >
+            <div className="flex flex-col sm:flex-row gap-6 w-full story-soft stagger-4">
                 {/* Option 1: Want to Sell? - Elegant White */}
-                <motion.button
-                    variants={itemVariants}
+                <button
                     onClick={() => router.push('/kontakt')}
                     className="
                         group relative flex-1 flex items-center justify-between px-8 py-7
@@ -96,11 +66,10 @@ export const HeroDecisions = () => {
                     <div className="relative z-10 w-12 h-12 rounded-full border border-navy/5 bg-white flex items-center justify-center text-navy/40 group-hover:bg-navy group-hover:text-white group-hover:scale-110 group-hover:shadow-lg transition-all duration-500">
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-500" />
                     </div>
-                </motion.button>
+                </button>
 
                 {/* Option 2: Looking to Buy? - Deep Navy Premium */}
-                <motion.button
-                    variants={itemVariants}
+                <button
                     onClick={() => router.push('/ponuka')}
                     className="
                         group relative flex-1 flex items-center justify-between px-8 py-7
@@ -128,8 +97,8 @@ export const HeroDecisions = () => {
                     <div className="relative z-10 w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white group-hover:bg-white group-hover:text-navy group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-white/10 transition-all duration-500">
                         <Search className="w-5 h-5" />
                     </div>
-                </motion.button>
-            </motion.div>
+                </button>
+            </div>
         </div>
     );
 };

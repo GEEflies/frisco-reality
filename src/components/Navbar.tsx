@@ -116,35 +116,25 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* Language Switch Overlay */}
-      <AnimatePresence>
-        {isLanguageSwitching && (
-          <motion.div
-            className="fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05, duration: 0.35 }}
-              className="flex flex-col items-center"
-            >
-              <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-12 md:h-14 mb-6" />
-              <div className="w-40 h-[2px] bg-navy/10 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-navy rounded-full"
-                  initial={{ width: '0%' }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Language Switch Overlay — CSS only, no Framer Motion flash */}
+      <div
+        className={`fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center transition-opacity duration-300 ease-in-out ${
+          isLanguageSwitching
+            ? 'opacity-100 visible'
+            : 'opacity-0 invisible pointer-events-none'
+        }`}
+      >
+        <div className="flex flex-col items-center">
+          <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-12 md:h-14 mb-6" />
+          <div className="w-40 h-[2px] bg-navy/10 rounded-full overflow-hidden">
+            <div
+              className={`h-full bg-navy rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                isLanguageSwitching ? 'w-full duration-1000' : 'w-0 duration-0'
+              }`}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Desktop Navbar */}
       <div className={`fixed top-0 left-0 right-0 z-[99] flex-col transition-all duration-300 ${isPropertyDetailPage ? 'hidden' : 'hidden xl:flex'}`}>
@@ -333,11 +323,11 @@ export const Navbar = () => {
         style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: isMobileMenuOpen ? 'translate3d(0,0,0)' : 'translate3d(0,-8px,0)' }}
       >
         <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
-          <Link href={l('/')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
+          <Link href={l('/')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-1' : ''}`} onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
             {navCopy.home}
           </Link>
 
-          <div className="flex flex-col">
+          <div className={`flex flex-col ${isMobileMenuOpen ? 'menu-item-enter menu-delay-2' : ''}`}>
             <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
               {navCopy.offer}
               <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>{'\u25BC'}</span>
@@ -360,16 +350,16 @@ export const Navbar = () => {
             </div>
           </div>
 
-          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/preco-frisco')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-3' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             {navCopy.whyFrisco}
           </Link>
-          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/kontakt')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-4' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             {navCopy.contact}
           </Link>
         </div>
 
         {/* Bottom: Globe + Language Switcher + CTA — CSS only */}
-        <div className="p-8 border-t border-white/10">
+        <div className={`p-8 border-t border-white/10 ${isMobileMenuOpen ? 'menu-item-enter menu-delay-5' : ''}`}>
           <div className="flex items-center justify-center gap-2 mb-6">
             <Globe size={18} className="text-white/50 mr-1" />
             {LANGUAGES.map((opt) => (

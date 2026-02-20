@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Building2, Home, Map, Key, Warehouse } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -33,11 +32,8 @@ export const HeroSearch = ({ className = "" }: { className?: string }) => {
 
     return (
         <div className={`w-full ${className}`}>
-            <motion.div
-                className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
+            <div
+                className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-2 story-soft stagger-3"
             >
                 {/* Row 1: Byty, Domy, Pozemky */}
                 <div className="flex items-center justify-center gap-2">
@@ -70,7 +66,7 @@ export const HeroSearch = ({ className = "" }: { className?: string }) => {
                         </button>
                     ))}
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 };
