@@ -1,36 +1,14 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import AutoplayVideo from './AutoplayVideo';
-// Note: Added Import for ChartPie or similar if needed for 'Price/Strategy' icon, but can reuse existing or import specifically.
 import { ArrowUpRight, Home, Camera, Megaphone, ShieldCheck, MessageCircle, TrendingUp } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 import { ContactSection } from '@/components/ContactSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CHCEM_PREDAT_HERO_COPY } from '@/i18n/copy';
 
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1] as const
-        }
-    }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.15,
-            delayChildren: 0.1
-        }
-    }
-};
+const DESKTOP_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4';
+const MOBILE_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj-mobile-720p.mp4';
 
 const benefitsByLanguage = {
     sk: [
@@ -162,7 +140,7 @@ const ChcemPredat = () => {
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
                                         <AutoplayVideo
-                                            src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4"
+                                            src={MOBILE_VIDEO}
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -189,7 +167,7 @@ const ChcemPredat = () => {
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />
                                     <AutoplayVideo
-                                        src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4"
+                                        src={DESKTOP_VIDEO}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
@@ -200,15 +178,9 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 1: Čo pre vás urobíme — staggered cards ───────────────── */}
-                <section className="py-20 md:py-32 bg-cream overflow-hidden">
+                <section className="reveal py-20 md:py-32 bg-cream overflow-hidden">
                     <div className="container mx-auto px-6">
-                        <motion.div
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-100px" }}
-                            variants={fadeInUp}
-                            className="mb-16"
-                        >
+                        <div className="rv-child mb-16">
                             <span className="text-accent-red font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
                                 {pageCopy.section1Badge}
                             </span>
@@ -219,21 +191,14 @@ const ChcemPredat = () => {
                             <p className="text-charcoal/60 mt-6 max-w-lg text-lg font-light leading-relaxed">
                                 {pageCopy.section1Text}
                             </p>
-                        </motion.div>
+                        </div>
 
                         {/* Staggered 2-column grid */}
-                        <motion.div
-                            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-100px" }}
-                            variants={staggerContainer}
-                        >
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {benefits.map((b, i) => (
-                                <motion.div
+                                <div
                                     key={i}
-                                    variants={fadeInUp}
-                                    className={`group rounded-[2rem] border border-navy/8 p-6 md:p-10 flex flex-col gap-6 hover:shadow-xl hover:shadow-navy/8 transition-all duration-500 hover:-translate-y-1 ${b.bg} ${b.offset ? 'sm:mt-10' : ''}`}
+                                    className={`rv-child group rounded-[2rem] border border-navy/8 p-6 md:p-10 flex flex-col gap-6 hover:shadow-xl hover:shadow-navy/8 transition-all duration-500 hover:-translate-y-1 ${b.bg} ${b.offset ? 'sm:mt-10' : ''}`}
                                 >
                                     <div className="w-14 h-14 rounded-2xl bg-navy/5 group-hover:bg-accent-red flex items-center justify-center transition-colors duration-400 flex-shrink-0">
                                         <b.icon className="w-7 h-7 text-navy group-hover:text-white transition-colors duration-400" />
@@ -242,24 +207,18 @@ const ChcemPredat = () => {
                                         <h3 className="text-2xl font-serif font-bold text-navy mb-3">{b.title}</h3>
                                         <p className="text-charcoal/60 text-base leading-relaxed">{b.text}</p>
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
-                        </motion.div>
+                        </div>
                     </div>
                 </section>
 
                 {/* ─── SECTION 2: Vaša nehnuteľnosť si zaslúži viac — editorial ─────── */}
-                <section className="py-20 md:py-32 bg-white overflow-hidden">
+                <section className="reveal py-20 md:py-32 bg-white overflow-hidden">
                     <div className="container mx-auto px-6">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[480px]">
                             {/* Image — spans 7 columns */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -50, scale: 0.95 }}
-                                whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const }}
-                                className="lg:col-span-7 relative rounded-[2rem] overflow-hidden min-h-[360px] lg:min-h-0"
-                            >
+                            <div className="rv-child lg:col-span-7 relative rounded-[2rem] overflow-hidden min-h-[360px] lg:min-h-0">
                                 <img
                                     src="/frisco-reality-sered.jpg"
                                     alt={pageCopy.editorialImageAlt}
@@ -268,16 +227,10 @@ const ChcemPredat = () => {
                                     className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-r from-navy/20 to-transparent" />
-                            </motion.div>
+                            </div>
 
                             {/* Text card — overlaps image on desktop */}
-                            <motion.div
-                                initial={{ opacity: 0, x: 50 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
-                                className="lg:col-span-5 lg:-ml-16 relative z-10 flex items-center"
-                            >
+                            <div className="rv-child lg:col-span-5 lg:-ml-16 relative z-10 flex items-center">
                                 <div className="bg-white rounded-[2rem] shadow-2xl shadow-navy/10 border border-navy/8 p-10 md:p-12 w-full">
                                     <span className="text-navy/40 font-mono text-xs tracking-[0.3em] uppercase mb-6 block">
                                         {pageCopy.editorialBadge}
@@ -292,38 +245,26 @@ const ChcemPredat = () => {
                                         {pageCopy.editorialText2}
                                     </p>
                                 </div>
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 {/* ─── SECTION 3: Ako to prebieha — Dark Process Steps ───────────────── */}
-                <section className="py-20 md:py-32 bg-navy text-white overflow-hidden relative">
+                <section className="reveal py-20 md:py-32 bg-navy text-white overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-24">
-                            <motion.div
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true }}
-                                variants={fadeInUp}
-                                className="max-w-3xl"
-                            >
+                            <div className="rv-child max-w-3xl">
                                 <span className="text-accent-red font-mono text-xs tracking-[0.3em] uppercase mb-6 block">
                                     {pageCopy.processBadge}
                                 </span>
                                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold leading-tight">
                                     {pageCopy.processTitle} <span className="text-accent-red italic">{pageCopy.processAccent}</span>.
                                 </h2>
-                            </motion.div>
+                            </div>
 
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: 0.2 }}
-                                className="flex-shrink-0"
-                            >
+                            <div className="rv-child flex-shrink-0">
                                 <a
                                     href="#kontaktny-formular"
                                     className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-all shadow-lg shadow-accent-red/20 group whitespace-nowrap"
@@ -331,58 +272,26 @@ const ChcemPredat = () => {
                                     <span>{pageCopy.processCta}</span>
                                     <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                 </a>
-                            </motion.div>
+                            </div>
                         </div>
 
-                        <motion.div
-                            className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-100px" }}
-                            variants={staggerContainer}
-                        >
-                            {/* Step 1 */}
-                            <motion.div
-                                variants={fadeInUp}
-                                className="group p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300"
-                            >
-                                <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
-                                    <MessageCircle className="w-7 h-7 text-accent-red" />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                            {pageCopy.processSteps.map((step, i) => (
+                                <div
+                                    key={i}
+                                    className="rv-child group p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300"
+                                >
+                                    <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                                        {[MessageCircle, Megaphone, ShieldCheck][i] && (() => {
+                                            const Icon = [MessageCircle, Megaphone, ShieldCheck][i];
+                                            return <Icon className="w-7 h-7 text-accent-red" />;
+                                        })()}
+                                    </div>
+                                    <h3 className="text-xl font-sans font-bold mb-4 text-white">{step.title}</h3>
+                                    <p className="text-white/60 leading-relaxed font-light">{step.text}</p>
                                 </div>
-                                <h3 className="text-xl font-sans font-bold mb-4 text-white">{pageCopy.processSteps[0].title}</h3>
-                                <p className="text-white/60 leading-relaxed font-light">
-                                    {pageCopy.processSteps[0].text}
-                                </p>
-                            </motion.div>
-
-                            {/* Step 2 */}
-                            <motion.div
-                                variants={fadeInUp}
-                                className="group p-6 md:p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300"
-                            >
-                                <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
-                                    <Megaphone className="w-7 h-7 text-accent-red" />
-                                </div>
-                                <h3 className="text-xl font-sans font-bold mb-4 text-white">{pageCopy.processSteps[1].title}</h3>
-                                <p className="text-white/60 leading-relaxed font-light">
-                                    {pageCopy.processSteps[1].text}
-                                </p>
-                            </motion.div>
-
-                            {/* Step 3 */}
-                            <motion.div
-                                variants={fadeInUp}
-                                className="group p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300"
-                            >
-                                <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
-                                    <ShieldCheck className="w-7 h-7 text-accent-red" />
-                                </div>
-                                <h3 className="text-xl font-sans font-bold mb-4 text-white">{pageCopy.processSteps[2].title}</h3>
-                                <p className="text-white/60 leading-relaxed font-light">
-                                    {pageCopy.processSteps[2].text}
-                                </p>
-                            </motion.div>
-                        </motion.div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 

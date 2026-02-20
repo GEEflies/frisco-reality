@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import AutoplayVideo from './AutoplayVideo';
 import { ArrowUpRight, Key, CalendarCheck, ShieldAlert, Eye, Phone } from 'lucide-react';
 import { Footer } from '@/components/Footer';
@@ -8,28 +7,8 @@ import { ContactSection } from '@/components/ContactSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CHCEM_PRENAJAT_HERO_COPY } from '@/i18n/copy';
 
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1] as const
-        }
-    }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.15,
-            delayChildren: 0.1
-        }
-    }
-};
+const DESKTOP_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/chcem-prenajat-frisco_optimized.mp4';
+const MOBILE_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/prenajat-mobile-720p.mp4';
 
 const pageCopyByLanguage = {
     sk: {
@@ -184,7 +163,7 @@ const ChcemPrenajat = () => {
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
                                         <AutoplayVideo
-                                            src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/chcem-prenajat-frisco_optimized.mp4"
+                                            src={MOBILE_VIDEO}
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -219,7 +198,7 @@ const ChcemPrenajat = () => {
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />
                                     <AutoplayVideo
-                                        src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/chcem-prenajat-frisco_optimized.mp4"
+                                        src={DESKTOP_VIDEO}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
@@ -230,14 +209,10 @@ const ChcemPrenajat = () => {
                 </section>
 
                 {/* ─── SECTION 1: Celoročná starostlivosť ─────────────────────────────── */}
-                <section className="py-20 md:py-32 bg-cream overflow-hidden">
+                <section className="reveal py-20 md:py-32 bg-cream overflow-hidden">
                     <div className="container mx-auto px-6">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-                            className="rounded-[2.5rem] bg-white border border-navy/8 shadow-xl shadow-navy/5 overflow-hidden"
+                        <div
+                            className="rv-child rounded-[2.5rem] bg-white border border-navy/8 shadow-xl shadow-navy/5 overflow-hidden"
                         >
                             <div className="grid grid-cols-1 lg:grid-cols-2">
                                 {/* Left — text */}
@@ -264,21 +239,13 @@ const ChcemPrenajat = () => {
                                     </p>
                                     <ul className="space-y-4">
                                         {pageCopy.managedItems.map((item, i) => (
-                                            <motion.li
+                                            <li
                                                 key={i}
-                                                initial={{ opacity: 0, y: 10 }}
-                                                whileInView={{ opacity: 1, y: 0 }}
-                                                viewport={{ once: true, margin: "0px 0px -50px 0px" }}
-                                                transition={{
-                                                    duration: 0.4,
-                                                    delay: i * 0.05,
-                                                    ease: "easeOut"
-                                                }}
-                                                className="flex items-center gap-4"
+                                                className="rv-child flex items-center gap-4"
                                             >
                                                 <span className="flex-shrink-0 w-2 h-2 rounded-full bg-accent-red" />
                                                 <span className="text-navy font-medium text-base md:text-lg">{item}</span>
-                                            </motion.li>
+                                            </li>
                                         ))}
                                     </ul>
                                     <p className="text-navy/40 text-sm md:text-base leading-relaxed font-light mt-8">
@@ -286,12 +253,12 @@ const ChcemPrenajat = () => {
                                     </p>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     </div>
                 </section>
 
                 {/* ─── SECTION 2: Peniaze vždy načas ─────────────────────────────────── */}
-                <section className="py-20 md:py-32 bg-navy overflow-hidden relative">
+                <section className="reveal py-20 md:py-32 bg-navy overflow-hidden relative">
                     {/* Subtle texture */}
                     <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none" />
                     <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent-red" />
@@ -299,12 +266,7 @@ const ChcemPrenajat = () => {
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                             {/* Left — statement */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-                            >
+                            <div className="reveal-left">
                                 <div className="flex items-center gap-4 mb-8">
                                     <ShieldAlert className="w-8 h-8 text-accent-red flex-shrink-0" />
                                     <span className="text-white/50 font-mono text-xs tracking-[0.3em] uppercase">
@@ -315,16 +277,10 @@ const ChcemPrenajat = () => {
                                     {pageCopy.paymentHeadline1}<br />
                                     <span className="text-accent-red italic">{pageCopy.paymentHeadline2}</span>
                                 </blockquote>
-                            </motion.div>
+                            </div>
 
                             {/* Right — explanation */}
-                            <motion.div
-                                initial={{ opacity: 0, x: 30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] as const }}
-                                className="space-y-6"
-                            >
+                            <div className="reveal-right space-y-6">
                                 <p className="text-white/75 text-lg leading-relaxed font-light">
                                     {pageCopy.paymentText1}
                                 </p>
@@ -339,41 +295,28 @@ const ChcemPrenajat = () => {
                                     <span>{pageCopy.paymentCta}</span>
                                     <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                 </a>
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 {/* ─── SECTION 3: Transparentnosť — tri piliere ───────────────────────── */}
-                <section className="py-20 md:py-32 bg-white">
+                <section className="reveal py-20 md:py-32 bg-white">
                     <div className="container mx-auto px-6">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-                            className="text-center mb-16"
-                        >
+                        <div className="rv-child text-center mb-16">
                             <span className="text-navy/40 font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
                                 {pageCopy.approachBadge}
                             </span>
                             <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight">
                                 {pageCopy.approachTitle}
                             </h2>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-100px" }}
-                            variants={staggerContainer}
-                        >
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
                             {pageCopy.pillars.map((pillar, i) => (
-                                <motion.div
+                                <div
                                     key={i}
-                                    variants={fadeInUp}
-                                    className="group relative flex flex-col items-center text-center px-6 md:px-8 py-12 rounded-[2rem] border border-navy/8 bg-cream hover:bg-navy hover:border-navy transition-all duration-500 hover:shadow-2xl hover:shadow-navy/15 hover:-translate-y-2"
+                                    className="rv-child group relative flex flex-col items-center text-center px-6 md:px-8 py-12 rounded-[2rem] border border-navy/8 bg-cream hover:bg-navy hover:border-navy transition-all duration-500 hover:shadow-2xl hover:shadow-navy/15 hover:-translate-y-2"
                                 >
                                     <div className="w-16 h-16 rounded-2xl bg-navy/5 group-hover:bg-accent-red flex items-center justify-center mb-7 transition-colors duration-500">
                                         <pillar.icon className="w-8 h-8 text-navy group-hover:text-white transition-colors duration-500" />
@@ -384,18 +327,12 @@ const ChcemPrenajat = () => {
                                     <p className="text-charcoal/60 group-hover:text-white/70 text-sm md:text-lg leading-relaxed transition-colors duration-500">
                                         {pillar.text}
                                     </p>
-                                </motion.div>
+                                </div>
                             ))}
-                        </motion.div>
+                        </div>
 
                         {/* Final CTA */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
-                            className="text-center"
-                        >
+                        <div className="rv-child text-center">
                             <p className="text-charcoal/60 text-lg mb-6 font-light">
                                 {pageCopy.finalText}
                             </p>
@@ -406,7 +343,7 @@ const ChcemPrenajat = () => {
                                 <span>{pageCopy.finalCta}</span>
                                 <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                             </a>
-                        </motion.div>
+                        </div>
                     </div>
                 </section>
 
