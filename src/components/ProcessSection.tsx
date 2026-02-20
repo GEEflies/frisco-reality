@@ -180,8 +180,8 @@ export const ProcessSection = () => {
             // doesn't clobber the positional offset.
             let offsetClass = "";
             if (index === 1) offsetClass = "md:-mt-32 lg:-mt-[10rem]";
-            if (index === 2) offsetClass = "md:-mt-44 lg:-mt-36";
-            if (index === 3) offsetClass = "md:-mt-36 lg:-mt-[13.5rem]";
+            if (index === 2) offsetClass = "md:-mt-60 lg:-mt-52";
+            if (index === 3) offsetClass = "md:-mt-[17rem] lg:-mt-[21.5rem]";
 
             return (
               <div
