@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
-const teamPhoto = '/team-photo.png';
+const teamPhoto = '/team-photo.jpg';
 import { Award, Phone, Mail } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import type { LanguageCode } from '@/i18n/types';

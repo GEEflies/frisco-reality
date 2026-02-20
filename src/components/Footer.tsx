@@ -25,7 +25,7 @@ export const Footer = () => {
           {/* COLUMN 1: LOGO & BRANDING */}
           {/* Mobile: full width, lg: 3 cols (row 1), xl: 3 cols */}
           <div className="col-span-2 lg:col-span-3 flex flex-col lg:pr-6 xl:pr-10">
-            <img src={friscoLogo} alt="Frisco" className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8" />
+            <img src={friscoLogo} alt="Frisco" loading="lazy" decoding="async" className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8" />
             <h2 className="text-3xl sm:text-4xl xl:text-4xl font-serif font-bold text-navy leading-tight mb-8">
               {copy.title} <span className="text-accent-red italic">{copy.titleAccent}</span>
             </h2>
@@ -152,7 +152,7 @@ export const Footer = () => {
                   rel="noopener noreferrer"
                   className="inline-block opacity-90 hover:opacity-100 transition-opacity"
                 >
-                  <img src="/nehnutelnosti-logo.png" alt="Nehnuteľnosti.sk" className="max-h-8 w-auto object-contain object-left" />
+                  <img src="/nehnutelnosti-logo.png" alt="Nehnuteľnosti.sk" loading="lazy" decoding="async" className="max-h-8 w-auto object-contain object-left" />
                 </a>
               </div>
 

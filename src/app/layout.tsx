@@ -158,12 +158,6 @@ export default async function RootLayout({
       <head>
         <link rel="dns-prefetch" href="//fcvswlurtchqorgnwclw.supabase.co" />
         <link rel="preconnect" href="https://fcvswlurtchqorgnwclw.supabase.co" crossOrigin="" />
-        <link
-          rel="preload"
-          as="video"
-          href="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4"
-          type="video/mp4"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

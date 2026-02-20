@@ -57,7 +57,7 @@ const AutoplayVideo = ({ src, className, poster }: AutoplayVideoProps) => {
       loop
       muted
       playsInline
-      preload="auto"
+      preload="none"
       poster={poster}
       className={className}
       // iOS Safari webkit attribute

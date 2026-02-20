@@ -263,6 +263,8 @@ const ChcemPredat = () => {
                                 <img
                                     src="/frisco-reality-sered.jpg"
                                     alt={pageCopy.editorialImageAlt}
+                                    loading="lazy"
+                                    decoding="async"
                                     className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-r from-navy/20 to-transparent" />

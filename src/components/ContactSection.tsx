@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Instagram, Facebook, FileText } from 'lucide-react';
 import { ContactForm } from '@/components/ContactForm';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -29,13 +28,9 @@ export const ContactSection = () => {
       <div className="container mx-auto px-6">
 
         {/* Section Header — CTA */}
-        <motion.div
+        <div
           id="kontaktny-formular"
-          className="text-center mb-16 md:mb-20 scroll-mt-32"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="reveal text-center mb-16 md:mb-20 scroll-mt-32"
         >
           <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
             {copy.badge}
@@ -46,28 +41,15 @@ export const ContactSection = () => {
           <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             {copy.subtitle}
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
 
 
-          {/* Left: Contact Info — this column is tall and scrolls normally */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
+          {/* Left: Contact Info */}
+          <div className="reveal reveal-delay-1">
             {/* Contact Cards */}
-            <motion.div
-              className="space-y-6 mb-12"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                visible: { transition: { staggerChildren: 0.1 } }
-              }}
-            >
+            <div className="space-y-6 mb-12">
               <ContactCard
                 icon={MapPin}
                 title={copy.visit}
@@ -115,7 +97,7 @@ export const ContactSection = () => {
                   </div>
                 }
               />
-            </motion.div>
+            </div>
 
             {/* Social Links */}
             <div className="pt-8 border-t border-navy/10">
@@ -134,23 +116,18 @@ export const ContactSection = () => {
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
-                loading="eager"
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute inset-0 w-full h-full"
               />
             </div>
-          </motion.div>
+          </div>
 
-          {/* Right: Contact Form — sticky so it locks in place */}
+          {/* Right: Contact Form — sticky */}
           <div className="lg:sticky lg:top-28 self-start">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-            >
+            <div className="reveal reveal-delay-2">
               <ContactForm />
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
@@ -160,11 +137,7 @@ export const ContactSection = () => {
 
 // Helper Components
 const ContactCard = ({ icon: Icon, title, content }: { icon: any; title: string; content: React.ReactNode }) => (
-  <motion.div
-    variants={{
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
-    }}
+  <div
     className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/10 hover:border-navy/20 transition-colors shadow-sm"
   >
     <div className="w-12 h-12 rounded-full bg-navy/10 flex items-center justify-center flex-shrink-0">
@@ -174,7 +147,7 @@ const ContactCard = ({ icon: Icon, title, content }: { icon: any; title: string;
       <h4 className="text-charcoal/50 uppercase tracking-widest text-[10px] mb-2">{title}</h4>
       <div className="text-charcoal font-sans text-lg">{content}</div>
     </div>
-  </motion.div>
+  </div>
 );
 
 const SocialLink = ({ icon: Icon, label, href }: { icon: any; label: string; href: string }) => (

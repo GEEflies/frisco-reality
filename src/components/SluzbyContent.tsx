@@ -8,8 +8,7 @@ import { FamilyBusinessSection } from '@/components/FamilyBusinessSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
 
 
-const leftBlueprint = '/left.png';
-const rightBlueprint = '/right.png';
+
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },

@@ -136,7 +136,7 @@ const HeroDesktop = () => {
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="none"
                 className="w-full h-full object-cover"
               >
                 <source src={HERO_VIDEO_URL} type="video/mp4" />

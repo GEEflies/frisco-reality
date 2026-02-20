@@ -79,7 +79,7 @@ export const LocationSection = () => {
                     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     className="text-center mb-8 md:mb-12"
                 >
-                    <h2 className="text-3xl md:text-5xl font-sans font-bold text-navy mb-4">
+                    <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy mb-4">
                         {copy.title}
                     </h2>
                     <p className="text-base md:text-lg text-charcoal/70 max-w-2xl mx-auto">
@@ -102,6 +102,8 @@ export const LocationSection = () => {
                             <img
                                 src="/storefront.jpeg"
                                 alt={copy.officeAlt}
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-700"
                             />
                             {/* Heavier light overlay for "Interaktívna mapa" feel if desired, or keep dark. 
