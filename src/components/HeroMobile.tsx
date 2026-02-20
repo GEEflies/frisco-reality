@@ -8,7 +8,7 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_MOBILE_COPY } from '@/i18n/copy';
 const friscoLogo = '/frisco-logo-hq.png';
 // Mobile-optimised video: 480p, CRF 35, ~660 KB (vs 5.5 MB original)
-const HERO_VIDEO_URL = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video-mobile.mp4';
+const HERO_VIDEO_URL = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-mobile.mp4';
 
 const HeroMobile = () => {
     const { language } = useLanguage();
