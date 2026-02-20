@@ -19,6 +19,8 @@ export function useScrollReveal() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    const isMobileViewport = window.matchMedia('(max-width: 1023px)').matches;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -36,8 +38,8 @@ export function useScrollReveal() {
         });
       },
       {
-        threshold: 0.15,
-        rootMargin: '0px 0px -60px 0px',
+        threshold: isMobileViewport ? 0.06 : 0.15,
+        rootMargin: isMobileViewport ? '0px 0px -10% 0px' : '0px 0px -60px 0px',
       }
     );
 

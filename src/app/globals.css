@@ -322,6 +322,50 @@
   .revealed .rv-child:nth-child(7) { animation-delay: 0.47s; }
   .revealed .rv-child:nth-child(8) { animation-delay: 0.54s; }
 
+  @media (max-width: 1023px) {
+    @keyframes reveal-up-mobile {
+      from { opacity: 0; transform: translate3d(0, 22px, 0); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes reveal-scale-mobile {
+      from { opacity: 0; transform: scale(0.97) translate3d(0, 12px, 0); }
+      to   { opacity: 1; transform: scale(1) translate3d(0, 0, 0); }
+    }
+
+    @keyframes rv-child-in-mobile {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    .reveal.revealed {
+      animation: reveal-up-mobile 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .reveal-scale.revealed {
+      animation: reveal-scale-mobile 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .revealed .rv-child {
+      animation: rv-child-in-mobile 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .revealed .rv-child:nth-child(1) { animation-delay: 0.03s; }
+    .revealed .rv-child:nth-child(2) { animation-delay: 0.08s; }
+    .revealed .rv-child:nth-child(3) { animation-delay: 0.13s; }
+    .revealed .rv-child:nth-child(4) { animation-delay: 0.18s; }
+    .revealed .rv-child:nth-child(5) { animation-delay: 0.23s; }
+    .revealed .rv-child:nth-child(6) { animation-delay: 0.28s; }
+    .revealed .rv-child:nth-child(7) { animation-delay: 0.33s; }
+    .revealed .rv-child:nth-child(8) { animation-delay: 0.38s; }
+  }
+
   /* Explicit delay utilities (for non-sibling stagger) */
   .reveal-delay-1 { animation-delay: 0.12s; }
   .reveal-delay-2 { animation-delay: 0.24s; }

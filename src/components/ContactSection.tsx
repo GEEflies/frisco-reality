@@ -100,7 +100,7 @@ export const ContactSection = () => {
             </div>
 
             {/* Social Links */}
-            <div className="pt-8 border-t border-navy/10">
+            <div className="rv-child pt-8 border-t border-navy/10">
               <h4 className="text-charcoal/50 uppercase tracking-widest text-xs mb-6">{copy.follow}</h4>
               <div className="flex gap-4">
                 <SocialLink icon={Instagram} label="Instagram" href="https://www.instagram.com/friscoreality/" />
@@ -109,7 +109,7 @@ export const ContactSection = () => {
             </div>
 
             {/* Google Maps */}
-            <div className="mt-12 relative rounded-2xl overflow-hidden border border-navy/10 h-[400px] shadow-lg">
+            <div className="rv-child mt-12 relative rounded-2xl overflow-hidden border border-navy/10 h-[400px] shadow-lg">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2654.85566300157!2d17.737541377024726!3d48.28639262126042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476b67bf84ae3c39%3A0xaabf0d6bfbcef097!2sFRISCO%2C%20s.r.o.%20-%20realitn%C3%A1%20kancel%C3%A1ria!5e0!3m2!1ssk!2ssk!4v1768663122983!5m2!1ssk!2ssk"
                 width="100%"
@@ -138,7 +138,7 @@ export const ContactSection = () => {
 // Helper Components
 const ContactCard = ({ icon: Icon, title, content }: { icon: any; title: string; content: React.ReactNode }) => (
   <div
-    className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/10 hover:border-navy/20 transition-colors shadow-sm"
+    className="rv-child flex items-start gap-4 p-5 rounded-2xl bg-white border border-navy/10 hover:border-navy/20 transition-colors shadow-sm"
   >
     <div className="w-12 h-12 rounded-full bg-navy/10 flex items-center justify-center flex-shrink-0">
       <Icon className="w-5 h-5 text-navy" />
@@ -153,7 +153,7 @@ const ContactCard = ({ icon: Icon, title, content }: { icon: any; title: string;
 const SocialLink = ({ icon: Icon, label, href }: { icon: any; label: string; href: string }) => (
   <a
     href={href}
-    className="group flex items-center gap-2 px-4 py-2 rounded-full border border-navy/10 hover:border-navy/30 hover:bg-navy/5 transition-all"
+    className="rv-child group flex items-center gap-2 px-4 py-2 rounded-full border border-navy/10 hover:border-navy/30 hover:bg-navy/5 transition-all"
   >
     <Icon className="w-4 h-4 text-charcoal/60 group-hover:text-navy transition-colors" />
     <span className="text-sm text-charcoal/60 group-hover:text-navy transition-colors">{label}</span>

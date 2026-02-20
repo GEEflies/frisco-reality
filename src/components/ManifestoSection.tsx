@@ -70,7 +70,7 @@ export const ManifestoSection = ({ id, label, title, description, features, cta 
                             {features.map((feature, index) => (
                                 <div
                                     key={`${feature.id}-m-${index}`}
-                                    className="w-[280px] md:w-[320px] shrink-0 bg-white border border-navy/10 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 select-none snap-start lg:snap-align-none lg:hidden"
+                                    className="rv-child w-[280px] md:w-[320px] shrink-0 bg-white border border-navy/10 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 select-none snap-start lg:snap-align-none lg:hidden"
                                 >
                                     <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center mb-5 text-navy border border-navy/5`}>
                                         <feature.icon className="w-6 h-6" strokeWidth={1.5} />
