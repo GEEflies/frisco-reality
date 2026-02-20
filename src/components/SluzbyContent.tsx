@@ -201,7 +201,7 @@ const Sluzby = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="no-mobile-motion min-h-screen bg-cream">
         <WhyFriscoHeroSplit />
 
         <FamilyBusinessSection />

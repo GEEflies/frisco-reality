@@ -115,7 +115,7 @@ const ChcemPrenajat = () => {
     const pageCopy = pageCopyByLanguage[language];
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="sell-rent-premium-motion min-h-screen bg-white">
             <div>
 
                 {/* Hero Section */}
