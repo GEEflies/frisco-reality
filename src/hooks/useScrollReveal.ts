@@ -3,6 +3,43 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
+const MOBILE_VIEWPORT_QUERY = '(max-width: 1023px)';
+const REVEAL_TARGET_SELECTOR = '.reveal:not(.revealed), .reveal-scale:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed)';
+
+const OBSERVER_OPTIONS = {
+  mobile: {
+    threshold: 0.06,
+    rootMargin: '0px 0px -10% 0px',
+  },
+  desktop: {
+    threshold: 0.15,
+    rootMargin: '0px 0px -60px 0px',
+  },
+} as const;
+
+function markAsRevealed(target: Element): void {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      target.classList.add('revealed');
+    });
+  });
+}
+
+function observeRevealTargets(root: ParentNode, observer: IntersectionObserver): void {
+  root.querySelectorAll(REVEAL_TARGET_SELECTOR).forEach((element) => {
+    observer.observe(element);
+  });
+}
+
+function isRevealElement(node: HTMLElement): boolean {
+  return (
+    node.classList.contains('reveal') ||
+    node.classList.contains('reveal-scale') ||
+    node.classList.contains('reveal-left') ||
+    node.classList.contains('reveal-right')
+  );
+}
+
 /**
  * Lightweight scroll-reveal powered by IntersectionObserver + CSS.
  * Elements with `.reveal` or `.reveal-scale` get `.revealed` added
@@ -19,7 +56,8 @@ export function useScrollReveal() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const isMobileViewport = window.matchMedia('(max-width: 1023px)').matches;
+    const isMobileViewport = window.matchMedia(MOBILE_VIEWPORT_QUERY).matches;
+    const observerOptions = isMobileViewport ? OBSERVER_OPTIONS.mobile : OBSERVER_OPTIONS.desktop;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -30,38 +68,27 @@ export function useScrollReveal() {
             // on .rv-child elements can silently skip when the element is
             // already in-viewport the moment it's first observed (e.g. after
             // a dynamic import mounts).
-            requestAnimationFrame(() => {
-              entry.target.classList.add('revealed');
-            });
+            markAsRevealed(entry.target);
             observer.unobserve(entry.target);
           }
         });
       },
-      {
-        threshold: isMobileViewport ? 0.06 : 0.15,
-        rootMargin: isMobileViewport ? '0px 0px -10% 0px' : '0px 0px -60px 0px',
-      }
+      observerOptions
     );
 
     // Observe all current .reveal / .reveal-scale / .reveal-left / .reveal-right elements
-    const elements = document.querySelectorAll('.reveal:not(.revealed), .reveal-scale:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed)');
-    elements.forEach((el) => observer.observe(el));
+    observeRevealTargets(document, observer);
 
     // Also watch for elements added later (e.g. lazy-loaded sections)
     const mutationObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
-            if (
-              (node.classList.contains('reveal') || node.classList.contains('reveal-scale') || node.classList.contains('reveal-left') || node.classList.contains('reveal-right')) &&
-              !node.classList.contains('revealed')
-            ) {
+            if (isRevealElement(node) && !node.classList.contains('revealed')) {
               observer.observe(node);
             }
             // Also check descendants
-            node.querySelectorAll?.('.reveal:not(.revealed), .reveal-scale:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed)').forEach((el) => {
-              observer.observe(el);
-            });
+            observeRevealTargets(node, observer);
           }
         }
       }

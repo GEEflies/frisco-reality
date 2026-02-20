@@ -1,27 +1,41 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
+
+type MediaQueryListener = (matches: boolean) => void;
+
+function subscribeToMediaQuery(
+    mediaQueryList: MediaQueryList,
+    listener: MediaQueryListener
+): () => void {
+    const handleChange = (event: MediaQueryListEvent) => listener(event.matches);
+
+    if ('addEventListener' in mediaQueryList) {
+        mediaQueryList.addEventListener('change', handleChange);
+        return () => mediaQueryList.removeEventListener('change', handleChange);
+    }
+
+    const legacyMediaQueryList = mediaQueryList as MediaQueryList & {
+        addListener: (listener: (event: MediaQueryListEvent) => void) => void;
+        removeListener: (listener: (event: MediaQueryListEvent) => void) => void;
+    };
+
+    legacyMediaQueryList.addListener(handleChange);
+    return () => legacyMediaQueryList.removeListener(handleChange);
+}
 
 export function useMediaQuery(query: string): boolean {
-    // Always start with false to ensure server/client consistency
-    const [matches, setMatches] = useState<boolean>(false);
+    const [matches, setMatches] = useState(false);
 
     useEffect(() => {
-        const media = window.matchMedia(query);
-        
-        // Set the actual value after mount
-        setMatches(media.matches);
+        if (typeof window === 'undefined') {
+            return;
+        }
 
-        // Use the modern 'change' event instead of deprecated addListener
-        const handleChange = (event: MediaQueryListEvent) => {
-            setMatches(event.matches);
-        };
+        const mediaQueryList = window.matchMedia(query);
+        setMatches(mediaQueryList.matches);
 
-        media.addEventListener("change", handleChange);
-
-        return () => {
-            media.removeEventListener("change", handleChange);
-        };
+        return subscribeToMediaQuery(mediaQueryList, setMatches);
     }, [query]);
 
     return matches;

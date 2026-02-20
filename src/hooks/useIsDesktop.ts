@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMediaQuery } from './useMediaQuery';
+
+const DESKTOP_QUERY = '(min-width: 1024px)';
 
 /**
  * Returns `true` once the viewport is ≥ 1024 px (Tailwind `lg`).
@@ -8,15 +10,5 @@ import { useState, useEffect } from 'react';
  * (CSS-reveal) path is always the SSR default — no hydration mismatch.
  */
 export function useIsDesktop(): boolean {
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia('(min-width: 1024px)');
-    setIsDesktop(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, []);
-
-  return isDesktop;
+  return useMediaQuery(DESKTOP_QUERY);
 }
