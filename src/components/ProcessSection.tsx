@@ -178,8 +178,8 @@ export const ProcessSection = () => {
             // Previous margins: 0, -128/-260, -128/-24, -64/-48
             let translateClass = "";
             if (index === 1) translateClass = "md:-translate-y-32 lg:-translate-y-40";
-            if (index === 2) translateClass = "md:-translate-y-32 lg:-translate-y-6";
-            if (index === 3) translateClass = "md:-translate-y-16 lg:-translate-y-12";
+            if (index === 2) translateClass = "md:-translate-y-44 lg:-translate-y-36";
+            if (index === 3) translateClass = "md:-translate-y-36 lg:-translate-y-[13.5rem]";
 
             return (
               <div
