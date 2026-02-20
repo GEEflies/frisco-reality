@@ -38,7 +38,7 @@ export const ManifestoSection = ({ id, label, title, description, features, cta 
                         <span className="block text-navy font-mono text-sm tracking-[0.2em] mb-4 uppercase">
                             {label}
                         </span>
-                        <h2 className="text-5xl md:text-7xl font-serif font-bold text-navy leading-[0.9] tracking-tighter mb-8">
+                        <h2 className="text-5xl md:text-7xl font-serif font-bold text-navy leading-tight md:leading-[0.9] tracking-tighter mb-8">
                             {title}
                         </h2>
                         {description && (

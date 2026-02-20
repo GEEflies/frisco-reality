@@ -5,6 +5,8 @@ import { Home, Search, Camera, Megaphone, HandshakeIcon, Users, Building, Receip
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { WHY_FRISCO_COPY } from '@/i18n/copy';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 /* ═══════════════════ DATA ═══════════════════ */
 const ownerTabs = {
@@ -347,7 +349,7 @@ const WhyFriscoHeroSplit = () => {
                     <span className="inline-block px-4 py-1.5 rounded-full border border-navy/10 bg-white/60 text-xs font-mono tracking-[0.2em] text-navy uppercase mb-6 backdrop-blur-sm shadow-sm">
                         {copy.badge}
                     </span>
-                    <h1 className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight leading-none">
+                    <h1 className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight leading-snug md:leading-none">
                         {copy.title} <br className="lg:hidden" />
                         <span className="text-accent-red italic pb-2">{copy.accent}</span>
                     </h1>
@@ -469,9 +471,57 @@ const TabCardContent = ({ tabs, defaultTab, headerIcon, headerLabel }: TabCardPr
     const [activeTab, setActiveTab] = useState(defaultTab);
     const tabKeys = Object.keys(tabs);
     const current = tabs[activeTab];
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    /* ── GSAP mobile scroll-lock for benefits ── */
+    useEffect(() => {
+        if (typeof window === 'undefined' || window.innerWidth >= 1024) return;
+        const el = cardRef.current;
+        if (!el) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        const benefits = el.querySelectorAll('.mobile-benefit');
+        const ctaEl = el.querySelector('.mobile-cta');
+        if (!benefits.length) return;
+
+        // Start hidden
+        gsap.set(benefits, { autoAlpha: 0, y: 24 });
+        if (ctaEl) gsap.set(ctaEl, { autoAlpha: 0, y: 12 });
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 80px',
+                end: () => `+=${benefits.length * window.innerHeight * 0.4}`,
+                pin: true,
+                pinSpacing: true,
+                scrub: 0.5,
+                anticipatePin: 1,
+            },
+        });
+
+        // Reveal each benefit one by one
+        benefits.forEach((benefit) => {
+            tl.to(benefit, { autoAlpha: 1, y: 0, duration: 1, ease: 'power2.out' });
+            tl.to({}, { duration: 0.4 }); // breathing room
+        });
+
+        // Show CTA after all benefits
+        if (ctaEl) {
+            tl.to(ctaEl, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+        }
+
+        return () => {
+            tl.scrollTrigger?.kill();
+            tl.kill();
+            gsap.set(benefits, { clearProps: 'all' });
+            if (ctaEl) gsap.set(ctaEl, { clearProps: 'all' });
+        };
+    }, [activeTab]);
 
     return (
-        <>
+        <div ref={cardRef}>
             {/* HEADER ROW: Label (Left) + Tabs (Right) */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 lg:px-8 pt-6 lg:pt-8 pb-3 lg:pb-4 border-b border-charcoal/[0.04]">
                 {/* Left: Icon + Label */}
@@ -484,7 +534,7 @@ const TabCardContent = ({ tabs, defaultTab, headerIcon, headerLabel }: TabCardPr
                     </span>
                 </div>
 
-                {/* Right: Tab Switcher (Smaller) */}
+                {/* Right: Tab Switcher */}
                 <div className="flex items-center gap-1 p-0.5 rounded-full bg-charcoal/[0.04] self-start sm:self-auto">
                     {tabKeys.map((key) => (
                         <button
@@ -508,45 +558,58 @@ const TabCardContent = ({ tabs, defaultTab, headerIcon, headerLabel }: TabCardPr
                 </div>
             </div>
 
-            {/* ANIMATED CONTENT */}
-            <div className="relative overflow-hidden">
-                <div
-                    key={activeTab}
-                    className="px-6 lg:px-8 py-6 lg:py-7 tab-enter"
-                >
-                    {/* Benefits */}
-                    <div className="space-y-5 lg:space-y-6">
+            {/* ── MOBILE: scroll-locked benefit reveal ── */}
+            <div className="lg:hidden px-6 py-6">
+                <div className="space-y-5">
+                    {current.benefits.map((b, i) => (
+                        <div key={`${activeTab}-${i}`} className="mobile-benefit flex gap-4 group/row">
+                            <div className="w-11 h-11 rounded-xl bg-charcoal/[0.04] flex items-center justify-center shrink-0 text-charcoal/30 transition-colors duration-200 group-hover/row:bg-accent-red/10 group-hover/row:text-accent-red mt-0.5">
+                                {b.icon}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h4 className="text-base font-semibold text-navy mb-1 leading-snug">{b.title}</h4>
+                                <p className="text-sm text-charcoal/50 leading-relaxed">{b.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="mobile-cta mt-7 pt-4 border-t border-charcoal/[0.06]">
+                    <a href={current.cta.href} className="group/btn inline-flex items-center gap-2 text-sm font-bold text-navy tracking-wide uppercase hover:text-accent-red transition-colors">
+                        {current.cta.text}
+                        <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+                    </a>
+                </div>
+            </div>
+
+            {/* ── DESKTOP: tab-enter animation (unchanged) ── */}
+            <div className="hidden lg:block">
+                <div key={activeTab} className="px-8 py-7 tab-enter">
+                    <div className="space-y-6">
                         {current.benefits.map((b, i) => (
                             <div
                                 key={i}
-                                className="flex gap-4 lg:gap-5 group/row tab-item-enter"
+                                className="flex gap-5 group/row tab-item-enter"
                                 style={{ animationDelay: `${i * 100}ms` }}
                             >
-                                <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-xl bg-charcoal/[0.04] flex items-center justify-center shrink-0 text-charcoal/30 transition-colors duration-200 group-hover/row:bg-accent-red/10 group-hover/row:text-accent-red mt-0.5">
+                                <div className="w-12 h-12 rounded-xl bg-charcoal/[0.04] flex items-center justify-center shrink-0 text-charcoal/30 transition-colors duration-200 group-hover/row:bg-accent-red/10 group-hover/row:text-accent-red mt-0.5">
                                     {b.icon}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h4 className="text-base lg:text-lg font-semibold text-navy mb-1 leading-snug">
-                                        {b.title}
-                                    </h4>
-                                    <p className="text-sm lg:text-[15px] text-charcoal/50 leading-relaxed">
-                                        {b.description}
-                                    </p>
+                                    <h4 className="text-lg font-semibold text-navy mb-1 leading-snug">{b.title}</h4>
+                                    <p className="text-[15px] text-charcoal/50 leading-relaxed">{b.description}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
-
-                    {/* CTA — MÁM ZÁUJEM ↗ style */}
-                    <div className="mt-7 lg:mt-8 pt-4 border-t border-charcoal/[0.06]">
-                        <a href={current.cta.href} className="group/btn inline-flex items-center gap-2 text-sm lg:text-base font-bold text-navy tracking-wide uppercase hover:text-accent-red transition-colors">
+                    <div className="mt-8 pt-4 border-t border-charcoal/[0.06]">
+                        <a href={current.cta.href} className="group/btn inline-flex items-center gap-2 text-base font-bold text-navy tracking-wide uppercase hover:text-accent-red transition-colors">
                             {current.cta.text}
                             <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                         </a>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

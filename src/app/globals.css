@@ -139,7 +139,14 @@
 
   html {
     height: 100%;
-    scroll-behavior: smooth;
+  }
+
+  /* Smooth scroll only on desktop — mobile uses instant to prevent
+     scroll-position bugs during lazy-load layout shifts */
+  @media (min-width: 1024px) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {

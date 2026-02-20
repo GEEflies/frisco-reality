@@ -45,11 +45,26 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const MainListings = dynamic(() => import('@/components/MainListings').then(mod => mod.MainListings));
-const AboutSection = dynamic(() => import('@/components/AboutSection').then(mod => mod.AboutSection));
-const ProcessSection = dynamic(() => import('@/components/ProcessSection').then(mod => mod.ProcessSection));
-const ContactSection = dynamic(() => import('@/components/ContactSection').then(mod => mod.ContactSection));
-const Footer = dynamic(() => import('@/components/Footer').then(mod => mod.Footer));
+const MainListings = dynamic(
+  () => import('@/components/MainListings').then(mod => mod.MainListings),
+  { loading: () => <div className="min-h-[60vh] lg:min-h-0 bg-cream" /> }
+);
+const AboutSection = dynamic(
+  () => import('@/components/AboutSection').then(mod => mod.AboutSection),
+  { loading: () => <div className="min-h-[50vh] lg:min-h-0 bg-white" /> }
+);
+const ProcessSection = dynamic(
+  () => import('@/components/ProcessSection').then(mod => mod.ProcessSection),
+  { loading: () => <div className="min-h-[70vh] lg:min-h-0 bg-cream" /> }
+);
+const ContactSection = dynamic(
+  () => import('@/components/ContactSection').then(mod => mod.ContactSection),
+  { loading: () => <div className="min-h-[60vh] lg:min-h-0 bg-white" /> }
+);
+const Footer = dynamic(
+  () => import('@/components/Footer').then(mod => mod.Footer),
+  { loading: () => <div className="min-h-[20vh] lg:min-h-0 bg-cream" /> }
+);
 
 export default async function Home() {
   const language = await resolveServerLanguage();
