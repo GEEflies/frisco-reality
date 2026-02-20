@@ -1,15 +1,21 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 /**
  * Lightweight scroll-reveal powered by IntersectionObserver + CSS.
  * Elements with `.reveal` or `.reveal-scale` get `.revealed` added
  * when they enter the viewport. Pure CSS handles the animation.
  *
+ * Re-scans the DOM on every route change so dynamically-rendered
+ * elements (client-side navigation) are always picked up.
+ *
  * Call this hook once in a layout or page wrapper component.
  */
 export function useScrollReveal() {
+  const pathname = usePathname();
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -28,9 +34,35 @@ export function useScrollReveal() {
       }
     );
 
-    const elements = document.querySelectorAll('.reveal, .reveal-scale');
+    // Observe all current .reveal / .reveal-scale elements
+    const elements = document.querySelectorAll('.reveal:not(.revealed), .reveal-scale:not(.revealed)');
     elements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
-  }, []);
+    // Also watch for elements added later (e.g. lazy-loaded sections)
+    const mutationObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            if (
+              (node.classList.contains('reveal') || node.classList.contains('reveal-scale')) &&
+              !node.classList.contains('revealed')
+            ) {
+              observer.observe(node);
+            }
+            // Also check descendants
+            node.querySelectorAll?.('.reveal:not(.revealed), .reveal-scale:not(.revealed)').forEach((el) => {
+              observer.observe(el);
+            });
+          }
+        }
+      }
+    });
+
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [pathname]);
 }
