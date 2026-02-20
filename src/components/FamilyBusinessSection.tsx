@@ -90,7 +90,7 @@ export const FamilyBusinessSection = () => {
     const t = copy[language];
 
     return (
-        <section className="py-16 md:py-20 bg-white overflow-hidden relative">
+        <section className="reveal py-16 md:py-20 bg-white overflow-hidden relative">
             {/* Background Decor */}
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/5 to-transparent" />
 

@@ -152,7 +152,7 @@ const Kontakt = () => {
                 </span>
 
                 <h1
-                  className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
+                  className="text-5xl md:text-7xl lg:text-8xl font-sans font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
                 >
                   {copy.heroTitleStart} <br />
                   <span className="text-accent-red italic">{copy.heroTitleAccent}</span>.
@@ -169,7 +169,7 @@ const Kontakt = () => {
               <div
                 className="relative hidden lg:flex flex-col items-center justify-center story-media stagger-4 aspect-[4/3] bg-navy/5 rounded-3xl border border-navy/10"
               >
-                <h2 className="font-serif italic text-6xl text-navy mb-4 uppercase">FRISCO</h2>
+                <h2 className="font-sans italic text-6xl text-navy mb-4 uppercase">FRISCO</h2>
                 <p className="text-charcoal/60 text-center px-8 font-sans max-w-md">
                   {pageCopy.imagePlaceholder}
                 </p>
@@ -184,13 +184,13 @@ const Kontakt = () => {
         </section>
 
         {/* Main Content */}
-        <section className="py-12 md:py-20 bg-cream">
+        <section className="reveal py-12 md:py-20 bg-cream">
           <div className="container mx-auto px-6">
             <div id="kontaktny-formular" className="text-center mb-16 md:mb-20 scroll-mt-32 story-soft stagger-1">
               <span className="block text-accent-red font-bold text-sm tracking-[0.2em] uppercase mb-4">
                 {copy.sectionBadge}
               </span>
-              <h2 className="text-4xl md:text-6xl font-serif font-bold text-navy leading-tight mb-6">
+              <h2 className="text-4xl md:text-6xl font-sans font-bold text-navy leading-tight mb-6">
                 {copy.sectionTitleStart} <span className="text-accent-red italic">{copy.sectionTitleAccent}</span>
               </h2>
               <p className="text-charcoal/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
@@ -287,7 +287,7 @@ const Kontakt = () => {
                       <span className="text-navy font-mono text-[10px] tracking-[0.3em] uppercase">{pageCopy.formBadge}</span>
                       <h3 className="text-2xl md:text-3xl font-poppins font-extrabold text-navy mt-2 leading-tight">
                         {pageCopy.formTitle}{language === 'de' ? <br /> : ' '}
-                        <span className="font-serif italic font-normal text-accent-red">
+                        <span className="font-sans italic font-normal text-accent-red">
                           <span className="md:hidden">{pageCopy.formAccentMobile}</span>
                           <span className="hidden md:inline">{pageCopy.formAccentDesktop}</span>
                         </span>
@@ -364,7 +364,7 @@ const Kontakt = () => {
         <LocationSection />
 
         {/* CTA Section */}
-        <section className="py-12 md:py-32 bg-white">
+        <section className="reveal py-12 md:py-32 bg-white">
           <div className="container mx-auto px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -380,7 +380,7 @@ const Kontakt = () => {
                 <span className="text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
                   {pageCopy.phoneCtaLabel}
                 </span>
-                <h2 className="text-3xl md:text-6xl font-serif font-bold text-navy tracking-tight mb-6">
+                <h2 className="text-3xl md:text-6xl font-sans font-bold text-navy tracking-tight mb-6">
                   {pageCopy.phoneCtaTitle}
                 </h2>
                 <p className="text-charcoal/60 text-lg mb-8 max-w-xl mx-auto">

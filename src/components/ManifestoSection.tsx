@@ -26,7 +26,7 @@ interface ManifestoSectionProps {
 
 export const ManifestoSection = ({ id, label, title, description, features, cta }: ManifestoSectionProps) => {
     return (
-        <section id={id} className="relative bg-white py-24 overflow-hidden">
+        <section id={id} className="reveal relative bg-white py-24 overflow-hidden">
             {/* Background Noise/Texture */}
             <div className="absolute inset-0 bg-noise opacity-5 mix-blend-soft-light will-change-auto" />
 

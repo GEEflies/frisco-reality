@@ -80,7 +80,7 @@ export const HERO_DESKTOP_COPY: Record<LanguageCode, {
     rentShort: 'Chcem prenajať',
   },
   en: {
-    label: 'Exclusive real estate agency in Sered',
+    label: 'Exclusive real estate agency in Sereď',
     titleLine1: 'We will',
     titleLine3: 'your property',
     verbs: ['find', 'photograph', 'present', 'rent out', 'sell', 'or buy'],
@@ -93,10 +93,9 @@ export const HERO_DESKTOP_COPY: Record<LanguageCode, {
     rentShort: 'I want to rent',
   },
   de: {
-    label: 'Exklusive Immobilienagentur in Sered',
-    titleLine1: 'Wir werden',
-    titleLine3: 'Ihre Immobilie',
-    verbs: ['finden', 'fotografieren', 'präsentieren', 'vermieten', 'verkaufen', 'oder kaufen'],
+    label: 'Exklusive Immobilienagentur in Sereď',
+    titleLine1: 'Ihre Immobilie',
+    verbs: ['finden wir', 'fotografieren wir', 'präsentieren wir', 'vermieten wir', 'verkaufen wir', 'oder kaufen wir'],
     subtitle: 'Seit 18 Jahren helfen wir Eigentümern, ihre Immobilien zu den besten Bedingungen zu verkaufen und zu vermieten, und Interessenten, ein Zuhause zu finden.',
     offerLong: 'Aktuelle Angebote ansehen',
     offerShort: 'Angebot',
@@ -127,7 +126,7 @@ export const HERO_MOBILE_COPY: Record<LanguageCode, {
     rent: 'Chcem prenajať',
   },
   en: {
-    label: 'Exclusive real estate agency in Sered',
+    label: 'Exclusive real estate agency in Sereď',
     title: 'Your property will',
     verbPrefix: 'be',
     verbs: ['found', 'photographed', 'presented', 'rented out', 'sold', 'or bought'],
@@ -137,10 +136,10 @@ export const HERO_MOBILE_COPY: Record<LanguageCode, {
     rent: 'I want to rent',
   },
   de: {
-    label: 'Exklusive Immobilienagentur in Sered',
-    title: 'Ihre Immobilie wird',
+    label: 'Exklusive Immobilienagentur in Sereď',
+    title: 'Ihre Immobilie',
     verbPrefix: '',
-    verbs: ['gefunden', 'fotografiert', 'präsentiert', 'vermietet', 'verkauft', 'oder gekauft'],
+    verbs: ['wird gefunden', 'wird fotografiert', 'wird präsentiert', 'wird vermietet', 'wird verkauft', 'oder gekauft'],
     subtitle: 'Seit 18 Jahren helfen wir Eigentümern beim Verkauf und der Vermietung zu besten Bedingungen und Kunden beim Finden eines Zuhauses.',
     offer: 'Aktuelle Angebote ansehen',
     sell: 'Ich möchte verkaufen',
@@ -551,7 +550,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
     callUs: 'Call us',
     writeUs: 'Or write to us',
     copyright: 'Frisco. A family business, not a corporation.',
-    city: 'Sered & Nitra',
+    city: 'Sereď & Nitra',
     privacy: 'Privacy policy',
     cookies: 'Cookies',
     navItems: [
@@ -575,7 +574,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
     callUs: 'Rufen Sie uns an',
     writeUs: 'Oder schreiben Sie uns',
     copyright: 'Frisco. Familienunternehmen statt Konzern.',
-    city: 'Sered & Nitra',
+    city: 'Sereď & Nitra',
     privacy: 'Datenschutz',
     cookies: 'Cookies',
     navItems: [

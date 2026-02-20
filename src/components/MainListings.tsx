@@ -167,7 +167,7 @@ export const MainListings = () => {
 
     return (
         <section
-            className="pt-12 lg:pt-24 pb-12 bg-cream relative z-10 border-b border-black/5 min-h-[800px] lg:min-h-[600px]"
+            className="reveal pt-12 lg:pt-24 pb-12 bg-cream relative z-10 border-b border-black/5 min-h-[800px] lg:min-h-[600px]"
         >
             <div className="container mx-auto px-6">
 

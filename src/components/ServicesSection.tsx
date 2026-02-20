@@ -93,7 +93,7 @@ export const ServicesSection = () => {
   }));
 
   return (
-    <section id="services-section" className="bg-cream py-24 overflow-hidden">
+    <section id="services-section" className="reveal bg-cream py-24 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-20 max-w-2xl mx-auto">
           <span className="block text-navy font-mono text-xs tracking-[0.2em] mb-4 uppercase">

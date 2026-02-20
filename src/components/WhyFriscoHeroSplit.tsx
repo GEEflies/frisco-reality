@@ -336,7 +336,7 @@ const WhyFriscoHeroSplit = () => {
     }, [isInView, controls]);
 
     return (
-        <div ref={containerRef} className="relative bg-cream flex flex-col items-center overflow-hidden">
+        <div ref={containerRef} className="relative bg-cream flex flex-col items-center overflow-x-clip">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(235,77,75,0.03),transparent_60%)] pointer-events-none" />
 
             {/* HERO HEADING */}

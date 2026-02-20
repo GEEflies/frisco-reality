@@ -53,17 +53,17 @@
 
 /* Mobile menu item entrance — staggered slide-up */
 @keyframes menu-item-in {
-  from { opacity: 0; transform: translate3d(0, 18px, 0); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  from { opacity: 0; transform: translate3d(0, 24px, 0) scale(0.97); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 .menu-item-enter {
-  animation: menu-item-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: menu-item-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.menu-delay-1 { animation-delay: 0.05s; }
-.menu-delay-2 { animation-delay: 0.1s; }
-.menu-delay-3 { animation-delay: 0.15s; }
-.menu-delay-4 { animation-delay: 0.2s; }
-.menu-delay-5 { animation-delay: 0.28s; }
+.menu-delay-1 { animation-delay: 0.06s; }
+.menu-delay-2 { animation-delay: 0.12s; }
+.menu-delay-3 { animation-delay: 0.18s; }
+.menu-delay-4 { animation-delay: 0.24s; }
+.menu-delay-5 { animation-delay: 0.32s; }
 
 @layer base {
   :root {
@@ -250,6 +250,40 @@
     animation-name: story-media;
     animation-duration: 0.9s;
   }
+
+  /* ─── Scroll-reveal: pure CSS + IntersectionObserver ──────────────── */
+  /* Elements with .reveal start hidden; when JS adds .revealed, they  */
+  /* animate in. On mobile FM is suppressed, so this is the animation  */
+  /* system for below-fold sections.                                    */
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translate3d(0, 32px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+  @keyframes reveal-scale {
+    from { opacity: 0; transform: scale(0.96) translate3d(0, 16px, 0); }
+    to   { opacity: 1; transform: scale(1) translate3d(0, 0, 0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .reveal.revealed {
+    animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .reveal-scale {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .reveal-scale.revealed {
+    animation: reveal-scale 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Stagger delays for reveal groups */
+  .reveal-delay-1 { animation-delay: 0.1s; }
+  .reveal-delay-2 { animation-delay: 0.2s; }
+  .reveal-delay-3 { animation-delay: 0.3s; }
+  .reveal-delay-4 { animation-delay: 0.4s; }
 
   /* Optimize images globally - removed content-visibility to fix layout shifts */
   /* img {

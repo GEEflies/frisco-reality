@@ -48,7 +48,7 @@ export const TestimonialsSection = () => {
   }, []);
 
   return (
-    <section className="relative py-40 bg-cream overflow-hidden contain-layout">
+    <section className="reveal relative py-40 bg-cream overflow-hidden contain-layout">
 
       {/* Spotlight Effect - navy tint */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-full bg-gradient-to-b from-navy/5 to-transparent blur-[80px] pointer-events-none will-change-auto" />

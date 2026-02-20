@@ -172,8 +172,8 @@ export const Footer = () => {
             <p>{copy.city}</p>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-navy transition-colors">{copy.privacy}</a>
-            <a href="#" className="hover:text-navy transition-colors">{copy.cookies}</a>
+            <Link href="/ochrana-osobnych-udajov" className="hover:text-navy transition-colors">{copy.privacy}</Link>
+            <Link href="/cookies" className="hover:text-navy transition-colors">{copy.cookies}</Link>
           </div>
         </div>
 

@@ -144,8 +144,8 @@ const ChcemPredat = () => {
                                         {heroCopy.label}
                                     </span>
                                 </div>
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy story-rise stagger-2">
-                                    {heroCopy.titleStart} {language === 'de' ? ' ' : <br />}
+                                <h1 className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.15] mb-8 text-navy text-balance story-rise stagger-2">
+                                    {heroCopy.titleStart}{' '}
                                     <span className="text-accent-red italic">{heroCopy.titleAccent}</span>.
                                 </h1>
                                 <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10 story-soft stagger-3">
@@ -200,7 +200,7 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 1: Čo pre vás urobíme — staggered cards ───────────────── */}
-                <section className="py-20 md:py-32 bg-cream overflow-hidden">
+                <section className="reveal py-20 md:py-32 bg-cream overflow-hidden">
                     <div className="container mx-auto px-6">
                         <motion.div
                             initial="hidden"
@@ -249,7 +249,7 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 2: Vaša nehnuteľnosť si zaslúži viac — editorial ─────── */}
-                <section className="py-20 md:py-32 bg-white overflow-hidden">
+                <section className="reveal py-20 md:py-32 bg-white overflow-hidden">
                     <div className="container mx-auto px-6">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[480px]">
                             {/* Image — spans 7 columns */}
@@ -296,7 +296,7 @@ const ChcemPredat = () => {
                 </section>
 
                 {/* ─── SECTION 3: Ako to prebieha — Dark Process Steps ───────────────── */}
-                <section className="py-20 md:py-32 bg-navy text-white overflow-hidden relative">
+                <section className="reveal py-20 md:py-32 bg-navy text-white overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-24">
@@ -347,7 +347,7 @@ const ChcemPredat = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                                     <MessageCircle className="w-7 h-7 text-accent-red" />
                                 </div>
-                                <h3 className="text-xl font-serif font-bold mb-4 text-white">{pageCopy.processSteps[0].title}</h3>
+                                <h3 className="text-xl font-sans font-bold mb-4 text-white">{pageCopy.processSteps[0].title}</h3>
                                 <p className="text-white/60 leading-relaxed font-light">
                                     {pageCopy.processSteps[0].text}
                                 </p>
@@ -361,7 +361,7 @@ const ChcemPredat = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                                     <Megaphone className="w-7 h-7 text-accent-red" />
                                 </div>
-                                <h3 className="text-xl font-serif font-bold mb-4 text-white">{pageCopy.processSteps[1].title}</h3>
+                                <h3 className="text-xl font-sans font-bold mb-4 text-white">{pageCopy.processSteps[1].title}</h3>
                                 <p className="text-white/60 leading-relaxed font-light">
                                     {pageCopy.processSteps[1].text}
                                 </p>
@@ -375,7 +375,7 @@ const ChcemPredat = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-accent-red/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                                     <ShieldCheck className="w-7 h-7 text-accent-red" />
                                 </div>
-                                <h3 className="text-xl font-serif font-bold mb-4 text-white">{pageCopy.processSteps[2].title}</h3>
+                                <h3 className="text-xl font-sans font-bold mb-4 text-white">{pageCopy.processSteps[2].title}</h3>
                                 <p className="text-white/60 leading-relaxed font-light">
                                     {pageCopy.processSteps[2].text}
                                 </p>

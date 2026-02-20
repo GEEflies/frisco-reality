@@ -7,9 +7,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
 import type { LanguageCode } from "@/i18n/types";
 import { useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export function Providers({ children, initialLanguage }: { children: React.ReactNode; initialLanguage: LanguageCode }) {
   const [queryClient] = useState(() => new QueryClient());
+  useScrollReveal();
 
   return (
     <QueryClientProvider client={queryClient}>

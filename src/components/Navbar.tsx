@@ -315,12 +315,12 @@ export const Navbar = () => {
 
       {/* Mobile Menu Overlay - CSS transitions only, no Framer Motion */}
       <div
-        className={`fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isMobileMenuOpen
             ? 'opacity-100 visible translate-y-0'
             : 'opacity-0 invisible pointer-events-none -translate-y-2'
         }`}
-        style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: isMobileMenuOpen ? 'translate3d(0,0,0)' : 'translate3d(0,-8px,0)' }}
+        style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: isMobileMenuOpen ? 'translate3d(0,0,0)' : 'translate3d(0,-12px,0)' }}
       >
         <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
           <Link href={l('/')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-1' : ''}`} onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>

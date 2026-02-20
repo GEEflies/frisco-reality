@@ -264,7 +264,7 @@ export const PropertiesSection = () => {
   ] as const;
 
   return (
-    <section id="ponuka" className="relative pt-20 pb-32 bg-cream overflow-hidden min-h-screen" ref={ref}>
+    <section id="ponuka" className="reveal relative pt-20 pb-32 bg-cream overflow-hidden min-h-screen" ref={ref}>
       <div className="container mx-auto px-4 md:px-8 relative z-10">
 
         {/* Header */}

@@ -122,10 +122,10 @@ export const ConfirmActionDialog = ({ isOpen, onClose, actionType }: ConfirmActi
 
       {/* Dialog card */}
       <div
-        className={`relative bg-white rounded-2xl shadow-2xl max-w-[300px] w-full p-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`relative bg-white rounded-2xl shadow-2xl max-w-[300px] w-full p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isOpen
             ? 'scale-100 translate-y-0 opacity-100'
-            : 'scale-95 translate-y-4 opacity-0'
+            : 'scale-90 translate-y-6 opacity-0'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -138,15 +138,15 @@ export const ConfirmActionDialog = ({ isOpen, onClose, actionType }: ConfirmActi
           <X size={16} />
         </button>
 
-        {/* Icon */}
-        <div className={`w-12 h-12 ${actionType === 'call' ? 'bg-accent-red' : 'bg-navy'} rounded-xl flex items-center justify-center mb-4 shadow-md ${actionType === 'call' ? 'shadow-accent-red/20' : 'shadow-navy/20'}`}>
-          <IconComponent className="w-5 h-5 text-white" strokeWidth={1.8} />
+        {/* Icon + Title row */}
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`w-10 h-10 ${actionType === 'call' ? 'bg-accent-red' : 'bg-navy'} rounded-xl flex items-center justify-center shrink-0 shadow-md ${actionType === 'call' ? 'shadow-accent-red/20' : 'shadow-navy/20'}`}>
+            <IconComponent className="w-4.5 h-4.5 text-white" strokeWidth={1.8} />
+          </div>
+          <h3 className="text-lg font-sans font-bold text-navy tracking-tight leading-snug">
+            {copy.title}
+          </h3>
         </div>
-
-        {/* Title */}
-        <h3 className="text-lg font-sans font-bold text-navy mb-1.5 tracking-tight">
-          {copy.title}
-        </h3>
 
         {/* Message */}
         <p className="text-charcoal/60 text-sm leading-relaxed mb-5">

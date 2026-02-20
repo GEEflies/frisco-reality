@@ -45,7 +45,7 @@ export const StatsSection = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="relative py-32 bg-white overflow-hidden border-t border-navy/10 contain-layout">
+    <section ref={containerRef} className="reveal relative py-32 bg-white overflow-hidden border-t border-navy/10 contain-layout">
 
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-0">
