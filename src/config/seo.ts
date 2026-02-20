@@ -68,7 +68,7 @@ export function getOrganizationSchema(language: SeoLanguage = 'sk') {
     name: COMPANY_INFO.name,
     legalName: COMPANY_INFO.legalName,
     url: SITE_URL,
-    logo: `${SITE_URL}/frisco-logo.png`,
+    logo: `${SITE_URL}/frisco-logo-hq.png`,
     image: DEFAULT_OG_IMAGE,
     email: COMPANY_INFO.email,
     telephone: COMPANY_INFO.phone,

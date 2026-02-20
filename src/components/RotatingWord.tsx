@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 interface RotatingWordProps {
     words: string[];
@@ -49,10 +48,8 @@ export default function RotatingWord({ words, className = "" }: RotatingWordProp
     return (
         <span className={`inline-flex items-center ${className}`}>
             <span>{displayedText}</span>
-            <motion.span
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                className="w-[2px] h-[1.1em] bg-accent-red ml-1"
+            <span
+                className="w-[2px] h-[1.1em] bg-accent-red ml-1 animate-blink-cursor"
             />
         </span>
     );
