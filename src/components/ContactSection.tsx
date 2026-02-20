@@ -134,7 +134,7 @@ export const ContactSection = () => {
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
-                loading="lazy"
+                loading="eager"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute inset-0 w-full h-full"
               />

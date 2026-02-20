@@ -35,6 +35,22 @@
   }
 }
 
+/* Tab switching animation — NOT blocked by the mobile anti-flicker rule */
+@keyframes tab-fade-in {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes tab-slide-in {
+  from { opacity: 0; transform: translate3d(-6px, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.tab-enter {
+  animation: tab-fade-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.tab-item-enter {
+  animation: tab-slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @layer base {
   :root {
     /* Light theme foundations */
@@ -156,29 +172,10 @@
     }
   }
 
-  /* ─── Mobile anti-flicker for Framer Motion ─────────────────────────── */
-  /* Framer Motion sets initial opacity:0 / transform via JS after hydra-  */
-  /* tion, causing a visible flash (content appears → disappears → re-     */
-  /* appears). On mobile/tablet we force section content visible and let   */
-  /* the browser paint immediately. Desktop xl+ animations are unaffected. */
-  @media (max-width: 1279px) {
-    section [style] {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-    /* Preserve intentional hidden elements (menus, dropdowns, etc.) */
-    section .hidden,
-    section [aria-hidden="true"] {
-      opacity: 0 !important;
-    }
-    /* Preserve iframe / embed positioning */
-    section iframe[style],
-    section video[style],
-    section canvas[style] {
-      opacity: unset !important;
-      transform: unset !important;
-    }
-  }
+  /* ─── Mobile anti-flicker ─────────────────────────────────────────── */
+  /* Keep tailwindcss-animate ruled out on mobile (above).               */
+  /* Framer Motion whileInView animations are left intact — they only    */
+  /* fire on scroll so they never cause a load-time flash.               */
 
   /* ─── Hero animation stagger delays ─────────────────────────────────── */
   /* These use pure CSS keyframes → SSR-safe (no JS hydration mismatch).  */

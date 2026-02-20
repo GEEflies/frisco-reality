@@ -12,7 +12,8 @@ export const ScrollToTop = () => {
       isFirstRender.current = false;
       return;
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Use instant scroll — 'smooth' can fail on mobile if the page is very long
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
 
   return null;

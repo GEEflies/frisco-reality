@@ -157,7 +157,7 @@ const ChcemPredat = () => {
                                     <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-2xl shadow-navy/10 bg-gray-100">
                                         <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                         <img
-                                            src="/frisco-logo.svg"
+                                            src="/frisco-logo-hq.png"
                                             alt="FRISCO"
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
@@ -184,7 +184,7 @@ const ChcemPredat = () => {
                                 <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 transform transition-transform hover:scale-[1.01] duration-700 bg-gray-100">
                                     <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                     <img
-                                        src="/frisco-logo.svg"
+                                        src="/frisco-logo-hq.png"
                                         alt="FRISCO"
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />

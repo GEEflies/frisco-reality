@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
-const friscoLogo = '/frisco-logo.svg';
+const friscoLogo = '/frisco-logo-hq.png';
 
 export const PagePreloader = ({ onComplete }: { onComplete: () => void }) => {
   const { language } = useLanguage();

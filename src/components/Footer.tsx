@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
-const friscoLogo = '/frisco-logo.svg';
+const friscoLogo = '/frisco-logo-hq.png';
 import { GoogleReviewsBadge } from './GoogleReviewsBadge';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { FOOTER_COPY } from '@/i18n/copy';

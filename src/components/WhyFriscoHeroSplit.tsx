@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useAnimation, useInView } from 'framer-motion';
 import { Home, Search, Camera, Megaphone, HandshakeIcon, Users, Building, Receipt, CreditCard, ShieldCheck, FileSignature, HeadphonesIcon, ArrowUpRight, Tag, KeyRound, Banknote, DoorOpen } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -509,50 +509,42 @@ const TabCardContent = ({ tabs, defaultTab, headerIcon, headerLabel }: TabCardPr
             </div>
 
             {/* ANIMATED CONTENT */}
-            <div className="relative">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeTab}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                        className="px-6 lg:px-8 py-6 lg:py-7"
-                    >
-                        {/* Benefits */}
-                        <div className="space-y-5 lg:space-y-6">
-                            {current.benefits.map((b, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, x: -8 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                                    className="flex gap-4 lg:gap-5 group/row"
-                                >
-                                    <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-xl bg-charcoal/[0.04] flex items-center justify-center shrink-0 text-charcoal/30 transition-colors duration-200 group-hover/row:bg-accent-red/10 group-hover/row:text-accent-red mt-0.5">
-                                        {b.icon}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className="text-base lg:text-lg font-semibold text-navy mb-1 leading-snug">
-                                            {b.title}
-                                        </h4>
-                                        <p className="text-sm lg:text-[15px] text-charcoal/50 leading-relaxed">
-                                            {b.description}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
+            <div className="relative overflow-hidden">
+                <div
+                    key={activeTab}
+                    className="px-6 lg:px-8 py-6 lg:py-7 tab-enter"
+                >
+                    {/* Benefits */}
+                    <div className="space-y-5 lg:space-y-6">
+                        {current.benefits.map((b, i) => (
+                            <div
+                                key={i}
+                                className="flex gap-4 lg:gap-5 group/row tab-item-enter"
+                                style={{ animationDelay: `${i * 100}ms` }}
+                            >
+                                <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-xl bg-charcoal/[0.04] flex items-center justify-center shrink-0 text-charcoal/30 transition-colors duration-200 group-hover/row:bg-accent-red/10 group-hover/row:text-accent-red mt-0.5">
+                                    {b.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="text-base lg:text-lg font-semibold text-navy mb-1 leading-snug">
+                                        {b.title}
+                                    </h4>
+                                    <p className="text-sm lg:text-[15px] text-charcoal/50 leading-relaxed">
+                                        {b.description}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
-                        {/* CTA — MÁM ZÁUJEM ↗ style */}
-                        <div className="mt-7 lg:mt-8 pt-4 border-t border-charcoal/[0.06]">
-                            <a href={current.cta.href} className="group/btn inline-flex items-center gap-2 text-sm lg:text-base font-bold text-navy tracking-wide uppercase hover:text-accent-red transition-colors">
-                                {current.cta.text}
-                                <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                            </a>
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
+                    {/* CTA — MÁM ZÁUJEM ↗ style */}
+                    <div className="mt-7 lg:mt-8 pt-4 border-t border-charcoal/[0.06]">
+                        <a href={current.cta.href} className="group/btn inline-flex items-center gap-2 text-sm lg:text-base font-bold text-navy tracking-wide uppercase hover:text-accent-red transition-colors">
+                            {current.cta.text}
+                            <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+                        </a>
+                    </div>
+                </div>
             </div>
         </>
     );

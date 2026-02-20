@@ -5,6 +5,7 @@ import { ArrowUpRight, Check, Phone, Building2, Key, TrendingUp, ShieldCheck } f
 import { Footer } from '@/components/Footer';
 import { ContactSection } from '@/components/ContactSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import AutoplayVideo from '@/components/AutoplayVideo';
 
 const heroProperty = '/hero-property.jpg';
 
@@ -153,15 +154,10 @@ const PredajAPrenajom = () => {
                             <div className="relative">
                                 <div className="absolute -top-10 -left-10 w-40 h-40 bg-navy/5 rounded-full blur-3xl" />
                                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-navy/10 aspect-[4/3]">
-                                    <video
-                                        autoPlay
-                                        loop
-                                        muted
-                                        playsInline
+                                    <AutoplayVideo
+                                        src="/hero-video.mp4"
                                         className="w-full h-full object-cover"
-                                    >
-                                        <source src="/hero-video.mp4" type="video/mp4" />
-                                    </video>
+                                    />
                                 </div>
                             </div>
 

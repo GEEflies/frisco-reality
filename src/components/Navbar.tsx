@@ -132,7 +132,7 @@ export const Navbar = () => {
               transition={{ delay: 0.05, duration: 0.35 }}
               className="flex flex-col items-center"
             >
-              <img src="/frisco-logo.svg" alt="FRISCO" className="h-12 md:h-14 mb-6" />
+              <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-12 md:h-14 mb-6" />
               <div className="w-40 h-[2px] bg-navy/10 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-navy rounded-full"
@@ -155,7 +155,7 @@ export const Navbar = () => {
           />
           <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
             <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
-              <img src="/frisco-logo.svg" alt="FRISCO" className="h-16 pl-4" />
+              <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-16 pl-4" />
             </Link>
 
             <nav className="flex items-center gap-6 2xl:gap-10 flex-nowrap">
@@ -294,7 +294,7 @@ export const Navbar = () => {
       {/* Mobile Navbar */}
       <header className="fixed top-0 left-0 right-0 z-50 xl:hidden flex justify-between items-center px-6 h-[80px] border-b border-black/5 transition-colors duration-300" style={{ transform: 'translateZ(0)', backgroundColor: isMobileMenuOpen ? '#000' : '#fff' }}>
         <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex items-center">
-          <img src="/frisco-logo.svg" alt="FRISCO" className={`h-11 w-auto object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0 invert' : ''}`} />
+          <img src="/frisco-logo-hq.png" alt="FRISCO" className={`h-14 w-auto object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0 invert' : ''}`} />
         </Link>
         <div className="flex items-center gap-2">
           {/* Mail button */}

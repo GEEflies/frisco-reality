@@ -45,7 +45,7 @@ import {
 } from '@/api/mappings';
 import { getBestImageUrl } from '@/api/listingsService';
 
-const friscoLogo = '/frisco-logo.svg';
+const friscoLogo = '/frisco-logo-hq.png';
 
 // Company contact info - synced with TopBar
 const CONTACT = {
