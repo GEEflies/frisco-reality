@@ -385,4 +385,27 @@
   /* img {
     content-visibility: auto;
   } */
+
+  @media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+    .homepage-motion .story-rise {
+      animation-duration: 0.82s !important;
+    }
+
+    .homepage-motion .story-soft {
+      animation-duration: 0.72s !important;
+    }
+
+    .homepage-motion .story-media {
+      animation-duration: 0.9s !important;
+    }
+
+    .homepage-motion .reveal.revealed,
+    .homepage-motion .reveal-scale.revealed,
+    .homepage-motion .reveal-left.revealed,
+    .homepage-motion .reveal-right.revealed,
+    .homepage-motion .revealed .rv-child {
+      animation-duration: 0.62s !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
 }

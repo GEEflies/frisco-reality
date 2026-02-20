@@ -76,7 +76,7 @@ export default async function Home() {
 
 
   return (
-    <main className="overflow-x-clip">
+    <main className="homepage-motion overflow-x-clip">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
