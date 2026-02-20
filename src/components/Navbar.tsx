@@ -315,26 +315,26 @@ export const Navbar = () => {
 
       {/* Mobile Menu Overlay - CSS transitions only, no Framer Motion */}
       <div
-        className={`fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden transition-all duration-[950ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden ${
           isMobileMenuOpen
-            ? 'opacity-100 visible translate-y-0 scale-100'
-            : 'opacity-0 invisible pointer-events-none -translate-y-2 scale-[0.992]'
+            ? 'opacity-100 visible'
+            : 'opacity-0 invisible pointer-events-none'
         }`}
-        style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: isMobileMenuOpen ? 'translate3d(0,0,0) scale(1)' : 'translate3d(0,-16px,0) scale(0.992)' }}
+        style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
       >
         <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
-          <Link href={l('/')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-1' : ''}`} onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
+          <Link href={l('/')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
             {navCopy.home}
           </Link>
 
-          <div className={`flex flex-col ${isMobileMenuOpen ? 'menu-item-enter menu-delay-2' : ''}`}>
+          <div className="flex flex-col">
             <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
               {navCopy.offer}
               <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>{'\u25BC'}</span>
             </button>
             {/* Ponuka submenu - CSS transition instead of AnimatePresence */}
             <div
-              className={`overflow-hidden pl-4 flex flex-col space-y-4 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              className={`overflow-hidden pl-4 flex flex-col space-y-4 ${
                 isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
               }`}
             >
@@ -350,16 +350,16 @@ export const Navbar = () => {
             </div>
           </div>
 
-          <Link href={l('/preco-frisco')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-3' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
             {navCopy.whyFrisco}
           </Link>
-          <Link href={l('/kontakt')} className={`text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight ${isMobileMenuOpen ? 'menu-item-enter menu-delay-4' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
             {navCopy.contact}
           </Link>
         </div>
 
         {/* Bottom: Globe + Language Switcher + CTA — CSS only */}
-        <div className={`p-8 border-t border-white/10 ${isMobileMenuOpen ? 'menu-item-enter menu-delay-5' : ''}`}>
+        <div className="p-8 border-t border-white/10">
           <div className="flex items-center justify-center gap-2 mb-6">
             <Globe size={18} className="text-white/50 mr-1" />
             {LANGUAGES.map((opt) => (
