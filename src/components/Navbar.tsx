@@ -282,7 +282,16 @@ export const Navbar = () => {
       </AnimatePresence>
 
       {/* Mobile Navbar */}
-      <header className="fixed top-0 left-0 right-0 z-50 xl:hidden flex justify-between items-center px-6 h-[80px] border-b border-black/5 transition-colors duration-300" style={{ transform: 'translateZ(0)', backgroundColor: isMobileMenuOpen ? '#000' : '#fff' }}>
+      <header
+        className="fixed top-0 left-0 right-0 z-[120] xl:hidden flex justify-between items-center px-6 h-[80px] border-b border-black/5 transition-colors duration-300"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: isMobileMenuOpen ? '#000' : '#fff',
+        }}
+      >
         <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex items-center">
           <img src="/frisco-logo-hq.png" alt="FRISCO" className={`h-14 w-auto object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0 invert' : ''}`} />
         </Link>
