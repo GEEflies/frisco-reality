@@ -1,7 +1,7 @@
 'use client';
 
 import { Search, Home, Key } from 'lucide-react';
-
+import AutoplayVideo from './AutoplayVideo';
 import RotatingWord from "./RotatingWord";
 import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -82,16 +82,10 @@ const HeroMobile = () => {
                         alt="FRISCO"
                         className="absolute bottom-2 right-2 z-30 w-16 opacity-70 pointer-events-none drop-shadow-md"
                     />
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
+                    <AutoplayVideo
+                        src={HERO_VIDEO_URL}
                         className="w-full h-full object-cover"
-                    >
-                        <source src={HERO_VIDEO_URL} type="video/mp4" />
-                    </video>
+                    />
                 </div>
             </div>
         </div>

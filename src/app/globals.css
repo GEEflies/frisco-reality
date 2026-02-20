@@ -156,6 +156,30 @@
     }
   }
 
+  /* ─── Mobile anti-flicker for Framer Motion ─────────────────────────── */
+  /* Framer Motion sets initial opacity:0 / transform via JS after hydra-  */
+  /* tion, causing a visible flash (content appears → disappears → re-     */
+  /* appears). On mobile/tablet we force section content visible and let   */
+  /* the browser paint immediately. Desktop xl+ animations are unaffected. */
+  @media (max-width: 1279px) {
+    section [style] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    /* Preserve intentional hidden elements (menus, dropdowns, etc.) */
+    section .hidden,
+    section [aria-hidden="true"] {
+      opacity: 0 !important;
+    }
+    /* Preserve iframe / embed positioning */
+    section iframe[style],
+    section video[style],
+    section canvas[style] {
+      opacity: unset !important;
+      transform: unset !important;
+    }
+  }
+
   /* ─── Hero animation stagger delays ─────────────────────────────────── */
   /* These use pure CSS keyframes → SSR-safe (no JS hydration mismatch).  */
   /* animation-fill-mode: both ensures opacity:0 during the delay period. */

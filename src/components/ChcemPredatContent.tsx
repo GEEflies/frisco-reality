@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import AutoplayVideo from './AutoplayVideo';
 // Note: Added Import for ChartPie or similar if needed for 'Price/Strategy' icon, but can reuse existing or import specifically.
 import { ArrowUpRight, Home, Camera, Megaphone, ShieldCheck, MessageCircle, TrendingUp } from 'lucide-react';
 import { Footer } from '@/components/Footer';
@@ -160,9 +161,10 @@ const ChcemPredat = () => {
                                             alt="FRISCO"
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
-                                        <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover">
-                                            <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
-                                        </video>
+                                        <AutoplayVideo
+                                            src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4"
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
                                 </div>
 
@@ -186,9 +188,10 @@ const ChcemPredat = () => {
                                         alt="FRISCO"
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />
-                                    <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover">
-                                        <source src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4" type="video/mp4" />
-                                    </video>
+                                    <AutoplayVideo
+                                        src="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4"
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
                                 <div className="absolute -z-10 -bottom-8 -left-8 w-2/3 h-2/3 bg-accent-red/5 rounded-full blur-3xl" />
                             </div>

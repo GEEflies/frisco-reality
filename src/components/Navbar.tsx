@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, type ComponentType, type SVGProps } from 'react';
+import { ConfirmActionDialog } from './ConfirmActionDialog';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -35,6 +36,7 @@ export const Navbar = () => {
   const [isPonukaHovered, setIsPonukaHovered] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isLanguageSwitching, setIsLanguageSwitching] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; actionType: 'call' | 'email' }>({ isOpen: false, actionType: 'call' });
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const { language } = useLanguage();
   const pathname = usePathname();
@@ -294,83 +296,110 @@ export const Navbar = () => {
         <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex items-center">
           <img src="/frisco-logo.svg" alt="FRISCO" className={`h-11 w-auto object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0 invert' : ''}`} />
         </Link>
-        <button
-          className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 ${isMobileMenuOpen ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-black/5 text-black hover:bg-black/10'}`}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Mail button */}
+          <button
+            onClick={() => setConfirmDialog({ isOpen: true, actionType: 'email' })}
+            className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 ${isMobileMenuOpen ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-navy/5 text-navy hover:bg-navy/10'}`}
+            aria-label="Email"
+          >
+            <Mail size={20} />
+          </button>
+          {/* Phone button */}
+          <button
+            onClick={() => setConfirmDialog({ isOpen: true, actionType: 'call' })}
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 bg-accent-red text-white hover:bg-accent-red/90 shadow-md shadow-accent-red/20"
+            aria-label="Call"
+          >
+            <Phone size={20} />
+          </button>
+          {/* Menu toggle */}
+          <button
+            className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 ${isMobileMenuOpen ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-black/5 text-black hover:bg-black/10'}`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden"
-          >
-            <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
-              <Link href={l('/')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
-                {navCopy.home}
-              </Link>
+      {/* Mobile Menu Overlay - CSS transitions only, no Framer Motion */}
+      <div
+        className={`fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isMobileMenuOpen
+            ? 'opacity-100 visible translate-y-0'
+            : 'opacity-0 invisible pointer-events-none -translate-y-2'
+        }`}
+        style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: isMobileMenuOpen ? 'translate3d(0,0,0)' : 'translate3d(0,-8px,0)' }}
+      >
+        <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
+          <Link href={l('/')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
+            {navCopy.home}
+          </Link>
 
-              <div className="flex flex-col">
-                <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
-                  {navCopy.offer}
-                  <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>{'\u25BC'}</span>
-                </button>
-                <AnimatePresence>
-                  {isPonukaOpen && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden pl-4 flex flex-col space-y-4 mt-4">
-                      <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Search size={18} className="text-accent-red" /> {navCopy.currentOffer}
-                      </Link>
-                      <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Home size={18} className="text-accent-red" /> {navCopy.sell}
-                      </Link>
-                      <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Key size={18} className="text-accent-red" /> {navCopy.rent}
-                      </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
-                {navCopy.whyFrisco}
+          <div className="flex flex-col">
+            <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
+              {navCopy.offer}
+              <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>{'\u25BC'}</span>
+            </button>
+            {/* Ponuka submenu - CSS transition instead of AnimatePresence */}
+            <div
+              className={`overflow-hidden pl-4 flex flex-col space-y-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+              }`}
+            >
+              <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                <Search size={18} className="text-accent-red" /> {navCopy.currentOffer}
               </Link>
-              <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
-                {navCopy.contact}
+              <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                <Home size={18} className="text-accent-red" /> {navCopy.sell}
+              </Link>
+              <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                <Key size={18} className="text-accent-red" /> {navCopy.rent}
               </Link>
             </div>
+          </div>
 
-            {/* Bottom: Globe + Language Switcher + CTA */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.25 }} className="p-8 border-t border-white/10">
-              <div className="flex items-center justify-center gap-2 mb-6">
-                <Globe size={18} className="text-white/50 mr-1" />
-                {LANGUAGES.map((opt) => (
-                  <button
-                    key={opt.code}
-                    type="button"
-                    onClick={() => handleLanguageSelect(opt.code)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 ${language === opt.code ? 'bg-white text-navy shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20'}`}
-                  >
-                    <opt.Flag className="h-4 w-6 rounded-[2px] object-cover" />
-                    <span className="tracking-wide">{opt.code.toUpperCase()}</span>
-                  </button>
-                ))}
-              </div>
-              <a href="tel:+421905447220" className="flex items-center justify-center gap-3 w-full py-4 bg-accent-red text-white text-center font-bold font-sans uppercase tracking-widest rounded-full hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20" onClick={() => setIsMobileMenuOpen(false)}>
-                <Phone size={20} className="mb-0.5" />
-                <span>{language === 'sk' ? 'Zavolajte n\u00E1m' : language === 'en' ? 'Call us' : 'Rufen Sie uns an'}</span>
-              </a>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+            {navCopy.whyFrisco}
+          </Link>
+          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+            {navCopy.contact}
+          </Link>
+        </div>
+
+        {/* Bottom: Globe + Language Switcher + CTA — CSS only */}
+        <div className="p-8 border-t border-white/10">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <Globe size={18} className="text-white/50 mr-1" />
+            {LANGUAGES.map((opt) => (
+              <button
+                key={opt.code}
+                type="button"
+                onClick={() => handleLanguageSelect(opt.code)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 ${language === opt.code ? 'bg-white text-navy shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20'}`}
+              >
+                <opt.Flag className="h-4 w-6 rounded-[2px] object-cover" />
+                <span className="tracking-wide">{opt.code.toUpperCase()}</span>
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); setConfirmDialog({ isOpen: true, actionType: 'call' }); }}
+            className="flex items-center justify-center gap-3 w-full py-4 bg-accent-red text-white text-center font-bold font-sans uppercase tracking-widest rounded-full hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
+          >
+            <Phone size={20} className="mb-0.5" />
+            <span>{language === 'sk' ? 'Zavolajte n\u00E1m' : language === 'en' ? 'Call us' : 'Rufen Sie uns an'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Confirm Action Dialog for mobile email/phone */}
+      <ConfirmActionDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        actionType={confirmDialog.actionType}
+      />
     </>
   );
 };
