@@ -51,9 +51,13 @@ export const Navbar = () => {
     [language],
   );
 
-  useEffect(() => {
-    if (isMobileMenuOpen) setIsPonukaOpen(true);
-  }, [isMobileMenuOpen]);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => {
+      const next = !prev;
+      if (next) setIsPonukaOpen(true);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -289,17 +293,17 @@ export const Navbar = () => {
           top: 0,
           left: 0,
           right: 0,
-          backgroundColor: isMobileMenuOpen ? '#000' : '#fff',
+          backgroundColor: '#fff',
         }}
       >
         <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex items-center">
-          <img src="/frisco-logo-hq.png" alt="FRISCO" className={`h-14 w-auto object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0 invert' : ''}`} />
+          <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-14 w-auto object-contain transition-all duration-300" />
         </Link>
         <div className="flex items-center gap-2">
           {/* Mail button */}
           <button
             onClick={() => setConfirmDialog({ isOpen: true, actionType: 'email' })}
-            className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 ${isMobileMenuOpen ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-navy/5 text-navy hover:bg-navy/10'}`}
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 bg-navy/5 text-navy hover:bg-navy/10"
             aria-label="Email"
           >
             <Mail size={20} />
@@ -314,8 +318,8 @@ export const Navbar = () => {
           </button>
           {/* Menu toggle */}
           <button
-            className={`w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 ${isMobileMenuOpen ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-black/5 text-black hover:bg-black/10'}`}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all duration-300 bg-black/5 text-black hover:bg-black/10"
+            onClick={toggleMobileMenu}
           >
             {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -324,7 +328,7 @@ export const Navbar = () => {
 
       {/* Mobile Menu Overlay - CSS transitions only, no Framer Motion */}
       <div
-        className={`fixed inset-0 top-[80px] z-[55] bg-black flex flex-col xl:hidden ${
+        className={`fixed inset-0 top-[80px] z-[55] bg-white flex flex-col xl:hidden ${
           isMobileMenuOpen
             ? 'opacity-100 visible'
             : 'opacity-0 invisible pointer-events-none'
@@ -332,12 +336,12 @@ export const Navbar = () => {
         style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
       >
         <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
-          <Link href={l('/')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
+          <Link href={l('/')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
             {navCopy.home}
           </Link>
 
           <div className="flex flex-col">
-            <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
+            <button onClick={() => setIsPonukaOpen(!isPonukaOpen)} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors text-left flex items-center justify-between tracking-tight">
               {navCopy.offer}
               <span className={`text-2xl transition-transform duration-300 ${isPonukaOpen ? 'rotate-180' : ''}`}>{'\u25BC'}</span>
             </button>
@@ -347,36 +351,36 @@ export const Navbar = () => {
                 isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
               }`}
             >
-              <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
                 <Search size={18} className="text-accent-red" /> {navCopy.currentOffer}
               </Link>
-              <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
                 <Home size={18} className="text-accent-red" /> {navCopy.sell}
               </Link>
-              <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-white/90 hover:text-white transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
                 <Key size={18} className="text-accent-red" /> {navCopy.rent}
               </Link>
             </div>
           </div>
 
-          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
             {navCopy.whyFrisco}
           </Link>
-          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-white hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
             {navCopy.contact}
           </Link>
         </div>
 
         {/* Bottom: Globe + Language Switcher + CTA — CSS only */}
-        <div className="p-8 border-t border-white/10">
+        <div className="p-8 border-t border-black/10">
           <div className="flex items-center justify-center gap-2 mb-6">
-            <Globe size={18} className="text-white/50 mr-1" />
+            <Globe size={18} className="text-navy/50 mr-1" />
             {LANGUAGES.map((opt) => (
               <button
                 key={opt.code}
                 type="button"
                 onClick={() => handleLanguageSelect(opt.code)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 ${language === opt.code ? 'bg-white text-navy shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20'}`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 ${language === opt.code ? 'bg-navy text-white shadow-lg' : 'bg-navy/5 text-navy/80 hover:bg-navy/10'}`}
               >
                 <opt.Flag className="h-4 w-6 rounded-[2px] object-cover" />
                 <span className="tracking-wide">{opt.code.toUpperCase()}</span>
