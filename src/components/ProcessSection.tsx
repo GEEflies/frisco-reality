@@ -170,18 +170,16 @@ export const ProcessSection = () => {
           </h2>
         </div>
 
-        {/* Adjust vertical spacing with negative margins (not transforms)       */}
-        {/* because the .rv-child reveal animation sets transform via             */}
-        {/* animation-fill-mode: both, which overrides Tailwind translate-y.      */}
+        {/* Use relative top offsets (desktop) for independent per-card placement */}
+        {/* without transform conflicts from the .rv-child reveal animation.      */}
         <div className="flex flex-col space-y-8 md:space-y-0 relative max-w-[85rem] mx-auto pb-12">
           {localizedSteps.map((step, index) => {
-            // Use negative margin-top instead of -translate-y so the
-            // rv-child CSS animation (which ends at translate3d(0,0,0))
-            // doesn't clobber the positional offset.
+            // Use top offsets (not translate/margin) so each card can be
+            // repositioned independently on desktop.
             let offsetClass = "";
-            if (index === 1) offsetClass = "md:-mt-32 lg:-mt-[10rem]";
-            if (index === 2) offsetClass = "md:-mt-60 lg:-mt-52";
-            if (index === 3) offsetClass = "md:-mt-[17rem] lg:-mt-[21.5rem]";
+            if (index === 1) offsetClass = "lg:-top-[10rem]";
+            if (index === 2) offsetClass = "lg:-top-52";
+            if (index === 3) offsetClass = "lg:-top-[21.5rem]";
 
             return (
               <div
