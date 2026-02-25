@@ -59,9 +59,15 @@ export const ContactSection = () => {
                 icon={Phone}
                 title={copy.call}
                 content={
-                  <a href="tel:+421905447220" className="hover:text-accent-red transition-colors">
-                    0905 447 220
-                  </a>
+                  <div>
+                    <a href="tel:+421905447220" className="hover:text-accent-red transition-colors">
+                      0905 447 220
+                    </a>
+                    {', '}
+                    <a href="tel:+421905740700" className="hover:text-accent-red transition-colors">
+                      0905 740 700
+                    </a>
+                  </div>
                 }
               />
               <ContactCard

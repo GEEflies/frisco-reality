@@ -136,7 +136,7 @@ export const Footer = () => {
               </li>
               <li>
                 {/* Mobile: Button Style */}
-                <a href="tel:+421905447220" className="lg:hidden block bg-accent-red hover:bg-accent-red/90 text-white rounded-lg px-5 py-4 transition-all shadow-md">
+                <a href="tel:+421905447220" className="lg:hidden block bg-accent-red hover:bg-accent-red/90 text-white rounded-lg px-5 py-4 transition-all shadow-md mb-2">
                   <div className="flex items-center justify-start gap-4 pl-2">
                     <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
@@ -145,16 +145,34 @@ export const Footer = () => {
                     </div>
                   </div>
                 </a>
-                {/* Desktop: Button Style */}
-                <a href="tel:+421905447220" className="hidden lg:block bg-accent-red hover:bg-accent-red/90 text-white rounded-lg px-5 py-3 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
-                  <div className="flex items-center gap-4">
+                <a href="tel:+421905740700" className="lg:hidden block bg-accent-red hover:bg-accent-red/90 text-white rounded-lg px-5 py-4 transition-all shadow-md">
+                  <div className="flex items-center justify-start gap-4 pl-2">
                     <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest font-bold">{copy.callUs}</span>
-                      <span className="font-bold text-lg whitespace-nowrap">0905 447 220</span>
+                      <span className="font-bold text-lg whitespace-nowrap">0905 740 700</span>
                     </div>
                   </div>
                 </a>
+                {/* Desktop: Button Style */}
+                <div className="hidden lg:flex flex-col gap-2">
+                  <a href="tel:+421905447220" className="block bg-accent-red hover:bg-accent-red/90 text-white rounded-lg px-5 py-3 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <div className="flex items-center gap-4">
+                      <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
+                      <div className="flex flex-col items-start">
+                        <span className="text-[10px] uppercase tracking-widest font-bold">{copy.callUs}</span>
+                        <span className="font-bold text-lg whitespace-nowrap">0905 447 220</span>
+                      </div>
+                    </div>
+                  </a>
+                  <a href="tel:+421905740700" className="block bg-accent-red hover:bg-accent-red/90 text-white rounded-lg px-5 py-3 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <div className="flex items-center gap-4">
+                      <Phone className="w-5 h-5 shrink-0" strokeWidth={2} />
+                      <div className="flex flex-col items-start">
+                        <span className="font-bold text-lg whitespace-nowrap">0905 740 700</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
               </li>
               <li>
                 {/* Mobile: Outlined Button */}

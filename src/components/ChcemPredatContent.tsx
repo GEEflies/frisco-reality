@@ -52,8 +52,8 @@ const pageCopyByLanguage = {
         processCta: 'Chcem predať nehnuteľnosť',
         processSteps: [
             { title: '1. Stretnutie a plán', text: 'Prejdeme si vaše očakávania, analyzujeme trh a nastavíme cenu aj postup.' },
-            { title: '2. Spustenie predaja', text: 'Pripravíme prezentáciu a spustíme inzerciu. Organizujeme obhliadky a komunikujeme so záujemcami.' },
-            { title: '3. Dohoda a odovzdanie', text: 'Keď nájdeme kupujúceho, pripravíme zmluvy a dohliadneme na bezpečný prevod peňazí. Po zápise na katastri odovzdáme kľúče.' },
+            { title: '2. Predaj bez starostí', text: 'Nehnuteľnosť profesionálne nafotíme a odprezentujeme. Organizujeme len zmysluplné obhliadky a komunikujeme so záujemcami, aby sme vás neoberali o čas.' },
+            { title: '3. Zmluvy, úrady a pokoj svätý', text: 'Nájdeme kupujúceho, doriešime zmluvy a kataster. A kým iní končia odovzdaním kľúčov, my za vás a pre vás obehneme elektrárne, plynárne aj vodárne. Celú byrokraciu berieme na seba.' },
         ],
     },
     en: {
@@ -73,8 +73,8 @@ const pageCopyByLanguage = {
         processCta: 'I want to sell my property',
         processSteps: [
             { title: '1. Meeting and plan', text: 'We define your expectations, analyze the market, and set the right price and strategy.' },
-            { title: '2. Launch the sale', text: 'We prepare the presentation and publish listings. We organize viewings and communicate with interested buyers.' },
-            { title: '3. Agreement and handover', text: 'When we find a buyer, we prepare contracts and supervise a safe transfer. After registration, we hand over the keys.' },
+            { title: '2. A worry-free sale', text: 'We professionally photograph and present the property. We organize only meaningful viewings and handle communication to save your time.' },
+            { title: '3. Contracts, authorities and peace of mind', text: 'We find a buyer, finalize contracts and land registry. While others finish by handing over keys, we handle all utility and water transfers for you. We take the entire bureaucracy on ourselves.' },
         ],
     },
     de: {
@@ -94,8 +94,8 @@ const pageCopyByLanguage = {
         processCta: 'Ich möchte meine Immobilie verkaufen',
         processSteps: [
             { title: '1. Gespräch und Plan', text: 'Wir klären Ihre Erwartungen, analysieren den Markt und setzen Preis sowie Vorgehen fest.' },
-            { title: '2. Verkaufsstart', text: 'Wir erstellen die Präsentation und starten die Vermarktung. Wir organisieren Besichtigungen und kommunizieren mit Interessenten.' },
-            { title: '3. Abschluss und Übergabe', text: 'Sobald wir einen Käufer finden, bereiten wir die Verträge vor und begleiten die sichere Abwicklung bis zur Übergabe.' },
+            { title: '2. Ein sorgenfreier Verkauf', text: 'Wir fotografieren und präsentieren die Immobilie professionell. Wir organisieren nur sinnvolle Besichtigungen und übernehmen die Kommunikation, um Ihre Zeit zu sparen.' },
+            { title: '3. Verträge, Behörden und Seelenfrieden', text: 'Wir finden einen Käufer, regeln Verträge und Grundbuch. Während andere bei der Schlüsselübergabe enden, kümmern wir uns für Sie um alle Strom-, Gas- und Wasserummeldungen. Wir nehmen Ihnen die gesamte Bürokratie ab.' },
         ],
     },
 };
@@ -124,7 +124,7 @@ const ChcemPredat = () => {
                                 </div>
                                 <h1 className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-[1.15] mb-8 text-navy text-balance story-rise stagger-2">
                                     {heroCopy.titleStart}{' '}
-                                    <span className="text-accent-red italic">{heroCopy.titleAccent}</span>.
+                                    <span className="text-accent-red italic">{heroCopy.titleAccent}.</span>
                                 </h1>
                                 <p className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-10 story-soft stagger-3">
                                     {heroCopy.subtitle}

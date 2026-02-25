@@ -92,7 +92,7 @@ export const FamilyBusinessSection = () => {
     const isDesktop = useIsDesktop();
 
     return (
-        <section className="reveal py-16 md:py-20 bg-white overflow-hidden relative">
+        <section className="reveal py-10 md:py-20 bg-white overflow-hidden relative">
             {/* Background Decor */}
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/5 to-transparent" />
 
@@ -141,7 +141,7 @@ export const FamilyBusinessSection = () => {
                     {/* Subtitle */}
                     <motion.p
                         {...(isDesktop ? { variants: fadeInUp } : {})}
-                        className={`text-lg md:text-xl text-charcoal/70 max-w-2xl mb-12 font-light ${!isDesktop ? 'rv-child' : ''}`}
+                        className={`text-lg md:text-xl text-charcoal/70 max-w-2xl mb-8 md:mb-12 font-light ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         {t.subtitle}
                     </motion.p>
@@ -149,7 +149,7 @@ export const FamilyBusinessSection = () => {
                     {/* Animation Wrapper (Replacing Numbers) */}
                     <motion.div
                         {...(isDesktop ? { variants: fadeInUp } : {})}
-                        className={`w-full max-w-3xl mb-16 md:mb-20 relative h-24 md:h-32 flex items-center justify-center overflow-hidden ${!isDesktop ? 'rv-child' : ''}`}
+                        className={`w-full max-w-3xl mb-10 md:mb-20 relative h-20 md:h-32 flex items-center justify-center overflow-hidden ${!isDesktop ? 'rv-child' : ''}`}
                     >
                         {/* Abstract Wave/Trust Animation */}
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -199,7 +199,7 @@ export const FamilyBusinessSection = () => {
                     </motion.div>
 
                     {/* Benefits Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12 w-full px-4 md:px-0">
                         <BenefitItem
                             icon={Heart}
                             color="text-accent-red"
@@ -239,15 +239,17 @@ export const FamilyBusinessSection = () => {
 const BenefitItem = ({ icon: Icon, color, label, sublabel, useFM }: { icon: any, color: string, label: string, sublabel: string, useFM: boolean }) => (
     <motion.div
         {...(useFM ? { variants: fadeInUp } : {})}
-        className={`flex flex-col items-center group ${!useFM ? 'rv-child' : ''}`}
+        className={`flex flex-row md:flex-col items-center group w-full ${!useFM ? 'rv-child' : ''}`}
     >
-        <div className={`w-12 h-12 rounded-2xl bg-white border border-charcoal/5 shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+        <div className={`shrink-0 w-12 h-12 rounded-2xl bg-white border border-charcoal/5 shadow-sm flex items-center justify-center mr-4 md:mr-0 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
             <Icon className={`w-6 h-6 ${color}`} />
         </div>
-        <h4 className="font-bold text-navy text-lg mb-1">{label}</h4>
-        <p className="text-sm text-charcoal/60">{sublabel}</p>
+        <div className="text-left md:text-center flex-1">
+            <h4 className="font-bold text-navy text-base md:text-lg mb-0.5 md:mb-1">{label}</h4>
+            <p className="text-sm text-charcoal/60 leading-tight md:leading-normal">{sublabel}</p>
+        </div>
 
         {/* Helper visual dot */}
-        <div className={`w-1.5 h-1.5 rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity bg-current ${color}`} />
+        <div className={`hidden md:block w-1.5 h-1.5 rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity bg-current ${color}`} />
     </motion.div>
 );

@@ -348,8 +348,7 @@ const WhyFriscoHeroSplit = () => {
                         {copy.badge}
                     </span>
                     <h1 className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight leading-snug md:leading-none">
-                        {copy.title} <br className="lg:hidden" />
-                        <span className="text-accent-red italic pb-2">{copy.accent}</span>
+                        {copy.title} <span className="text-accent-red italic pb-2">{copy.accent}</span>
                     </h1>
                 </div>
                 <p

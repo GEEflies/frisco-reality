@@ -122,19 +122,17 @@ export const Navbar = () => {
     <>
       {/* Language Switch Overlay — CSS only, no Framer Motion flash */}
       <div
-        className={`fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center transition-opacity duration-300 ease-in-out ${
-          isLanguageSwitching
-            ? 'opacity-100 visible'
-            : 'opacity-0 invisible pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center transition-opacity duration-300 ease-in-out ${isLanguageSwitching
+          ? 'opacity-100 visible'
+          : 'opacity-0 invisible pointer-events-none'
+          }`}
       >
         <div className="flex flex-col items-center">
           <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-12 md:h-14 mb-6" />
           <div className="w-40 h-[2px] bg-navy/10 rounded-full overflow-hidden">
             <div
-              className={`h-full bg-navy rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                isLanguageSwitching ? 'w-full duration-1000' : 'w-0 duration-0'
-              }`}
+              className={`h-full bg-navy rounded-full transition-all ease-[cubic-bezier(0.4,0,0.2,1)] ${isLanguageSwitching ? 'w-full duration-1000' : 'w-0 duration-0'
+                }`}
             />
           </div>
         </div>
@@ -328,11 +326,10 @@ export const Navbar = () => {
 
       {/* Mobile Menu Overlay - CSS transitions only, no Framer Motion */}
       <div
-        className={`fixed inset-0 top-[80px] z-[55] bg-white flex flex-col xl:hidden ${
-          isMobileMenuOpen
-            ? 'opacity-100 visible'
-            : 'opacity-0 invisible pointer-events-none'
-        }`}
+        className={`fixed inset-0 top-[80px] z-[55] bg-white flex flex-col xl:hidden ${isMobileMenuOpen
+          ? 'opacity-100 visible'
+          : 'opacity-0 invisible pointer-events-none'
+          }`}
         style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
       >
         <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
@@ -347,9 +344,8 @@ export const Navbar = () => {
             </button>
             {/* Ponuka submenu - CSS transition instead of AnimatePresence */}
             <div
-              className={`overflow-hidden pl-4 flex flex-col space-y-4 ${
-                isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
-              }`}
+              className={`overflow-hidden pl-4 flex flex-col space-y-4 ${isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+                }`}
             >
               <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
                 <Search size={18} className="text-accent-red" /> {navCopy.currentOffer}

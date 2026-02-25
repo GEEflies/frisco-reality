@@ -202,103 +202,110 @@ const Sluzby = () => {
 
   return (
     <div className="no-mobile-motion min-h-screen bg-cream">
-        <WhyFriscoHeroSplit />
+      <WhyFriscoHeroSplit />
 
-        <FamilyBusinessSection />
+      <FamilyBusinessSection />
 
-        {/* Values Section */}
-        <section className="reveal py-16 md:py-20 bg-gradient-to-b from-cream to-white relative overflow-visible">
-          {/* Decorative background elements */}
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/10 to-transparent" />
-          <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-accent-red/[0.03] rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-navy/[0.03] rounded-full blur-[100px] pointer-events-none" />
+      {/* Values Section */}
+      <section className="reveal py-16 md:py-20 bg-gradient-to-b from-cream to-white relative overflow-visible">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/10 to-transparent" />
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-accent-red/[0.03] rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-navy/[0.03] rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="container mx-auto px-6 relative z-10">
-            <motion.div
-              {...(isDesktop ? {
-                initial: "hidden",
-                whileInView: "visible",
-                viewport: { once: true, margin: "-100px" },
-                variants: fadeInUp,
-              } : {})}
-              className={`text-center max-w-3xl mx-auto mb-14 md:mb-20 ${!isDesktop ? 'rv-child' : ''}`}
-            >
-              {/* Badge — matching FamilyBusinessSection */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-6">
-                <Shield className="w-4 h-4 text-accent-red" />
-                <span className="text-xs font-bold tracking-widest text-accent-red uppercase">
-                  {copy.valuesBadge}
-                </span>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-serif font-bold text-navy tracking-tight mb-5">
-                {copy.valuesTitleStart} <span className="text-accent-red italic">{copy.valuesTitleAccent}</span>
-              </h2>
-              <p className="text-charcoal/60 text-base md:text-lg lg:text-xl leading-relaxed max-w-xl mx-auto">
-                {copy.valuesSubtitle}
-              </p>
-            </motion.div>
-
-            <div className="max-w-7xl mx-auto">
-              {/* Three core values in a row */}
-              <ValuesSection values={localizedValues} />
-
-
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div
+            {...(isDesktop ? {
+              initial: "hidden",
+              whileInView: "visible",
+              viewport: { once: true, margin: "-100px" },
+              variants: fadeInUp,
+            } : {})}
+            className={`text-center max-w-3xl mx-auto mb-14 md:mb-20 ${!isDesktop ? 'rv-child' : ''}`}
+          >
+            {/* Badge — matching FamilyBusinessSection */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-red/5 border border-accent-red/10 mb-6">
+              <Shield className="w-4 h-4 text-accent-red" />
+              <span className="text-xs font-bold tracking-widest text-accent-red uppercase">
+                {copy.valuesBadge}
+              </span>
             </div>
+
+            <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-serif font-bold text-navy tracking-tight mb-5">
+              {copy.valuesTitleStart} <span className="text-accent-red italic">{copy.valuesTitleAccent}</span>
+            </h2>
+            <p className="text-charcoal/60 text-base md:text-lg lg:text-xl leading-relaxed max-w-xl mx-auto">
+              {copy.valuesSubtitle}
+            </p>
+          </motion.div>
+
+          <div className="max-w-7xl mx-auto">
+            {/* Three core values in a row */}
+            <ValuesSection values={localizedValues} />
+
+
           </div>
-        </section>
+        </div>
+      </section>
 
 
 
-        {/* CTA Section */}
-        <section className="reveal py-16 md:py-20 bg-cream">
-          <div className="container mx-auto px-6">
-            <motion.div
-              {...(isDesktop ? {
-                initial: "hidden",
-                whileInView: "visible",
-                viewport: { once: true },
-                variants: fadeInUp,
-              } : {})}
-              className={`relative rounded-3xl bg-gradient-to-br from-navy/5 via-white to-white border border-navy/10 p-8 md:p-20 overflow-hidden shadow-lg ${!isDesktop ? 'rv-child' : ''}`}
-            >
-              <div className="absolute top-0 right-0 w-96 h-96 bg-navy/5 rounded-full blur-3xl pointer-events-none" />
+      {/* CTA Section */}
+      <section className="reveal py-16 md:py-20 bg-cream">
+        <div className="container mx-auto px-6">
+          <motion.div
+            {...(isDesktop ? {
+              initial: "hidden",
+              whileInView: "visible",
+              viewport: { once: true },
+              variants: fadeInUp,
+            } : {})}
+            className={`relative rounded-3xl bg-gradient-to-br from-navy/5 via-white to-white border border-navy/10 p-8 md:p-20 overflow-hidden shadow-lg ${!isDesktop ? 'rv-child' : ''}`}
+          >
+            <div className="absolute top-0 right-0 w-96 h-96 bg-navy/5 rounded-full blur-3xl pointer-events-none" />
 
-              <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-                <div className="text-center lg:text-left">
-                  <span className="text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
-                    {copy.ctaLabel}
-                  </span>
-                  <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy tracking-tight mb-4">
-                    {copy.ctaTitleStart} <span className="text-accent-red italic">{copy.ctaTitleAccent}</span>
-                  </h2>
-                  <p className="text-charcoal/60 text-lg max-w-xl">
-                    {copy.ctaText}
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <a
-                    href="tel:+421905447220"
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg"
-                  >
-                    <Phone className="w-5 h-5" />
-                    <span>0905 447 220</span>
-                  </a>
-                  <a
-                    href="/kontakt"
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
-                  >
-                    <span>{copy.ctaWrite}</span>
-                    <ArrowUpRight className="w-5 h-5" />
-                  </a>
-                </div>
+            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+              <div className="text-center lg:text-left">
+                <span className="text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
+                  {copy.ctaLabel}
+                </span>
+                <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy tracking-tight mb-4">
+                  {copy.ctaTitleStart} <span className="text-accent-red italic">{copy.ctaTitleAccent}</span>
+                </h2>
+                <p className="text-charcoal/60 text-lg max-w-xl">
+                  {copy.ctaText}
+                </p>
               </div>
-            </motion.div>
-          </div>
-        </section>
 
-        <Footer />
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="tel:+421905447220"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg"
+                >
+                  <Phone className="w-5 h-5" />
+                  <span>0905 447 220</span>
+                </a>
+                <a
+                  href="tel:+421905740700"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg"
+                >
+                  <Phone className="w-5 h-5" />
+                  <span>0905 740 700</span>
+                </a>
+                <a
+                  href="/kontakt"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
+                >
+                  <span>{copy.ctaWrite}</span>
+                  <ArrowUpRight className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 };

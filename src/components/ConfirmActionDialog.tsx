@@ -23,7 +23,7 @@ const DIALOG_COPY: Record<string, Record<ActionType, { title: string; message: s
     },
     email: {
       title: 'Napíšte nám',
-      message: 'Odpovieme Vám najneskôr do 24 hodín — zvyčajne oveľa skôr.',
+      message: 'Odpovieme Vám najneskôr do 24 hodín, zvyčajne oveľa skôr.',
       detail: 'Otvorí sa Vaša e-mailová aplikácia s adresou info@frisco.sk.',
       confirm: 'Napísať e-mail',
       cancel: 'Neskôr',
@@ -56,7 +56,7 @@ const DIALOG_COPY: Record<string, Record<ActionType, { title: string; message: s
     email: {
       title: 'Schreiben Sie uns',
       message: 'Wir antworten in der Regel innerhalb weniger Stunden.',
-      detail: 'Ihre E-Mail-App wird mit unserer Adresse info@frisco.sk geöffnet.',
+      detail: 'Ihre E-Mail-App wird mit unserer Adresse info@frisco.sk.',
       confirm: 'E-Mail schreiben',
       cancel: 'Später',
     },
@@ -103,11 +103,10 @@ export const ConfirmActionDialog = ({ isOpen, onClose, actionType }: ConfirmActi
 
   return (
     <div
-      className={`fixed inset-0 z-[300] flex items-center justify-center px-6 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        isOpen
-          ? 'opacity-100 visible'
-          : 'opacity-0 invisible pointer-events-none'
-      }`}
+      className={`fixed inset-0 z-[300] flex items-center justify-center px-6 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${isOpen
+        ? 'opacity-100 visible'
+        : 'opacity-0 invisible pointer-events-none'
+        }`}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -115,18 +114,16 @@ export const ConfirmActionDialog = ({ isOpen, onClose, actionType }: ConfirmActi
     >
       {/* Backdrop with blur */}
       <div
-        className={`absolute inset-0 bg-black/50 backdrop-blur-md transition-opacity duration-300 ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute inset-0 bg-black/50 backdrop-blur-md transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'
+          }`}
       />
 
       {/* Dialog card */}
       <div
-        className={`relative bg-white rounded-2xl shadow-2xl max-w-[300px] w-full p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isOpen
-            ? 'scale-100 translate-y-0 opacity-100'
-            : 'scale-90 translate-y-6 opacity-0'
-        }`}
+        className={`relative bg-white rounded-2xl shadow-2xl max-w-[300px] w-full p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${isOpen
+          ? 'scale-100 translate-y-0 opacity-100'
+          : 'scale-90 translate-y-6 opacity-0'
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
