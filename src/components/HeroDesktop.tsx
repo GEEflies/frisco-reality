@@ -7,7 +7,7 @@ import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_DESKTOP_COPY } from '@/i18n/copy';
 
-const HERO_VIDEO_URL = "https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video.mp4";
+const HERO_VIDEO_URL = "https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/hero-video%20(1).mp4";
 
 const HeroDesktop = () => {
   const { language } = useLanguage();
