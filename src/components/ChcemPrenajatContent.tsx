@@ -137,7 +137,9 @@ const ChcemPrenajat = () => {
                                 <h1
                                     className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight leading-[1.1] mb-8 text-navy story-rise stagger-2"
                                 >
-                                    {heroCopy.titleStart} <span className="text-accent-red italic">{heroCopy.titleAccent}</span>
+                                    <span className="inline-block">{heroCopy.titleStart}</span>
+                                    <br />
+                                    <span className="inline-block text-accent-red italic">{heroCopy.titleAccent}</span>
                                 </h1>
                                 <p
                                     className="text-lg text-charcoal/70 max-w-lg font-light leading-relaxed mb-4 story-soft stagger-3"

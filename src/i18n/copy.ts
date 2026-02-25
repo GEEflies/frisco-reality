@@ -19,7 +19,7 @@ export const NAVBAR_COPY: Record<LanguageCode, {
     currentOffer: 'Aktuálna ponuka',
     sell: 'Chcem predať',
     rent: 'Chcem prenajať',
-    whyFrisco: 'Prečo Frisco?',
+    whyFrisco: 'Prečo FRISCO?',
     contact: 'Kontakt',
     ownerHeader: 'Chcem svoju nehnuteľnosť',
     seekerHeader: 'Chcem si nehnuteľnosť',
@@ -32,7 +32,7 @@ export const NAVBAR_COPY: Record<LanguageCode, {
     currentOffer: 'Current listings',
     sell: 'I want to sell',
     rent: 'I want to rent',
-    whyFrisco: 'Why Frisco?',
+    whyFrisco: 'Why FRISCO?',
     contact: 'Contact',
     ownerHeader: 'I own a property',
     seekerHeader: 'I am looking for property',
@@ -45,7 +45,7 @@ export const NAVBAR_COPY: Record<LanguageCode, {
     currentOffer: 'Aktuelle Angebote',
     sell: 'Ich möchte verkaufen',
     rent: 'Ich möchte vermieten',
-    whyFrisco: 'Warum Frisco?',
+    whyFrisco: 'Warum FRISCO?',
     contact: 'Kontakt',
     ownerHeader: 'Ich habe eine Immobilie',
     seekerHeader: 'Ich suche eine Immobilie',
@@ -156,23 +156,23 @@ export const CHCEM_PREDAT_HERO_COPY: Record<LanguageCode, {
 }> = {
   sk: {
     label: 'Predajte za cenu, ktorá dáva zmysel.',
-    titleStart: 'Postaráme sa o všetko',
-    titleAccent: 'za vás',
-    subtitle: 'Ku každej nehnuteľnosti pristupujeme, ako keby bola naša vlastná. Poctivo nastavíme cenu, dôkladne ju odprezentujeme a urobíme všetko pre to, aby ste predali čo najlepšie.',
+    titleStart: 'Vy riešite svoj život, my riešime',
+    titleAccent: 'predaj',
+    subtitle: 'Predaj nie je len o inzeráte. Je to o správnej cene, prezentácii a vyjednávaní. My nastavíme proces tak, aby ste predali dobre a bez zbytočných chýb.',
     cta: 'Chcem predať nehnuteľnosť',
   },
   en: {
     label: 'Sell at a price that truly makes sense.',
-    titleStart: 'We will handle everything',
-    titleAccent: 'for you',
-    subtitle: 'We treat every property as if it were our own. We set the price fairly, present it thoroughly, and do everything we can to get you the best possible sale.',
+    titleStart: 'You handle your life, we handle the',
+    titleAccent: 'sale',
+    subtitle: 'Selling is not just an ad. It is pricing, presentation and negotiation. We set the process so you sell well and without costly mistakes.',
     cta: 'I want to sell my property',
   },
   de: {
     label: 'Verkaufen Sie zu einem Preis, der Sinn ergibt.',
-    titleStart: 'Wir kümmern uns um alles',
-    titleAccent: 'für Sie',
-    subtitle: 'Wir behandeln jede Immobilie, als wäre es unsere eigene. Wir legen den Preis fair fest, präsentieren sie sorgfältig und tun alles, um den bestmöglichen Verkauf für Sie zu erzielen.',
+    titleStart: 'Sie leben Ihr Leben, wir kümmern uns um den',
+    titleAccent: 'Verkauf',
+    subtitle: 'Verkaufen ist mehr als ein Inserat. Es geht um Preis, Präsentation und Verhandlung. Wir setzen den Prozess so auf, dass Sie gut und ohne Fehler verkaufen.',
     cta: 'Ich möchte meine Immobilie verkaufen',
   },
 };
@@ -186,7 +186,7 @@ export const CHCEM_PRENAJAT_HERO_COPY: Record<LanguageCode, {
   cta: string;
 }> = {
   sk: {
-    label: 'Celoročná starostlivosť o váš prenájom',
+    label: 'Prenájom nehnuteľnosti',
     titleStart: 'Prenajmite',
     titleAccent: 'bez starostí.',
     subtitle: 'Máte byt alebo dom na prenájom? Postaráme sa o všetko – od výberu nájomníka až po pravidelnú kontrolu platieb.',
@@ -194,7 +194,7 @@ export const CHCEM_PRENAJAT_HERO_COPY: Record<LanguageCode, {
     cta: 'Chcem prenajať svoju nehnuteľnosť',
   },
   en: {
-    label: 'Year-round care for your rental',
+    label: 'Property rental service',
     titleStart: 'Rent out',
     titleAccent: 'without stress.',
     subtitle: 'Do you have an apartment or house for rent? We handle everything—from tenant selection to payment control.',
@@ -202,7 +202,7 @@ export const CHCEM_PRENAJAT_HERO_COPY: Record<LanguageCode, {
     cta: 'I want to rent out my property',
   },
   de: {
-    label: 'Ganzjährige Betreuung Ihrer Vermietung',
+    label: 'Immobilienvermietung',
     titleStart: 'Vermieten Sie',
     titleAccent: 'ohne Sorgen.',
     subtitle: 'Sie haben eine Wohnung oder ein Haus zu vermieten? Wir kümmern uns um alles – von der Mieterauswahl bis zur Zahlungskontrolle.',
@@ -226,7 +226,7 @@ export const WHY_FRISCO_COPY: Record<LanguageCode, {
   seekerRentLabel: string;
 }> = {
   sk: {
-    badge: 'Prečo Frisco?',
+    badge: 'Prečo FRISCO?',
     title: 'Komplexné',
     accent: 'riešenia',
     subtitleDesktop: 'Či predávate, kupujete alebo prenajímate — vieme, čo potrebujete. Vyberte si svoju situáciu.',
@@ -240,7 +240,7 @@ export const WHY_FRISCO_COPY: Record<LanguageCode, {
     seekerRentLabel: 'Prenajať',
   },
   en: {
-    badge: 'Why Frisco?',
+    badge: 'Why FRISCO?',
     title: 'Complete',
     accent: 'solutions',
     subtitleDesktop: 'Whether you sell, buy, or rent, we know what you need. Choose your situation.',
@@ -254,7 +254,7 @@ export const WHY_FRISCO_COPY: Record<LanguageCode, {
     seekerRentLabel: 'Rent',
   },
   de: {
-    badge: 'Warum Frisco?',
+    badge: 'Warum FRISCO?',
     title: 'Komplette',
     accent: 'Lösungen',
     subtitleDesktop: 'Ob Verkauf, Kauf oder Vermietung – wir wissen, was Sie brauchen. Wählen Sie Ihre Situation.',
@@ -281,9 +281,9 @@ export const KONTAKT_COPY: Record<LanguageCode, {
 }> = {
   sk: {
     heroLabel: 'Kontaktujte nás',
-    heroTitleStart: 'Poďme spolu',
-    heroTitleAccent: 'spolupracovať',
-    heroSubtitle: 'Sme tu pre vás. Či už predávate, kupujete alebo len hľadáte radu – radi vám pomôžeme s akoukoľvek otázkou.',
+    heroTitleStart: 'Poďme nájsť',
+    heroTitleAccent: 'riešenie pre vás.',
+    heroSubtitle: 'Či už predávate, prenajímate, kupujete alebo len hľadáte radu, radi Vám pomôžeme s akoukoľvek otázkou. Sme tu pre Vás.',
     sectionBadge: 'Napíšte nám',
     sectionTitleStart: 'Neváhajte nás',
     sectionTitleAccent: 'kontaktovať',
@@ -358,7 +358,7 @@ export const ABOUT_COPY: Record<LanguageCode, {
   features: Array<{ id: string; title: string; description: string; stat: string; statLabel: string }>;
 }> = {
   sk: {
-    label: 'Prečo Frisco? / Manifesto',
+    label: 'Prečo FRISCO? / Manifesto',
     titleLine1: 'My sme',
     titleAccent: 'FRISCO.',
     description: 'Sme rodinná firma a za každým obchodom vidíme človeka, nie províziu.',
@@ -370,7 +370,7 @@ export const ABOUT_COPY: Record<LanguageCode, {
     ],
   },
   en: {
-    label: 'Why Frisco? / Manifesto',
+    label: 'Why FRISCO? / Manifesto',
     titleLine1: 'We are',
     titleAccent: 'FRISCO.',
     description: 'We are a family business and behind every deal we see a person, not a commission.',
@@ -382,7 +382,7 @@ export const ABOUT_COPY: Record<LanguageCode, {
     ],
   },
   de: {
-    label: 'Warum Frisco? / Manifest',
+    label: 'Warum FRISCO? / Manifest',
     titleLine1: 'Wir sind',
     titleAccent: 'FRISCO.',
     description: 'Wir sind ein Familienunternehmen und sehen hinter jedem Geschäft einen Menschen, nicht nur eine Provision.',
@@ -409,7 +409,7 @@ export const PROCESS_COPY: Record<LanguageCode, {
       { number: '01', title: 'Prvé stretnutie', description: 'Začneme nezáväzným rozhovorom. Či už chcete predať, prenajať alebo hľadáte nové bývanie, najskôr si vypočujeme vaše predstavy a ciele.' },
       { number: '02', title: 'Dohodneme si plán', description: 'Navrhneme konkrétny postup podľa vašej situácie. Majiteľom nastavíme správnu cenu a stratégiu predaja/prenájmu. Záujemcom pomôžeme nájsť nehnuteľnosť, ktorá dáva zmysel ich potrebám aj rozpočtu.' },
       { number: '03', title: 'O všetko sa postaráme', description: 'Postaráme sa o celý proces. Od profesionálnej prezentácie a komunikácie so záujemcami až po vyhľadávanie vhodných ponúk a organizovanie obhliadok. Vy sa môžete sústrediť na to podstatné.' },
-      { number: '04', title: 'Sme s vami aj po podpise', description: 'Zabezpečíme právny servis a bezpečný prevod. Vybavíme aj prepis energií (voda, elektrina, plyn). Naša práca však odovzdaním kľúčov nekončí, sme tu pre vás aj naďalej.' },
+      { number: '04', title: 'Dotiahneme to do konca', description: 'Zabezpečíme právny servis, zmluvy aj bezpečný prevod. Sprevádzame vás až do momentu, keď sú podpísané papiere a odovzdané kľúče.' },
     ],
   },
   en: {
@@ -420,7 +420,7 @@ export const PROCESS_COPY: Record<LanguageCode, {
       { number: '01', title: 'Initial meeting', description: 'We start with a no-obligation conversation. Whether you want to sell, rent out, or find a new home, we first understand your goals.' },
       { number: '02', title: 'We define a plan', description: 'We design a clear plan for your situation. For owners we set pricing and strategy, and for seekers we find homes matching needs and budget.' },
       { number: '03', title: 'We handle everything', description: 'We manage the full process—from professional presentation and communication to searching offers and arranging viewings.' },
-      { number: '04', title: 'With you even after signing', description: 'We secure legal support and a safe transfer. We also handle the transfer of utility bills (water, electricity, gas). Our work does not end with the handover of keys, we are still here for you.' },
+      { number: '04', title: 'We close the deal', description: 'We secure legal support, contracts, and a safe transfer. We guide you through to signed documents and handover of keys.' },
     ],
   },
   de: {
@@ -431,7 +431,7 @@ export const PROCESS_COPY: Record<LanguageCode, {
       { number: '01', title: 'Erstgespräch', description: 'Wir beginnen mit einem unverbindlichen Gespräch. Ob Verkauf, Vermietung oder Suche – zuerst verstehen wir Ihre Ziele.' },
       { number: '02', title: 'Plan festlegen', description: 'Wir erstellen einen klaren Plan für Ihre Situation. Für Eigentümer setzen wir Preis und Strategie, für Suchende finden wir passende Angebote.' },
       { number: '03', title: 'Wir übernehmen alles', description: 'Wir steuern den gesamten Prozess – von Präsentation und Kommunikation bis zur Angebotssuche und Organisation von Besichtigungen.' },
-      { number: '04', title: 'Auch nach der Unterschrift für Sie da', description: 'Wir sichern Rechtsservice und eine sichere Abwicklung. Wir kümmern uns auch um die Ummeldung der Nebenkosten (Wasser, Strom, Gas). Unsere Arbeit endet nicht mit der Schlüsselübergabe, wir sind weiterhin für Sie da.' },
+      { number: '04', title: 'Bis zum Abschluss', description: 'Wir sichern Rechtsservice, Verträge und eine sichere Abwicklung. Wir begleiten Sie bis zur Unterzeichnung und Schlüsselübergabe.' },
     ],
   },
 };
@@ -526,14 +526,14 @@ export const FOOTER_COPY: Record<LanguageCode, {
     partner: 'Spolupracujeme s portálom',
     callUs: 'Zavolajte nám',
     writeUs: 'Alebo nám napíšte',
-    copyright: 'Frisco. Rodinná realitka v Seredi a okolí',
+    copyright: 'FRISCO. Rodinná realitka v Seredi a okolí',
     city: '',
     privacy: 'Ochrana osobných údajov',
     cookies: 'Cookies',
     madeBy: 'Web od',
     navItems: [
       { label: 'Domov', href: '/' },
-      { label: 'Prečo Frisco?', href: '/preco-frisco' },
+      { label: 'Prečo FRISCO?', href: '/preco-frisco' },
       { label: 'Ponuka', href: '/ponuka' },
       { label: 'Kontakt', href: '/kontakt' },
     ],
@@ -551,14 +551,14 @@ export const FOOTER_COPY: Record<LanguageCode, {
     partner: 'We cooperate with portal',
     callUs: 'Call us',
     writeUs: 'Or write to us',
-    copyright: 'Frisco. A family real estate agency in Sereď and surroundings',
+    copyright: 'FRISCO. A family real estate agency in Sereď and surroundings',
     city: '',
     privacy: 'Privacy policy',
     cookies: 'Cookies',
     madeBy: 'Built by',
     navItems: [
       { label: 'Home', href: '/' },
-      { label: 'Why Frisco?', href: '/preco-frisco' },
+      { label: 'Why FRISCO?', href: '/preco-frisco' },
       { label: 'Listings', href: '/ponuka' },
       { label: 'Contact', href: '/kontakt' },
     ],
@@ -576,14 +576,14 @@ export const FOOTER_COPY: Record<LanguageCode, {
     partner: 'Wir kooperieren mit dem Portal',
     callUs: 'Rufen Sie uns an',
     writeUs: 'Oder schreiben Sie uns',
-    copyright: 'Frisco. Familienimmobilienbüro in Sereď und Umgebung',
+    copyright: 'FRISCO. Familienimmobilienbüro in Sereď und Umgebung',
     city: '',
     privacy: 'Datenschutz',
     cookies: 'Cookies',
     madeBy: 'Built by',
     navItems: [
       { label: 'Startseite', href: '/' },
-      { label: 'Warum Frisco?', href: '/preco-frisco' },
+      { label: 'Warum FRISCO?', href: '/preco-frisco' },
       { label: 'Angebot', href: '/ponuka' },
       { label: 'Kontakt', href: '/kontakt' },
     ],

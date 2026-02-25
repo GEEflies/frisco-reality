@@ -90,7 +90,7 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
       type: 'article',
       images: primaryImage
         ? [{ url: primaryImage, width: 1200, height: 630, alt: listing.title }]
-        : [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: 'Frisco Reality' }],
+        : [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: 'FRISCO Reality' }],
     },
     twitter: {
       card: 'summary_large_image',

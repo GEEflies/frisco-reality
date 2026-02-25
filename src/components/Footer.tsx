@@ -81,7 +81,7 @@ export const Footer = () => {
           {/* COLUMN 1: LOGO & BRANDING */}
           {/* Mobile: full width, lg: 3 cols (row 1), xl: 3 cols */}
           <div className="col-span-2 lg:col-span-3 flex flex-col lg:pr-6 xl:pr-10">
-            <img src={friscoLogo} alt="Frisco" loading="lazy" decoding="async" className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8" />
+            <img src={friscoLogo} alt="FRISCO" loading="lazy" decoding="async" className="max-h-14 lg:max-h-20 w-auto object-contain object-left mb-6 lg:mb-8" />
             <h2 className="text-3xl sm:text-4xl xl:text-4xl font-serif font-bold text-navy leading-tight mb-8 min-h-[2.6em]">
               {typedMain}
               <span className="text-accent-red italic">{typedAccent}</span>

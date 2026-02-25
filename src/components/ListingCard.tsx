@@ -99,7 +99,7 @@ export const ListingCard = ({
                     />
                 ) : (
                     <div className="w-full h-full bg-cream-dark flex items-center justify-center">
-                        <span className="text-black/5 font-serif text-5xl italic tracking-tighter">Frisco</span>
+                        <span className="text-black/5 font-serif text-5xl italic tracking-tighter">FRISCO</span>
                     </div>
                 )}
             </div>

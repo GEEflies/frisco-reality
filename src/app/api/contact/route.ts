@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = 'Frisco Reality <frisco@karchi.xyz>';
+const FROM_EMAIL = 'FRISCO Reality <frisco@karchi.xyz>';
 // Change to 'info@frisco.sk' after testing is confirmed
 const TO_EMAIL = process.env.CONTACT_EMAIL ?? 'karol.jr@billik.sk';
-
-// Use Weserv CDN to cache and resize the imgBB image for instant loading
-// Original: https://i.ibb.co/5Xf2b1jT/frisco-navbar-logo.png
-const LOGO_URL = 'https://images.weserv.nl/?url=i.ibb.co/5Xf2b1jT/frisco-navbar-logo.png&w=240&output=png';
 
 function buildEmailHtml(name: string, email: string, phone: string, message: string): string {
   return `<!DOCTYPE html>
@@ -28,20 +24,10 @@ function buildEmailHtml(name: string, email: string, phone: string, message: str
           <!-- Header -->
           <tr>
             <td style="background-color:#1a1a1a;border-radius:16px 16px 0 0;padding:36px 40px;text-align:center;">
-              <!-- Logo with white background for visibility -->
-              <table align="center" cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                <tr>
-                  <td style="background-color:#ffffff;padding:12px 24px;border-radius:8px;">
-                    <img
-                      src="${LOGO_URL}"
-                      alt="Frisco Reality"
-                      width="120"
-                      style="display:block;max-width:120px;width:100%;height:auto;"
-                    />
-                  </td>
-                </tr>
-              </table>
-              <p style="margin:20px 0 0;color:#ffffff;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;opacity:0.5;">
+              <p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">
+                FRISCO
+              </p>
+              <p style="margin:12px 0 0;color:#ffffff;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;opacity:0.5;">
                 Kontaktný formulár
               </p>
             </td>
@@ -167,7 +153,7 @@ export async function POST(req: NextRequest) {
         from: FROM_EMAIL,
         to: [TO_EMAIL],
         reply_to: email,
-        subject: `Nová správa od ${name} — Frisco kontaktný formulár`,
+        subject: `Nová správa od ${name} — FRISCO kontaktný formulár`,
         html: buildEmailHtml(name, email, phone ?? '', message),
       }),
     });

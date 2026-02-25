@@ -84,9 +84,11 @@ export const Navbar = () => {
     };
   }, []);
 
-  const handleHomeClick = (e: React.MouseEvent) => {
-    const bare = stripLanguagePrefix(pathname ?? '/');
-    if (bare === '/') {
+  const handleNavClick = (e: React.MouseEvent, targetPath: string, closeMobileMenu = false) => {
+    if (closeMobileMenu) setIsMobileMenuOpen(false);
+
+    const currentPath = stripLanguagePrefix(pathname ?? '/');
+    if (currentPath === targetPath) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -146,12 +148,12 @@ export const Navbar = () => {
             style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}
           />
           <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
-            <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex-shrink-0">
+            <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className="relative z-10 flex-shrink-0">
               <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-16 pl-4" />
             </Link>
 
             <nav className="flex items-center gap-6 2xl:gap-10 flex-nowrap">
-              <Link href={l('/')} onClick={handleHomeClick} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+              <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
                 {navCopy.home}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
               </Link>
@@ -176,19 +178,19 @@ export const Navbar = () => {
                       role="menu"
                     >
                       <div className="bg-white shadow-lg border border-charcoal/5 min-w-[280px] rounded-xl overflow-hidden">
-                        <Link href={l('/ponuka')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group" role="menuitem" onClick={() => setIsPonukaHovered(false)}>
+                        <Link href={l('/ponuka')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group" role="menuitem" onClick={(e) => { setIsPonukaHovered(false); handleNavClick(e, '/ponuka'); }}>
                           <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-red group-hover:text-white transition-colors duration-200">
                             <Search size={16} className="text-navy/60 group-hover:text-white transition-colors duration-200" />
                           </div>
                           {navCopy.currentOffer}
                         </Link>
-                        <Link href={l('/chcem-predat')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group" role="menuitem" onClick={() => setIsPonukaHovered(false)}>
+                        <Link href={l('/chcem-predat')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 border-b border-charcoal/5 whitespace-normal group" role="menuitem" onClick={(e) => { setIsPonukaHovered(false); handleNavClick(e, '/chcem-predat'); }}>
                           <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-red group-hover:text-white transition-colors duration-200">
                             <Home size={16} className="text-navy/60 group-hover:text-white transition-colors duration-200" />
                           </div>
                           {navCopy.sell}
                         </Link>
-                        <Link href={l('/chcem-prenajat')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 whitespace-normal group" role="menuitem" onClick={() => setIsPonukaHovered(false)}>
+                        <Link href={l('/chcem-prenajat')} className="flex items-center gap-3.5 px-6 py-4 text-base font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-navy/[0.03] transition-all duration-200 whitespace-normal group" role="menuitem" onClick={(e) => { setIsPonukaHovered(false); handleNavClick(e, '/chcem-prenajat'); }}>
                           <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-red group-hover:text-white transition-colors duration-200">
                             <Key size={16} className="text-navy/60 group-hover:text-white transition-colors duration-200" />
                           </div>
@@ -200,12 +202,12 @@ export const Navbar = () => {
                 </AnimatePresence>
               </div>
 
-              <Link href={l('/preco-frisco')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+              <Link href={l('/preco-frisco')} onClick={(e) => handleNavClick(e, '/preco-frisco')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
                 {navCopy.whyFrisco}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
               </Link>
 
-              <Link href={l('/kontakt')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+              <Link href={l('/kontakt')} onClick={(e) => handleNavClick(e, '/kontakt')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
                 {navCopy.contact}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
               </Link>
@@ -294,7 +296,7 @@ export const Navbar = () => {
           backgroundColor: '#fff',
         }}
       >
-        <Link href={l('/')} onClick={handleHomeClick} className="relative z-10 flex items-center">
+        <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className="relative z-10 flex items-center">
           <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-14 w-auto object-contain transition-all duration-300" />
         </Link>
         <div className="flex items-center gap-2">
@@ -333,7 +335,7 @@ export const Navbar = () => {
         style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
       >
         <div className="flex-1 flex flex-col justify-center px-8 space-y-6">
-          <Link href={l('/')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => { setIsMobileMenuOpen(false); handleHomeClick(e); }}>
+          <Link href={l('/')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => handleNavClick(e, '/', true)}>
             {navCopy.home}
           </Link>
 
@@ -347,22 +349,22 @@ export const Navbar = () => {
               className={`overflow-hidden pl-4 flex flex-col space-y-4 ${isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
                 }`}
             >
-              <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={(e) => handleNavClick(e, '/ponuka', true)}>
                 <Search size={18} className="text-accent-red" /> {navCopy.currentOffer}
               </Link>
-              <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={l('/chcem-predat')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={(e) => handleNavClick(e, '/chcem-predat', true)}>
                 <Home size={18} className="text-accent-red" /> {navCopy.sell}
               </Link>
-              <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={l('/chcem-prenajat')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={(e) => handleNavClick(e, '/chcem-prenajat', true)}>
                 <Key size={18} className="text-accent-red" /> {navCopy.rent}
               </Link>
             </div>
           </div>
 
-          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/preco-frisco')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => handleNavClick(e, '/preco-frisco', true)}>
             {navCopy.whyFrisco}
           </Link>
-          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href={l('/kontakt')} className="text-4xl font-serif font-bold text-navy hover:text-accent-red transition-colors block tracking-tight" onClick={(e) => handleNavClick(e, '/kontakt', true)}>
             {navCopy.contact}
           </Link>
         </div>

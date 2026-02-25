@@ -18,7 +18,7 @@ const COPY: Record<LanguageCode, {
   sk: {
     title: 'Ponuka nehnuteľností na predaj a prenájom',
     description: 'Aktuálna ponuka prémiových nehnuteľností na Slovensku – byty, domy, pozemky a komerčné priestory na predaj aj prenájom. Filtrujte podľa lokality, ceny a typu.',
-    ogTitle: 'Ponuka nehnuteľností | Frisco Reality',
+    ogTitle: 'Ponuka nehnuteľností | FRISCO Reality',
     ogDescription: 'Prezrite si aktuálnu ponuku prémiových nehnuteľností na predaj a prenájom na Slovensku.',
     breadcrumbHome: 'Domov',
     breadcrumbPage: 'Ponuka',
@@ -26,7 +26,7 @@ const COPY: Record<LanguageCode, {
   en: {
     title: 'Property listings for sale and rent',
     description: 'Current portfolio of premium properties in Slovakia – apartments, houses, land, and commercial spaces for sale and rent.',
-    ogTitle: 'Property listings | Frisco Reality',
+    ogTitle: 'Property listings | FRISCO Reality',
     ogDescription: 'Browse current premium properties for sale and rent in Slovakia.',
     breadcrumbHome: 'Home',
     breadcrumbPage: 'Listings',
@@ -34,7 +34,7 @@ const COPY: Record<LanguageCode, {
   de: {
     title: 'Immobilienangebote zum Kauf und zur Miete',
     description: 'Aktuelles Angebot an Premium-Immobilien in der Slowakei – Wohnungen, Häuser, Grundstücke und Gewerbeobjekte zum Kauf und zur Miete.',
-    ogTitle: 'Immobilienangebote | Frisco Reality',
+    ogTitle: 'Immobilienangebote | FRISCO Reality',
     ogDescription: 'Entdecken Sie aktuelle Premium-Immobilien zum Kauf und zur Miete in der Slowakei.',
     breadcrumbHome: 'Startseite',
     breadcrumbPage: 'Angebot',

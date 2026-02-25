@@ -11,7 +11,7 @@ const PRIVACY_COPY = {
     sections: [
       {
         heading: '1. Prevádzkovateľ',
-        content: `Prevádzkovateľom osobných údajov je spoločnosť Frisco s.r.o., so sídlom Námestie Slobody 1185/30, 926 01 Sereď, IČO: 46 112 065, zapísaná v Obchodnom registri Okresného súdu Trnava.\n\nKontaktné údaje: info@frisco.sk, tel.: +421 905 447 220`,
+        content: `Prevádzkovateľom osobných údajov je spoločnosť FRISCO s.r.o., so sídlom Námestie Slobody 1185/30, 926 01 Sereď, IČO: 46 112 065, zapísaná v Obchodnom registri Okresného súdu Trnava.\n\nKontaktné údaje: info@frisco.sk, tel.: +421 905 447 220`,
       },
       {
         heading: '2. Aké údaje spracúvame',
@@ -45,7 +45,7 @@ const PRIVACY_COPY = {
     sections: [
       {
         heading: '1. Data Controller',
-        content: `The controller of personal data is Frisco s.r.o., registered office at Námestie Slobody 1185/30, 926 01 Sereď, Slovakia, Company ID: 46 112 065.\n\nContact: info@frisco.sk, tel.: +421 905 447 220`,
+        content: `The controller of personal data is FRISCO s.r.o., registered office at Námestie Slobody 1185/30, 926 01 Sereď, Slovakia, Company ID: 46 112 065.\n\nContact: info@frisco.sk, tel.: +421 905 447 220`,
       },
       {
         heading: '2. Data We Collect',
@@ -79,7 +79,7 @@ const PRIVACY_COPY = {
     sections: [
       {
         heading: '1. Verantwortlicher',
-        content: `Verantwortlicher für die Verarbeitung personenbezogener Daten ist Frisco s.r.o., Námestie Slobody 1185/30, 926 01 Sereď, Slowakei, ID: 46 112 065.\n\nKontakt: info@frisco.sk, Tel.: +421 905 447 220`,
+        content: `Verantwortlicher für die Verarbeitung personenbezogener Daten ist FRISCO s.r.o., Námestie Slobody 1185/30, 926 01 Sereď, Slowakei, ID: 46 112 065.\n\nKontakt: info@frisco.sk, Tel.: +421 905 447 220`,
       },
       {
         heading: '2. Welche Daten wir verarbeiten',

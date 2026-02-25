@@ -74,7 +74,7 @@ export const TeamSection = () => {
         <div className="absolute inset-0 bg-white/40 z-10" />
         <img
           src={teamPhoto}
-          alt="Frisco Team"
+          alt="FRISCO Team"
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover object-top opacity-40"

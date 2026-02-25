@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
-const PLACE_ID = 'ChIJl_Du-49na0cRlwm_v28NCKs'; // Frisco Sereď Place ID
+const PLACE_ID = 'ChIJl_Du-49na0cRlwm_v28NCKs'; // FRISCO Sereď Place ID
 
 export async function GET() {
     if (!GOOGLE_PLACES_API_KEY) {

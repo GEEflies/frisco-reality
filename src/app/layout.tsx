@@ -9,6 +9,7 @@ import { ScrollToHash } from "@/components/ScrollToHash";
 import { SITE_URL, SITE_NAME, SITE_LOCALE, DEFAULT_OG_IMAGE, COMPANY_INFO, getOrganizationSchema, getWebSiteSchema } from "@/config/seo";
 import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -42,39 +43,39 @@ const LAYOUT_SEO: Record<LanguageCode, {
   locale: string;
 }> = {
   sk: {
-    defaultTitle: 'Frisco Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
+    defaultTitle: 'FRISCO Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
     description: 'Exkluzívna realitná kancelária špecializujúca sa na predaj a prenájom nehnuteľností. Rodinná firma s osobným prístupom.',
     keywords: [
       'reality Slovensko', 'nehnuteľnosti predaj', 'nehnuteľnosti prenájom', 'luxusné byty Slovensko', 'domy na predaj', 'realitná kancelária',
-      'Frisco Reality', 'prémiové nehnuteľnosti', 'predaj bytov', 'prenájom bytov', 'Sereď', 'rodinné domy', 'pozemky', 'komerčné priestory',
+      'FRISCO Reality', 'prémiové nehnuteľnosti', 'predaj bytov', 'prenájom bytov', 'Sereď', 'rodinné domy', 'pozemky', 'komerčné priestory',
     ],
-    ogTitle: 'Frisco Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
+    ogTitle: 'FRISCO Reality | Exkluzívne nehnuteľnosti v Seredi a okolí',
     ogDescription: 'Exkluzívna realitná kancelária špecializujúca sa na predaj a prenájom nehnuteľností. Rodinná firma s osobným prístupom.',
-    ogAlt: 'Frisco Reality – Exkluzívne nehnuteľnosti v Seredi a okolí',
+    ogAlt: 'FRISCO Reality – Exkluzívne nehnuteľnosti v Seredi a okolí',
     locale: SITE_LOCALE,
   },
   en: {
-    defaultTitle: 'Frisco Reality | Premium Real Estate in Slovakia',
+    defaultTitle: 'FRISCO Reality | Premium Real Estate in Slovakia',
     description: 'Premium real estate agency focused on selling and renting high-end properties in Slovakia. Family business with a personal approach, free valuation and professional presentation.',
     keywords: [
       'real estate Slovakia', 'property for sale Slovakia', 'property for rent Slovakia', 'luxury apartments Slovakia', 'houses for sale Slovakia',
-      'Frisco Reality', 'premium properties', 'property valuation', 'home staging', 'Sered real estate',
+      'FRISCO Reality', 'premium properties', 'property valuation', 'home staging', 'Sered real estate',
     ],
-    ogTitle: 'Frisco Reality | Premium Real Estate in Slovakia',
-    ogDescription: 'Premium agency for property sales and rentals in Slovakia. Find your next home with Frisco Reality.',
-    ogAlt: 'Frisco Reality – Premium real estate in Slovakia',
+    ogTitle: 'FRISCO Reality | Premium Real Estate in Slovakia',
+    ogDescription: 'Premium agency for property sales and rentals in Slovakia. Find your next home with FRISCO Reality.',
+    ogAlt: 'FRISCO Reality – Premium real estate in Slovakia',
     locale: 'en_US',
   },
   de: {
-    defaultTitle: 'Frisco Reality | Premium-Immobilien in der Slowakei',
+    defaultTitle: 'FRISCO Reality | Premium-Immobilien in der Slowakei',
     description: 'Premium-Immobilienagentur für Verkauf und Vermietung hochwertiger Immobilien in der Slowakei. Familienunternehmen mit persönlichem Ansatz, kostenloser Bewertung und professioneller Präsentation.',
     keywords: [
       'Immobilien Slowakei', 'Immobilienverkauf Slowakei', 'Immobilienvermietung Slowakei', 'Luxuswohnungen Slowakei', 'Häuser zu verkaufen Slowakei',
-      'Frisco Reality', 'Premium Immobilien', 'Immobilienbewertung', 'Home Staging', 'Sered Immobilien',
+      'FRISCO Reality', 'Premium Immobilien', 'Immobilienbewertung', 'Home Staging', 'Sered Immobilien',
     ],
-    ogTitle: 'Frisco Reality | Premium-Immobilien in der Slowakei',
-    ogDescription: 'Premium-Agentur für Verkauf und Vermietung von Immobilien in der Slowakei. Finden Sie Ihr neues Zuhause mit Frisco Reality.',
-    ogAlt: 'Frisco Reality – Premium-Immobilien in der Slowakei',
+    ogTitle: 'FRISCO Reality | Premium-Immobilien in der Slowakei',
+    ogDescription: 'Premium-Agentur für Verkauf und Vermietung von Immobilien in der Slowakei. Finden Sie Ihr neues Zuhause mit FRISCO Reality.',
+    ogAlt: 'FRISCO Reality – Premium-Immobilien in der Slowakei',
     locale: 'de_DE',
   },
 };
@@ -88,7 +89,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(SITE_URL),
     title: {
       default: localized.defaultTitle,
-      template: '%s | Frisco Reality',
+      template: '%s | FRISCO Reality',
     },
     description: localized.description,
     keywords: localized.keywords,
@@ -181,6 +182,7 @@ export default async function RootLayout({
           <div id="app-wrapper">
             {children}
           </div>
+          <Analytics />
         </Providers>
       </body>
     </html>

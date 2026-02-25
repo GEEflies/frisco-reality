@@ -84,8 +84,7 @@ export const ContactSection = () => {
                 title={copy.hours}
                 content={
                   <>
-                    <span className="font-bold">{copy.weekdays}</span> 9:00 - 17:00<br />
-                    <span className="font-bold">{copy.weekend}</span> {sectionCopy.closed}
+                    <span className="font-bold">{copy.weekdays}</span> 9-12, 13-17
                   </>
                 }
               />

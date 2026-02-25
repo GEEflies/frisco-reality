@@ -6,18 +6,18 @@ export const dynamic = 'force-dynamic';
 
 const MANIFEST_COPY: Record<LanguageCode, { name: string; shortName: string; description: string }> = {
   sk: {
-    name: 'Frisco Reality – Prémiové nehnuteľnosti na Slovensku',
-    shortName: 'Frisco Reality',
+    name: 'FRISCO Reality – Prémiové nehnuteľnosti na Slovensku',
+    shortName: 'FRISCO Reality',
     description: 'Prémiová realitná kancelária špecializujúca sa na predaj a prenájom luxusných nehnuteľností na Slovensku.',
   },
   en: {
-    name: 'Frisco Reality – Premium Real Estate in Slovakia',
-    shortName: 'Frisco Reality',
+    name: 'FRISCO Reality – Premium Real Estate in Slovakia',
+    shortName: 'FRISCO Reality',
     description: 'Premium real estate agency focused on high-end property sales and rentals in Slovakia.',
   },
   de: {
-    name: 'Frisco Reality – Premium-Immobilien in der Slowakei',
-    shortName: 'Frisco Reality',
+    name: 'FRISCO Reality – Premium-Immobilien in der Slowakei',
+    shortName: 'FRISCO Reality',
     description: 'Premium-Immobilienagentur für den Verkauf und die Vermietung hochwertiger Immobilien in der Slowakei.',
   },
 };

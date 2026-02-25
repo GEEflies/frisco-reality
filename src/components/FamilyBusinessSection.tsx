@@ -185,7 +185,7 @@ export const FamilyBusinessSection = () => {
                                     }}
                                 />
                             </svg>
-                            {/* Central Frisco Logo Element or Emblem could go here if available, using a simple circle for now */}
+                            {/* Central FRISCO Logo Element or Emblem could go here if available, using a simple circle for now */}
                             <motion.div
                                 initial={{ scale: 0, opacity: 0 }}
                                 whileInView={{ scale: 1, opacity: 1 }}

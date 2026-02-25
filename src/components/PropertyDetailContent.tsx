@@ -77,7 +77,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             offer: 'Ponuka',
             lookingForProperty: 'Hľadám nehnuteľnosť',
             wantSellRent: 'Chcem predať/prenajať',
-            whyFrisco: 'Prečo Frisco?',
+            whyFrisco: 'Prečo FRISCO?',
             contact: 'Kontakt',
             allPhotos: 'Všetky fotky',
             forSaleFallback: 'Na predaj',
@@ -121,7 +121,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             offer: 'Offer',
             lookingForProperty: 'Looking for a property',
             wantSellRent: 'I want to sell/rent',
-            whyFrisco: 'Why Frisco?',
+            whyFrisco: 'Why FRISCO?',
             contact: 'Contact',
             allPhotos: 'All photos',
             forSaleFallback: 'For sale',
@@ -165,7 +165,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             offer: 'Angebot',
             lookingForProperty: 'Ich suche eine Immobilie',
             wantSellRent: 'Ich möchte verkaufen/vermieten',
-            whyFrisco: 'Warum Frisco?',
+            whyFrisco: 'Warum FRISCO?',
             contact: 'Kontakt',
             allPhotos: 'Alle Fotos',
             forSaleFallback: 'Zu verkaufen',
@@ -473,7 +473,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         {/* Fill empty slots if less than 5 images */}
                         {images.length < 5 && Array.from({ length: 5 - images.length }).map((_, idx) => (
                             <div key={`empty-${idx}`} className="bg-cream-dark flex items-center justify-center">
-                                <span className="text-black/10 font-serif text-3xl italic">Frisco</span>
+                                <span className="text-black/10 font-serif text-3xl italic">FRISCO</span>
                             </div>
                         ))}
                     </div>

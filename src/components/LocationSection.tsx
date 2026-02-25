@@ -106,14 +106,14 @@ export const LocationSection = () => {
                         {/* Background Image & Overlay */}
                         <div className="absolute inset-0">
                             <img
-                                src="/storefront.jpeg"
+                                src="/frisco-realitka.jpeg"
                                 alt={copy.officeAlt}
                                 loading="lazy"
                                 decoding="async"
                                 className="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-700"
                             />
                             {/* Heavier light overlay for "Interaktívna mapa" feel if desired, or keep dark. 
-                                The Billik one has a light overlay. Frisco brand is usually dark overlay. 
+                                The Billik one has a light overlay. FRISCO brand is usually dark overlay. 
                                 User said "Billik seems way better". Billik is Light. 
                                 I will try a lighter look but ensuring text readability. 
                                 Actually, sticking to the current dark overlay but cleaner might be safer for contrast, 
@@ -202,11 +202,7 @@ export const LocationSection = () => {
                                 <div className="space-y-3 text-sm md:text-base pl-[3.25rem]">
                                     <div className="flex items-center gap-x-3 border-b border-gray-50 pb-2">
                                         <span className="font-bold text-navy">{copy.weekdays}</span>
-                                        <span className="text-charcoal/80">9:00 - 17:00</span>
-                                    </div>
-                                    <div className="flex items-center gap-x-3">
-                                        <span className="font-bold text-navy">{copy.weekend}</span>
-                                        <span className="text-charcoal/80">{copy.closed}</span>
+                                        <span className="text-charcoal/80">9-12, 13-17</span>
                                     </div>
                                 </div>
                             </div>

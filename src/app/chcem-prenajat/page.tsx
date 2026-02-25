@@ -17,22 +17,22 @@ const COPY: Record<LanguageCode, {
 }> = {
   sk: {
     metaTitle: 'Chcem prenajať nehnuteľnosť – správa a prenájom',
-    metaDescription: 'Prenajmite svoju nehnuteľnosť s istotou cez Frisco Reality. Nájdeme vám spoľahlivého nájomcu, pripravíme nájomnú zmluvu a postaráme sa o celý proces prenájmu od A po Z.',
-    ogTitle: 'Chcem prenajať nehnuteľnosť | Frisco Reality',
+    metaDescription: 'Prenajmite svoju nehnuteľnosť s istotou cez FRISCO Reality. Nájdeme vám spoľahlivého nájomcu, pripravíme nájomnú zmluvu a postaráme sa o celý proces prenájmu od A po Z.',
+    ogTitle: 'Chcem prenajať nehnuteľnosť | FRISCO Reality',
     ogDescription: 'Nájdeme vám ideálneho nájomcu. Kompletný servis pri prenájme nehnuteľností.',
     serviceName: 'Prenájom nehnuteľností',
     serviceDescription: 'Kompletný servis pri prenájme – nájdenie spoľahlivého nájomcu, príprava nájomnej zmluvy, foto prezentácia a správa prenájmu.',
     breadcrumbHome: 'Domov',
     breadcrumbPage: 'Chcem prenajať',
     faqs: [
-      { question: 'Ako nájsť spoľahlivého nájomcu?', answer: 'Frisco Reality overuje každého nájomcu, kontroluje bonitu a referencie. Postaráme sa o kvalitný výber, aby ste mali istotu spoľahlivého prenájmu.' },
+      { question: 'Ako nájsť spoľahlivého nájomcu?', answer: 'FRISCO Reality overuje každého nájomcu, kontroluje bonitu a referencie. Postaráme sa o kvalitný výber, aby ste mali istotu spoľahlivého prenájmu.' },
       { question: 'Čo zahŕňa servis pri prenájme?', answer: 'Náš servis zahŕňa profesionálnu prezentáciu nehnuteľnosti, vyhľadanie a overenie nájomcov, prípravu nájomnej zmluvy a odovzdanie nehnuteľnosti.' },
     ],
   },
   en: {
     metaTitle: 'I want to rent out a property – full rental management',
-    metaDescription: 'Rent out your property with confidence via Frisco Reality. We find reliable tenants, prepare agreements, and handle the full rental process.',
-    ogTitle: 'Rent out a property | Frisco Reality',
+    metaDescription: 'Rent out your property with confidence via FRISCO Reality. We find reliable tenants, prepare agreements, and handle the full rental process.',
+    ogTitle: 'Rent out a property | FRISCO Reality',
     ogDescription: 'We find qualified tenants and manage the full rental process for you.',
     serviceName: 'Property rental management',
     serviceDescription: 'Complete rental service: tenant sourcing and screening, contract preparation, presentation, and ongoing rental support.',
@@ -45,8 +45,8 @@ const COPY: Record<LanguageCode, {
   },
   de: {
     metaTitle: 'Ich möchte eine Immobilie vermieten – Verwaltung und Vermietung',
-    metaDescription: 'Vermieten Sie Ihre Immobilie sicher mit Frisco Reality. Wir finden zuverlässige Mieter, erstellen den Mietvertrag und begleiten den gesamten Vermietungsprozess.',
-    ogTitle: 'Immobilie vermieten | Frisco Reality',
+    metaDescription: 'Vermieten Sie Ihre Immobilie sicher mit FRISCO Reality. Wir finden zuverlässige Mieter, erstellen den Mietvertrag und begleiten den gesamten Vermietungsprozess.',
+    ogTitle: 'Immobilie vermieten | FRISCO Reality',
     ogDescription: 'Wir finden passende Mieter und übernehmen den kompletten Vermietungsservice.',
     serviceName: 'Immobilienvermietung',
     serviceDescription: 'Komplettservice bei der Vermietung: Mietersuche und Prüfung, Vertragsvorbereitung, Präsentation und laufende Betreuung.',

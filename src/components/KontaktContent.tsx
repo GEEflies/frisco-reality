@@ -154,8 +154,9 @@ const Kontakt = () => {
                 <h1
                   className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
                 >
-                  {copy.heroTitleStart} <br />
-                  <span className="text-accent-red italic">{copy.heroTitleAccent}</span>.
+                  <span className="inline-block whitespace-nowrap">{copy.heroTitleStart}</span>
+                  <br />
+                  <span className="inline-block whitespace-nowrap text-accent-red italic">{copy.heroTitleAccent}</span>
                 </h1>
 
                 <p
@@ -165,14 +166,17 @@ const Kontakt = () => {
                 </p>
               </div>
 
-              {/* Image Content - Placeholder */}
+              {/* Image Content */}
               <div
-                className="relative hidden lg:flex flex-col items-center justify-center story-media stagger-4 aspect-[4/3] bg-navy/5 rounded-3xl border border-navy/10"
+                className="relative hidden lg:flex story-media stagger-4 aspect-[4/3] bg-navy/5 rounded-3xl border border-navy/10 overflow-hidden"
               >
-                <h2 className="font-serif italic text-6xl text-navy mb-4 uppercase">FRISCO</h2>
-                <p className="text-charcoal/60 text-center px-8 font-sans max-w-md">
-                  {pageCopy.imagePlaceholder}
-                </p>
+                <img
+                  src="/frisco-realitka.jpeg"
+                  alt={pageCopy.heroAlt}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
 
                 {/* Decorative Elements around image */}
                 <div className="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-navy/20 rounded-tr-3xl -z-10" />
@@ -180,6 +184,122 @@ const Kontakt = () => {
               </div>
 
             </div>
+          </div>
+        </section>
+
+        {/* Team Section */}
+        <section className="reveal smooth-reveal py-14 md:py-20 bg-white overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-navy/5 to-transparent" />
+          <div className="container mx-auto px-6">
+
+            {/* Header */}
+            <div className="max-w-5xl mx-auto mb-12 md:mb-16 rv-child">
+              <span className="block text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 border-b border-navy/30 pb-2 w-fit">
+                {language === 'sk' ? 'Náš tím' : language === 'en' ? 'Our team' : 'Unser Team'}
+              </span>
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-navy tracking-tight leading-[1.1]">
+                {language === 'sk' ? 'S kým sa vo FRISCU' : language === 'en' ? 'Who you will meet' : 'Wen Sie bei FRISCO'}{' '}
+                <span className="text-accent-red italic">
+                  {language === 'sk' ? 'stretnete' : language === 'en' ? 'at FRISCO' : 'treffen'}
+                </span>
+              </h2>
+            </div>
+
+            {/* Bento grid: Denisa left (tall), Peter top-right, Rado bottom-right */}
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6 md:gap-6">
+
+              {/* Denisa — left, spans full height */}
+              <div className="rv-child md:row-span-2">
+                <div className="bg-white border border-navy/10 rounded-2xl overflow-hidden h-full flex flex-col">
+                  <div className="h-[350px] md:h-[400px] overflow-hidden">
+                    <img
+                      src="/pani-krizova.jpeg"
+                      alt="Denisa Krížová"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="p-6 md:p-8">
+                    <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Denisa Krížová</h3>
+                    <p className="text-accent-red text-xs font-bold uppercase tracking-[0.15em] mb-4">
+                      {language === 'sk' ? 'Senior maklérka' : language === 'en' ? 'Senior Agent' : 'Senior-Maklerin'}
+                    </p>
+                    <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
+                      {language === 'sk'
+                        ? 'Zdvihne vám telefón, dohodne obhliadku a postráži každý papier. Pani Križová je tá, vďaka ktorej u nás všetko funguje.'
+                        : language === 'en'
+                          ? "She answers your calls, arranges viewings, and keeps an eye on every document. Mrs. Križová is the reason everything runs smoothly here."
+                          : 'Sie geht ans Telefon, vereinbart Besichtigungen und behält jedes Dokument im Auge. Frau Križová ist der Grund, warum bei uns alles reibungslos läuft.'}
+                    </p>
+                    <a href="tel:+421905447220" className="group/link inline-flex items-center gap-2 text-charcoal/50 hover:text-navy transition-colors">
+                      <div className="p-2 rounded-full border border-navy/10 group-hover/link:border-navy group-hover/link:bg-navy/5 transition-all">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-medium">+421 905 447 220</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Peter — top right */}
+              <div className="rv-child">
+                <div className="bg-white border border-navy/10 p-6 md:p-8 rounded-2xl h-full">
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
+                      <img src="/frisco-favicon.png" alt="FRISCO" className="w-full h-full object-contain" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Bc. Peter Križo</h3>
+                  <p className="text-accent-red text-xs font-bold uppercase tracking-[0.15em] mb-4">
+                    {language === 'sk' ? 'Konateľ & maklér' : language === 'en' ? 'CEO & Broker' : 'Geschäftsführer & Makler'}
+                  </p>
+                  <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
+                    {language === 'sk'
+                      ? 'Za 18 rokov v realitách už zažil všetko. Pán Križo je pri každom dôležitom rozhodnutí, rokuje o cene a povie vám veci na rovinu, bez zbytočných sľubov.'
+                      : language === 'en'
+                        ? 'In 18 years in real estate, he has seen it all. Mr. Križo is there for every important decision, negotiates prices, and tells it like it is, without empty promises.'
+                        : 'In 18 Jahren in der Immobilienbranche hat er alles gesehen. Herr Križo ist bei jeder wichtigen Entscheidung dabei, verhandelt Preise und sagt Ihnen die Dinge direkt, ohne leere Versprechungen.'}
+                  </p>
+                  <a href="tel:+421905740700" className="group/link inline-flex items-center gap-2 text-charcoal/50 hover:text-navy transition-colors">
+                    <div className="p-2 rounded-full border border-navy/10 group-hover/link:border-navy group-hover/link:bg-navy/5 transition-all">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <span className="text-sm font-medium">+421 905 740 700</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Radoslav — bottom right, same format as Peter */}
+              <div className="rv-child">
+                <div className="bg-white border border-navy/10 p-6 md:p-8 rounded-2xl h-full">
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
+                      <img src="/r-poist.png" alt="R Poišt" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Mgr. Radoslav Štrpka</h3>
+                  <p className="text-accent-red text-xs font-bold uppercase tracking-[0.15em] mb-4">
+                    {language === 'sk' ? 'Financie & poistenie' : language === 'en' ? 'Finance & Insurance' : 'Finanzen & Versicherung'}
+                  </p>
+                  <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
+                    {language === 'sk'
+                      ? 'Náš špecialista na financie. Pán Štrpka vám vybaví najlepšiu hypotéku na trhu a ušetrí vám desiatky hodín sedenia na pobočkách.'
+                      : language === 'en'
+                        ? "Our finance specialist. Mr. Štrpka will get you the best mortgage on the market and save you dozens of hours sitting in bank branches."
+                        : 'Unser Finanzspezialist. Herr Štrpka besorgt Ihnen die beste Hypothek auf dem Markt und erspart Ihnen Dutzende von Stunden in Bankfilialen.'}
+                  </p>
+                  <a href="tel:+421908417127" className="group/link inline-flex items-center gap-2 text-charcoal/50 hover:text-navy transition-colors">
+                    <div className="p-2 rounded-full border border-navy/10 group-hover/link:border-navy group-hover/link:bg-navy/5 transition-all">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <span className="text-sm font-medium">+421 908 417 127</span>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </section>
 
@@ -236,10 +356,10 @@ const Kontakt = () => {
                     icon={Clock}
                     title={pageCopy.hours}
                     content={language === 'sk'
-                      ? <>Po - Pi: 9:00 - 18:00<br />So: 10:00 - 14:00</>
+                      ? <><span className="font-bold">Po - Pi:</span> 9-12, 13-17</>
                       : language === 'en'
-                        ? <>Mon - Fri: 9:00 - 18:00<br />Sat: 10:00 - 14:00</>
-                        : <>Mo - Fr: 9:00 - 18:00<br />Sa: 10:00 - 14:00</>}
+                        ? <><span className="font-bold">Mon - Fri:</span> 9-12, 13-17</>
+                        : <><span className="font-bold">Mo - Fr:</span> 9-12, 13-17</>}
                   />
                   <ContactCard
                     icon={FileText}
