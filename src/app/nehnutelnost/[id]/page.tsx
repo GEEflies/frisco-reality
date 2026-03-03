@@ -126,7 +126,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         name: listing.title,
         description: listing.description || `${categoryLabel} – ${listing.title}`,
         url: pageUrl,
-        image: primaryImage,
+        image: primaryImage ?? undefined,
         price: listing.price,
         currency: CURRENCY_MAP[listing.price_currency] || 'EUR',
         address: {

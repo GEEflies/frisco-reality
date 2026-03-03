@@ -587,7 +587,7 @@ export const PropertiesSection = () => {
                       price={priceLabel}
                       location={[listing.location_city, listing.location_district].filter(Boolean).join(', ')}
                       description={listing.description || undefined}
-                      image={image}
+                      image={image ?? undefined}
                       status={status.label}
                       statusColor={status.color}
                       features={features}
