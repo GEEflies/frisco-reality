@@ -243,7 +243,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // Handle "Mám záujem" button
     const handleInterest = () => {
         const subject = encodeURIComponent(`${copy.interestSubject} ${listing?.title || copy.propertyFallback}`);
-        const body = encodeURIComponent(`${copy.interestBody}${listing?.title}${copy.interestBodyId}${listing?.uc_source_id || listing?.id}${copy.interestBodyUrl}${window.location.href}${copy.interestBodyEnd}`);
+        const body = encodeURIComponent(`${copy.interestBody}${listing?.title}${copy.interestBodyId}${listing?.uc_object_id || listing?.id}${copy.interestBodyUrl}${window.location.href}${copy.interestBodyEnd}`);
         window.location.href = `mailto:${CONTACT.email}?subject=${subject}&body=${body}`;
     };
 
@@ -298,7 +298,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     const currentImage = images[currentImageIndex] || '';
 
     // Format price
-    const isRent = listing.transaction_id === 123 || listing.transaction_id === 124;
+    const isRent = listing.action === 3;
     const priceDisplay = isRent
         ? `${formatPrice(listing.price)}${copy.perMonth}`
         : formatPrice(listing.price);
@@ -307,24 +307,46 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     const features = [];
     if (listing.usable_area) features.push({ icon: Maximize, label: copy.usableArea, value: formatArea(listing.usable_area) });
     if (listing.building_area) features.push({ icon: Building2, label: copy.builtUpArea, value: formatArea(listing.building_area) });
-    if (listing.land_area) features.push({ icon: Trees, label: copy.landArea, value: formatArea(listing.land_area) });
+    if (listing.plot_area) features.push({ icon: Trees, label: copy.landArea, value: formatArea(listing.plot_area) });
     if (listing.rooms_count) features.push({ icon: Home, label: copy.roomCount, value: `${listing.rooms_count}` });
     if (listing.floor) features.push({ icon: Building2, label: copy.floor, value: `${listing.floor}.` });
-    if (listing.year_of_construction) features.push({ icon: Calendar, label: copy.yearBuilt, value: `${listing.year_of_construction}` });
+    if (listing.age) features.push({ icon: Calendar, label: copy.yearBuilt, value: `${listing.age}` });
 
-    // Build amenities list
+    // Build amenities from extra_data boolean fields
     const amenities: string[] = [];
-    if (listing.estate_equipment) {
-        listing.estate_equipment.forEach(id => {
-            const equipment = getLocalizedEquipmentLabel(id, language);
-            if (equipment) amenities.push(equipment);
-        });
-    }
-    if (listing.heating_system) {
-        listing.heating_system.forEach(id => {
-            const heating = getLocalizedHeatingLabel(id, language);
-            if (heating) amenities.push(`${copy.heatingPrefix}${heating}`);
-        });
+    if (listing.extra_data) {
+        // Equipment/features
+        const featureKeys: Record<string, Record<string, string>> = {
+            balcony: { sk: 'Balkón', en: 'Balcony', de: 'Balkon' },
+            loggia: { sk: 'Lodžia', en: 'Loggia', de: 'Loggia' },
+            terrace: { sk: 'Terasa', en: 'Terrace', de: 'Terrasse' },
+            garage: { sk: 'Garáž', en: 'Garage', de: 'Garage' },
+            cellar_place: { sk: 'Pivnica', en: 'Cellar', de: 'Keller' },
+            storage_place: { sk: 'Komora', en: 'Storage', de: 'Abstellraum' },
+            lift: { sk: 'Výťah', en: 'Elevator', de: 'Aufzug' },
+            adv_pool: { sk: 'Bazén', en: 'Pool', de: 'Schwimmbad' },
+            adv_sauna: { sk: 'Sauna', en: 'Sauna', de: 'Sauna' },
+            adv_fire: { sk: 'Krb', en: 'Fireplace', de: 'Kamin' },
+            access_klima: { sk: 'Klimatizácia', en: 'Air conditioning', de: 'Klimaanlage' },
+        };
+        for (const [key, labels] of Object.entries(featureKeys)) {
+            if (listing.extra_data[key] && listing.extra_data[key] !== 0) {
+                amenities.push(labels[language] || labels['sk']);
+            }
+        }
+        // Heating
+        const heatingKeys: Record<string, Record<string, string>> = {
+            heating_central: { sk: 'Ústredné kúrenie', en: 'Central heating', de: 'Zentralheizung' },
+            heating_floor: { sk: 'Podlahové kúrenie', en: 'Underfloor heating', de: 'Fußbodenheizung' },
+            heating_local: { sk: 'Lokálne kúrenie', en: 'Local heating', de: 'Lokalheizung' },
+            heating_fire: { sk: 'Krbové kúrenie', en: 'Fireplace heating', de: 'Kaminheizung' },
+            heating_heat: { sk: 'Tepelné čerpadlo', en: 'Heat pump', de: 'Wärmepumpe' },
+        };
+        for (const [key, labels] of Object.entries(heatingKeys)) {
+            if (listing.extra_data[key] && listing.extra_data[key] !== 0) {
+                amenities.push(labels[language] || labels['sk']);
+            }
+        }
     }
 
     return (
@@ -527,11 +549,11 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         <div>
                             <div className="flex items-center gap-3 mb-3">
                                 <span className="px-3 py-1 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                                    {getLocalizedTransactionLabel(listing.transaction_id, language) || copy.forSaleFallback}
+                                    {getLocalizedTransactionLabel(listing.action, language) || copy.forSaleFallback}
                                 </span>
-                                {listing.real_estate_state && (
+                                {listing.condition && (
                                     <span className="px-3 py-1 bg-accent-red text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                                        {getLocalizedRealEstateStateLabel(listing.real_estate_state, language)}
+                                        {getLocalizedRealEstateStateLabel(listing.condition, language)}
                                     </span>
                                 )}
                             </div>
@@ -591,7 +613,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div className="flex justify-between py-3 border-b border-black/5">
                                     <span className="text-charcoal/60">{copy.category}</span>
-                                    <span className="font-medium">{getLocalizedCategoryLabel(listing.category_id, language)}</span>
+                                    <span className="font-medium">{getLocalizedCategoryLabel(listing.category, language)}</span>
                                 </div>
                                 {listing.ownership && (
                                     <div className="flex justify-between py-3 border-b border-black/5">
@@ -599,10 +621,10 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                         <span className="font-medium">{getLocalizedOwnershipLabel(listing.ownership, language)}</span>
                                     </div>
                                 )}
-                                {listing.building_type && listing.building_type[0] && (
+                                {listing.building_type && (
                                     <div className="flex justify-between py-3 border-b border-black/5">
                                         <span className="text-charcoal/60">{copy.buildingType}</span>
-                                        <span className="font-medium">{getLocalizedBuildingTypeLabel(listing.building_type[0], language)}</span>
+                                        <span className="font-medium">{getLocalizedBuildingTypeLabel(listing.building_type, language)}</span>
                                     </div>
                                 )}
                             </div>
@@ -705,7 +727,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             </button>
 
                             <p className="text-center text-xs text-charcoal/50 mt-4">
-                                ID: {listing.uc_source_id || listing.id}
+                                ID: {listing.uc_object_id || listing.id}
                             </p>
                         </div>
                     </div>

@@ -217,10 +217,10 @@ export const PropertiesSection = () => {
 
   // Get status badge info
   const getListingStatus = (listing: typeof listings[0]) => {
-    if (listing.status === 'reserved') return { label: copy.statuses.reserved, color: 'bg-amber-500' };
-    if (listing.status === 'sold') return { label: copy.statuses.sold, color: 'bg-red-500' };
-    if (listing.real_estate_state === 136) return { label: copy.statuses.newBuild, color: 'bg-emerald-500' };
-    if (listing.transaction_id === 123 || listing.transaction_id === 124) return { label: copy.statuses.rent, color: 'bg-sky-500' };
+    if (listing.status === 3) return { label: copy.statuses.reserved, color: 'bg-amber-500' };
+    if (listing.status === 4) return { label: copy.statuses.sold, color: 'bg-red-500' };
+    if (listing.condition === 6) return { label: copy.statuses.newBuild, color: 'bg-emerald-500' };
+    if (listing.action === 3) return { label: copy.statuses.rent, color: 'bg-sky-500' };
     return { label: copy.statuses.sale, color: 'bg-navy' };
   };
 
@@ -236,8 +236,8 @@ export const PropertiesSection = () => {
       features.push({ icon: Home, label: `${listing.rooms_count} ${copy.roomsUnit}` });
     }
 
-    if (listing.land_area) {
-      features.push({ icon: Trees, label: formatArea(listing.land_area) });
+    if (listing.plot_area) {
+      features.push({ icon: Trees, label: formatArea(listing.plot_area) });
     }
 
     // Fallback if no features
@@ -569,7 +569,7 @@ export const PropertiesSection = () => {
                 const status = getListingStatus(listing);
                 const features = getFeatures(listing);
                 const image = getPrimaryImage(listing);
-                const priceLabel = listing.transaction_id === 123 || listing.transaction_id === 124
+                const priceLabel = listing.action === 3
                   ? `${formatPrice(listing.price)}/mes.`
                   : formatPrice(listing.price);
 

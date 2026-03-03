@@ -6,6 +6,9 @@ import { SITE_URL, DEFAULT_OG_IMAGE, getRealEstateListingSchema, getBreadcrumbSc
 import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
+// Export API numeric currency codes → ISO 4217
+const CURRENCY_MAP: Record<number, string> = { 1: 'EUR', 3: 'CZK', 4: 'GBP', 5: 'USD', 6: 'PLN', 7: 'HUF', 8: 'RON', 9: 'RSD' };
+
 interface PropertyDetailPageProps {
   params: Promise<{ id: string }>;
 }
@@ -66,9 +69,11 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
     };
   }
 
-  const categoryLabel = getLocalizedCategoryLabel(listing.category_id, language) || localized.categoryFallback;
+  const categoryLabel = getLocalizedCategoryLabel(listing.category, language) || localized.categoryFallback;
   const location = [listing.location_city, listing.location_district].filter(Boolean).join(', ');
-  const priceFormatted = new Intl.NumberFormat(localized.locale, { style: 'currency', currency: listing.currency || 'EUR', maximumFractionDigits: 0 }).format(listing.price);
+  // Export API uses numeric currency codes — map to ISO for Intl
+  const currencyCode = CURRENCY_MAP[listing.price_currency] || 'EUR';
+  const priceFormatted = new Intl.NumberFormat(localized.locale, { style: 'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(listing.price);
   
   const title = `${listing.title} | ${categoryLabel}${location ? ` – ${location}` : ''}`;
   const description = listing.description
@@ -114,7 +119,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
   if (listing) {
     const primaryImage = getPrimaryImage(listing);
     const pageUrl = `${SITE_URL}/nehnutelnost/${listing.slug || listing.id}`;
-    const categoryLabel = getLocalizedCategoryLabel(listing.category_id, language) || categoryFallback;
+    const categoryLabel = getLocalizedCategoryLabel(listing.category, language) || categoryFallback;
 
     jsonLdScripts.push(
       getRealEstateListingSchema({
@@ -123,7 +128,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         url: pageUrl,
         image: primaryImage,
         price: listing.price,
-        currency: listing.currency || 'EUR',
+        currency: CURRENCY_MAP[listing.price_currency] || 'EUR',
         address: {
           city: listing.location_city || undefined,
           region: listing.location_region || undefined,

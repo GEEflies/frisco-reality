@@ -1,211 +1,211 @@
 /**
- * Listings Service
- * Fetches listings from Supabase with enhanced images
+ * Listings Service — Supabase query layer
+ *
+ * All field names and code values use the UC Export API conventions.
+ * action: 1=Sale, 3=Rent (replaces old transaction_id 127/123/124)
+ * category: 1-11 (replaces old category_id 8-72)
+ * status: integer (replaces old string status)
  */
 
-import { supabase, isSupabaseConfigured } from './supabaseClient';
-import type { ListingWithImages, ListingFilters, ListingImage } from './types';
+import { supabase } from './supabaseClient';
+import type { Listing, ListingImage, ListingWithImages, ListingFilters } from './types';
 import { getCategoryType } from './mappings';
 
 // ============================================
-// SERVICE FUNCTIONS
+// IMAGE URL HELPERS
 // ============================================
 
 /**
- * Fetch all listings with optional filters
- */
-export async function fetchListings(filters?: ListingFilters): Promise<ListingWithImages[]> {
-    if (!isSupabaseConfigured) {
-        console.warn('[listingsService] Supabase is not configured');
-        return [];
-    }
-
-    try {
-        let query = supabase
-            .from('listings')
-            .select(`
-                *,
-                images:listing_images(*)
-            `)
-            .eq('status', 'active')
-            .order('created_at', { ascending: false });
-
-        // Apply filters to query
-        if (filters?.transaction === 'rent') {
-            query = query.in('transaction_id', [123, 124]);
-        } else if (filters?.transaction === 'sale') {
-            query = query.eq('transaction_id', 127);
-        }
-
-        if (filters?.priceRange) {
-            query = query
-                .gte('price', filters.priceRange[0])
-                .lte('price', filters.priceRange[1]);
-        }
-
-        const { data, error } = await query;
-
-        if (error) {
-            console.error('[listingsService] Error fetching listings:', error.message || error);
-            return [];
-        }
-
-        return applyFilters(data || [], filters);
-    } catch (error) {
-        console.error('[listingsService] Error:', error instanceof Error ? error.message : error);
-        return [];
-    }
-}
-
-/**
- * Fetch a single listing by slug (preferred) or UUID
- */
-export async function fetchListingById(idOrSlug: string): Promise<ListingWithImages | null> {
-    if (!isSupabaseConfigured) {
-        console.warn('[listingsService] Supabase is not configured');
-        return null;
-    }
-
-    try {
-        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
-
-        let query = supabase
-            .from('listings')
-            .select(`
-                *,
-                images:listing_images(*)
-            `);
-
-        if (isUuid) {
-            query = query.eq('id', idOrSlug);
-        } else {
-            query = query.eq('slug', idOrSlug);
-        }
-
-        const { data, error } = await query.single();
-
-        if (error) {
-            console.error('[listingsService] Error fetching listing:', error.message || error);
-            return null;
-        }
-
-        return data;
-    } catch (error) {
-        console.error('[listingsService] Error:', error instanceof Error ? error.message : error);
-        return null;
-    }
-}
-
-/**
- * Get the best available image URL (upscaled > enhanced > original)
+ * Returns the best available image URL for a listing image.
+ * Priority: upscaled → enhanced → original
  */
 export function getBestImageUrl(image: ListingImage): string {
     return image.upscaled_url || image.enhanced_url || image.original_url;
 }
 
 /**
- * Get the primary image for a listing
+ * Returns the primary image URL for a listing (first image, best quality).
  */
-export function getPrimaryImage(listing: ListingWithImages): string | undefined {
+export function getPrimaryImage(listing: ListingWithImages): string | null {
+    if (!listing.images || listing.images.length === 0) return null;
     const sorted = [...listing.images].sort((a, b) => a.sort_order - b.sort_order);
-    const primary = sorted[0];
-    return primary ? getBestImageUrl(primary) : undefined;
+    return getBestImageUrl(sorted[0]);
 }
 
 // ============================================
-// HELPER FUNCTIONS
+// FETCH LISTINGS
 // ============================================
 
-function applyFilters(listings: ListingWithImages[], filters?: ListingFilters): ListingWithImages[] {
-    if (!filters) return listings;
+/**
+ * Fetch active, non-deleted listings with their images.
+ * Supports filtering by category type, transaction (sale/rent), locality, price range, and sorting.
+ */
+export async function fetchListings(filters?: ListingFilters): Promise<ListingWithImages[]> {
+    // Build query — only active, non-deleted listings
+    let query = supabase
+        .from('listings')
+        .select('*, images:listing_images(*)')
+        .eq('is_deleted', false)
+        .eq('status', 1); // 1 = Aktívna (Export API)
 
-    let result = [...listings];
-
-    if (filters.category && filters.category !== 'all') {
-        result = result.filter(listing => getCategoryType(listing.category_id) === filters.category);
+    // Transaction filter: sale vs rent
+    if (filters?.transaction === 'sale') {
+        query = query.eq('action', 1); // Export API: 1 = Predaj
+    } else if (filters?.transaction === 'rent') {
+        query = query.eq('action', 3); // Export API: 3 = Prenájom
     }
 
-    if (filters.transaction && filters.transaction !== 'all') {
-        result = result.filter(listing => {
-            if (filters.transaction === 'rent') {
-                return listing.transaction_id === 123 || listing.transaction_id === 124;
-            }
-            return listing.transaction_id === 127;
-        });
-    }
-
-    if (filters.locality && filters.locality !== 'all') {
-        const normalizedLocality = filters.locality.toLowerCase();
-        result = result.filter(listing => {
-            const city = listing.location_city?.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/\s+/g, '-') || '';
-            return city.includes(normalizedLocality) || normalizedLocality.includes(city);
-        });
-    }
-
-    if (filters.priceRange) {
-        result = result.filter(listing =>
-            listing.price >= filters.priceRange![0] && listing.price <= filters.priceRange![1]
-        );
-    }
-
-    if (filters.sort) {
-        switch (filters.sort) {
-            case 'price-asc':
-                result.sort((a, b) => a.price - b.price);
-                break;
-            case 'price-desc':
-                result.sort((a, b) => b.price - a.price);
-                break;
-            case 'newest':
-                result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-                break;
-            case 'oldest':
-                result.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-                break;
+    // Category type filter (apartment, house, land, etc.)
+    if (filters?.category && filters.category !== 'all') {
+        const categoryType = filters.category;
+        // Map category type string to Export API category codes
+        const categoryCodesMap: Record<string, number[]> = {
+            apartment: [4],         // Byty
+            house: [6, 8],          // Domy a vily, Nájomné domy
+            land: [3],              // Pozemky
+            commercial: [2, 9, 7],  // Komerčné objekty, Komerčné priestory, Hotely
+            cottage: [10],          // Chaty a rekreačné objekty
+            garage: [11],           // Malé objekty, garáže
+        };
+        const codes = categoryCodesMap[categoryType];
+        if (codes && codes.length > 0) {
+            query = query.in('category', codes);
         }
     }
 
-    return result;
+    // Locality filter (search in location_city, location_district, street)
+    if (filters?.locality) {
+        const loc = filters.locality;
+        query = query.or(
+            `location_city.ilike.%${loc}%,location_district.ilike.%${loc}%,street.ilike.%${loc}%`
+        );
+    }
+
+    // Price range filter
+    if (filters?.priceRange) {
+        const [min, max] = filters.priceRange;
+        if (min > 0) query = query.gte('price', min);
+        if (max > 0) query = query.lte('price', max);
+    }
+
+    // Sorting
+    switch (filters?.sort) {
+        case 'price-asc':
+            query = query.order('price', { ascending: true });
+            break;
+        case 'price-desc':
+            query = query.order('price', { ascending: false });
+            break;
+        case 'oldest':
+            query = query.order('created_at', { ascending: true });
+            break;
+        case 'newest':
+            query = query.order('created_at', { ascending: false });
+            break;
+        case 'recommended':
+        default:
+            // Featured/top listings first, then newest
+            query = query
+                .order('is_top', { ascending: false })
+                .order('is_exclusive', { ascending: false })
+                .order('created_at', { ascending: false });
+            break;
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+        console.error('Error fetching listings:', error);
+        return [];
+    }
+
+    // Sort images by sort_order within each listing
+    return (data || []).map((listing: any) => ({
+        ...listing,
+        images: (listing.images || []).sort((a: ListingImage, b: ListingImage) => a.sort_order - b.sort_order),
+    }));
 }
 
 /**
- * Get maximum price from listings (for filter slider)
+ * Fetch a single listing by ID (UUID) or slug.
+ */
+export async function fetchListingById(idOrSlug: string): Promise<ListingWithImages | null> {
+    // Try by slug first, then by UUID
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+
+    let query;
+    if (isUuid) {
+        query = supabase
+            .from('listings')
+            .select('*, images:listing_images(*)')
+            .eq('id', idOrSlug)
+            .single();
+    } else {
+        query = supabase
+            .from('listings')
+            .select('*, images:listing_images(*)')
+            .eq('slug', idOrSlug)
+            .single();
+    }
+
+    const { data, error } = await query;
+
+    if (error || !data) {
+        // If slug lookup failed, try UUID anyway (fallback)
+        if (!isUuid) {
+            const { data: fallback } = await supabase
+                .from('listings')
+                .select('*, images:listing_images(*)')
+                .eq('id', idOrSlug)
+                .single();
+            if (fallback) {
+                return {
+                    ...fallback,
+                    images: (fallback.images || []).sort((a: any, b: any) => a.sort_order - b.sort_order),
+                } as ListingWithImages;
+            }
+        }
+        return null;
+    }
+
+    return {
+        ...data,
+        images: (data.images || []).sort((a: any, b: any) => a.sort_order - b.sort_order),
+    } as ListingWithImages;
+}
+
+// ============================================
+// FILTER HELPERS (for useListingFilters hook)
+// ============================================
+
+/**
+ * Get the maximum price across all listings.
  */
 export function getMaxPrice(listings: ListingWithImages[]): number {
-    if (listings.length === 0) return 100000; // Default minimum for empty state
-    return Math.max(...listings.map(l => l.price));
+    if (listings.length === 0) return 0;
+    return Math.max(...listings.map(l => l.price || 0));
 }
 
 /**
- * Get unique localities from listings
+ * Get unique localities from listings for the locality filter dropdown.
  */
 export function getUniqueLocalities(listings: ListingWithImages[]): string[] {
     const localities = new Set<string>();
-    listings.forEach(l => {
-        if (l.location_city) localities.add(l.location_city);
-    });
+    for (const listing of listings) {
+        if (listing.location_city) localities.add(listing.location_city);
+        if (listing.location_district) localities.add(listing.location_district);
+    }
     return Array.from(localities).sort();
 }
 
 /**
- * Get unique types from listings (includes both transactions and categories)
+ * Get unique category types from listings for the type filter.
  */
 export function getUniqueTypes(listings: ListingWithImages[]): string[] {
     const types = new Set<string>();
-    
-    // Check for rent transactions
-    const hasRent = listings.some(l => l.transaction_id === 123 || l.transaction_id === 124);
-    if (hasRent) types.add('rent');
-    
-    // Add categories
-    listings.forEach(l => {
-        const type = getCategoryType(l.category_id);
-        types.add(type);
-    });
-    
+    for (const listing of listings) {
+        types.add(getCategoryType(listing.category));
+    }
     return Array.from(types);
 }
 
