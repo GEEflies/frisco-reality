@@ -77,8 +77,8 @@ export default function ConsentMapEmbed({
   src,
   className = '',
   innerClassName = '',
-  lat = 48.28639,
-  lon = 17.73754,
+  lat = 48.2864,
+  lon = 17.7401,
   footer,
 }: ConsentMapEmbedProps) {
   const { language } = useLanguage();
@@ -156,17 +156,26 @@ export default function ConsentMapEmbed({
         aria-label={copy.button}
       >
         {/* OSM tile mosaic — 3 columns × 2 rows centred on the location.
-            scale-[1.02] closes the sub-pixel seam between tiles. */}
-        <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 scale-[1.02]">
+            Each tile is absolutely positioned with 1 px overlap to prevent
+            sub-pixel seams across browsers / DPR ratios. */}
+        <div className="absolute inset-0">
           {Array.from({ length: 6 }).map((_, i) => {
-            const ox = (i % 3) - 1;       // -1 / 0 / +1
-            const oy = Math.floor(i / 3); //  0 / 1
+            const col = i % 3;              // 0, 1, 2
+            const row = Math.floor(i / 3);  // 0, 1
+            const ox = col - 1;             // -1 / 0 / +1
+            const oy = row;                 //  0 / 1
             return (
               <img
                 key={i}
                 src={`https://tile.openstreetmap.org/${tileZ}/${tileX + ox}/${tileY + oy}.png`}
                 alt=""
-                className="w-full h-full object-cover opacity-60"
+                className="absolute block opacity-60"
+                style={{
+                  left: `calc(${(col * 100) / 3}% - 1px)`,
+                  top: `calc(${(row * 100) / 2}% - 1px)`,
+                  width: `calc(${100 / 3}% + 2px)`,
+                  height: `calc(50% + 2px)`,
+                }}
                 loading="eager"
                 draggable={false}
               />
@@ -197,12 +206,15 @@ export default function ConsentMapEmbed({
           </div>
         </div>
 
-        {/* Location label — fills the empty middle area */}
+        {/* Location label */}
         <div className="absolute z-10 inset-x-0 flex flex-col items-center top-1/2 -translate-y-1/2 px-4 pointer-events-none">
-          <p className="text-white font-serif font-bold text-xl tracking-tight drop-shadow-lg text-center">
+          <p className="text-white text-2xl sm:text-3xl font-light tracking-[0.15em] uppercase text-center"
+             style={{ textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>
             FRISCO Reality
           </p>
-          <p className="text-white/75 text-sm mt-1 drop-shadow text-center tracking-wide">
+          <div className="w-10 h-px bg-white/40 mt-3 mb-2" />
+          <p className="text-white/70 text-xs sm:text-sm font-light tracking-[0.08em] text-center"
+             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}>
             Námestie Slobody 1185/30, Sereď
           </p>
         </div>
