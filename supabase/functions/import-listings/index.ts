@@ -221,8 +221,10 @@ async function handleListing(data: Record<string, any>) {
         });
     }
 
-    // ---- Validate required fields (only fields marked ✔ in UC Export spec) ----
-    // price, price_unit, price_currency, status are NOT required by spec — they have defaults
+    // ---- Validate required fields (fields marked ✔ for ALL category×action combos in UC Export spec) ----
+    // Per EXPORT spec: object_id, id, state_id, county_id, district_id, region_id, street_id, street,
+    // action, category, agent_id, title, description, status, price, price_unit, price_currency
+    // are all required (✔) for every single category and action combination.
     const requiredFields = [
         'id',
         'state_id',
@@ -236,6 +238,10 @@ async function handleListing(data: Record<string, any>) {
         'agent_id',
         'title',
         'description',
+        'status',
+        'price',
+        'price_unit',
+        'price_currency',
     ];
 
     const missing: Record<string, string> = {};
