@@ -30,6 +30,7 @@ const SUPABASE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const UC_WEBHOOK_USER = Deno.env.get('UC_WEBHOOK_USER')!;
 const UC_WEBHOOK_PASS = Deno.env.get('UC_WEBHOOK_PASS')!;
 const SITE_URL = Deno.env.get('SITE_URL') || 'https://frisco.sk';
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -62,6 +63,43 @@ function toNumberOrDefault(value: any, fallback: number): number {
 
 function toBool(value: any): boolean {
     return value === 1 || value === true || value === '1';
+}
+
+// ---- First-listing email notification ----
+async function notifyFirstListing(title: string, slug: string, listingId: string) {
+    if (!RESEND_API_KEY) {
+        console.warn('RESEND_API_KEY not set — skipping first-listing notification');
+        return;
+    }
+    try {
+        const res = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${RESEND_API_KEY}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                from: 'FRISCO Reality <frisco@karchi.xyz>',
+                to: ['billikkarol1@gmail.com'],
+                subject: '\u{1F3E0} UC je live — prvý inzerát práve dorazil!',
+                html: `<h2>United Classifieds začali posielať inzeráty</h2>
+<p>Prvý inzerát bol úspešne importovaný do databázy.</p>
+<table style="border-collapse:collapse;font-family:sans-serif;">
+  <tr><td style="padding:4px 12px;font-weight:bold;">Názov</td><td style="padding:4px 12px;">${title}</td></tr>
+  <tr><td style="padding:4px 12px;font-weight:bold;">ID</td><td style="padding:4px 12px;">${listingId}</td></tr>
+  <tr><td style="padding:4px 12px;font-weight:bold;">URL</td><td style="padding:4px 12px;"><a href="${SITE_URL}/nehnutelnost/${slug}">${SITE_URL}/nehnutelnost/${slug}</a></td></tr>
+</table>
+<p style="margin-top:16px;color:#666;">Skontroluj <a href="https://supabase.com/dashboard/project/fcvswlurtchqorgnwclw/editor">Supabase dashboard</a> pre ďalšie detaily.</p>`,
+            }),
+        });
+        if (!res.ok) {
+            console.error('First-listing notification failed:', await res.text());
+        } else {
+            console.log('First-listing notification sent to billikkarol1@gmail.com');
+        }
+    } catch (e) {
+        console.error('First-listing notification error:', e);
+    }
 }
 
 // ---- Slug generation ----
@@ -385,6 +423,18 @@ async function handleListing(data: Record<string, any>) {
     // ---- HANDLE IMAGES ----
     if (data.images && Array.isArray(data.images)) {
         await handleImages(listingId, data.images, !!existing);
+    }
+
+    // ---- FIRST-LISTING NOTIFICATION ----
+    // If this was an INSERT, check total count — send email on the very first listing
+    if (responseCode === 1) {
+        const { count } = await supabase
+            .from('listings')
+            .select('id', { count: 'exact', head: true })
+            .eq('is_deleted', false);
+        if (count === 1) {
+            await notifyFirstListing(data.title, slug, listingId);
+        }
     }
 
     return jsonResponse({
