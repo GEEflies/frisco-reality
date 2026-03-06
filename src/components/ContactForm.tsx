@@ -105,7 +105,8 @@ export const ContactForm = () => {
         name: '',
         email: '',
         phone: '',
-        message: ''
+        message: '',
+        company: '',  // honeypot — invisible to humans, bots auto-fill it
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -123,7 +124,7 @@ export const ContactForm = () => {
                 title: t.successTitle,
                 description: t.successDesc,
             });
-            setFormState({ name: '', email: '', phone: '', message: '' });
+            setFormState({ name: '', email: '', phone: '', message: '', company: '' });
         } catch {
             toast({
                 title: t.errorTitle,
@@ -156,6 +157,20 @@ export const ContactForm = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                {/* Honeypot field — invisible to humans, catches bots */}
+                <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, height: 0, overflow: 'hidden' }}>
+                    <label htmlFor="company">Company</label>
+                    <input
+                        id="company"
+                        name="company"
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={formState.company}
+                        onChange={e => setFormState({ ...formState, company: e.target.value })}
+                    />
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormInput
                         label={t.nameLabel}

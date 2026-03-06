@@ -1,9 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const PLACE_ID = 'ChIJl_Du-49na0cRlwm_v28NCKs'; // FRISCO Sereď Place ID
 
-export async function GET() {
+// ---- Simple rate limiter (per IP, 10 req / 60 s) ----
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 10;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || now > bucket.resetAt) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  bucket.count++;
+  return bucket.count > RATE_MAX;
+}
+
+export async function GET(req: NextRequest) {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (isRateLimited(ip)) {
+        return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
     if (!GOOGLE_PLACES_API_KEY) {
         return NextResponse.json(
             { error: 'Missing Google Places API Key' },

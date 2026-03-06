@@ -2,27 +2,19 @@ import { NextRequest } from 'next/server';
 
 const DEFAULT_SUPABASE_WEBHOOK_URL = 'https://fcvswlurtchqorgnwclw.supabase.co/functions/v1/import-listings';
 
+/** Max request body size: 2 MB — UC payloads with images metadata are typically < 100 KB */
+const MAX_BODY_BYTES = 2 * 1024 * 1024;
+
 function getWebhookUrl(): string {
   return process.env.UC_WEBHOOK_FUNCTION_URL || DEFAULT_SUPABASE_WEBHOOK_URL;
 }
 
-// The Supabase anon key is needed to call Edge Functions.
-// UC sends its own user/pass credentials in the JSON body — the function handles auth internally.
 function getSupabaseAnonKey(): string {
   return process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 }
 
-function corsHeaders(origin: string | null) {
-  return {
-    'Access-Control-Allow-Origin': origin || '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  } as const;
-}
-
-export async function OPTIONS(req: NextRequest) {
-  return new Response('ok', { headers: corsHeaders(req.headers.get('origin')) });
-}
+// UC sends server-to-server POST — no browser CORS needed.
+// Only expose a minimal POST endpoint.
 
 export async function POST(req: NextRequest) {
   const targetUrl = getWebhookUrl();
@@ -33,7 +25,16 @@ export async function POST(req: NextRequest) {
     console.error('uc-import proxy: SUPABASE_ANON_KEY is not set');
     return Response.json(
       { code: 12, message: 'Proxy misconfigured' },
-      { status: 500, headers: corsHeaders(req.headers.get('origin')) },
+      { status: 500 },
+    );
+  }
+
+  // ---- Body size guard ----
+  const contentLength = req.headers.get('content-length');
+  if (contentLength && Number(contentLength) > MAX_BODY_BYTES) {
+    return Response.json(
+      { code: 12, message: 'Payload too large' },
+      { status: 413 },
     );
   }
 
@@ -43,7 +44,14 @@ export async function POST(req: NextRequest) {
   } catch {
     return Response.json(
       { code: 12, message: 'Invalid request body' },
-      { status: 400, headers: corsHeaders(req.headers.get('origin')) },
+      { status: 400 },
+    );
+  }
+
+  if (payload.length > MAX_BODY_BYTES) {
+    return Response.json(
+      { code: 12, message: 'Payload too large' },
+      { status: 413 },
     );
   }
 
@@ -63,14 +71,13 @@ export async function POST(req: NextRequest) {
     return new Response(responseBody, {
       status: upstream.status,
       headers: {
-        ...corsHeaders(req.headers.get('origin')),
         'Content-Type': upstream.headers.get('content-type') || 'application/json',
       },
     });
   } catch {
     return Response.json(
       { code: 12, message: 'Upstream webhook unavailable' },
-      { status: 502, headers: corsHeaders(req.headers.get('origin')) },
+      { status: 502 },
     );
   }
 }

@@ -10,6 +10,22 @@ const ALLOWED_ORIGINS = new Set([
   'http://localhost:3000',
 ]);
 
+// ---- Simple in-memory rate limiter (per IP, 3 requests / 60 s) ----
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 3;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || now > bucket.resetAt) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  bucket.count++;
+  return bucket.count > RATE_MAX;
+}
+
 function buildEmailHtml(name: string, email: string, phone: string, message: string): string {
   return `<!DOCTYPE html>
 <html lang="sk">
@@ -138,12 +154,25 @@ function escapeHtml(str: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    // ---- Rate limit ----
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const origin = req.headers.get('origin');
     if (origin && !ALLOWED_ORIGINS.has(origin)) {
       return NextResponse.json({ error: 'Origin not allowed' }, { status: 403 });
     }
 
     const body = await req.json();
+
+    // ---- Honeypot: if a hidden field is filled, it's a bot ----
+    if (body?.company) {
+      // Silently accept but don't send — bots think it worked
+      return NextResponse.json({ success: true });
+    }
+
     const name = String(body?.name ?? '').trim();
     const email = String(body?.email ?? '').trim();
     const phone = String(body?.phone ?? '').trim();
