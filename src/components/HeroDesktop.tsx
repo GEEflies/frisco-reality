@@ -120,9 +120,29 @@ const HeroDesktop = () => {
             {/* Decorative Frame Border - Navy for light theme */}
             <div className="absolute -top-4 -right-4 w-full h-full border border-navy/10 rounded-[2rem] z-0" />
 
-            {/* Video Container */}
-            <div className="relative w-full aspect-[16/10] max-h-[75vh] overflow-hidden bg-white z-10 shadow-2xl shadow-navy/10 rounded-[2rem]">
+            {/* Video Container – the inline mask forces Safari to honour
+               overflow-hidden + border-radius even when the parent has
+               an active CSS transform (story-media animation). */}
+            <div
+              className="relative w-full aspect-[16/10] max-h-[75vh] overflow-hidden bg-white z-10 shadow-2xl shadow-navy/10 rounded-[2rem]"
+              style={{ WebkitMaskImage: '-webkit-radial-gradient(white, white)', maskImage: 'paint(geometry)' }}
+            >
               <div className="absolute inset-0 bg-navy/5 z-20 mix-blend-multiply pointer-events-none" /> {/* Subtle Tint */}
+
+              {/* Bottom-right blur – hides third-party watermark.
+                  backdrop-filter is GPU-accelerated; radial mask fades
+                  the blur naturally so it looks like a soft vignette. */}
+              <div
+                className="absolute bottom-0 right-0 w-[28%] h-[36%] z-[25] pointer-events-none"
+                style={{
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  maskImage:
+                    'radial-gradient(ellipse at 100% 100%, black 20%, transparent 70%)',
+                  WebkitMaskImage:
+                    'radial-gradient(ellipse at 100% 100%, black 20%, transparent 70%)',
+                }}
+              />
 
               {/* Corner Logo */}
               <img

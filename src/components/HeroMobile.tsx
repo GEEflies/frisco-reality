@@ -76,7 +76,23 @@ const HeroMobile = () => {
                 {/* Mobile Video Container */}
 
                 {/* Mobile Video Container */}
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5 bg-navy/5 story-media stagger-5">
+                <div
+                    className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5 bg-navy/5 story-media stagger-5"
+                    style={{ WebkitMaskImage: '-webkit-radial-gradient(white, white)', maskImage: 'paint(geometry)' }}
+                >
+                    {/* Bottom-right blur – hides third-party watermark */}
+                    <div
+                        className="absolute bottom-0 right-0 w-[30%] h-[32%] z-[25] pointer-events-none"
+                        style={{
+                            backdropFilter: 'blur(10px)',
+                            WebkitBackdropFilter: 'blur(10px)',
+                            maskImage:
+                                'radial-gradient(ellipse at 100% 100%, black 20%, transparent 70%)',
+                            WebkitMaskImage:
+                                'radial-gradient(ellipse at 100% 100%, black 20%, transparent 70%)',
+                        }}
+                    />
+
                     {/* Corner Logo Watermark */}
                     <img
                         src={friscoLogo}

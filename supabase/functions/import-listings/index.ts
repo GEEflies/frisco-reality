@@ -45,6 +45,25 @@ function errorResponse(code: number, message: string) {
     return jsonResponse({ code, message });
 }
 
+function hasValue(value: any): boolean {
+    return value !== undefined && value !== null && value !== '';
+}
+
+function toNumberOrNull(value: any): number | null {
+    if (!hasValue(value)) return null;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+}
+
+function toNumberOrDefault(value: any, fallback: number): number {
+    const num = toNumberOrNull(value);
+    return num === null ? fallback : num;
+}
+
+function toBool(value: any): boolean {
+    return value === 1 || value === true || value === '1';
+}
+
 // ---- Slug generation ----
 function sluggify(text: string): string {
     const diacriticsMap: Record<string, string> = {
@@ -131,9 +150,9 @@ const EXTRA_DATA_KEYS = [
     'access_internet', 'access_optical_internet', 'access_others',
     // Utilities
     'water_source', 'water', 'water_supply', 'water_well',
-    'electricity_source', 'electricity', 'electricity_230', 'electricity_400',
+    'electricity_source', 'electricity', 'electricity_230', 'electricity_400', 'electricity_trafo',
     'gas_source', 'gas',
-    'canalization_source', 'canalization', 'canalization_sink', 'canalization_septic', 'canalization_cov',
+    'canalization_source', 'canalization', 'canalization_oilcatcher', 'canalization_sink', 'canalization_septic', 'canalization_cov',
     'data_connection',
     // Surroundings
     'adv_shopping', 'adv_school', 'adv_hospital', 'adv_bus',
@@ -150,6 +169,11 @@ const EXTRA_DATA_KEYS = [
     'streetview', 'groundplan_id', 'momento',
     'dimension_width', 'dimension_height', 'dimension_length',
     'construction_begin', 'construction_end',
+    'street_show', 'heating_cold_to',
+    'disposal_ramp', 'disposal_lift', 'disposal_hydraulic_ramp', 'disposal_forklift', 'disposal_crane', 'disposal_crane_load',
+    'availability_highway', 'availability_railway', 'availability_way', 'availability_airport', 'availability_port',
+    'price_commission_in_price', 'price_realized', 'price_down', 'condition_export', 'agency_name',
+    'usable_area_to', 'building_area_to', 'plot_area_to', 'total_area_to', 'floor_to',
     'extended_herrys_projekt_developer', 'extended_herrys_projekt_aktualne',
 ];
 
@@ -168,7 +192,7 @@ function extractExtraData(data: Record<string, any>): Record<string, any> {
 // ============================================================
 async function handleListing(data: Record<string, any>) {
     const objectId = data.object_id;
-    if (!objectId) {
+    if (!hasValue(objectId)) {
         return errorResponse(11, 'Missing object_id');
     }
 
@@ -197,9 +221,35 @@ async function handleListing(data: Record<string, any>) {
         });
     }
 
-    // ---- Validate required fields ----
-    if (!data.title || !data.action || !data.category) {
-        return errorResponse(11, 'Missing required fields: title, action, category');
+    // ---- Validate required fields (base Export API requirements) ----
+    const requiredFields = [
+        'id',
+        'state_id',
+        'county_id',
+        'district_id',
+        'region_id',
+        'street_id',
+        'street',
+        'action',
+        'category',
+        'agent_id',
+        'title',
+        'description',
+        'price',
+        'price_unit',
+        'price_currency',
+        'status',
+    ];
+
+    const missing: Record<string, string> = {};
+    for (const field of requiredFields) {
+        if (!hasValue(data[field])) {
+            missing[field] = 'Item is required.';
+        }
+    }
+
+    if (Object.keys(missing).length > 0) {
+        return jsonResponse({ code: 12, message: missing });
     }
 
     // ---- Build listing row ----
@@ -213,59 +263,59 @@ async function handleListing(data: Record<string, any>) {
         description: data.description || null,
         lang_data: data.langData || {},
 
-        action: Number(data.action),
-        category: Number(data.category),
-        subcategory: data.subcategory ? Number(data.subcategory) : null,
+        action: toNumberOrDefault(data.action, 1),
+        category: toNumberOrDefault(data.category, 1),
+        subcategory: toNumberOrNull(data.subcategory),
 
-        price: Number(data.price) || 0,
-        price_unit: Number(data.price_unit) || 1,
-        price_currency: Number(data.price_currency) || 1,
-        price_by_agreement: data.price_by_agreement === 1 || data.price_by_agreement === true,
-        price_energy: data.price_energy ? Number(data.price_energy) : null,
+        price: toNumberOrDefault(data.price, 0),
+        price_unit: toNumberOrDefault(data.price_unit, 1),
+        price_currency: toNumberOrDefault(data.price_currency, 1),
+        price_by_agreement: toBool(data.price_by_agreement),
+        price_energy: toNumberOrNull(data.price_energy),
         price_note: data.price_note_public || null,
-        unit_price: data.unit_price ? Number(data.unit_price) : null,
-        guarantee: data.guarantee ? Number(data.guarantee) : null,
+        unit_price: toNumberOrNull(data.unit_price),
+        guarantee: toNumberOrNull(data.guarantee),
 
-        state_id: data.state_id ? Number(data.state_id) : null,
-        county_id: data.county_id ? Number(data.county_id) : null,
-        district_id: data.district_id ? Number(data.district_id) : null,
-        region_id: data.region_id ? Number(data.region_id) : null,
-        citypart_id: data.citypart_id ? Number(data.citypart_id) : null,
-        street_id: data.street_id ? Number(data.street_id) : null,
+        state_id: toNumberOrNull(data.state_id),
+        county_id: toNumberOrNull(data.county_id),
+        district_id: toNumberOrNull(data.district_id),
+        region_id: toNumberOrNull(data.region_id),
+        citypart_id: toNumberOrNull(data.citypart_id),
+        street_id: toNumberOrNull(data.street_id),
         street: data.street || null,
         street_number: data.street_number || null,
-        geo_lat: data.gps_x ? Number(data.gps_x) : null,
-        geo_lon: data.gps_y ? Number(data.gps_y) : null,
+        geo_lat: toNumberOrNull(data.gps_x),
+        geo_lon: toNumberOrNull(data.gps_y),
         // Use citypart_string for location_city if available, otherwise leave null
         location_city: data.citypart_string || null,
         location_district: null,  // Will be populated from UC code list in future
         location_region: null,
 
-        usable_area: data.usable_area ? Number(data.usable_area) : null,
-        building_area: data.building_area ? Number(data.building_area) : null,
-        plot_area: data.plot_area ? Number(data.plot_area) : null,
-        total_area: data.total_area ? Number(data.total_area) : null,
+        usable_area: toNumberOrNull(data.usable_area),
+        building_area: toNumberOrNull(data.building_area),
+        plot_area: toNumberOrNull(data.plot_area),
+        total_area: toNumberOrNull(data.total_area),
 
-        rooms_count: data.rooms_count ? Number(data.rooms_count) : null,
-        bathrooms_count: data.bathrooms_count ? Number(data.bathrooms_count) : null,
-        floor: data.floor != null ? Number(data.floor) : null,
-        floors: data.floors ? Number(data.floors) : null,
-        floors_under: data.floors_under ? Number(data.floors_under) : null,
-        placement: data.placement ? Number(data.placement) : null,
-        equip_type: data.equip_type != null ? Number(data.equip_type) : null,
+        rooms_count: toNumberOrNull(data.rooms_count),
+        bathrooms_count: toNumberOrNull(data.bathrooms_count),
+        floor: toNumberOrNull(data.floor),
+        floors: toNumberOrNull(data.floors),
+        floors_under: toNumberOrNull(data.floors_under),
+        placement: toNumberOrNull(data.placement),
+        equip_type: toNumberOrNull(data.equip_type),
 
-        condition: data.condition ? Number(data.condition) : null,
-        age: data.age ? Number(data.age) : null,
-        year_of_last_reconstruction: data.year_of_last_reconstruction ? Number(data.year_of_last_reconstruction) : null,
-        year_of_building_approval: data.year_of_building_approval ? Number(data.year_of_building_approval) : null,
-        building_type: data.building_type ? Number(data.building_type) : null,
-        ownership: data.ownership ? Number(data.ownership) : null,
-        energy_cert: data.energy_cert ? Number(data.energy_cert) : null,
-        energy_rating: data.energy_rating ? Number(data.energy_rating) : null,
-        orientation: data.orientation ? Number(data.orientation) : null,
-        house_type: data.house_type ? Number(data.house_type) : null,
+        condition: toNumberOrNull(data.condition),
+        age: toNumberOrNull(data.age),
+        year_of_last_reconstruction: toNumberOrNull(data.year_of_last_reconstruction),
+        year_of_building_approval: toNumberOrNull(data.year_of_building_approval),
+        building_type: toNumberOrNull(data.building_type),
+        ownership: toNumberOrNull(data.ownership),
+        energy_cert: toNumberOrNull(data.energy_cert),
+        energy_rating: toNumberOrNull(data.energy_rating),
+        orientation: toNumberOrNull(data.orientation),
+        house_type: toNumberOrNull(data.house_type),
 
-        status: Number(data.status) || 1,
+        status: toNumberOrDefault(data.status, 1),
 
         agent_id: data.agent_id || null,
         agent_name: data.agent || null,
@@ -274,9 +324,9 @@ async function handleListing(data: Record<string, any>) {
 
         slug,
 
-        is_top: data.top === 1 || data.top === true,
-        is_exclusive: data.exclusive === 1 || data.exclusive === true,
-        is_luxury: data.adv_luxury === 1 || data.adv_luxury === true,
+        is_top: toBool(data.top),
+        is_exclusive: toBool(data.exclusive),
+        is_luxury: toBool(data.adv_luxury),
         is_deleted: false,
 
         extra_data: extraData,

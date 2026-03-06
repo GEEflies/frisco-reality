@@ -181,6 +181,7 @@
 
   html {
     height: 100%;
+    background-color: hsl(var(--background));
   }
 
   /* Smooth scroll only on desktop — mobile uses instant to prevent
@@ -193,6 +194,7 @@
 
   body {
     @apply bg-background text-foreground min-h-[100dvh];
+    background-color: hsl(var(--background));
   }
 
   /* Clip horizontal overflow on a non-body wrapper to avoid iOS Safari

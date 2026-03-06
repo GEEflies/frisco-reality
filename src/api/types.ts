@@ -298,6 +298,7 @@ export interface UCExportListing {
     heating_others?: number;
     heating?: number;
     heating_heat?: number;
+    heating_cold_to?: string;
     access_klima?: number;
 
     // Equipment booleans
@@ -359,14 +360,31 @@ export interface UCExportListing {
     electricity?: number;
     electricity_230?: number;
     electricity_400?: number;
+    electricity_trafo?: number;
     gas_source?: number;
     gas?: number;
     canalization_source?: number;
     canalization?: number;
+    canalization_oilcatcher?: number;
     canalization_sink?: number;
     canalization_septic?: number;
     canalization_cov?: number;
     data_connection?: number;
+
+    // Logistics / disposal
+    disposal_ramp?: number;
+    disposal_lift?: number;
+    disposal_hydraulic_ramp?: number;
+    disposal_forklift?: number;
+    disposal_crane?: number;
+    disposal_crane_load?: string;
+
+    // Transport availability
+    availability_highway?: number;
+    availability_railway?: number;
+    availability_way?: number;
+    availability_airport?: number;
+    availability_port?: number;
 
     // Surroundings
     adv_shopping?: number;
