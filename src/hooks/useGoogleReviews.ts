@@ -9,17 +9,16 @@ interface GoogleReviews {
   source?: string;
 }
 
-const SUPABASE_FUNCTION_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fetch-google-reviews`
-  : null;
-
-// Fallback data
+// Fallback data — keep in sync with real ratings when they change significantly
 const DEFAULT_REVIEWS: GoogleReviews = {
-  rating: 4.2,
-  totalReviews: 22,
+  rating: 4.4,
+  totalReviews: 30,
   lastUpdated: new Date().toISOString(),
   source: 'default'
 };
+
+// Cache TTL: 6 hours (was 24h — shorter so rating updates propagate faster)
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 export const useGoogleReviews = () => {
   const [reviews, setReviews] = useState<GoogleReviews>(DEFAULT_REVIEWS);
@@ -32,8 +31,7 @@ export const useGoogleReviews = () => {
       if (cached) {
         try {
           const { data, timestamp } = JSON.parse(cached);
-          // If cache is less than 24 hours old, use it and don't fetch
-          if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          if (Date.now() - timestamp < CACHE_TTL_MS) {
             setReviews(data);
             setIsLoading(false);
             return;
