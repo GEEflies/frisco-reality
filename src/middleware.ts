@@ -8,6 +8,7 @@ import {
 } from '@/i18n/types';
 
 const PUBLIC_FILE = /\.[^/]+$/;
+const LANGUAGE_REQUEST_HEADER = 'x-frisco-language';
 
 const shouldSkipMiddleware = (pathname: string) => {
   if (pathname.startsWith('/_next')) return true;
@@ -55,7 +56,14 @@ export function middleware(request: NextRequest) {
     const rewrittenUrl = nextUrl.clone();
     rewrittenUrl.pathname = stripLanguagePrefix(pathname);
 
-    const response = NextResponse.rewrite(rewrittenUrl);
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set(LANGUAGE_REQUEST_HEADER, languageFromPath);
+
+    const response = NextResponse.rewrite(rewrittenUrl, {
+      request: {
+        headers: requestHeaders,
+      },
+    });
     persistLanguageCookie(response, languageFromPath);
     return response;
   }
