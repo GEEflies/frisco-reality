@@ -221,7 +221,8 @@ async function handleListing(data: Record<string, any>) {
         });
     }
 
-    // ---- Validate required fields (base Export API requirements) ----
+    // ---- Validate required fields (only fields marked ✔ in UC Export spec) ----
+    // price, price_unit, price_currency, status are NOT required by spec — they have defaults
     const requiredFields = [
         'id',
         'state_id',
@@ -235,10 +236,6 @@ async function handleListing(data: Record<string, any>) {
         'agent_id',
         'title',
         'description',
-        'price',
-        'price_unit',
-        'price_currency',
-        'status',
     ];
 
     const missing: Record<string, string> = {};
@@ -304,7 +301,8 @@ async function handleListing(data: Record<string, any>) {
         placement: toNumberOrNull(data.placement),
         equip_type: toNumberOrNull(data.equip_type),
 
-        condition: toNumberOrNull(data.condition),
+        // UC spec types condition as 'string' — handle both numeric and text values
+        condition: typeof data.condition === 'string' && isNaN(Number(data.condition)) ? null : toNumberOrNull(data.condition),
         age: toNumberOrNull(data.age),
         year_of_last_reconstruction: toNumberOrNull(data.year_of_last_reconstruction),
         year_of_building_approval: toNumberOrNull(data.year_of_building_approval),
