@@ -215,16 +215,16 @@ const Kontakt = () => {
                   <div className="h-[350px] md:h-[400px] overflow-hidden">
                     <img
                       src="/pani-krizova.jpeg"
-                      alt="Denisa Krížová"
+                      alt="Denisa Križová"
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <div className="p-6 md:p-8">
-                    <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Denisa Krížová</h3>
+                    <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Denisa Križová</h3>
                     <p className="text-accent-red text-xs font-bold uppercase tracking-[0.15em] mb-4">
-                      {language === 'sk' ? 'Senior maklérka' : language === 'en' ? 'Senior Agent' : 'Senior-Maklerin'}
+                      {language === 'sk' ? 'Maklérka' : language === 'en' ? 'Agent' : 'Maklerin'}
                     </p>
                     <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
                       {language === 'sk'
@@ -253,7 +253,7 @@ const Kontakt = () => {
                   </div>
                   <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Bc. Peter Križo</h3>
                   <p className="text-accent-red text-xs font-bold uppercase tracking-[0.15em] mb-4">
-                    {language === 'sk' ? 'Konateľ & maklér' : language === 'en' ? 'CEO & Broker' : 'Geschäftsführer & Makler'}
+                    {language === 'sk' ? 'Konateľ a maklér' : language === 'en' ? 'CEO & Broker' : 'Geschäftsführer & Makler'}
                   </p>
                   <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
                     {language === 'sk'
@@ -281,7 +281,7 @@ const Kontakt = () => {
                   </div>
                   <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Mgr. Radoslav Štrpka</h3>
                   <p className="text-accent-red text-xs font-bold uppercase tracking-[0.15em] mb-4">
-                    {language === 'sk' ? 'Financie & poistenie' : language === 'en' ? 'Finance & Insurance' : 'Finanzen & Versicherung'}
+                    {language === 'sk' ? 'Financie a poistenie' : language === 'en' ? 'Finance & Insurance' : 'Finanzen & Versicherung'}
                   </p>
                   <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
                     {language === 'sk'
