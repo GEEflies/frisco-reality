@@ -8,6 +8,8 @@ export const revalidate = 3600; // Revalidate every hour
 const buildAlternates = (path: string) => {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const withLanguagePrefix = (language: 'sk' | 'en' | 'de') => {
+    // SK (default) uses bare paths
+    if (language === 'sk') return `${SITE_URL}${normalized}`;
     if (normalized === '/') return `${SITE_URL}/${language}`;
     return `${SITE_URL}/${language}${normalized}`;
   };
@@ -25,49 +27,49 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages with their priorities and change frequencies
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: `${SITE_URL}/sk`,
+      url: `${SITE_URL}/`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
       alternates: buildAlternates('/'),
     },
     {
-      url: `${SITE_URL}/sk/ponuka`,
+      url: `${SITE_URL}/ponuka`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
       alternates: buildAlternates('/ponuka'),
     },
     {
-      url: `${SITE_URL}/sk/predaj-a-prenajom`,
+      url: `${SITE_URL}/predaj-a-prenajom`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
       alternates: buildAlternates('/predaj-a-prenajom'),
     },
     {
-      url: `${SITE_URL}/sk/chcem-predat`,
+      url: `${SITE_URL}/chcem-predat`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
       alternates: buildAlternates('/chcem-predat'),
     },
     {
-      url: `${SITE_URL}/sk/chcem-prenajat`,
+      url: `${SITE_URL}/chcem-prenajat`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
       alternates: buildAlternates('/chcem-prenajat'),
     },
     {
-      url: `${SITE_URL}/sk/preco-frisco`,
+      url: `${SITE_URL}/preco-frisco`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
       alternates: buildAlternates('/preco-frisco'),
     },
     {
-      url: `${SITE_URL}/sk/kontakt`,
+      url: `${SITE_URL}/kontakt`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -88,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       if (!error && listings) {
         listingPages = listings.map((listing: { id: string; slug: string | null; updated_at: string }) => ({
-          url: `${SITE_URL}/sk/nehnutelnost/${listing.slug || listing.id}`,
+          url: `${SITE_URL}/nehnutelnost/${listing.slug || listing.id}`,
           lastModified: new Date(listing.updated_at),
           changeFrequency: 'weekly' as const,
           priority: 0.6,

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { LocaleLink } from './LocaleLink';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import type { LanguageCode } from '@/i18n/types';
-import Link from 'next/link';
 
 const formCopy: Record<LanguageCode, {
     formLabel: string;
@@ -212,9 +212,9 @@ export const ContactForm = () => {
 
                 <p className="text-charcoal/45 text-xs text-center mt-4">
                     {t.privacy}{' '}
-                    <Link href="/ochrana-osobnych-udajov" className="underline underline-offset-2 hover:text-accent-red transition-colors">
+                    <LocaleLink href="/ochrana-osobnych-udajov" className="underline underline-offset-2 hover:text-accent-red transition-colors">
                         {t.privacyLinkLabel}
-                    </Link>
+                    </LocaleLink>
                     .
                 </p>
             </form>

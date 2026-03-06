@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from 'next';
 import { resolveServerLanguage } from '@/i18n/serverLanguage';
-import type { LanguageCode } from '@/i18n/types';
+import { localePath, type LanguageCode } from '@/i18n/types';
 
 const NOT_FOUND_COPY: Record<LanguageCode, {
   title: string;
@@ -55,7 +55,7 @@ export default async function NotFound() {
           {localized.heading}
         </p>
         <Link
-          href="/"
+          href={localePath('/', language)}
           className="text-primary underline hover:text-primary/90"
         >
           {localized.back}

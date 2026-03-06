@@ -35,6 +35,8 @@ export const resolveServerLanguage = async (): Promise<LanguageCode> => {
 
 const withLanguagePrefix = (path: string, language: LanguageCode) => {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  // SK (default) uses bare paths — no prefix
+  if (language === DEFAULT_LANGUAGE) return normalizedPath;
   if (normalizedPath === '/') return `/${language}`;
   return `/${language}${normalizedPath}`;
 };

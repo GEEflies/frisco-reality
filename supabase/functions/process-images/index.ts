@@ -41,7 +41,8 @@ async function recoverStuckImages(): Promise<number> {
     const { data: stuck } = await supabase
         .from('listing_images')
         .select('id')
-        .eq('enhancement_status', 'processing');
+        .eq('enhancement_status', 'processing')
+        .lt('created_at', cutoff);
 
     if (!stuck || stuck.length === 0) return 0;
 
@@ -141,7 +142,8 @@ Deno.serve(async (req) => {
         let successCount = 0;
         let failCount = 0;
 
-        for (const image of pending) {
+        for (let i = 0; i < pending.length; i++) {
+            const image = pending[i];
             const success = await callEnhanceImage(image.id, image.original_url);
             if (success) {
                 successCount++;
@@ -150,7 +152,7 @@ Deno.serve(async (req) => {
             }
 
             // Rate limit delay between images
-            if (pending.indexOf(image) < pending.length - 1) {
+            if (i < pending.length - 1) {
                 await delay(DELAY_BETWEEN_IMAGES_MS);
             }
         }

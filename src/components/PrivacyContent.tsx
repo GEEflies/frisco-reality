@@ -2,7 +2,7 @@
 
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/i18n/LanguageProvider';
-import Link from 'next/link';
+import { LocaleLink } from './LocaleLink';
 import {
   Building2,
   Database,
@@ -633,12 +633,12 @@ export default function PrivacyContent() {
       <section className="pt-28 pb-16 lg:pt-36 lg:pb-24">
         <div className="container mx-auto px-6 max-w-5xl">
           <div className="max-w-3xl mb-10 story-rise stagger-1">
-            <Link
+            <LocaleLink
               href="/"
               className="text-accent-red text-sm font-mono tracking-widest uppercase hover:text-charcoal transition-colors mb-6 inline-block"
             >
               ← {copy.back}
-            </Link>
+            </LocaleLink>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-charcoal tracking-tight leading-[1.1] mb-3">
               {copy.title}
             </h1>

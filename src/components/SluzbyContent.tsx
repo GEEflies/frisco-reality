@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import WhyFriscoHeroSplit from './WhyFriscoHeroSplit';
 import { FamilyBusinessSection } from '@/components/FamilyBusinessSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { LocaleLink } from './LocaleLink';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 
@@ -292,13 +293,13 @@ const Sluzby = () => {
                   <Phone className="w-5 h-5" />
                   <span>0905 740 700</span>
                 </a>
-                <a
+                <LocaleLink
                   href="/kontakt"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
                 >
                   <span>{copy.ctaWrite}</span>
                   <ArrowUpRight className="w-5 h-5" />
-                </a>
+                </LocaleLink>
               </div>
             </div>
           </motion.div>

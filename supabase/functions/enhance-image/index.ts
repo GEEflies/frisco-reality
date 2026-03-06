@@ -26,14 +26,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // ---- Gemini setup ----
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// FIX #1: generationConfig goes in getGenerativeModel(), NOT as second arg to generateContent()
-const model = genAI.getGenerativeModel({
-    model: 'gemini-2.0-flash-exp',
-    generationConfig: {
-        // @ts-ignore — responseModalities is valid but not in all SDK type versions
-        responseModalities: ['IMAGE', 'TEXT'],
-    },
-});
+const DEFAULT_GEMINI_IMAGE_MODEL = 'gemini-3.1-flash-image-preview';
+const configuredGeminiModel = Deno.env.get('GEMINI_IMAGE_MODEL')?.trim();
+const MODEL_CANDIDATES = [
+    configuredGeminiModel,
+    DEFAULT_GEMINI_IMAGE_MODEL,
+    'gemini-3.1-flash-image-preview',
+    'gemini-3-pro-image-preview',
+].filter((value, index, arr) => Boolean(value) && arr.indexOf(value) === index) as string[];
 
 const ENHANCEMENT_PROMPT = `You are a professional real estate photo editor. Enhance this property photo with these adjustments:
 - Apply subtle HDR effect for balanced exposure
@@ -67,6 +67,65 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
         bytes[i] = binary.charCodeAt(i);
     }
     return bytes.buffer;
+}
+
+async function generateEnhancedImage(
+    imageBase64: string,
+    mimeType: string,
+): Promise<{ enhancedImageData: string; enhancedMimeType: string; modelUsed: string }> {
+    const errors: string[] = [];
+
+    for (const modelName of MODEL_CANDIDATES) {
+        const modelConfigs = [
+            {
+                model: modelName,
+                generationConfig: {
+                    // @ts-ignore — responseModalities is valid but not in all SDK type versions
+                    responseModalities: ['IMAGE', 'TEXT'],
+                },
+            },
+            { model: modelName },
+        ];
+
+        for (const config of modelConfigs) {
+            try {
+                const model = genAI.getGenerativeModel(config as any);
+                const result = await model.generateContent([
+                    ENHANCEMENT_PROMPT,
+                    {
+                        inlineData: {
+                            mimeType,
+                            data: imageBase64,
+                        },
+                    },
+                ]);
+
+                const responseData = result.response;
+                const candidates = responseData.candidates;
+                if (!candidates || candidates.length === 0) {
+                    throw new Error('No candidates in Gemini response');
+                }
+
+                const parts = candidates[0].content?.parts || [];
+                for (const part of parts) {
+                    if (part.inlineData?.data) {
+                        return {
+                            enhancedImageData: part.inlineData.data,
+                            enhancedMimeType: part.inlineData.mimeType || 'image/jpeg',
+                            modelUsed: modelName,
+                        };
+                    }
+                }
+
+                throw new Error('No image data in Gemini response');
+            } catch (error) {
+                const variant = 'generationConfig' in config ? 'modalities' : 'default';
+                errors.push(`${modelName} (${variant}): ${(error as Error).message}`);
+            }
+        }
+    }
+
+    throw new Error(`All Gemini model attempts failed: ${errors.join(' | ')}`);
 }
 
 // ---- Detect MIME type from URL or default to JPEG ----
@@ -108,39 +167,7 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
         const imageBase64 = arrayBufferToBase64(imageBuffer);
 
         // Call Gemini for enhancement
-        const result = await model.generateContent([
-            ENHANCEMENT_PROMPT,
-            {
-                inlineData: {
-                    mimeType,
-                    data: imageBase64,
-                },
-            },
-        ]);
-
-        // Extract enhanced image from response
-        const responseData = result.response;
-        const candidates = responseData.candidates;
-
-        if (!candidates || candidates.length === 0) {
-            throw new Error('No candidates in Gemini response');
-        }
-
-        const parts = candidates[0].content?.parts || [];
-        let enhancedImageData: string | null = null;
-        let enhancedMimeType = 'image/jpeg';
-
-        for (const part of parts) {
-            if (part.inlineData) {
-                enhancedImageData = part.inlineData.data;
-                enhancedMimeType = part.inlineData.mimeType || 'image/jpeg';
-                break;
-            }
-        }
-
-        if (!enhancedImageData) {
-            throw new Error('No image data in Gemini response');
-        }
+        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType);
 
         // Upload enhanced image to Supabase Storage
         const extension = enhancedMimeType.split('/')[1] || 'jpeg';
@@ -174,7 +201,7 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
             })
             .eq('id', imageId);
 
-        console.log(`Enhanced image ${imageId} → ${enhancedUrl}`);
+        console.log(`Enhanced image ${imageId} with ${modelUsed} → ${enhancedUrl}`);
         return { success: true };
 
     } catch (error) {

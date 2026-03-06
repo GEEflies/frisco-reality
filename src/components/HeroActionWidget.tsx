@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Search, Building2, Home } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { localePath } from '@/i18n/types';
 
 export const HeroActionWidget = () => {
     const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy');
@@ -90,7 +91,7 @@ export const HeroActionWidget = () => {
                             </div>
 
                             <button
-                                onClick={() => router.push('/ponuka')}
+                                onClick={() => router.push(localePath('/ponuka', language))}
                                 className="w-full group bg-navy text-white rounded-[1.2rem] py-4 px-6 flex items-center justify-between hover:bg-navy/90 transition-all duration-300 shadow-lg shadow-navy/20 hover:shadow-xl hover:-translate-y-0.5"
                             >
                                 <span className="font-medium">{copy.browse}</span>
@@ -116,7 +117,7 @@ export const HeroActionWidget = () => {
                             </div>
 
                             <button
-                                onClick={() => router.push('/predaj-a-prenajom')}
+                                onClick={() => router.push(localePath('/predaj-a-prenajom', language))}
                                 className="w-full group bg-white border border-navy/10 text-navy rounded-[1.2rem] py-4 px-6 flex items-center justify-between hover:border-navy/20 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                             >
                                 <span className="font-medium">{copy.sellCta}</span>

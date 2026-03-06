@@ -83,6 +83,11 @@ const nextConfig: NextConfig = {
         destination: '/preco-frisco',
         permanent: true,
       },
+      {
+        source: '/:lang(en|de)/sluzby',
+        destination: '/:lang/preco-frisco',
+        permanent: true,
+      },
     ];
   },
 };

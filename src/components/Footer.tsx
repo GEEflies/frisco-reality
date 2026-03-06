@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowUpRight, Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react';
-import Link from 'next/link';
+import { LocaleLink } from './LocaleLink';
 const friscoLogo = '/frisco-logo-hq.png';
 import { GoogleReviewsBadge } from './GoogleReviewsBadge';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -90,10 +90,10 @@ export const Footer = () => {
               {isTypewriterRunning && <span className="animate-blink-cursor">|</span>}
             </h2>
 
-            <Link href="/kontakt#kontaktny-formular" className="group inline-flex items-center gap-4 text-navy hover:text-accent-red transition-colors w-fit">
+            <LocaleLink href="/kontakt#kontaktny-formular" className="group inline-flex items-center gap-4 text-navy hover:text-accent-red transition-colors w-fit">
               <span className="text-sm uppercase tracking-widest border-b border-navy/20 group-hover:border-accent-red pb-1 font-bold">{copy.contactUs}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-            </Link>
+            </LocaleLink>
           </div>
 
           {/* COLUMN 2: NAVIGATION */}
@@ -103,9 +103,9 @@ export const Footer = () => {
             <ul className="space-y-3">
               {copy.navItems.map(item => (
                 <li key={item.label}>
-                  <Link href={item.href} onClick={scrollToTop} className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">
+                  <LocaleLink href={item.href} onClick={scrollToTop} className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">
                     {item.label}
-                  </Link>
+                  </LocaleLink>
                 </li>
               ))}
             </ul>
@@ -118,7 +118,7 @@ export const Footer = () => {
             <ul className="space-y-3">
               {copy.servicesItems.map(item => (
                 <li key={item}>
-                  <a href="#" className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">{item}</a>
+                  <span className="text-charcoal/80 text-sm lg:text-base">{item}</span>
                 </li>
               ))}
             </ul>
@@ -264,7 +264,9 @@ export const Footer = () => {
                 karchi.
               </a>
             </div>
-            <Link href="/ochrana-osobnych-udajov" className="hover:text-navy transition-colors">{copy.privacy}</Link>
+            <LocaleLink href="/cookies" className="hover:text-navy transition-colors">{copy.cookies}</LocaleLink>
+            <span className="text-charcoal/20">|</span>
+            <LocaleLink href="/ochrana-osobnych-udajov" className="hover:text-navy transition-colors">{copy.privacy}</LocaleLink>
           </div>
         </div>
 

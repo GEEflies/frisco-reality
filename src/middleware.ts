@@ -53,6 +53,17 @@ export function middleware(request: NextRequest) {
   const languageFromPath = getLanguageFromPath(pathname);
 
   if (languageFromPath) {
+    // If someone visits /sk/... redirect to the bare path (SK is the default, no prefix)
+    if (languageFromPath === DEFAULT_LANGUAGE) {
+      const bare = stripLanguagePrefix(pathname);
+      const redirectUrl = nextUrl.clone();
+      redirectUrl.pathname = bare;
+      const response = NextResponse.redirect(redirectUrl, 308);
+      persistLanguageCookie(response, DEFAULT_LANGUAGE);
+      return response;
+    }
+
+    // For /en/... and /de/... — rewrite to the bare path and pass the language header
     const rewrittenUrl = nextUrl.clone();
     rewrittenUrl.pathname = stripLanguagePrefix(pathname);
 
@@ -68,12 +79,16 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  const preferredLanguage: LanguageCode = DEFAULT_LANGUAGE;
-  const redirectUrl = nextUrl.clone();
-  redirectUrl.pathname = `/${preferredLanguage}${pathname === '/' ? '' : pathname}`;
+  // No language prefix — serve as default language (SK) with no redirect
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(LANGUAGE_REQUEST_HEADER, DEFAULT_LANGUAGE);
 
-  const response = NextResponse.redirect(redirectUrl);
-  persistLanguageCookie(response, preferredLanguage);
+  const response = NextResponse.rewrite(nextUrl, {
+    request: {
+      headers: requestHeaders,
+    },
+  });
+  persistLanguageCookie(response, DEFAULT_LANGUAGE);
   return response;
 }
 

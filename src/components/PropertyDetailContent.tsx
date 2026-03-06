@@ -1,7 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { LocaleLink } from './LocaleLink';
 import { useRouter } from 'next/navigation';
+import { localePath } from '@/i18n/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
@@ -275,7 +276,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                 <h1 className="text-3xl font-serif font-bold text-navy mb-4">{copy.notFoundTitle}</h1>
                 <p className="text-charcoal/60 mb-8">{copy.notFoundText}</p>
                 <button
-                    onClick={() => router.push('/ponuka')}
+                    onClick={() => router.push(localePath('/ponuka', language))}
                     className="flex items-center gap-2 px-6 py-3 bg-navy text-white rounded-full hover:bg-navy/90 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
@@ -365,13 +366,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                     {/* Desktop Navigation Links - Centered */}
                     <nav className="hidden md:flex items-center gap-8">
-                        <Link href="/" className="flex-shrink-0 mr-4">
+                        <LocaleLink href="/" className="flex-shrink-0 mr-4">
                             <img src={friscoLogo} alt="FRISCO" className="h-12 w-auto" />
-                        </Link>
-                        <Link href="/" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
+                        </LocaleLink>
+                        <LocaleLink href="/" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
                             {copy.home}
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
-                        </Link>
+                        </LocaleLink>
 
                         <div
                             className="relative"
@@ -401,35 +402,35 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                         className="absolute top-full left-1/2 -translate-x-1/2 pt-1"
                                     >
                                         <div className="bg-white shadow-lg border border-charcoal/5 min-w-[260px] rounded-lg overflow-hidden">
-                                            <Link
+                                            <LocaleLink
                                                 href="/ponuka"
                                                 className="block px-5 py-3.5 text-sm font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-charcoal/[0.02] transition-colors border-b border-charcoal/5 whitespace-nowrap text-center"
                                                 onClick={() => setIsPonukaHovered(false)}
                                             >
                                                 {copy.lookingForProperty}
-                                            </Link>
-                                            <Link
+                                            </LocaleLink>
+                                            <LocaleLink
                                                 href="/predaj-a-prenajom"
                                                 className="block px-5 py-3.5 text-sm font-sans font-medium tracking-[0.1em] text-charcoal/70 hover:text-navy hover:bg-charcoal/[0.02] transition-colors whitespace-nowrap text-center"
                                                 onClick={() => setIsPonukaHovered(false)}
                                             >
                                                 {copy.wantSellRent}
-                                            </Link>
+                                            </LocaleLink>
                                         </div>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
 
-                        <Link href="/preco-frisco" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
+                        <LocaleLink href="/preco-frisco" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
                             {copy.whyFrisco}
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
-                        </Link>
+                        </LocaleLink>
 
-                        <Link href="/kontakt" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
+                        <LocaleLink href="/kontakt" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
                             {copy.contact}
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
-                        </Link>
+                        </LocaleLink>
                     </nav>
 
                     <div className="flex items-center gap-3 min-w-[100px] justify-end">

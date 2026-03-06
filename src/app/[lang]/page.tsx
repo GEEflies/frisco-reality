@@ -3,7 +3,7 @@ import Home from '@/app/page';
 import { isLanguageCode } from '@/i18n/types';
 
 export function generateStaticParams() {
-  return [{ lang: 'sk' }, { lang: 'en' }, { lang: 'de' }];
+  return [{ lang: 'en' }, { lang: 'de' }];
 }
 
 export default async function LanguageHomePage({

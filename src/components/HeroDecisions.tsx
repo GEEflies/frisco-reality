@@ -3,6 +3,7 @@
 import { Search, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { localePath } from '@/i18n/types';
 
 export const HeroDecisions = () => {
     const router = useRouter();
@@ -40,7 +41,7 @@ export const HeroDecisions = () => {
             <div className="flex flex-col sm:flex-row gap-6 w-full story-soft stagger-4">
                 {/* Option 1: Want to Sell? - Elegant White */}
                 <button
-                    onClick={() => router.push('/kontakt')}
+                    onClick={() => router.push(localePath('/kontakt', language))}
                     className="
                         group relative flex-1 flex items-center justify-between px-8 py-7
                         bg-white/80 backdrop-blur-md border border-navy/5 shadow-[0_8px_30px_rgb(10,24,40,0.04)]
@@ -70,7 +71,7 @@ export const HeroDecisions = () => {
 
                 {/* Option 2: Looking to Buy? - Deep Navy Premium */}
                 <button
-                    onClick={() => router.push('/ponuka')}
+                    onClick={() => router.push(localePath('/ponuka', language))}
                     className="
                         group relative flex-1 flex items-center justify-between px-8 py-7
                         bg-navy shadow-[0_8px_30px_rgb(10,24,40,0.2)]

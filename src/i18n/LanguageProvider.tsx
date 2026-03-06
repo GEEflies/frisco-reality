@@ -5,6 +5,7 @@ import {
   DEFAULT_LANGUAGE,
   isLanguageCode,
   LANGUAGE_COOKIE_KEY,
+  SUPPORTED_LANGUAGES,
   type LanguageCode,
 } from '@/i18n/types';
 
@@ -31,16 +32,15 @@ export const LanguageProvider = ({
   const [language, setLanguageState] = useState<LanguageCode>(initialLanguage);
 
   useEffect(() => {
-    const fromPath = window.location.pathname.match(/^\/(sk|en|de)(?=\/|$)/)?.[1] ?? null;
-    const searchLanguage = new URLSearchParams(window.location.search).get('lang');
-    const storedLanguage = window.localStorage.getItem(STORAGE_KEY);
-    const resolvedLanguage = isLanguageCode(fromPath)
+    // Check if URL path starts with a non-default language prefix like /en or /de
+    const NON_DEFAULT_LANGS = SUPPORTED_LANGUAGES.filter((l) => l !== DEFAULT_LANGUAGE);
+    const langRegex = new RegExp(`^\\/(${NON_DEFAULT_LANGS.join('|')})(?=\\/|$)`);
+    const fromPath = window.location.pathname.match(langRegex)?.[1] ?? null;
+
+    // If no language prefix found in URL, the page is SK (default) — bare paths = SK
+    const resolvedLanguage: LanguageCode = isLanguageCode(fromPath)
       ? fromPath
-      : isLanguageCode(searchLanguage)
-        ? searchLanguage
-      : isLanguageCode(storedLanguage)
-        ? storedLanguage
-        : initialLanguage;
+      : DEFAULT_LANGUAGE;
 
     setLanguageState(resolvedLanguage);
     window.localStorage.setItem(STORAGE_KEY, resolvedLanguage);

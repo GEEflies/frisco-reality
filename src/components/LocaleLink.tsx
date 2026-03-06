@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { localePath } from '@/i18n/types';
 
 type LocaleLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
   href: string;
@@ -9,10 +10,10 @@ type LocaleLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
 
 /**
  * A drop-in replacement for next/link that automatically prefixes
- * the current locale to the href. Use for all internal links.
+ * the current locale to the href. SK (default) uses bare paths,
+ * en/de get a /{lang} prefix.
  */
 export const LocaleLink = ({ href, ...props }: LocaleLinkProps) => {
   const { language } = useLanguage();
-  const localizedHref = href === '/' ? `/${language}` : `/${language}${href}`;
-  return <Link href={localizedHref} {...props} />;
+  return <Link href={localePath(href, language)} {...props} />;
 };

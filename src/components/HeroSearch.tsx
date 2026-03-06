@@ -3,6 +3,7 @@
 import { Building2, Home, Map, Key, Warehouse } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { localePath } from '@/i18n/types';
 
 export const HeroSearch = ({ className = "" }: { className?: string }) => {
     const { language } = useLanguage();
@@ -24,7 +25,7 @@ export const HeroSearch = ({ className = "" }: { className?: string }) => {
 
     const handleSearch = (params: any) => {
         const searchParams = new URLSearchParams(params);
-        router.push(`/ponuka?${searchParams.toString()}`);
+        router.push(localePath(`/ponuka?${searchParams.toString()}`, language));
     };
 
     const row1 = categories.slice(0, 3);

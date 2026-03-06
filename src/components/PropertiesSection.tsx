@@ -11,6 +11,7 @@ import { categoryLabels, transactionLabels, formatPrice, formatArea, getCategory
 import { getPrimaryImage } from '@/api/listingsService';
 import type { ListingFilters } from '@/api/types';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { localePath } from '@/i18n/types';
 
 export const PropertiesSection = () => {
   const { language } = useLanguage();
@@ -251,7 +252,7 @@ export const PropertiesSection = () => {
   // Handle listing click
   const handleListingClick = (listing: any) => {
     const identifier = listing.slug || listing.id;
-    router.push(`/nehnutelnost/${identifier}`);
+    router.push(localePath(`/nehnutelnost/${identifier}`, language));
   };
 
   // Sort options for mobile dropdown

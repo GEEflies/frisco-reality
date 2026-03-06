@@ -2,7 +2,7 @@
 
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/i18n/LanguageProvider';
-import Link from 'next/link';
+import { LocaleLink } from './LocaleLink';
 
 const COOKIES_COPY = {
   sk: {
@@ -94,9 +94,9 @@ export default function CookiesContent() {
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-32">
         <div className="container mx-auto px-6 max-w-3xl">
           <div className="mb-12 story-rise stagger-1">
-            <Link href="/" className="text-accent-red text-sm font-mono tracking-widest uppercase hover:text-navy transition-colors mb-6 inline-block">
+            <LocaleLink href="/" className="text-accent-red text-sm font-mono tracking-widest uppercase hover:text-navy transition-colors mb-6 inline-block">
               ← {language === 'sk' ? 'Domov' : language === 'en' ? 'Home' : 'Startseite'}
-            </Link>
+            </LocaleLink>
             <h1 className="text-4xl md:text-5xl font-serif font-bold text-navy tracking-tight mb-4">
               {copy.title}
             </h1>

@@ -9,7 +9,7 @@ import { Menu, X, Phone, Instagram, Facebook, Mail, Search, Home, Key, Globe } f
 import { DE, GB, SK } from 'country-flag-icons/react/3x2';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { NAVBAR_COPY } from '@/i18n/copy';
-import type { LanguageCode } from '@/i18n/types';
+import { DEFAULT_LANGUAGE, type LanguageCode } from '@/i18n/types';
 
 type FlagComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -25,6 +25,7 @@ const stripLanguagePrefix = (path: string) => {
 };
 
 const withLanguagePrefix = (path: string, lang: LanguageCode) => {
+  if (lang === DEFAULT_LANGUAGE) return path;
   if (path === '/') return `/${lang}`;
   return `/${lang}${path}`;
 };
@@ -47,7 +48,12 @@ export const Navbar = () => {
   const isNavActive = isScrolled || isPonukaHovered || isChcemPredatPage;
 
   const l = useCallback(
-    (path: string) => (path === '/' ? `/${language}` : `/${language}${path}`),
+    (path: string) =>
+      language === DEFAULT_LANGUAGE
+        ? path
+        : path === '/'
+          ? `/${language}`
+          : `/${language}${path}`,
     [language],
   );
 
