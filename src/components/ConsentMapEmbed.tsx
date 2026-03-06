@@ -208,9 +208,9 @@ export default function ConsentMapEmbed({
 
         {/* Location label */}
         <div className="absolute z-10 inset-x-0 flex flex-col items-center top-1/2 -translate-y-1/2 px-4 pointer-events-none">
-          <p className="text-white font-sans font-bold text-xl sm:text-2xl tracking-tight text-center"
+          <p className="text-white font-sans font-bold text-2xl sm:text-3xl tracking-tight text-center"
              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.45)' }}>
-            FRISCO Reality
+            Realitná kancelária FRISCO
           </p>
           <p className="text-white/70 font-sans text-xs sm:text-sm font-normal mt-1.5 text-center"
              style={{ textShadow: '0 1px 6px rgba(0,0,0,0.35)' }}>
