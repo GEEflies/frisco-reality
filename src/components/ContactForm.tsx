@@ -5,6 +5,7 @@ import { ArrowUpRight, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import type { LanguageCode } from '@/i18n/types';
+import Link from 'next/link';
 
 const formCopy: Record<LanguageCode, {
     formLabel: string;
@@ -22,6 +23,7 @@ const formCopy: Record<LanguageCode, {
     submitting: string;
     submit: string;
     privacy: string;
+    privacyLinkLabel: string;
     successTitle: string;
     successDesc: string;
     errorTitle: string;
@@ -42,7 +44,8 @@ const formCopy: Record<LanguageCode, {
         messagePlaceholder: 'Ako vám môžeme pomôcť?',
         submitting: 'Odosielam...',
         submit: 'Odoslať správu',
-        privacy: 'Vaše údaje sú v bezpečí. Odpovieme do 24 hodín.',
+        privacy: 'Odoslaním formulára beriete na vedomie spracúvanie osobných údajov podľa',
+        privacyLinkLabel: 'Zásad ochrany osobných údajov',
         successTitle: 'Správa odoslaná',
         successDesc: 'Ozveme sa vám čoskoro.',
         errorTitle: 'Chyba pri odosielaní',
@@ -63,7 +66,8 @@ const formCopy: Record<LanguageCode, {
         messagePlaceholder: 'How can we help you?',
         submitting: 'Sending...',
         submit: 'Send message',
-        privacy: 'Your data is safe. We respond within 24 hours.',
+        privacy: 'By submitting this form, you acknowledge personal data processing under our',
+        privacyLinkLabel: 'Privacy Policy',
         successTitle: 'Message sent',
         successDesc: 'We will get back to you shortly.',
         errorTitle: 'Error sending message',
@@ -84,7 +88,8 @@ const formCopy: Record<LanguageCode, {
         messagePlaceholder: 'Wie können wir Ihnen helfen?',
         submitting: 'Wird gesendet...',
         submit: 'Nachricht senden',
-        privacy: 'Ihre Daten sind sicher. Wir antworten innerhalb von 24 Stunden.',
+        privacy: 'Mit dem Absenden des Formulars bestätigen Sie die Verarbeitung personenbezogener Daten gemäß unserer',
+        privacyLinkLabel: 'Datenschutzerklärung',
         successTitle: 'Nachricht gesendet',
         successDesc: 'Wir melden uns in Kürze bei Ihnen.',
         errorTitle: 'Fehler beim Senden',
@@ -205,8 +210,12 @@ export const ContactForm = () => {
                     <ArrowUpRight className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </button>
 
-                <p className="text-charcoal/40 text-xs text-center mt-4">
-                    {t.privacy}
+                <p className="text-charcoal/45 text-xs text-center mt-4">
+                    {t.privacy}{' '}
+                    <Link href="/ochrana-osobnych-udajov" className="underline underline-offset-2 hover:text-accent-red transition-colors">
+                        {t.privacyLinkLabel}
+                    </Link>
+                    .
                 </p>
             </form>
         </div>

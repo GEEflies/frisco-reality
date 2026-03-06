@@ -2,8 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = 'FRISCO Reality <frisco@karchi.xyz>';
-// Change to 'info@frisco.sk' after testing is confirmed
-const TO_EMAIL = process.env.CONTACT_EMAIL ?? 'karol.jr@billik.sk';
+const TO_EMAIL = process.env.CONTACT_EMAIL ?? 'info@frisco.sk';
+
+const ALLOWED_ORIGINS = new Set([
+  'https://frisco.sk',
+  'https://www.frisco.sk',
+  'http://localhost:3000',
+]);
 
 function buildEmailHtml(name: string, email: string, phone: string, message: string): string {
   return `<!DOCTYPE html>
@@ -133,10 +138,29 @@ function escapeHtml(str: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, phone, message } = await req.json();
+    const origin = req.headers.get('origin');
+    if (origin && !ALLOWED_ORIGINS.has(origin)) {
+      return NextResponse.json({ error: 'Origin not allowed' }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const name = String(body?.name ?? '').trim();
+    const email = String(body?.email ?? '').trim();
+    const phone = String(body?.phone ?? '').trim();
+    const message = String(body?.message ?? '').trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
+    }
+
+    if (name.length > 120 || email.length > 190 || phone.length > 40 || message.length > 5000) {
+      return NextResponse.json({ error: 'Input too long' }, { status: 400 });
     }
 
     if (!RESEND_API_KEY) {

@@ -3,7 +3,6 @@
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
 import {
   Building2,
   Database,
@@ -629,166 +628,83 @@ export default function PrivacyContent() {
   const { language } = useLanguage();
   const copy = PRIVACY_COPY[language];
 
-  /* ── Active section tracking for TOC highlight ── */
-  const [activeId, setActiveId] = useState<string>('');
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
-        }
-      },
-      { rootMargin: '-80px 0px -60% 0px', threshold: 0 },
-    );
-
-    const els = document.querySelectorAll('[data-privacy-section]');
-    els.forEach((el) => observerRef.current?.observe(el));
-
-    return () => observerRef.current?.disconnect();
-  }, []);
-
   return (
     <div className="min-h-screen bg-white">
-
-      {/* ═══ HERO ═══ */}
-      <section className="relative bg-navy overflow-hidden">
-        {/* Subtle noise overlay */}
-        <div className="absolute inset-0 bg-noise opacity-[0.04] mix-blend-soft-light pointer-events-none" />
-
-        <div className="relative container mx-auto max-w-[1440px] px-6 lg:px-12 pt-32 pb-16 lg:pt-40 lg:pb-20">
-          <div className="max-w-3xl story-rise stagger-1">
+      <section className="pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <div className="max-w-3xl mb-10 story-rise stagger-1">
             <Link
               href="/"
-              className="text-white/50 text-sm font-mono tracking-widest uppercase hover:text-white transition-colors mb-8 inline-block"
+              className="text-accent-red text-sm font-mono tracking-widest uppercase hover:text-charcoal transition-colors mb-6 inline-block"
             >
               ← {copy.back}
             </Link>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white tracking-tight mb-4 leading-[1.1]">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-charcoal tracking-tight leading-[1.1] mb-3">
               {copy.title}
             </h1>
-            <p className="text-white/60 text-lg md:text-xl leading-relaxed mb-3 max-w-xl">
+            <p className="text-charcoal/70 text-lg md:text-xl leading-relaxed mb-2">
               {copy.subtitle}
             </p>
-            <p className="text-white/30 text-sm font-mono tracking-wide">
+            <p className="text-charcoal/45 text-sm font-mono tracking-wide">
               {copy.lastUpdated}
             </p>
           </div>
-        </div>
 
-        {/* Curved bottom edge */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-8 lg:h-12" preserveAspectRatio="none">
-            <path d="M0 48h1440V24C1200 0 240 0 0 24v24z" fill="white" />
-          </svg>
-        </div>
-      </section>
+          <nav className="mb-10 rounded-2xl border border-charcoal/10 bg-white p-5 md:p-6 story-soft stagger-2">
+            <h2 className="text-[11px] font-bold text-charcoal/55 uppercase tracking-[0.2em] mb-4">
+              {copy.tocTitle}
+            </h2>
+            <ol className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1.5">
+              {copy.sections.map((section) => (
+                <li key={section.id}>
+                  <a
+                    href={`#${section.id}`}
+                    className="text-charcoal/70 hover:text-accent-red text-sm transition-colors leading-snug"
+                  >
+                    {section.heading}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-      {/* ═══ BODY — 2-column on lg+ ═══ */}
-      <section className="pb-20 lg:pb-32">
-        <div className="container mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="lg:grid lg:grid-cols-[280px_1fr] xl:grid-cols-[320px_1fr] lg:gap-12 xl:gap-16">
+          <div className="space-y-7 md:space-y-8 story-soft stagger-3 max-w-4xl">
+            {copy.sections.map((section) => {
+              const Icon = SECTION_ICONS[section.id];
+              const isCard = CARD_SECTIONS.has(section.id);
 
-            {/* ── Sticky sidebar TOC (desktop only) ── */}
-            <aside className="hidden lg:block">
-              <nav className="sticky top-28 story-soft stagger-2">
-                <h2 className="text-[11px] font-bold text-charcoal/40 uppercase tracking-[0.2em] mb-5">
-                  {copy.tocTitle}
-                </h2>
-                <ol className="space-y-1 border-l border-navy/10">
-                  {copy.sections.map((section) => {
-                    const isActive = activeId === section.id;
-                    return (
-                      <li key={section.id}>
-                        <a
-                          href={`#${section.id}`}
-                          className={`
-                            block pl-4 py-1.5 text-[13px] leading-snug transition-all duration-200 border-l-2 -ml-px
-                            ${isActive
-                              ? 'border-accent-red text-navy font-semibold'
-                              : 'border-transparent text-charcoal/45 hover:text-navy hover:border-navy/20'
-                            }
-                          `}
-                        >
-                          {section.heading}
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </nav>
-            </aside>
-
-            {/* ── Mobile TOC ── */}
-            <nav className="lg:hidden mb-12 p-5 rounded-2xl bg-cream/60 border border-navy/5 story-soft stagger-2 -mt-4">
-              <h2 className="text-[11px] font-bold text-charcoal/40 uppercase tracking-[0.2em] mb-4">
-                {copy.tocTitle}
-              </h2>
-              <ol className="columns-1 sm:columns-2 gap-x-6 space-y-1.5">
-                {copy.sections.map((section) => (
-                  <li key={section.id} className="break-inside-avoid">
-                    <a
-                      href={`#${section.id}`}
-                      className="text-charcoal/55 hover:text-accent-red text-sm transition-colors leading-snug block"
-                    >
-                      {section.heading}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-
-            {/* ── Main content ── */}
-            <div className="min-w-0 max-w-3xl">
-              <div className="space-y-14 story-soft stagger-3">
-                {copy.sections.map((section) => {
-                  const Icon = SECTION_ICONS[section.id];
-                  const isCard = CARD_SECTIONS.has(section.id);
-
-                  return (
-                    <article
-                      key={section.id}
-                      id={section.id}
-                      data-privacy-section
-                      className={`scroll-mt-28 ${isCard ? 'rounded-2xl border border-navy/8 bg-cream/40 p-6 md:p-8' : ''}`}
-                    >
-                      {/* Section heading */}
-                      <div className={`flex items-start gap-3 mb-5 ${!isCard ? 'pb-3 border-b border-navy/5' : ''}`}>
-                        {Icon && (
-                          <div className={`
-                            flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5
-                            ${isCard ? 'bg-navy text-white' : 'bg-navy/5 text-navy'}
-                          `}>
-                            <Icon className="w-[18px] h-[18px]" strokeWidth={1.8} />
-                          </div>
-                        )}
-                        <h2 className="text-lg md:text-xl font-bold text-navy leading-snug pt-1">
-                          {section.heading}
-                        </h2>
-                      </div>
-
-                      {/* Section body */}
-                      <div className={`text-charcoal/65 text-[15px] leading-[1.8] whitespace-pre-line ${Icon ? 'lg:pl-12' : ''}`}>
-                        {section.content}
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-
-              {/* ── Back to top ── */}
-              <div className="mt-16 pt-8 border-t border-navy/5 text-center">
-                <button
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="text-charcoal/40 hover:text-accent-red text-sm font-mono tracking-widest uppercase transition-colors"
+              return (
+                <article
+                  key={section.id}
+                  id={section.id}
+                  className={`scroll-mt-28 rounded-2xl border p-5 md:p-7 ${isCard ? 'border-accent-red/25 bg-accent-red/[0.03]' : 'border-charcoal/10 bg-white'}`}
                 >
-                  ↑ {copy.back}
-                </button>
-              </div>
-            </div>
+                  <div className="flex items-start gap-3 mb-4">
+                    {Icon && (
+                      <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-accent-red/10 text-accent-red flex items-center justify-center mt-0.5">
+                        <Icon className="w-[18px] h-[18px]" strokeWidth={1.8} />
+                      </div>
+                    )}
+                    <h2 className="text-lg md:text-xl font-bold text-charcoal leading-snug pt-1">
+                      {section.heading}
+                    </h2>
+                  </div>
 
+                  <div className="text-charcoal/80 text-[15px] md:text-base leading-[1.75] whitespace-pre-line">
+                    {section.content}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 pt-6 border-t border-charcoal/10 text-center">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-charcoal/50 hover:text-accent-red text-sm font-mono tracking-widest uppercase transition-colors"
+            >
+              ↑ {copy.back}
+            </button>
           </div>
         </div>
       </section>
