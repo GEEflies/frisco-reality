@@ -155,8 +155,9 @@ export default function ConsentMapEmbed({
         }}
         aria-label={copy.button}
       >
-        {/* OSM tile mosaic — 3 columns × 2 rows centred on the location */}
-        <div className="absolute inset-0 grid grid-cols-3 grid-rows-2">
+        {/* OSM tile mosaic — 3 columns × 2 rows centred on the location.
+            scale-[1.02] closes the sub-pixel seam between tiles. */}
+        <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 scale-[1.02]">
           {Array.from({ length: 6 }).map((_, i) => {
             const ox = (i % 3) - 1;       // -1 / 0 / +1
             const oy = Math.floor(i / 3); //  0 / 1
@@ -174,26 +175,36 @@ export default function ConsentMapEmbed({
         </div>
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/25 via-navy/45 to-navy/65 group-hover:from-navy/15 group-hover:via-navy/35 group-hover:to-navy/55 transition-all duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-b from-navy/20 via-navy/40 to-navy/70 group-hover:from-navy/10 group-hover:via-navy/30 group-hover:to-navy/60 transition-all duration-500" />
 
-        {/* Precise location pin — positioned at the actual coordinates */}
+        {/* Precise location pin — pulse ring wraps the circle so it stays centered */}
         <div
           className="absolute z-10 -translate-x-1/2 -translate-y-full pointer-events-none"
           style={{ left: `${pinLeft}%`, top: `${pinTop}%` }}
         >
-          {/* Drop shadow root */}
-          <div className="relative flex flex-col items-center">
-            {/* Pulse ring */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-accent-red/40 animate-ping" />
-            {/* Pin body */}
-            <div className="relative w-10 h-10 rounded-full bg-accent-red shadow-lg shadow-accent-red/50 flex items-center justify-center border-2 border-white">
-              <MapPin className="w-5 h-5 text-white" />
+          <div className="flex flex-col items-center">
+            {/* Circle with pulse contained inside */}
+            <div className="relative w-10 h-10">
+              <div className="absolute inset-0 rounded-full bg-accent-red/50 animate-ping" />
+              <div className="relative z-10 w-10 h-10 rounded-full bg-accent-red shadow-lg shadow-accent-red/50 flex items-center justify-center border-2 border-white">
+                <MapPin className="w-5 h-5 text-white" />
+              </div>
             </div>
             {/* Stem */}
-            <div className="w-[2px] h-3 bg-accent-red shadow-sm" />
+            <div className="w-[2px] h-3 bg-accent-red" />
             {/* Dot */}
-            <div className="w-2 h-2 rounded-full bg-accent-red/60 shadow-md" />
+            <div className="w-2 h-2 rounded-full bg-accent-red/70" />
           </div>
+        </div>
+
+        {/* Location label — fills the empty middle area */}
+        <div className="absolute z-10 inset-x-0 flex flex-col items-center top-1/2 -translate-y-1/2 px-4 pointer-events-none">
+          <p className="text-white font-serif font-bold text-xl tracking-tight drop-shadow-lg text-center">
+            FRISCO Reality
+          </p>
+          <p className="text-white/75 text-sm mt-1 drop-shadow text-center tracking-wide">
+            Námestie Slobody 1185/30, Sereď
+          </p>
         </div>
 
         {/* Consent prompt — bottom-centre */}
