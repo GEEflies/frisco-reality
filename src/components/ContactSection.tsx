@@ -119,8 +119,8 @@ export const ContactSection = () => {
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2654.85566300157!2d17.737541377024726!3d48.28639262126042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476b67bf84ae3c39%3A0xaabf0d6bfbcef097!2sFRISCO%2C%20s.r.o.%20-%20realitn%C3%A1%20kancel%C3%A1ria!5e0!3m2!1ssk!2ssk!4v1768663122983!5m2!1ssk!2ssk"
               className="rv-child mt-12"
               innerClassName="rounded-2xl border border-navy/10 h-[400px] shadow-lg"
-              lat={48.2864}
-              lon={17.7375}
+              lat={48.28639}
+              lon={17.73754}
             />
           </div>
 
