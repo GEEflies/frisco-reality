@@ -409,7 +409,7 @@ export const PROCESS_COPY: Record<LanguageCode, {
       { number: '01', title: 'Prvé stretnutie', description: 'Začneme nezáväzným rozhovorom. Či už chcete predať, prenajať alebo hľadáte nové bývanie, najskôr si vypočujeme vaše predstavy a ciele.' },
       { number: '02', title: 'Dohodneme si plán', description: 'Navrhneme konkrétny postup podľa vašej situácie. Majiteľom nastavíme správnu cenu a stratégiu predaja/prenájmu. Záujemcom pomôžeme nájsť nehnuteľnosť, ktorá dáva zmysel ich potrebám aj rozpočtu.' },
       { number: '03', title: 'O všetko sa postaráme', description: 'Postaráme sa o celý proces. Od profesionálnej prezentácie a komunikácie so záujemcami až po vyhľadávanie vhodných ponúk a organizovanie obhliadok. Vy sa môžete sústrediť na to podstatné.' },
-      { number: '04', title: 'Dotiahneme to do konca', description: 'Zabezpečíme právny servis, zmluvy aj bezpečný prevod. Sprevádzame vás až do momentu, keď sú podpísané papiere a odovzdané kľúče.' },
+      { number: '04', title: 'Sme s vami aj po podpise', description: 'Zabezpečíme právny servis a bezpečný prevod. Vybavíme aj prepis energií (voda, elektrina, plyn). Naša práca však odovzdaním kľúčov nekončí, sme tu pre vás aj naďalej.' },
     ],
   },
   en: {
@@ -420,7 +420,7 @@ export const PROCESS_COPY: Record<LanguageCode, {
       { number: '01', title: 'Initial meeting', description: 'We start with a no-obligation conversation. Whether you want to sell, rent out, or find a new home, we first understand your goals.' },
       { number: '02', title: 'We define a plan', description: 'We design a clear plan for your situation. For owners we set pricing and strategy, and for seekers we find homes matching needs and budget.' },
       { number: '03', title: 'We handle everything', description: 'We manage the full process—from professional presentation and communication to searching offers and arranging viewings.' },
-      { number: '04', title: 'We close the deal', description: 'We secure legal support, contracts, and a safe transfer. We guide you through to signed documents and handover of keys.' },
+      { number: '04', title: 'With you even after signing', description: 'We secure legal support and a safe transfer. We also handle the transfer of utility bills (water, electricity, gas). Our work does not end with the handover of keys, we are still here for you.' },
     ],
   },
   de: {
@@ -431,7 +431,7 @@ export const PROCESS_COPY: Record<LanguageCode, {
       { number: '01', title: 'Erstgespräch', description: 'Wir beginnen mit einem unverbindlichen Gespräch. Ob Verkauf, Vermietung oder Suche – zuerst verstehen wir Ihre Ziele.' },
       { number: '02', title: 'Plan festlegen', description: 'Wir erstellen einen klaren Plan für Ihre Situation. Für Eigentümer setzen wir Preis und Strategie, für Suchende finden wir passende Angebote.' },
       { number: '03', title: 'Wir übernehmen alles', description: 'Wir steuern den gesamten Prozess – von Präsentation und Kommunikation bis zur Angebotssuche und Organisation von Besichtigungen.' },
-      { number: '04', title: 'Bis zum Abschluss', description: 'Wir sichern Rechtsservice, Verträge und eine sichere Abwicklung. Wir begleiten Sie bis zur Unterzeichnung und Schlüsselübergabe.' },
+      { number: '04', title: 'Auch nach der Unterschrift für Sie da', description: 'Wir sichern Rechtsservice und eine sichere Abwicklung. Wir kümmern uns auch um die Ummeldung der Nebenkosten (Wasser, Strom, Gas). Unsere Arbeit endet nicht mit der Schlüsselübergabe, wir sind weiterhin für Sie da.' },
     ],
   },
 };
