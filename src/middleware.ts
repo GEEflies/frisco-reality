@@ -83,7 +83,7 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(LANGUAGE_REQUEST_HEADER, DEFAULT_LANGUAGE);
 
-  const response = NextResponse.rewrite(nextUrl, {
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },

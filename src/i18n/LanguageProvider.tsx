@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   DEFAULT_LANGUAGE,
   isLanguageCode,
@@ -30,6 +31,7 @@ export const LanguageProvider = ({
   initialLanguage?: LanguageCode;
 }) => {
   const [language, setLanguageState] = useState<LanguageCode>(initialLanguage);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check if URL path starts with a non-default language prefix like /en or /de
@@ -45,7 +47,7 @@ export const LanguageProvider = ({
     setLanguageState(resolvedLanguage);
     window.localStorage.setItem(STORAGE_KEY, resolvedLanguage);
     persistLanguageCookie(resolvedLanguage);
-  }, [initialLanguage]);
+  }, [pathname]);
 
   const setLanguage = (nextLanguage: LanguageCode) => {
     setLanguageState(nextLanguage);
