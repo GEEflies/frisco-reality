@@ -14,6 +14,8 @@ export const Footer = () => {
   const { language } = useLanguage();
   const copy = FOOTER_COPY[language];
   const footerRef = useRef<HTMLElement>(null);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   const [typedHeadline, setTypedHeadline] = useState('');
   const [hasStartedTypewriter, setHasStartedTypewriter] = useState(false);
 
@@ -101,7 +103,7 @@ export const Footer = () => {
             <ul className="space-y-3">
               {copy.navItems.map(item => (
                 <li key={item.label}>
-                  <Link href={item.href} className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">
+                  <Link href={item.href} onClick={scrollToTop} className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">
                     {item.label}
                   </Link>
                 </li>
