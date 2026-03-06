@@ -193,6 +193,7 @@ CREATE TRIGGER update_agents_updated_at
 -- ============================================
 -- SLUG GENERATION (helper)
 -- ============================================
+DROP FUNCTION IF EXISTS sluggify(text);
 CREATE OR REPLACE FUNCTION sluggify(input TEXT)
 RETURNS TEXT
 LANGUAGE plpgsql IMMUTABLE

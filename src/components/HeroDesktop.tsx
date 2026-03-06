@@ -125,7 +125,7 @@ const HeroDesktop = () => {
                an active CSS transform (story-media animation). */}
             <div
               className="relative w-full aspect-[16/10] max-h-[75vh] overflow-hidden bg-white z-10 shadow-2xl shadow-navy/10 rounded-[2rem]"
-              style={{ WebkitMaskImage: '-webkit-radial-gradient(white, white)', maskImage: 'paint(geometry)' }}
+              style={{ WebkitMaskImage: '-webkit-radial-gradient(white, white)', maskImage: 'radial-gradient(white, white)' }}
             >
               <div className="absolute inset-0 bg-navy/5 z-20 mix-blend-multiply pointer-events-none" /> {/* Subtle Tint */}
 

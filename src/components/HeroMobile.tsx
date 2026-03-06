@@ -78,7 +78,7 @@ const HeroMobile = () => {
                 {/* Mobile Video Container */}
                 <div
                     className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl shadow-navy/10 border border-navy/5 bg-navy/5 story-media stagger-5"
-                    style={{ WebkitMaskImage: '-webkit-radial-gradient(white, white)', maskImage: 'paint(geometry)' }}
+                    style={{ WebkitMaskImage: '-webkit-radial-gradient(white, white)', maskImage: 'radial-gradient(white, white)' }}
                 >
                     {/* Bottom-right blur – hides third-party watermark */}
                     <div

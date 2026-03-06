@@ -21,6 +21,7 @@ CREATE INDEX IF NOT EXISTS idx_listings_slug ON listings(slug);
 
 -- 3. Helper: Slovak diacritics → ASCII for URL-safe slugs
 --    (Replaces the version in export_api_schema.sql with a cleaner translate() approach)
+DROP FUNCTION IF EXISTS sluggify(text);
 CREATE OR REPLACE FUNCTION sluggify(input TEXT)
 RETURNS TEXT
 LANGUAGE plpgsql IMMUTABLE
