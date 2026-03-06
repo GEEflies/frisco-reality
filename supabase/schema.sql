@@ -172,12 +172,15 @@ CREATE INDEX idx_agents_uc_user_id ON agents(uc_user_id);
 -- AUTO-UPDATE TRIGGER
 -- ============================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER update_listings_updated_at
     BEFORE UPDATE ON listings FOR EACH ROW
@@ -188,31 +191,32 @@ CREATE TRIGGER update_agents_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================
--- SLUG GENERATION
+-- SLUG GENERATION (helper)
 -- ============================================
-DROP FUNCTION IF EXISTS sluggify(TEXT);
-CREATE OR REPLACE FUNCTION sluggify(text TEXT) RETURNS TEXT AS $$
-DECLARE
-    result TEXT;
+CREATE OR REPLACE FUNCTION sluggify(input TEXT)
+RETURNS TEXT
+LANGUAGE plpgsql IMMUTABLE
+SET search_path = public
+AS $$
 BEGIN
-    result := LOWER(TRIM(text));
-    -- Slovak diacritics
-    result := REPLACE(result, 'á', 'a'); result := REPLACE(result, 'ä', 'a');
-    result := REPLACE(result, 'č', 'c'); result := REPLACE(result, 'ď', 'd');
-    result := REPLACE(result, 'é', 'e'); result := REPLACE(result, 'í', 'i');
-    result := REPLACE(result, 'ĺ', 'l'); result := REPLACE(result, 'ľ', 'l');
-    result := REPLACE(result, 'ň', 'n'); result := REPLACE(result, 'ó', 'o');
-    result := REPLACE(result, 'ô', 'o'); result := REPLACE(result, 'ŕ', 'r');
-    result := REPLACE(result, 'š', 's'); result := REPLACE(result, 'ť', 't');
-    result := REPLACE(result, 'ú', 'u'); result := REPLACE(result, 'ý', 'y');
-    result := REPLACE(result, 'ž', 'z');
-    -- Replace spaces and special chars
-    result := REGEXP_REPLACE(result, '[^a-z0-9]+', '-', 'g');
-    result := REGEXP_REPLACE(result, '-+', '-', 'g');
-    result := TRIM(BOTH '-' FROM result);
-    RETURN result;
+  RETURN regexp_replace(
+    regexp_replace(
+      regexp_replace(
+        lower(
+          translate(
+            input,
+            'áäčďéíĺľňóôŕšťúýžÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽöüß',
+            'aacdeillnoorstuyzaacdeillnoorstuyzouß'
+          )
+        ),
+        '[^a-z0-9\s-]', '', 'g'
+      ),
+      '\s+', '-', 'g'
+    ),
+    '-+', '-', 'g'
+  );
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$;
 
 -- ============================================
 -- STORAGE BUCKETS (create via Supabase Dashboard > Storage)
