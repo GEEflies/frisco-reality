@@ -33,20 +33,6 @@ const stripLanguagePrefix = (pathname: string): string => {
   return stripped.length > 0 ? stripped : '/';
 };
 
-const detectPreferredLanguage = (request: NextRequest): LanguageCode => {
-  const cookieLanguage = request.cookies.get(LANGUAGE_COOKIE_KEY)?.value;
-  if (isLanguageCode(cookieLanguage)) return cookieLanguage;
-
-  const acceptLanguage = request.headers.get('accept-language') ?? '';
-  const normalized = acceptLanguage.toLowerCase();
-
-  if (normalized.includes('de')) return 'de';
-  if (normalized.includes('en')) return 'en';
-  if (normalized.includes('sk')) return 'sk';
-
-  return DEFAULT_LANGUAGE;
-};
-
 const persistLanguageCookie = (response: NextResponse, language: LanguageCode) => {
   response.cookies.set(LANGUAGE_COOKIE_KEY, language, {
     path: '/',
@@ -74,7 +60,7 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  const preferredLanguage = detectPreferredLanguage(request);
+  const preferredLanguage: LanguageCode = DEFAULT_LANGUAGE;
   const redirectUrl = nextUrl.clone();
   redirectUrl.pathname = `/${preferredLanguage}${pathname === '/' ? '' : pathname}`;
 
