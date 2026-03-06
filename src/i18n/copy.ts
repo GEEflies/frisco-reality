@@ -509,7 +509,6 @@ export const FOOTER_COPY: Record<LanguageCode, {
   copyright: string;
   city: string;
   privacy: string;
-  cookies: string;
   madeBy: string;
   navItems: Array<{ label: string; href: string }>;
   servicesItems: string[];
@@ -529,7 +528,6 @@ export const FOOTER_COPY: Record<LanguageCode, {
     copyright: 'FRISCO. Rodinná realitka v Seredi a okolí',
     city: '',
     privacy: 'Ochrana osobných údajov',
-    cookies: 'Cookies',
     madeBy: 'Web od',
     navItems: [
       { label: 'Domov', href: '/' },
@@ -554,7 +552,6 @@ export const FOOTER_COPY: Record<LanguageCode, {
     copyright: 'FRISCO. A family real estate agency in Sereď and surroundings',
     city: '',
     privacy: 'Privacy policy',
-    cookies: 'Cookies',
     madeBy: 'Built by',
     navItems: [
       { label: 'Home', href: '/' },
@@ -579,7 +576,6 @@ export const FOOTER_COPY: Record<LanguageCode, {
     copyright: 'FRISCO. Familienimmobilienbüro in Sereď und Umgebung',
     city: '',
     privacy: 'Datenschutz',
-    cookies: 'Cookies',
     madeBy: 'Built by',
     navItems: [
       { label: 'Startseite', href: '/' },

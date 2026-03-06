@@ -265,7 +265,6 @@ export const Footer = () => {
               </a>
             </div>
             <Link href="/ochrana-osobnych-udajov" className="hover:text-navy transition-colors">{copy.privacy}</Link>
-            <Link href="/cookies" className="hover:text-navy transition-colors">{copy.cookies}</Link>
           </div>
         </div>
 
