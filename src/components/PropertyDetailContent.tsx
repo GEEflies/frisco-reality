@@ -28,6 +28,7 @@ import {
     Check,
     Navigation
 } from 'lucide-react';
+import ConsentMapEmbed from '@/components/ConsentMapEmbed';
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
 import { useListing } from '@/hooks/useListings';
@@ -634,38 +635,32 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         {listing.geo_lat && listing.geo_lon && (
                             <div>
                                 <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.location}</h2>
-                                <div className="rounded-2xl overflow-hidden border border-black/5 shadow-sm">
-                                    <div className="relative w-full aspect-[16/10] md:aspect-[16/9]">
-                                        <iframe
-                                            src={`https://www.google.com/maps?q=${listing.geo_lat},${listing.geo_lon}&z=15&output=embed`}
-                                            width="100%"
-                                            height="100%"
-                                            style={{ border: 0 }}
-                                            allowFullScreen
-                                            loading="lazy"
-                                            referrerPolicy="no-referrer-when-downgrade"
-                                            className="absolute inset-0 w-full h-full"
-                                            title={copy.mapTitle}
-                                        />
-                                    </div>
-                                    <div className="bg-white p-4 flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-charcoal/70">
-                                            <MapPin className="w-4 h-4 text-accent-red" />
-                                            <span className="text-sm font-medium">
-                                                {[listing.street, listing.location_city, listing.location_district].filter(Boolean).join(', ') || copy.showOnMap}
-                                            </span>
+                                <ConsentMapEmbed
+                                    src={`https://www.google.com/maps?q=${listing.geo_lat},${listing.geo_lon}&z=15&output=embed`}
+                                    className="rounded-2xl overflow-hidden border border-black/5 shadow-sm"
+                                    innerClassName="w-full aspect-[16/10] md:aspect-[16/9]"
+                                    lat={listing.geo_lat}
+                                    lon={listing.geo_lon}
+                                    footer={
+                                        <div className="bg-white p-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-charcoal/70">
+                                                <MapPin className="w-4 h-4 text-accent-red" />
+                                                <span className="text-sm font-medium">
+                                                    {[listing.street, listing.location_city, listing.location_district].filter(Boolean).join(', ') || copy.showOnMap}
+                                                </span>
+                                            </div>
+                                            <a
+                                                href={`https://www.google.com/maps/dir/?api=1&destination=${listing.geo_lat},${listing.geo_lon}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-2 px-4 py-2 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-accent-red transition-colors"
+                                            >
+                                                <Navigation className="w-3.5 h-3.5" />
+                                                {copy.navigate}
+                                            </a>
                                         </div>
-                                        <a
-                                            href={`https://www.google.com/maps/dir/?api=1&destination=${listing.geo_lat},${listing.geo_lon}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-accent-red transition-colors"
-                                        >
-                                            <Navigation className="w-3.5 h-3.5" />
-                                            {copy.navigate}
-                                        </a>
-                                    </div>
-                                </div>
+                                    }
+                                />
                             </div>
                         )}
                     </div>

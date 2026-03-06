@@ -2,6 +2,7 @@
 
 import { MapPin, Phone, Mail, Clock, Instagram, Facebook, FileText } from 'lucide-react';
 import { ContactForm } from '@/components/ContactForm';
+import ConsentMapEmbed from '@/components/ConsentMapEmbed';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CONTACT_SECTION_COPY } from '@/i18n/copy';
 
@@ -114,18 +115,13 @@ export const ContactSection = () => {
             </div>
 
             {/* Google Maps */}
-            <div className="rv-child mt-12 relative rounded-2xl overflow-hidden border border-navy/10 h-[400px] shadow-lg">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2654.85566300157!2d17.737541377024726!3d48.28639262126042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476b67bf84ae3c39%3A0xaabf0d6bfbcef097!2sFRISCO%2C%20s.r.o.%20-%20realitn%C3%A1%20kancel%C3%A1ria!5e0!3m2!1ssk!2ssk!4v1768663122983!5m2!1ssk!2ssk"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
+            <ConsentMapEmbed
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2654.85566300157!2d17.737541377024726!3d48.28639262126042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476b67bf84ae3c39%3A0xaabf0d6bfbcef097!2sFRISCO%2C%20s.r.o.%20-%20realitn%C3%A1%20kancel%C3%A1ria!5e0!3m2!1ssk!2ssk!4v1768663122983!5m2!1ssk!2ssk"
+              className="rv-child mt-12"
+              innerClassName="rounded-2xl border border-navy/10 h-[400px] shadow-lg"
+              lat={48.2864}
+              lon={17.7375}
+            />
           </div>
 
           {/* Right: Contact Form — sticky */}

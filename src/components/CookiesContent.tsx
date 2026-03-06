@@ -15,11 +15,11 @@ const COOKIES_COPY = {
       },
       {
         heading: '2. Aké cookies používame',
-        content: `Na našej stránke používame nasledovné typy cookies:\n\n• Nevyhnutné cookies — zabezpečujú základné funkcie stránky (napr. navigácia, jazyk). Tieto cookies nie je možné odmietnuť.\n\n• Analytické cookies — pomáhajú nám pochopiť, ako návštevníci používajú stránku. Využívame službu Vercel Analytics na meranie návštevnosti. Tieto údaje sú anonymizované.\n\n• Funkčné cookies — umožňujú zapamätať si vaše nastavenia, napríklad zvolený jazyk.`,
+        content: `Na našej stránke používame nasledovné typy cookies:\n\n• Nevyhnutné cookies — zabezpečujú základné funkcie stránky (napr. navigácia, jazyk). Tieto cookies nie je možné odmietnuť.\n\n• Analytika — na meranie návštevnosti využívame službu Vercel Analytics, ktorá nepoužíva cookies a nezbiera osobné údaje. Údaje sú plne anonymizované.\n\n• Funkčné cookies — umožňujú zapamätať si vaše nastavenia, napríklad zvolený jazyk.\n\n• Cookies tretích strán (Google Maps) — interaktívna mapa sa načíta až po vašom súhlase, pretože Google môže ukladať vlastné cookies.`,
       },
       {
         heading: '3. Cookies tretích strán',
-        content: `Na stránke môžu byť použité cookies tretích strán:\n\n• Google Fonts — na načítanie typografie\n• Supabase — na správu obsahu a funkcionalitu stránky\n• Nehnuteľnosti.sk — v prípade presmerovaní na partnerský portál`,
+        content: `Na stránke môžu byť použité cookies tretích strán:\n\n• Google Maps — interaktívna mapa sa načíta až po vašom súhlase. Google môže ukladať vlastné cookies na analýzu a personalizáciu.\n\nTypografia (Google Fonts) je stiahnutá a hostovaná priamo na našom serveri — nezakladá žiadne cookies tretích strán. Supabase slúži na správu obsahu výhradne na strane servera.`,
       },
       {
         heading: '4. Ako spravovať cookies',
@@ -27,7 +27,7 @@ const COOKIES_COPY = {
       },
       {
         heading: '5. Právny základ',
-        content: `Používanie nevyhnutných cookies je založené na oprávnenom záujme prevádzkovateľa (čl. 6 ods. 1 písm. f) GDPR). Analytické a funkčné cookies používame na základe vášho súhlasu (čl. 6 ods. 1 písm. a) GDPR).\n\nViac informácií o spracúvaní osobných údajov nájdete v sekcii Ochrana osobných údajov.`,
+        content: `Používanie nevyhnutných a funkčných cookies (jazyk) je založené na oprávnenom záujme prevádzkovateľa (čl. 6 ods. 1 písm. f) GDPR). Analytika (Vercel Analytics) nepoužíva cookies a nespracúva osobné údaje. Cookies tretích strán (Google Maps) používame na základe vášho súhlasu (čl. 6 ods. 1 písm. a) GDPR).\n\nViac informácií o spracúvaní osobných údajov nájdete v sekcii Ochrana osobných údajov.`,
       },
     ],
   },
@@ -41,11 +41,11 @@ const COOKIES_COPY = {
       },
       {
         heading: '2. Cookies We Use',
-        content: `Our site uses the following types of cookies:\n\n• Essential cookies — ensure basic site functionality (e.g. navigation, language). These cookies cannot be refused.\n\n• Analytics cookies — help us understand how visitors use the site. We use Vercel Analytics for traffic measurement. This data is anonymized.\n\n• Functional cookies — remember your settings, such as your chosen language.`,
+        content: `Our site uses the following types of cookies:\n\n• Essential cookies — ensure basic site functionality (e.g. navigation, language). These cookies cannot be refused.\n\n• Analytics — we use Vercel Analytics for traffic measurement. It does not use cookies and does not collect personal data. All data is fully anonymized.\n\n• Functional cookies — remember your settings, such as your chosen language.\n\n• Third-party cookies (Google Maps) — the interactive map loads only after your consent, as Google may set its own cookies.`,
       },
       {
         heading: '3. Third-Party Cookies',
-        content: `The site may use cookies from third parties:\n\n• Google Fonts — for loading typography\n• Supabase — for content management and site functionality\n• Nehnuteľnosti.sk — for redirects to the partner portal`,
+        content: `The site may use cookies from third parties:\n\n• Google Maps — the interactive map loads only after your consent. Google may set its own cookies for analytics and personalization.\n\nTypography (Google Fonts) is downloaded and self-hosted on our server — it does not set any third-party cookies. Supabase is used for content management on the server side only.`,
       },
       {
         heading: '4. Managing Cookies',
@@ -53,7 +53,7 @@ const COOKIES_COPY = {
       },
       {
         heading: '5. Legal Basis',
-        content: `The use of essential cookies is based on the legitimate interest of the controller (Art. 6(1)(f) GDPR). We use analytics and functional cookies based on your consent (Art. 6(1)(a) GDPR).\n\nFor more information about personal data processing, see our Privacy Policy.`,
+        content: `The use of essential and functional cookies (language) is based on the legitimate interest of the controller (Art. 6(1)(f) GDPR). Analytics (Vercel Analytics) does not use cookies and does not process personal data. Third-party cookies (Google Maps) are used based on your consent (Art. 6(1)(a) GDPR).\n\nFor more information about personal data processing, see our Privacy Policy.`,
       },
     ],
   },
@@ -67,11 +67,11 @@ const COOKIES_COPY = {
       },
       {
         heading: '2. Welche Cookies wir verwenden',
-        content: `Unsere Website verwendet folgende Arten von Cookies:\n\n• Notwendige Cookies — sichern die grundlegende Funktionalität der Website (z. B. Navigation, Sprache). Diese Cookies können nicht abgelehnt werden.\n\n• Analyse-Cookies — helfen uns zu verstehen, wie Besucher die Website nutzen. Wir verwenden Vercel Analytics zur Verkehrsmessung. Diese Daten sind anonymisiert.\n\n• Funktions-Cookies — merken sich Ihre Einstellungen, z. B. die gewählte Sprache.`,
+        content: `Unsere Website verwendet folgende Arten von Cookies:\n\n• Notwendige Cookies — sichern die grundlegende Funktionalität der Website (z. B. Navigation, Sprache). Diese Cookies können nicht abgelehnt werden.\n\n• Analytik — wir verwenden Vercel Analytics zur Verkehrsmessung. Es werden keine Cookies gesetzt und keine personenbezogenen Daten erhoben. Alle Daten sind vollständig anonymisiert.\n\n• Funktions-Cookies — merken sich Ihre Einstellungen, z. B. die gewählte Sprache.\n\n• Drittanbieter-Cookies (Google Maps) — die interaktive Karte wird erst nach Ihrer Zustimmung geladen, da Google eigene Cookies setzen kann.`,
       },
       {
         heading: '3. Cookies von Drittanbietern',
-        content: `Die Website kann Cookies von Drittanbietern verwenden:\n\n• Google Fonts — zum Laden der Typografie\n• Supabase — für Content-Management und Website-Funktionalität\n• Nehnuteľnosti.sk — bei Weiterleitungen zum Partnerportal`,
+        content: `Die Website kann Cookies von Drittanbietern verwenden:\n\n• Google Maps — die interaktive Karte wird erst nach Ihrer Zustimmung geladen. Google kann eigene Cookies für Analyse und Personalisierung setzen.\n\nTypografie (Google Fonts) wird heruntergeladen und auf unserem Server gehostet — es werden keine Drittanbieter-Cookies gesetzt. Supabase wird ausschließlich serverseitig für die Inhaltsverwaltung genutzt.`,
       },
       {
         heading: '4. Cookies verwalten',
@@ -79,7 +79,7 @@ const COOKIES_COPY = {
       },
       {
         heading: '5. Rechtsgrundlage',
-        content: `Die Verwendung notwendiger Cookies basiert auf dem berechtigten Interesse des Verantwortlichen (Art. 6 Abs. 1 lit. f DSGVO). Analyse- und Funktions-Cookies verwenden wir auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).\n\nWeitere Informationen zur Verarbeitung personenbezogener Daten finden Sie in unserer Datenschutzerklärung.`,
+        content: `Die Verwendung notwendiger und funktionaler Cookies (Sprache) basiert auf dem berechtigten Interesse des Verantwortlichen (Art. 6 Abs. 1 lit. f DSGVO). Analytik (Vercel Analytics) setzt keine Cookies und verarbeitet keine personenbezogenen Daten. Drittanbieter-Cookies (Google Maps) verwenden wir auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).\n\nWeitere Informationen zur Verarbeitung personenbezogener Daten finden Sie in unserer Datenschutzerklärung.`,
       },
     ],
   },
