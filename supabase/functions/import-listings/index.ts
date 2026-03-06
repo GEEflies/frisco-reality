@@ -71,6 +71,10 @@ async function notifyFirstListing(title: string, slug: string, listingId: string
         console.warn('RESEND_API_KEY not set — skipping first-listing notification');
         return;
     }
+    const listingUrl = `${SITE_URL}/nehnutelnost/${slug}`;
+    const dashboardUrl = 'https://supabase.com/dashboard/project/fcvswlurtchqorgnwclw/editor';
+    const now = new Date().toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' });
+
     try {
         const res = await fetch('https://api.resend.com/emails', {
             method: 'POST',
@@ -81,15 +85,83 @@ async function notifyFirstListing(title: string, slug: string, listingId: string
             body: JSON.stringify({
                 from: 'FRISCO Reality <frisco@karchi.xyz>',
                 to: ['billikkarol1@gmail.com'],
-                subject: '\u{1F3E0} UC je live — prvý inzerát práve dorazil!',
-                html: `<h2>United Classifieds začali posielať inzeráty</h2>
-<p>Prvý inzerát bol úspešne importovaný do databázy.</p>
-<table style="border-collapse:collapse;font-family:sans-serif;">
-  <tr><td style="padding:4px 12px;font-weight:bold;">Názov</td><td style="padding:4px 12px;">${title}</td></tr>
-  <tr><td style="padding:4px 12px;font-weight:bold;">ID</td><td style="padding:4px 12px;">${listingId}</td></tr>
-  <tr><td style="padding:4px 12px;font-weight:bold;">URL</td><td style="padding:4px 12px;"><a href="${SITE_URL}/nehnutelnost/${slug}">${SITE_URL}/nehnutelnost/${slug}</a></td></tr>
-</table>
-<p style="margin-top:16px;color:#666;">Skontroluj <a href="https://supabase.com/dashboard/project/fcvswlurtchqorgnwclw/editor">Supabase dashboard</a> pre ďalšie detaily.</p>`,
+                subject: '🏠 UC je live — prvý inzerát práve dorazil!',
+                html: `<!DOCTYPE html>
+<html lang="sk">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#0d1b2a;padding:28px 32px;">
+            <p style="margin:0;font-size:22px;font-weight:bold;color:#ffffff;letter-spacing:2px;">FRISCO</p>
+            <p style="margin:4px 0 0;font-size:13px;color:#ffffff;opacity:0.6;">Rodinná realitka · Sereď a okolie</p>
+          </td>
+        </tr>
+
+        <!-- Status badge -->
+        <tr>
+          <td style="padding:24px 32px 0;">
+            <span style="display:inline-block;background:#e8f5e9;color:#2e7d32;font-size:12px;font-weight:bold;padding:5px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;">● UC Export API · Aktívny</span>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:20px 32px 28px;">
+            <h1 style="margin:0 0 8px;font-size:22px;color:#0d1b2a;">Prvý inzerát bol importovaný</h1>
+            <p style="margin:0 0 20px;font-size:15px;color:#555;">United Classifieds začali odosielať inzeráty. Systém funguje správne.</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:24px;">
+              <tr>
+                <td style="padding:12px 16px;border-bottom:1px solid #e0e0e0;">
+                  <p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;">Názov inzerátu</p>
+                  <p style="margin:4px 0 0;font-size:15px;color:#0d1b2a;font-weight:bold;">${title}</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;border-bottom:1px solid #e0e0e0;">
+                  <p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;">Čas importu</p>
+                  <p style="margin:4px 0 0;font-size:14px;color:#333;">${now}</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;">
+                  <p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;">Interné ID</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:#333;font-family:monospace;">${listingId}</p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- CTA Buttons -->
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding-right:12px;">
+                  <a href="${listingUrl}" style="display:inline-block;background:#0d1b2a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;padding:12px 22px;border-radius:6px;">Zobraziť inzerát →</a>
+                </td>
+                <td>
+                  <a href="${dashboardUrl}" style="display:inline-block;background:#f5f5f5;color:#333;text-decoration:none;font-size:14px;padding:12px 22px;border-radius:6px;border:1px solid #ddd;">Supabase dashboard</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding:16px 32px;border-top:1px solid #eee;">
+            <p style="margin:0;font-size:12px;color:#aaa;">Táto notifikácia bola odoslaná automaticky pri prvom importe z UC Export API.</p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
             }),
         });
         if (!res.ok) {
