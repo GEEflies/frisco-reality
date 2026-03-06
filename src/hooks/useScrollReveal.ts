@@ -81,10 +81,6 @@ export function useScrollReveal() {
       observerOptions
     );
 
-    // Observe all current .reveal / .reveal-scale / .reveal-left / .reveal-right elements
-    observeRevealTargets(document, observer);
-
-    // Also watch for elements added later (e.g. lazy-loaded sections)
     const mutationObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         for (const node of mutation.addedNodes) {
@@ -92,16 +88,23 @@ export function useScrollReveal() {
             if (isRevealElement(node) && !node.classList.contains('revealed')) {
               observer.observe(node);
             }
-            // Also check descendants
             observeRevealTargets(node, observer);
           }
         }
       }
     });
 
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    // Defer the first observation until AFTER React's hydration commit.
+    // Without this, IntersectionObserver fires synchronously for elements
+    // already in the viewport, adding `.revealed` while React is still
+    // reconciling the server HTML — causing a hydration mismatch warning.
+    const raf = requestAnimationFrame(() => {
+      observeRevealTargets(document, observer);
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
+    });
 
     return () => {
+      cancelAnimationFrame(raf);
       observer.disconnect();
       mutationObserver.disconnect();
     };
