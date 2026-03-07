@@ -157,7 +157,6 @@ const HeroDesktop = () => {
                 muted
                 playsInline
                 preload="auto"
-                poster="/hero-property.jpg"
                 className="w-full h-full object-cover"
               >
                 <source src={HERO_VIDEO_URL} type="video/mp4" />

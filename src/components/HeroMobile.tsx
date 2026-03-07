@@ -101,7 +101,6 @@ const HeroMobile = () => {
                     />
                     <AutoplayVideo
                         src={HERO_VIDEO_URL}
-                        poster="/hero-property.jpg"
                         className="w-full h-full object-cover"
                     />
                 </div>
