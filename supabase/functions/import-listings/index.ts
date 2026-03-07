@@ -194,38 +194,39 @@ function sluggify(text: string): string {
 }
 
 // ---- Parse request body ----
+// IMPORTANT: Always read the body as text FIRST, then parse.
+// In Deno, a Request body can only be consumed once — calling req.json()
+// consumes the stream, so a subsequent req.text() would throw
+// "Body already consumed". Reading as text is safe for all content types.
 async function parseBody(req: Request): Promise<Record<string, any>> {
     const contentType = req.headers.get('content-type') || '';
+    const text = await req.text();
 
     if (contentType.includes('application/json')) {
-        return await req.json();
+        return JSON.parse(text);
     }
 
     if (contentType.includes('application/x-www-form-urlencoded')) {
-        const text = await req.text();
-        const params = new URLSearchParams(text);
-        const body: Record<string, any> = {};
-        for (const [key, value] of params.entries()) {
-            body[key] = value;
-        }
-        // action may come as string from form data
-        if (body.action) body.action = Number(body.action);
-        return body;
+        return parseFormData(text);
     }
 
-    // Try JSON as fallback
+    // Unknown content-type — try JSON first, then form-urlencoded fallback
     try {
-        return await req.json();
+        return JSON.parse(text);
     } catch {
-        const text = await req.text();
-        const params = new URLSearchParams(text);
-        const body: Record<string, any> = {};
-        for (const [key, value] of params.entries()) {
-            body[key] = value;
-        }
-        if (body.action) body.action = Number(body.action);
-        return body;
+        return parseFormData(text);
     }
+}
+
+function parseFormData(text: string): Record<string, any> {
+    const params = new URLSearchParams(text);
+    const body: Record<string, any> = {};
+    for (const [key, value] of params.entries()) {
+        body[key] = value;
+    }
+    // action may come as string from form data
+    if (body.action) body.action = Number(body.action);
+    return body;
 }
 
 // ---- Extract boolean and extra fields from UC listing data ----
@@ -474,6 +475,7 @@ async function handleListing(data: Record<string, any>) {
             console.error('Listing update error:', error);
             return errorResponse(12, `Update failed: ${error.message}`);
         }
+        console.log(`[UC] UPDATED listing ${listingId} (uc_object_id=${objectId}) title="${data.title}"`);
     } else {
         // ---- INSERT ----
         responseCode = 1;
@@ -490,6 +492,7 @@ async function handleListing(data: Record<string, any>) {
             return errorResponse(12, `Insert failed: ${error?.message || 'unknown'}`);
         }
         listingId = inserted.id;
+        console.log(`[UC] INSERTED listing ${listingId} (uc_object_id=${objectId}) title="${data.title}"`);
     }
 
     // ---- HANDLE IMAGES ----
@@ -711,8 +714,12 @@ Deno.serve(async (req) => {
 
         const { user, pass, action, data: dataStr } = body;
 
+        // Log incoming request summary (no credentials)
+        console.log(`[UC] action=${action} content-type=${req.headers.get('content-type')} has_data=${!!dataStr}`);
+
         // ---- Auth check ----
         if (!user || !pass || user !== UC_WEBHOOK_USER || pass !== UC_WEBHOOK_PASS) {
+            console.warn('[UC] Auth failed — wrong login data');
             return errorResponse(10, 'Wrong login data');
         }
 
