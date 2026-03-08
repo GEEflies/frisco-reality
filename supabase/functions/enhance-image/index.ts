@@ -7,11 +7,16 @@
  * Uses Google Gemini to enhance real estate photos.
  * Called by process-images for each pending image.
  *
- * Fixes applied vs. previous version:
- * 1. generationConfig is passed to getGenerativeModel() (not generateContent)
- * 2. Base64 conversion uses chunked approach to avoid stack overflow on large images
- * 3. Proper error handling and status recovery
- * 4. Falls back to original image if enhancement fails
+ * Flow per image:
+ * 1. Download the original image
+ * 2. CLASSIFY it with a cheap Gemini text call (interior / exterior / skip)
+ * 3. Apply the matching enhancement prompt (or skip non-photo images entirely)
+ * 4. Upload the enhanced result to Supabase Storage
+ *
+ * Image categories:
+ *   INTERIOR  → lighting, exposure, window pull, warm tones
+ *   EXTERIOR  → sky, color, sharpness — gentle touch, no composition changes
+ *   SKIP      → floorplans, maps, logos, 3D renders, text overlays — left as-is
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -26,24 +31,65 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // ---- Gemini setup ----
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Gemini models that support image generation / editing (as of March 2026).
-// The SDK sends the prompt + image and expects an image back.
-// We try each model in order; the first that returns an image wins.
-const DEFAULT_GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp';
+// Models that support image generation / editing (as of March 2026).
+// configuredGeminiModel takes priority if set as a Supabase secret.
 const configuredGeminiModel = Deno.env.get('GEMINI_IMAGE_MODEL')?.trim();
-const MODEL_CANDIDATES = [
+const IMAGE_MODEL_CANDIDATES = [
     configuredGeminiModel,
-    DEFAULT_GEMINI_IMAGE_MODEL,
     'gemini-2.0-flash-exp',
     'gemini-2.0-flash',
     'gemini-1.5-flash',
 ].filter((value, index, arr) => Boolean(value) && arr.indexOf(value) === index) as string[];
 
-const ENHANCEMENT_PROMPT = `Enhance this real estate photo for a luxury property listing.
+// Cheap text model for classification (no image generation needed)
+const CLASSIFY_MODEL = 'gemini-2.0-flash';
+
+// ============================================================
+// CLASSIFICATION
+// ============================================================
+type ImageCategory = 'interior' | 'exterior' | 'skip';
+
+const CLASSIFY_PROMPT = `You are an image classifier for a real estate website.
+Look at this image and classify it into EXACTLY ONE category.
+Reply with a single word — nothing else.
+
+INTERIOR — a photo taken INSIDE a building (room, kitchen, bathroom, hallway, staircase, garage interior, etc.)
+EXTERIOR — a photo taken OUTSIDE showing the building exterior, garden, terrace, balcony view, street view, neighborhood, pool, parking lot, etc.
+SKIP — anything that is NOT a photograph: floorplan, map, site plan, logo, text overlay, 3D render, infographic, sketch, diagram, certificate, or any computer-generated graphic
+
+Reply with exactly one word: INTERIOR, EXTERIOR, or SKIP`;
+
+async function classifyImage(imageBase64: string, mimeType: string): Promise<ImageCategory> {
+    try {
+        const model = genAI.getGenerativeModel({ model: CLASSIFY_MODEL });
+        const result = await model.generateContent([
+            CLASSIFY_PROMPT,
+            { inlineData: { mimeType, data: imageBase64 } },
+        ]);
+
+        const text = result.response.text().trim().toUpperCase();
+        if (text.includes('INTERIOR')) return 'interior';
+        if (text.includes('EXTERIOR')) return 'exterior';
+        if (text.includes('SKIP')) return 'skip';
+
+        // If the model returned something unexpected, default to interior
+        // (safest — interior prompt is the most conservative)
+        console.warn(`[classify] Unexpected classification: "${text}", defaulting to interior`);
+        return 'interior';
+    } catch (error) {
+        console.error(`[classify] Classification failed, defaulting to interior:`, (error as Error).message);
+        return 'interior';
+    }
+}
+
+// ============================================================
+// ENHANCEMENT PROMPTS
+// ============================================================
+const INTERIOR_PROMPT = `Enhance this interior real estate photo for a luxury property listing.
 
 Lighting & exposure:
 - Brighten dark areas with natural-looking fill light
-- Recover blown-out window highlights so exterior is visible
+- Recover blown-out window highlights so the exterior view is visible
 - Balance indoor and outdoor exposure (window pull)
 
 Color:
@@ -59,6 +105,29 @@ IMPORTANT CONSTRAINTS:
 - Do NOT add, remove, or move any objects, furniture, or people
 - Do NOT add text, logos, watermarks, or borders
 - Do NOT change the composition or perspective
+- Keep the result photorealistic — it must look like a real photograph
+- Return ONLY the enhanced image, nothing else`;
+
+const EXTERIOR_PROMPT = `Enhance this exterior real estate photo for a luxury property listing.
+
+Sky & atmosphere:
+- If the sky is overcast or dull, make it slightly more appealing while keeping it realistic
+- Ensure the building is well-lit and clearly visible
+
+Color:
+- Correct white balance for natural, true-to-life tones
+- Boost greenery and landscape colors gently — keep realistic
+- Ensure the building facade colors are accurate and vibrant
+
+Cleanup:
+- Reduce visible noise and grain
+- Sharpen architectural details slightly for a crisp result
+
+IMPORTANT CONSTRAINTS:
+- Do NOT add, remove, or move any objects, cars, people, or landscaping
+- Do NOT add text, logos, watermarks, or borders
+- Do NOT change the composition, perspective, or camera angle
+- Do NOT replace the sky entirely — only enhance what's there
 - Keep the result photorealistic — it must look like a real photograph
 - Return ONLY the enhanced image, nothing else`;
 
@@ -86,10 +155,11 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 async function generateEnhancedImage(
     imageBase64: string,
     mimeType: string,
+    prompt: string,
 ): Promise<{ enhancedImageData: string; enhancedMimeType: string; modelUsed: string }> {
     const errors: string[] = [];
 
-    for (const modelName of MODEL_CANDIDATES) {
+    for (const modelName of IMAGE_MODEL_CANDIDATES) {
         const modelConfigs = [
             {
                 model: modelName,
@@ -105,7 +175,7 @@ async function generateEnhancedImage(
             try {
                 const model = genAI.getGenerativeModel(config as any);
                 const result = await model.generateContent([
-                    ENHANCEMENT_PROMPT,
+                    prompt,
                     {
                         inlineData: {
                             mimeType,
@@ -180,8 +250,29 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
         // Convert to base64
         const imageBase64 = arrayBufferToBase64(imageBuffer);
 
-        // Call Gemini for enhancement
-        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType);
+        // ---- STEP 1: Classify the image ----
+        const category = await classifyImage(imageBase64, mimeType);
+        console.log(`[enhance-image] ${imageId} classified as: ${category}`);
+
+        // ---- STEP 2: Skip non-photo images ----
+        if (category === 'skip') {
+            console.log(`[enhance-image] ${imageId} is a floorplan/map/graphic — skipping enhancement, keeping original`);
+            await supabase
+                .from('listing_images')
+                .update({
+                    enhanced_url: originalUrl,
+                    enhancement_status: 'completed',
+                })
+                .eq('id', imageId);
+            return { success: true };
+        }
+
+        // ---- STEP 3: Pick the right prompt ----
+        const enhancementPrompt = category === 'exterior' ? EXTERIOR_PROMPT : INTERIOR_PROMPT;
+
+        // ---- STEP 4: Call Gemini for enhancement ----
+        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, enhancementPrompt);
+        console.log(`[enhance-image] ${imageId} enhanced with ${modelUsed} (${category} prompt)`);
 
         // Upload enhanced image to Supabase Storage
         const extension = enhancedMimeType.split('/')[1] || 'jpeg';
