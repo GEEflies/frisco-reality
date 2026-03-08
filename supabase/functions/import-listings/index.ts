@@ -200,17 +200,33 @@ function sluggify(text: string): string {
 async function parseBody(req: Request): Promise<Record<string, any>> {
     const contentType = req.headers.get('content-type') || '';
 
-    // --- multipart/form-data (UC may send photos as file parts) ---
+    // --- multipart/form-data (UC sends form fields this way) ---
     if (contentType.includes('multipart/form-data')) {
-        const formData = await req.formData();
-        const body: Record<string, any> = {};
-        for (const [key, value] of formData.entries()) {
-            // Files (e.g. photos) are Blob instances — keep them as-is for now;
-            // string fields (user, pass, action, data …) stay strings.
-            body[key] = typeof value === 'string' ? value : value;
+        // Clone first so we have a fallback if formData() fails
+        const cloned = req.clone();
+        try {
+            const formData = await req.formData();
+            const body: Record<string, any> = {};
+            for (const [key, value] of formData.entries()) {
+                // File parts → read as text (UC sends data as text parts, not file uploads)
+                if (typeof value === 'string') {
+                    body[key] = value;
+                } else if (value instanceof File || (value && typeof value.text === 'function')) {
+                    body[key] = await value.text();
+                } else {
+                    body[key] = String(value);
+                }
+            }
+            if (body.action) body.action = Number(body.action);
+            console.log(`[UC] multipart parsed keys: ${Object.keys(body).join(', ')}`);
+            return body;
+        } catch (e) {
+            // Fallback: if formData() fails, try reading raw text from the clone
+            console.warn(`[UC] formData() failed: ${(e as Error).message}, trying text fallback`);
+            const text = await cloned.text().catch(() => '');
+            if (!text) return {};
+            try { return JSON.parse(text); } catch { return parseFormData(text); }
         }
-        if (body.action) body.action = Number(body.action);
-        return body;
     }
 
     // --- all other content types: read as text first ---
@@ -728,12 +744,14 @@ Deno.serve(async (req) => {
 
         const { user, pass, action, data: dataStr } = body;
 
-        // Log incoming request summary (no credentials)
-        console.log(`[UC] action=${action} content-type=${req.headers.get('content-type')} has_data=${!!dataStr}`);
+        // Detailed request logging (no credentials — just diagnostics)
+        const ct = req.headers.get('content-type') || 'none';
+        console.log(`[UC] action=${action} (type=${typeof action}) content-type=${ct}`);
+        console.log(`[UC] parsed_keys=[${Object.keys(body).join(',')}] has_user=${!!user} has_pass=${!!pass} has_data=${!!dataStr} data_type=${typeof dataStr} data_len=${typeof dataStr === 'string' ? dataStr.length : 'N/A'}`);
 
         // ---- Auth check ----
         if (!user || !pass || user !== UC_WEBHOOK_USER || pass !== UC_WEBHOOK_PASS) {
-            console.warn('[UC] Auth failed — wrong login data');
+            console.warn(`[UC] Auth failed — user_match=${user === UC_WEBHOOK_USER} pass_match=${pass === UC_WEBHOOK_PASS} user_provided=${!!user} pass_provided=${!!pass}`);
             return errorResponse(10, 'Wrong login data');
         }
 

@@ -38,9 +38,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let payload: string;
+  // Read body as raw bytes — preserves multipart boundaries and binary data
+  // without UTF-8 re-encoding that req.text() would do.
+  let bodyBuffer: ArrayBuffer;
   try {
-    payload = await req.text();
+    bodyBuffer = await req.arrayBuffer();
   } catch {
     return Response.json(
       { code: 12, message: 'Invalid request body' },
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (payload.length > MAX_BODY_BYTES) {
+  if (bodyBuffer.byteLength > MAX_BODY_BYTES) {
     return Response.json(
       { code: 12, message: 'Payload too large' },
       { status: 413 },
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': contentType,
         'Authorization': `Bearer ${anonKey}`,
       },
-      body: payload,
+      body: bodyBuffer,
       cache: 'no-store',
     });
 
