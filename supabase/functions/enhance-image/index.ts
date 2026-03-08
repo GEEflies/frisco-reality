@@ -319,12 +319,23 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
         const errorMessage = (error as Error).message;
         console.error(`Enhancement failed for ${imageId}:`, errorMessage);
 
-        // Mark as failed
+        // Increment retry_count so process-images knows how many attempts were made.
+        // After 3 failures the image stays failed permanently and we fall back to
+        // original_url on the frontend. Temporary failures (Gemini overload,
+        // network blip) will be retried automatically on the next cron run.
+        const { data: current } = await supabase
+            .from('listing_images')
+            .select('retry_count')
+            .eq('id', imageId)
+            .single();
+        const retryCount = (current?.retry_count ?? 0) + 1;
+
         await supabase
             .from('listing_images')
-            .update({ enhancement_status: 'failed' })
+            .update({ enhancement_status: 'failed', retry_count: retryCount })
             .eq('id', imageId);
 
+        console.log(`[enhance-image] ${imageId} marked failed (attempt ${retryCount}/3)`);
         return { success: false, error: errorMessage };
     }
 }

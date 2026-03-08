@@ -29,29 +29,50 @@ const STUCK_TIMEOUT_MINUTES = 3;     // Reset 'processing' images older than thi
 
 // ---- Recovery: reset stuck 'processing' images ----
 async function recoverStuckImages(): Promise<number> {
-    const cutoff = new Date(Date.now() - STUCK_TIMEOUT_MINUTES * 60 * 1000).toISOString();
+    let recovered = 0;
 
+    // 1. Recover images stuck in 'processing' for too long (Edge Function crash / timeout)
+    const cutoff = new Date(Date.now() - STUCK_TIMEOUT_MINUTES * 60 * 1000).toISOString();
     const { data: stuck } = await supabase
         .from('listing_images')
         .select('id')
         .eq('enhancement_status', 'processing')
         .lt('created_at', cutoff);
-
-    if (!stuck || stuck.length === 0) return 0;
-
-    // Reset all stuck images back to pending
-    const { error } = await supabase
-        .from('listing_images')
-        .update({ enhancement_status: 'pending' })
-        .in('id', stuck.map(img => img.id));
-
-    if (error) {
-        console.error('Error recovering stuck images:', error);
-        return 0;
+    if (stuck && stuck.length > 0) {
+        const { error } = await supabase
+            .from('listing_images')
+            .update({ enhancement_status: 'pending' })
+            .in('id', stuck.map(img => img.id));
+        if (!error) {
+            console.log(`Recovered ${stuck.length} stuck-processing images`);
+            recovered += stuck.length;
+        } else {
+            console.error('Error recovering stuck images:', error);
+        }
     }
 
-    console.log(`Recovered ${stuck.length} stuck processing images`);
-    return stuck.length;
+    // 2. Retry failed images that haven't exhausted their 3 attempts yet.
+    //    Covers temporary failures: Gemini overload, network blips, UC image briefly down.
+    //    Images with retry_count >= 3 stay permanently failed — site shows original_url.
+    const { data: failedRetryable } = await supabase
+        .from('listing_images')
+        .select('id')
+        .eq('enhancement_status', 'failed')
+        .lt('retry_count', 3);
+    if (failedRetryable && failedRetryable.length > 0) {
+        const { error } = await supabase
+            .from('listing_images')
+            .update({ enhancement_status: 'pending' })
+            .in('id', failedRetryable.map(img => img.id));
+        if (!error) {
+            console.log(`Re-queued ${failedRetryable.length} failed images for retry`);
+            recovered += failedRetryable.length;
+        } else {
+            console.error('Error re-queuing failed images:', error);
+        }
+    }
+
+    return recovered;
 }
 
 // ---- Claim the batch: mark all as 'processing' BEFORE firing any API calls ----
