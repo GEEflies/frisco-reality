@@ -34,8 +34,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // ---- Gemini setup ----
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Image generation / editing models.
-// GEMINI_IMAGE_MODEL secret takes priority (currently gemini-3.1-flash-image-preview).
+// Image generation / editing models — these are the native image generation models.
+// gemini-3.1-flash-image-preview = "Nano Banana 2": high-efficiency, speed-optimized, Feb 2026
+// gemini-3-pro-image-preview     = "Nano Banana Pro": state-of-the-art quality, latest
+// GEMINI_IMAGE_MODEL secret takes priority.
 const configuredGeminiModel = Deno.env.get('GEMINI_IMAGE_MODEL')?.trim();
 const IMAGE_MODEL_CANDIDATES = [
     configuredGeminiModel,
@@ -43,8 +45,9 @@ const IMAGE_MODEL_CANDIDATES = [
     'gemini-3-pro-image-preview',
 ].filter((value, index, arr) => Boolean(value) && arr.indexOf(value) === index) as string[];
 
-// Best general-purpose vision model for quality assessment (text-only output, cheap).
-const ASSESS_MODEL = 'gemini-2.5-flash';
+// gemini-3-flash-preview: "best model in the world for multimodal understanding"
+// Used for quality assessment (text-only output). Dec 2025, latest Gemini 3 generation.
+const ASSESS_MODEL = 'gemini-3-flash-preview';
 
 // ============================================================
 // QUALITY ASSESSMENT — decides per-image whether to enhance
