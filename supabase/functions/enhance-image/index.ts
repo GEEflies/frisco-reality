@@ -158,8 +158,16 @@ async function generateEnhancedImage(
             {
                 model: modelName,
                 generationConfig: {
-                    // @ts-ignore — responseModalities is valid but not in all SDK type versions
+                    // @ts-ignore — responseModalities and imageConfig are valid but not in all SDK type versions
                     responseModalities: ['IMAGE', 'TEXT'],
+                    imageConfig: { imageSize: '2K' },
+                },
+            },
+            {
+                model: modelName,
+                generationConfig: {
+                    // @ts-ignore
+                    imageConfig: { imageSize: '2K' },
                 },
             },
             { model: modelName },
