@@ -194,12 +194,26 @@ function sluggify(text: string): string {
 }
 
 // ---- Parse request body ----
-// IMPORTANT: Always read the body as text FIRST, then parse.
-// In Deno, a Request body can only be consumed once — calling req.json()
-// consumes the stream, so a subsequent req.text() would throw
-// "Body already consumed". Reading as text is safe for all content types.
+// In Deno, a Request body can only be consumed once.
+// For multipart/form-data we MUST use req.formData() (it handles boundaries).
+// For everything else we read req.text() once, then parse from the string.
 async function parseBody(req: Request): Promise<Record<string, any>> {
     const contentType = req.headers.get('content-type') || '';
+
+    // --- multipart/form-data (UC may send photos as file parts) ---
+    if (contentType.includes('multipart/form-data')) {
+        const formData = await req.formData();
+        const body: Record<string, any> = {};
+        for (const [key, value] of formData.entries()) {
+            // Files (e.g. photos) are Blob instances — keep them as-is for now;
+            // string fields (user, pass, action, data …) stay strings.
+            body[key] = typeof value === 'string' ? value : value;
+        }
+        if (body.action) body.action = Number(body.action);
+        return body;
+    }
+
+    // --- all other content types: read as text first ---
     const text = await req.text();
 
     if (contentType.includes('application/json')) {
