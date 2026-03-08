@@ -65,6 +65,38 @@ function toBool(value: any): boolean {
     return value === 1 || value === true || value === '1';
 }
 
+// ---- Persistent flag: has the first-listing notification already been sent? ----
+// Stored as a sentinel file in Supabase Storage so it survives function restarts
+// and is not affected by test inserts/deletes. Fires exactly once, globally.
+const NOTIFY_FLAG_BUCKET = 'original-images';
+const NOTIFY_FLAG_PATH = '_system/first_listing_notified.txt';
+
+async function hasFirstListingNotificationBeenSent(): Promise<boolean> {
+    try {
+        const { data, error } = await supabase.storage
+            .from(NOTIFY_FLAG_BUCKET)
+            .download(NOTIFY_FLAG_PATH);
+        return !!data && !error;
+    } catch {
+        return false; // If bucket missing or error — treat as not sent
+    }
+}
+
+async function markFirstListingNotificationSent(): Promise<void> {
+    try {
+        // Ensure bucket exists (createBucket is idempotent — ignores "already exists")
+        await supabase.storage.createBucket(NOTIFY_FLAG_BUCKET, { public: false }).catch(() => {});
+        const { error } = await supabase.storage
+            .from(NOTIFY_FLAG_BUCKET)
+            .upload(NOTIFY_FLAG_PATH, new Blob(['1'], { type: 'text/plain' }), {
+                upsert: true,
+            });
+        if (error) console.warn('[UC] Storage flag write error:', error.message);
+    } catch (e) {
+        console.warn('[UC] Could not write notification flag to storage:', (e as Error).message);
+    }
+}
+
 // ---- First-listing email notification ----
 async function notifyFirstListing(title: string, slug: string, listingId: string) {
     if (!RESEND_API_KEY) {
@@ -331,7 +363,7 @@ function extractExtraData(data: Record<string, any>): Record<string, any> {
 // ============================================================
 // LISTING HANDLER (action=1)
 // ============================================================
-async function handleListing(data: Record<string, any>) {
+async function handleListing(data: Record<string, any>, isTestMode = false) {
     const objectId = data.object_id;
     if (!hasValue(objectId)) {
         return errorResponse(11, 'Missing object_id');
@@ -531,14 +563,17 @@ async function handleListing(data: Record<string, any>) {
     }
 
     // ---- FIRST-LISTING NOTIFICATION ----
-    // If this was an INSERT, check total count — send email on the very first listing
-    if (responseCode === 1) {
-        const { count } = await supabase
-            .from('listings')
-            .select('id', { count: 'exact', head: true })
-            .eq('is_deleted', false);
-        if (count === 1) {
+    // Fires exactly once globally — tracked via a storage sentinel file.
+    // Unaffected by test inserts/deletes that reset the DB count to 0.
+    // Skipped entirely when X-Frisco-Test header is present (manual debugging).
+    if (responseCode === 1 && !isTestMode) {
+        const alreadySent = await hasFirstListingNotificationBeenSent();
+        if (!alreadySent) {
             await notifyFirstListing(data.title, slug, listingId);
+            await markFirstListingNotificationSent();
+            console.log('[UC] First-listing notification sent and flag set — will not fire again');
+        } else {
+            console.log('[UC] First-listing notification already sent — skipping');
         }
     }
 
@@ -774,8 +809,11 @@ Deno.serve(async (req) => {
         }
 
         // ---- Route to handler ----
+        const isTestMode = req.headers.get('x-frisco-test') === '1';
+        if (isTestMode) console.log('[UC] Test mode — notification suppressed');
+
         if (actionNum === 1) {
-            return await handleListing(data);
+            return await handleListing(data, isTestMode);
         } else if (actionNum === 2) {
             return await handleAgent(data);
         }
