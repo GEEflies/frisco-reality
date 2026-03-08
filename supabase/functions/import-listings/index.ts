@@ -601,44 +601,28 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
             (existingImages || []).map(img => [img.original_url, img])
         );
 
-        // Collect all incoming URLs to detect removed images
-        const incomingUrls = new Set(images.map(img => img.url));
+        // NOTE: We intentionally do NOT delete images that UC no longer sends.
+        // Removing enhanced images wastes Gemini credits. If UC stops sending an
+        // image it just means the sort order for it won't be updated — it stays
+        // in the DB with its enhanced version intact. Manual cleanup can be done
+        // through the Supabase dashboard if needed.
 
-        // Delete images that are no longer in the incoming set
-        const toDelete = (existingImages || []).filter(img => !incomingUrls.has(img.original_url));
-        if (toDelete.length > 0) {
-            await supabase
-                .from('listing_images')
-                .delete()
-                .in('id', toDelete.map(img => img.id));
-        }
-
-        // Upsert images
+        // Upsert images — NEVER re-enhance an already completed image.
+        // Enhancement happens exactly once: new image → pending → cron → completed.
         for (let i = 0; i < images.length; i++) {
             const img = images[i];
             const existing = existingByUrl.get(img.url);
 
             if (existing) {
-                if (img.changed) {
-                    // Image changed — reset enhancement status so it gets re-processed
-                    await supabase
-                        .from('listing_images')
-                        .update({
-                            enhancement_status: 'pending',
-                            enhanced_url: null,
-                            upscaled_url: null,
-                            sort_order: i,
-                        })
-                        .eq('id', existing.id);
-                } else {
-                    // Image not changed — just update sort order, keep enhanced versions
-                    await supabase
-                        .from('listing_images')
-                        .update({ sort_order: i })
-                        .eq('id', existing.id);
-                }
+                // Image already in DB — just update sort order.
+                // We ignore img.changed to avoid burning Gemini credits on
+                // re-enhancement. Once enhanced, it stays enhanced.
+                await supabase
+                    .from('listing_images')
+                    .update({ sort_order: i })
+                    .eq('id', existing.id);
             } else {
-                // New image — insert and queue for enhancement
+                // Truly new image URL — insert and queue for first-time enhancement
                 await supabase
                     .from('listing_images')
                     .insert({
@@ -647,10 +631,11 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
                         enhancement_status: 'pending',
                         sort_order: i,
                     });
+                console.log(`[UC] New image queued for enhancement: ${img.url}`);
             }
         }
     } else {
-        // New listing — insert all images
+        // New listing — insert all images as pending for first-time enhancement
         const rows = images.map((img, i) => ({
             listing_id: listingId,
             original_url: img.url,
@@ -662,6 +647,7 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
             await supabase
                 .from('listing_images')
                 .insert(rows);
+            console.log(`[UC] ${rows.length} images queued for first-time enhancement`);
         }
     }
 }
