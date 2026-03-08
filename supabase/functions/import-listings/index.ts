@@ -560,6 +560,19 @@ async function handleListing(data: Record<string, any>, isTestMode = false) {
     // ---- HANDLE IMAGES ----
     if (data.images && Array.isArray(data.images)) {
         await handleImages(listingId, data.images, !!existing);
+
+        // Kick off image processing immediately — don't wait for the next cron tick.
+        // Fire-and-forget: if it fails the cron (every 1 min) will pick it up anyway.
+        if (data.images.length > 0) {
+            fetch(`${SUPABASE_URL}/functions/v1/process-images`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                },
+                body: JSON.stringify({ trigger: 'import' }),
+            }).catch(err => console.warn('[UC] process-images trigger failed (cron will retry):', err));
+        }
     }
 
     // ---- FIRST-LISTING NOTIFICATION ----
