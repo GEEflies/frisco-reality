@@ -22,13 +22,15 @@ end;
 $$;
 
 -- Schedule every 30 minutes
+-- NOTE: process-images is deployed with --no-verify-jwt, so no Authorization
+-- header is needed. This avoids leaking the anon key in version control.
 select cron.schedule(
     'process-pending-images',
     '*/30 * * * *',
     $$
     select net.http_post(
         url    := 'https://fcvswlurtchqorgnwclw.supabase.co/functions/v1/process-images',
-        headers := '{"Content-Type": "application/json", "Authorization": "Bearer ***REDACTED_SUPABASE_ANON_KEY***"}'::jsonb,
+        headers := '{"Content-Type": "application/json"}'::jsonb,
         body   := '{}'::jsonb
     ) as request_id;
     $$
