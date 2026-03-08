@@ -9,14 +9,17 @@
  *
  * Flow per image:
  * 1. Download the original image
- * 2. CLASSIFY it with a cheap Gemini text call (interior / exterior / skip)
- * 3. Apply the matching enhancement prompt (or skip non-photo images entirely)
- * 4. Upload the enhanced result to Supabase Storage
+ * 2. ASSESS quality with Gemini vision — is enhancement worth doing?
+ * 3. If yes, Gemini returns a tailored enhancement prompt for THIS specific image
+ * 4. Apply the enhancement with the image generation model
+ * 5. Upload the result to Supabase Storage
  *
- * Image categories:
- *   INTERIOR  → lighting, exposure, window pull, warm tones
- *   EXTERIOR  → sky, color, sharpness — gentle touch, no composition changes
- *   SKIP      → floorplans, maps, logos, 3D renders, text overlays — left as-is
+ * The AI decides per-image whether to enhance or skip based on:
+ *   - Current quality (lighting, exposure, noise, sharpness, colors)
+ *   - Whether enhancement would improve or ruin the image
+ *   - Whether it's a photograph at all (floorplans, logos → skip)
+ *   - Whether it's already high quality (don't fix what isn't broken)
+ *   - Whether it's so poor that no enhancement can save it
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -31,105 +34,93 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // ---- Gemini setup ----
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Models that support image generation / editing (as of March 2026).
-// configuredGeminiModel takes priority if set as a Supabase secret.
+// Image generation / editing models.
+// GEMINI_IMAGE_MODEL secret takes priority (currently gemini-3.1-flash-image-preview).
 const configuredGeminiModel = Deno.env.get('GEMINI_IMAGE_MODEL')?.trim();
 const IMAGE_MODEL_CANDIDATES = [
     configuredGeminiModel,
-    'gemini-2.0-flash-exp',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
+    'gemini-3.1-flash-image-preview',
+    'gemini-3-pro-image-preview',
 ].filter((value, index, arr) => Boolean(value) && arr.indexOf(value) === index) as string[];
 
-// Cheap text model for classification (no image generation needed)
-const CLASSIFY_MODEL = 'gemini-2.0-flash';
+// Best general-purpose vision model for quality assessment (text-only output, cheap).
+const ASSESS_MODEL = 'gemini-2.5-flash';
 
 // ============================================================
-// CLASSIFICATION
+// QUALITY ASSESSMENT — decides per-image whether to enhance
 // ============================================================
-type ImageCategory = 'interior' | 'exterior' | 'skip';
 
-const CLASSIFY_PROMPT = `You are an image classifier for a real estate website.
-Look at this image and classify it into EXACTLY ONE category.
-Reply with a single word — nothing else.
+interface AssessmentResult {
+    enhance: boolean;       // true = worth enhancing, false = skip
+    reason: string;         // human-readable reason (logged)
+    prompt: string | null;  // tailored enhancement prompt if enhance=true
+}
 
-INTERIOR — a photo taken INSIDE a building (room, kitchen, bathroom, hallway, staircase, garage interior, etc.)
-EXTERIOR — a photo taken OUTSIDE showing the building exterior, garden, terrace, balcony view, street view, neighborhood, pool, parking lot, etc.
-SKIP — anything that is NOT a photograph: floorplan, map, site plan, logo, text overlay, 3D render, infographic, sketch, diagram, certificate, or any computer-generated graphic
+const ASSESS_PROMPT = `You are an expert real estate photo editor evaluating whether this image would benefit from AI enhancement.
 
-Reply with exactly one word: INTERIOR, EXTERIOR, or SKIP`;
+Analyze the image and return a JSON object with exactly these fields:
+{
+  "enhance": true or false,
+  "reason": "one short sentence explaining your decision",
+  "prompt": "specific enhancement instructions" or null
+}
 
-async function classifyImage(imageBase64: string, mimeType: string): Promise<ImageCategory> {
+DECIDE "enhance": false (SKIP) if ANY of these are true:
+- It is NOT a photograph (floorplan, map, logo, 3D render, diagram, certificate, text overlay, infographic)
+- The photo is already high quality with good lighting, exposure, and colors — enhancement would add nothing
+- The image is so severely damaged, blurry, tiny, or corrupted that enhancement would make it worse
+- It's a screenshot, scan, or document
+
+DECIDE "enhance": true if the photo is a real photograph AND would genuinely benefit from improvement in at least one of:
+- Dark rooms that need brighter, more balanced lighting
+- Blown-out windows where the exterior is invisible
+- Poor white balance (too blue, too yellow, too green)
+- Dull, flat colors that need gentle vibrance
+- Visible noise or grain that should be reduced
+- Overcast exterior where sky and colors look lifeless
+- Shadows that are too harsh or too dark
+- Overall underexposure or overexposure
+
+When "enhance" is true, write a "prompt" that is SPECIFIC to THIS image. Do NOT use generic instructions.
+Describe exactly what adjustments this particular photo needs.
+Always end the prompt with: "Do NOT add, remove, or move any objects. Do NOT add text or watermarks. Keep it photorealistic. Return ONLY the enhanced image."
+
+When "enhance" is false, set "prompt" to null.
+
+Return ONLY the JSON object, no markdown, no explanation outside of it.`;
+
+async function assessImage(imageBase64: string, mimeType: string): Promise<AssessmentResult> {
     try {
-        const model = genAI.getGenerativeModel({ model: CLASSIFY_MODEL });
+        const model = genAI.getGenerativeModel({ model: ASSESS_MODEL });
         const result = await model.generateContent([
-            CLASSIFY_PROMPT,
+            ASSESS_PROMPT,
             { inlineData: { mimeType, data: imageBase64 } },
         ]);
 
-        const text = result.response.text().trim().toUpperCase();
-        if (text.includes('INTERIOR')) return 'interior';
-        if (text.includes('EXTERIOR')) return 'exterior';
-        if (text.includes('SKIP')) return 'skip';
+        let text = result.response.text().trim();
 
-        // If the model returned something unexpected, default to interior
-        // (safest — interior prompt is the most conservative)
-        console.warn(`[classify] Unexpected classification: "${text}", defaulting to interior`);
-        return 'interior';
+        // Strip markdown code fences if present
+        text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+
+        const parsed = JSON.parse(text);
+
+        return {
+            enhance: parsed.enhance === true,
+            reason: String(parsed.reason || 'No reason given'),
+            prompt: parsed.enhance ? String(parsed.prompt || '') : null,
+        };
     } catch (error) {
-        console.error(`[classify] Classification failed, defaulting to interior:`, (error as Error).message);
-        return 'interior';
+        // If assessment fails, default to enhancing with a safe generic prompt.
+        // Better to try and fail than to skip a potentially improvable image.
+        const errMsg = (error as Error).message || String(error);
+        console.error(`[assess] Assessment failed, defaulting to enhance:`, errMsg);
+        return {
+            enhance: true,
+            reason: `Assessment failed (${errMsg}) — defaulting to safe enhancement`,
+            prompt: `Enhance this real estate photo. Improve lighting and exposure for a balanced, well-lit result. Correct white balance for natural colors. Reduce noise. Sharpen details slightly. Do NOT add, remove, or move any objects. Do NOT add text or watermarks. Keep it photorealistic. Return ONLY the enhanced image.`,
+        };
     }
 }
-
-// ============================================================
-// ENHANCEMENT PROMPTS
-// ============================================================
-const INTERIOR_PROMPT = `Enhance this interior real estate photo for a luxury property listing.
-
-Lighting & exposure:
-- Brighten dark areas with natural-looking fill light
-- Recover blown-out window highlights so the exterior view is visible
-- Balance indoor and outdoor exposure (window pull)
-
-Color:
-- Correct white balance for neutral, true-to-life tones
-- Slight warm shift for an inviting, premium feel
-- Boost saturation gently — keep it realistic, never oversaturated
-
-Cleanup:
-- Reduce visible noise and grain
-- Sharpen details slightly for a crisp result
-
-IMPORTANT CONSTRAINTS:
-- Do NOT add, remove, or move any objects, furniture, or people
-- Do NOT add text, logos, watermarks, or borders
-- Do NOT change the composition or perspective
-- Keep the result photorealistic — it must look like a real photograph
-- Return ONLY the enhanced image, nothing else`;
-
-const EXTERIOR_PROMPT = `Enhance this exterior real estate photo for a luxury property listing.
-
-Sky & atmosphere:
-- If the sky is overcast or dull, make it slightly more appealing while keeping it realistic
-- Ensure the building is well-lit and clearly visible
-
-Color:
-- Correct white balance for natural, true-to-life tones
-- Boost greenery and landscape colors gently — keep realistic
-- Ensure the building facade colors are accurate and vibrant
-
-Cleanup:
-- Reduce visible noise and grain
-- Sharpen architectural details slightly for a crisp result
-
-IMPORTANT CONSTRAINTS:
-- Do NOT add, remove, or move any objects, cars, people, or landscaping
-- Do NOT add text, logos, watermarks, or borders
-- Do NOT change the composition, perspective, or camera angle
-- Do NOT replace the sky entirely — only enhance what's there
-- Keep the result photorealistic — it must look like a real photograph
-- Return ONLY the enhanced image, nothing else`;
 
 // FIX #2: Chunked base64 conversion to avoid stack overflow on large images
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
@@ -250,13 +241,13 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
         // Convert to base64
         const imageBase64 = arrayBufferToBase64(imageBuffer);
 
-        // ---- STEP 1: Classify the image ----
-        const category = await classifyImage(imageBase64, mimeType);
-        console.log(`[enhance-image] ${imageId} classified as: ${category}`);
+        // ---- STEP 1: AI quality assessment — should we enhance this image? ----
+        const assessment = await assessImage(imageBase64, mimeType);
+        console.log(`[enhance-image] ${imageId} assessment: enhance=${assessment.enhance}, reason="${assessment.reason}"`);
 
-        // ---- STEP 2: Skip non-photo images ----
-        if (category === 'skip') {
-            console.log(`[enhance-image] ${imageId} is a floorplan/map/graphic — skipping enhancement, keeping original`);
+        // ---- STEP 2: Skip if AI decided enhancement won't help ----
+        if (!assessment.enhance) {
+            console.log(`[enhance-image] ${imageId} SKIPPED — ${assessment.reason}`);
             await supabase
                 .from('listing_images')
                 .update({
@@ -267,12 +258,9 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
             return { success: true };
         }
 
-        // ---- STEP 3: Pick the right prompt ----
-        const enhancementPrompt = category === 'exterior' ? EXTERIOR_PROMPT : INTERIOR_PROMPT;
-
-        // ---- STEP 4: Call Gemini for enhancement ----
-        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, enhancementPrompt);
-        console.log(`[enhance-image] ${imageId} enhanced with ${modelUsed} (${category} prompt)`);
+        // ---- STEP 3: Enhance with the AI-generated prompt specific to this image ----
+        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, assessment.prompt!);
+        console.log(`[enhance-image] ${imageId} enhanced with ${modelUsed}`);
 
         // Upload enhanced image to Supabase Storage
         const extension = enhancedMimeType.split('/')[1] || 'jpeg';
@@ -345,12 +333,34 @@ Deno.serve(async (req) => {
     }
 
     try {
+        const url = new URL(req.url);
+        const assessOnly = url.searchParams.get('assess-only') === '1';
+
         const { imageId, originalUrl } = await req.json();
 
         if (!imageId || !originalUrl) {
             return new Response(
                 JSON.stringify({ error: 'Missing imageId or originalUrl' }),
                 { status: 400, headers: { 'Content-Type': 'application/json' } },
+            );
+        }
+
+        // ---- Assess-only mode: return the AI assessment without enhancing ----
+        if (assessOnly) {
+            const response = await fetch(originalUrl);
+            if (!response.ok) {
+                return new Response(
+                    JSON.stringify({ error: `Failed to download: ${response.status}` }),
+                    { status: 400, headers: { 'Content-Type': 'application/json' } },
+                );
+            }
+            const buf = await response.arrayBuffer();
+            const mimeType = getMimeType(originalUrl);
+            const base64 = arrayBufferToBase64(buf);
+            const assessment = await assessImage(base64, mimeType);
+            return new Response(
+                JSON.stringify({ imageId, assessment }),
+                { headers: { 'Content-Type': 'application/json' } },
             );
         }
 
