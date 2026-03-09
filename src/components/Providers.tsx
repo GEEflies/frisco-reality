@@ -6,9 +6,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
 import type { LanguageCode } from "@/i18n/types";
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { RouteLoadingIndicator } from "@/components/RouteLoadingIndicator";
+import { NavLoadingProvider } from "@/components/RouteLoadingIndicator";
 
 export function Providers({ children, initialLanguage }: { children: React.ReactNode; initialLanguage: LanguageCode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -20,10 +20,9 @@ export function Providers({ children, initialLanguage }: { children: React.React
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <Suspense fallback={null}>
-            <RouteLoadingIndicator />
-          </Suspense>
-          {children}
+          <NavLoadingProvider>
+            {children}
+          </NavLoadingProvider>
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>

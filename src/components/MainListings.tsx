@@ -10,6 +10,7 @@ import { useFeaturedListings } from '@/hooks/useListings';
 import { getPrimaryImage, shouldShowOverlay } from '@/api/listingsService';
 import { formatArea, formatPriceWithUnit } from '@/api/mappings';
 import { buildWeservUrl } from '@/lib/imageLoader';
+import { useNavLoading } from '@/components/RouteLoadingIndicator';
 import type { ListingWithImages } from '@/api/types';
 
 function getStatusMeta(listing: ListingWithImages, language: 'sk' | 'en' | 'de') {
@@ -137,6 +138,7 @@ export const MainListings = () => {
   const { language } = useLanguage();
   const copy = MAIN_LISTINGS_COPY[language];
   const router = useRouter();
+  const { startNavLoading } = useNavLoading();
   const { data: listings, isLoading } = useFeaturedListings(3);
 
   const showLiveCards = !isLoading && listings.length > 0;
@@ -158,7 +160,7 @@ export const MainListings = () => {
                   key={listing.id}
                   listing={listing}
                   language={language}
-                  onClick={() => router.push(localePath(`/nehnutelnost/${listing.slug || listing.id}`, language))}
+                  onClick={() => { startNavLoading(); router.push(localePath(`/nehnutelnost/${listing.slug || listing.id}`, language)); }}
                 />
               ))
             : copy.cards.map((card, index) => (
@@ -192,7 +194,7 @@ export const MainListings = () => {
                   key={listing.id}
                   listing={listing}
                   language={language}
-                  onClick={() => router.push(localePath(`/nehnutelnost/${listing.slug || listing.id}`, language))}
+                  onClick={() => { startNavLoading(); router.push(localePath(`/nehnutelnost/${listing.slug || listing.id}`, language)); }}
                 />
               ))
             : copy.cards.slice(0, 2).map((card, index) => (

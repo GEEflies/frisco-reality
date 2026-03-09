@@ -12,6 +12,7 @@ import { getPrimaryImage, shouldShowOverlay } from '@/api/listingsService';
 import type { ListingFilters } from '@/api/types';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { localePath } from '@/i18n/types';
+import { useNavLoading } from '@/components/RouteLoadingIndicator';
 
 export const PropertiesSection = () => {
   const { language } = useLanguage();
@@ -19,6 +20,7 @@ export const PropertiesSection = () => {
   const filterWrapperRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const router = useRouter();
+  const { startNavLoading } = useNavLoading();
   const searchParams = useSearchParams();
 
   // Filter State
@@ -251,6 +253,7 @@ export const PropertiesSection = () => {
 
   // Handle listing click
   const handleListingClick = (listing: any) => {
+    startNavLoading();
     const identifier = listing.slug || listing.id;
     router.push(localePath(`/nehnutelnost/${identifier}`, language));
   };
