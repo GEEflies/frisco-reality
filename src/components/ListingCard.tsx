@@ -111,7 +111,7 @@ export const ListingCard = ({
                             <img
                                 src="/frisco-logo-hq.png"
                                 alt=""
-                                className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-10 select-none"
+                                className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] z-10 select-none"
                                 draggable={false}
                             />
                         )}

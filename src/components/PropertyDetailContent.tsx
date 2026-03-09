@@ -104,7 +104,7 @@ const GalleryImage = ({
                 <img
                     src={friscoLogo}
                     alt=""
-                    className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-20 select-none"
+                    className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] z-20 select-none"
                     draggable={false}
                 />
             )}
@@ -673,26 +673,27 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         ))}
                     </div>
 
-                    {/* Mobile Single Image with Swipe */}
+                    {/* Mobile Single Image with Swipe — stacked crossfade (no white flash) */}
                     <div className="md:hidden relative h-[50vh]">
-                        <motion.div
-                            key={currentImageIndex}
-                            className="absolute inset-0"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.3 }}
-                            onClick={() => setShowLightbox(true)}
-                        >
-                            <GalleryImage
-                                src={currentImage}
-                                alt={listing.title}
-                                priority
-                                sizes="100vw"
-                                quality={80}
-                                showOverlay={overlayUrls.has(currentImage)}
-                                className="object-cover"
-                            />
-                        </motion.div>
+                        {images.map((img, idx) => (
+                            <div
+                                key={idx}
+                                className={`absolute inset-0 transition-opacity duration-300 ease-out ${
+                                    idx === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                }`}
+                                onClick={() => setShowLightbox(true)}
+                            >
+                                <GalleryImage
+                                    src={img}
+                                    alt={listing.title}
+                                    priority={idx === 0}
+                                    sizes="100vw"
+                                    quality={80}
+                                    showOverlay={overlayUrls.has(img)}
+                                    className="object-cover"
+                                />
+                            </div>
+                        ))}
 
                         {/* Mobile Navigation */}
                         {images.length > 1 && (
@@ -952,47 +953,56 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             </button>
                         </div>
 
-                        {/* Main image area — crossfade: old image stays visible under new one */}
+                        {/* Main image area — crossfade with watermark ON the image */}
                         <div className="flex-1 relative flex items-center justify-center min-h-0 px-4 md:px-16">
-                            <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
-                                {/* Render all images stacked; only the current one is visible.
-                                    Preloaded images transition instantly; others show shimmer then fade in. */}
-                                {images.map((img, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`absolute inset-0 transition-opacity duration-200 ease-out ${
-                                            idx === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                                        }`}
-                                    >
-                                        {/* Only mount images near current to avoid loading all 30 DOM elements */}
-                                        {Math.abs(idx - currentImageIndex) <= 2 ||
-                                         (currentImageIndex <= 1 && idx >= images.length - 2) ||
-                                         (currentImageIndex >= images.length - 2 && idx <= 1) ||
-                                         loadedImages.has(idx) ? (
-                                            <>
-                                                <Image
-                                                    loader={listingImageLoader}
-                                                    src={img}
+                            <div className="relative flex items-center justify-center w-full h-full" onClick={(e) => e.stopPropagation()}>
+                                {/* Stacked images: only the current is visible. Uses plain <img>
+                                    with natural sizing so the watermark container matches the image,
+                                    not the black viewport margins. */}
+                                {images.map((img, idx) => {
+                                    const shouldMount =
+                                        Math.abs(idx - currentImageIndex) <= 2 ||
+                                        (currentImageIndex <= 1 && idx >= images.length - 2) ||
+                                        (currentImageIndex >= images.length - 2 && idx <= 1) ||
+                                        loadedImages.has(idx);
+
+                                    if (!shouldMount) return (
+                                        <div key={idx} className="absolute inset-0 opacity-0 z-0" />
+                                    );
+
+                                    const imgSrc = img.startsWith('/') || img.startsWith('data:')
+                                        ? img
+                                        : buildWeservUrl(img, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.9) : 1200, 1920), 85);
+
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ease-out ${
+                                                idx === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                                            }`}
+                                        >
+                                            <div className="relative inline-block max-w-full max-h-full">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={imgSrc}
                                                     alt={listing.title}
-                                                    fill
-                                                    sizes="90vw"
-                                                    quality={85}
-                                                    priority={idx === currentImageIndex}
-                                                    className="object-contain"
+                                                    className="block max-w-full object-contain"
+                                                    style={{ maxHeight: 'calc(100vh - 140px)' }}
+                                                    draggable={false}
                                                 />
-                                                {/* FRISCO watermark — only when no baked-in logo detected */}
+                                                {/* FRISCO watermark — positioned ON the image */}
                                                 {overlayUrls.has(img) && (
                                                     <img
                                                         src={friscoLogo}
                                                         alt=""
-                                                        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 h-[24px] md:h-[32px] w-auto opacity-40 pointer-events-none drop-shadow-lg z-30 select-none"
+                                                        className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] z-30 select-none"
                                                         draggable={false}
                                                     />
                                                 )}
-                                            </>
-                                        ) : null}
-                                    </div>
-                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                                 {/* Shimmer overlay if current image hasn't preloaded yet */}
                                 {!loadedImages.has(currentImageIndex) && (
                                     <div className="absolute inset-0 z-20 flex items-center justify-center">
