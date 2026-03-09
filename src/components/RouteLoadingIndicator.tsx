@@ -4,11 +4,24 @@ import { useEffect, useState, useTransition } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 /**
- * Full-screen branded loading overlay shown during Next.js route transitions.
+ * Branded loading overlay shown when navigating to a listing detail page.
  *
- * Displays after a short delay (300ms) to avoid flashing on fast navigations.
- * Uses FRISCO brand colours: navy background with accent-red spinner ring.
+ * Only triggers for /nehnutelnost/ URLs (slow due to data fetch).
+ * Regular nav (ponuka, kontakt, etc.) loads instantly — no overlay needed.
+ * Displays after a short delay (250ms) to avoid flash on cached pages.
  */
+
+const SLOW_ROUTE_PATTERN = /\/nehnutelnost\//;
+
+function isSlowRoute(url: string): boolean {
+    try {
+        const path = new URL(url, window.location.origin).pathname;
+        return SLOW_ROUTE_PATTERN.test(path);
+    } catch {
+        return false;
+    }
+}
+
 export function RouteLoadingIndicator() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -27,24 +40,24 @@ export function RouteLoadingIndicator() {
 
         const handleClick = (e: MouseEvent) => {
             const anchor = (e.target as HTMLElement).closest('a');
-            // Only internal same-origin links
             if (anchor && anchor.href && anchor.origin === window.location.origin) {
-                const targetUrl = anchor.href;
-                // Skip hash-only links, same page
-                if (targetUrl === window.location.href) return;
+                if (anchor.href === window.location.href) return;
                 if (anchor.target === '_blank') return;
+                if (!isSlowRoute(anchor.href)) return;
 
                 setIsNavigating(true);
-                // Only show the overlay after 300ms to avoid flash on fast navigations
-                delayTimer = setTimeout(() => setShowOverlay(true), 300);
+                delayTimer = setTimeout(() => setShowOverlay(true), 250);
             }
         };
 
         // Also intercept router.push via history pushState
         const originalPushState = history.pushState.bind(history);
         history.pushState = function (...args) {
-            setIsNavigating(true);
-            delayTimer = setTimeout(() => setShowOverlay(true), 300);
+            const url = typeof args[2] === 'string' ? args[2] : '';
+            if (isSlowRoute(url)) {
+                setIsNavigating(true);
+                delayTimer = setTimeout(() => setShowOverlay(true), 250);
+            }
             return originalPushState(...args);
         };
 
