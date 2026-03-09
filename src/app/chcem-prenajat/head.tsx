@@ -4,7 +4,7 @@ export default function Head() {
       <link
         rel="preload"
         as="video"
-        href="https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/chcem-prenajat-frisco_optimized.mp4"
+        href="/videos/chcem-prenajat-frisco_optimized.mp4"
         type="video/mp4"
       />
     </>

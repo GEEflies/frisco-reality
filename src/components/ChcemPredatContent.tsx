@@ -7,8 +7,8 @@ import { ContactSection } from '@/components/ContactSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CHCEM_PREDAT_HERO_COPY } from '@/i18n/copy';
 
-const DESKTOP_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj_optimized.mp4';
-const MOBILE_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/predaj-mobile-720p.mp4';
+const DESKTOP_VIDEO = '/videos/predaj_optimized.mp4';
+const MOBILE_VIDEO = '/videos/predaj-mobile-720p.mp4';
 
 const benefitsByLanguage = {
     sk: [

@@ -7,8 +7,8 @@ import { ContactSection } from '@/components/ContactSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CHCEM_PRENAJAT_HERO_COPY } from '@/i18n/copy';
 
-const DESKTOP_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/chcem-prenajat-frisco_optimized.mp4';
-const MOBILE_VIDEO = 'https://fcvswlurtchqorgnwclw.supabase.co/storage/v1/object/public/videos/prenajat-mobile-720p.mp4';
+const DESKTOP_VIDEO = '/videos/chcem-prenajat-frisco_optimized.mp4';
+const MOBILE_VIDEO = '/videos/prenajat-mobile-720p.mp4';
 
 const pageCopyByLanguage = {
     sk: {
