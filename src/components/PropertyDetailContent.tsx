@@ -700,19 +700,19 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <>
                                 <button
                                     onClick={prevImage}
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg"
                                 >
                                     <ChevronLeft className="w-5 h-5" />
                                 </button>
                                 <button
                                     onClick={nextImage}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg"
                                 >
                                     <ChevronRight className="w-5 h-5" />
                                 </button>
 
                                 {/* Image Counter */}
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-black/60 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
                                     <Grid3X3 className="w-4 h-4" />
                                     {currentImageIndex + 1} / {images.length}
                                 </div>
@@ -979,7 +979,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                 <img
                                                     src={friscoLogo}
                                                     alt=""
-                                                    className="absolute bottom-2 right-1 w-[20%] min-w-[70px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] select-none"
+                                                    className="absolute bottom-2 right-1 w-[30%] min-w-[80px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] select-none"
                                                     draggable={false}
                                                 />
                                             )}
