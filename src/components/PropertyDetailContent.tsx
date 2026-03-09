@@ -392,8 +392,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
         if (!showLightbox || preloadedRef.current) return;
         preloadedRef.current = true;
 
-        // Estimate display width: ~90vw for the lightbox
-        const displayWidth = Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.9) : 1200, 1920);
+        // Request high-res images — at least 1200px wide even on mobile
+        // so the lightbox looks sharp (mobile screens are 2-3x DPR)
+        const displayWidth = Math.max(1200, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1200, 1920));
 
         images.forEach((imgSrc, idx) => {
             if (!imgSrc || imgSrc.startsWith('/') || imgSrc.startsWith('data:')) return;
@@ -955,7 +956,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                                 const imgSrc = img.startsWith('/') || img.startsWith('data:')
                                     ? img
-                                    : buildWeservUrl(img, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.9) : 1200, 1920), 85);
+                                    : buildWeservUrl(img, Math.max(1200, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1200, 1920)), 85);
 
                                 return (
                                     <div
@@ -997,8 +998,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                         {/* Close button — top right, always above images */}
                         <button
-                            className="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white active:bg-black/80 transition-colors"
-                            style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+                            className="absolute top-3 right-3 z-50 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white active:bg-white/40 transition-colors"
                             onClick={(e) => { e.stopPropagation(); setShowLightbox(false); }}
                         >
                             <X className="w-6 h-6" />
@@ -1006,8 +1006,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                         {/* Counter — top left */}
                         <div
-                            className="absolute top-4 left-4 z-50 bg-black/60 backdrop-blur-sm text-white/90 text-sm font-medium tabular-nums px-3 py-2 rounded-full"
-                            style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+                            className="absolute top-3 left-3 z-50 bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-medium tabular-nums px-3 py-2 rounded-full"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {currentImageIndex + 1} / {images.length}
@@ -1018,13 +1017,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-50 w-11 h-11 md:w-14 md:h-14 rounded-full bg-black/50 backdrop-blur-sm active:bg-black/70 flex items-center justify-center text-white transition-colors"
+                                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 active:bg-white/40 flex items-center justify-center text-white transition-colors"
                                 >
                                     <ChevronLeft className="w-7 h-7" />
                                 </button>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-50 w-11 h-11 md:w-14 md:h-14 rounded-full bg-black/50 backdrop-blur-sm active:bg-black/70 flex items-center justify-center text-white transition-colors"
+                                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 active:bg-white/40 flex items-center justify-center text-white transition-colors"
                                 >
                                     <ChevronRight className="w-7 h-7" />
                                 </button>
