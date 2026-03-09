@@ -31,6 +31,8 @@ import argparse
 import io
 import json
 import sys
+import time
+import shutil
 import urllib.request
 from collections import Counter
 
@@ -84,21 +86,20 @@ def supabase_get(path: str) -> list:
     return json.loads(resp.read())
 
 
-def supabase_patch(table: str, row_id: str, data: dict) -> bool:
-    """PATCH a row in Supabase REST API. Returns True on success."""
-    url = f"{SUPABASE_URL}/rest/v1/{table}?id=eq.{row_id}"
-    body = json.dumps(data).encode()
-    req = urllib.request.Request(url, data=body, method="PATCH", headers={
+def supabase_rpc(fn_name: str, params: dict) -> bool:
+    """Call a Supabase RPC function. Returns True on success."""
+    url = f"{SUPABASE_URL}/rest/v1/rpc/{fn_name}"
+    body = json.dumps(params).encode()
+    req = urllib.request.Request(url, data=body, method="POST", headers={
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
         "Content-Type": "application/json",
-        "Prefer": "return=minimal",
     })
     try:
         urllib.request.urlopen(req, timeout=15)
         return True
     except Exception as e:
-        print(f"    ⚠ PATCH failed for {row_id[:8]}: {e}", file=sys.stderr)
+        print(f"    ⚠ RPC failed for {fn_name}: {e}", file=sys.stderr)
         return False
 
 
@@ -200,51 +201,134 @@ def main():
             "&has_baked_logo=is.null&order=created_at"
         )
 
-    print(f"Found {len(images)} images to scan\n")
+    total = len(images)
+    print(f"Found {total} images to scan\n")
     if not images:
         print("Nothing to do.")
         return
 
     results = {"logo": 0, "clean": 0, "error": 0}
+    start_time = time.time()
+    term_width = shutil.get_terminal_size((80, 24)).columns
+
+    def fmt_time(seconds: float) -> str:
+        """Format seconds as Xm Ys or Xs."""
+        if seconds < 0:
+            return "---"
+        m, s = divmod(int(seconds), 60)
+        if m > 0:
+            return f"{m}m {s:02d}s"
+        return f"{s}s"
+
+    def draw_progress(idx: int, status: str, last_result: str = ""):
+        """Draw a single-line progress bar with stats."""
+        done = idx + 1
+        pct = done / total * 100
+        elapsed = time.time() - start_time
+        avg_per_img = elapsed / done if done > 0 else 0
+        remaining = avg_per_img * (total - done)
+        speed = done / elapsed if elapsed > 0 else 0
+
+        # Build the bar itself
+        bar_max = min(30, term_width - 60)
+        filled = int(bar_max * done / total)
+        bar = "█" * filled + "░" * (bar_max - filled)
+
+        # Colour the percentage green
+        if pct == 100:
+            pct_str = f"\033[92m{pct:5.1f}%\033[0m"
+        else:
+            pct_str = f"\033[96m{pct:5.1f}%\033[0m"
+
+        line = (
+            f"\r  {bar} {pct_str}  "
+            f"{done}/{total}  "
+            f"\033[33m⏱ {fmt_time(elapsed)}\033[0m  "
+            f"ETA \033[35m{fmt_time(remaining)}\033[0m  "
+            f"({speed:.1f} img/s)  "
+            f"\033[90m{status}\033[0m"
+        )
+        # Pad to terminal width to clear previous line
+        sys.stdout.write(line.ljust(term_width + 30))  # extra for ANSI codes
+        sys.stdout.flush()
+
+    def log_line(msg: str):
+        """Print a log line above the progress bar (clears current line first)."""
+        sys.stdout.write("\r" + " " * (term_width) + "\r")
+        print(msg)
+
+    print(f"  \033[1m{'─' * 56}\033[0m")
+    print(f"  \033[1mFRISCO Logo Detection\033[0m  │  {total} images  │  "
+          f"{'DRY RUN' if args.dry_run else 'LIVE (updating DB)'}")
+    print(f"  \033[1m{'─' * 56}\033[0m\n")
 
     for i, img_row in enumerate(images):
         img_id = img_row["id"]
-        # Use the best available URL for analysis
         url = img_row.get("enhanced_url") or img_row["original_url"]
         short_id = img_id[:8]
 
-        print(f"[{i + 1}/{len(images)}] {short_id}...", end=" ")
+        # Show downloading status
+        draw_progress(i, f"⬇ downloading {short_id}...")
 
         pil_img = download_image(url)
-        if pil_img is None:
-            # Try original URL as fallback
-            if url != img_row["original_url"]:
-                pil_img = download_image(img_row["original_url"])
+        if pil_img is None and url != img_row["original_url"]:
+            draw_progress(i, f"⬇ fallback {short_id}...")
+            pil_img = download_image(img_row["original_url"])
 
         if pil_img is None:
-            print("SKIP (download failed)")
             results["error"] += 1
+            log_line(f"  \033[91m✗\033[0m  {short_id}  SKIP (download failed)")
             continue
 
-        has_logo, density, red_count = detect_frisco_logo(pil_img, verbose=args.verbose)
+        # Show scanning status
+        draw_progress(i, f"🔍 scanning {short_id}...")
+
+        has_logo, density, red_count = detect_frisco_logo(pil_img, verbose=False)
 
         if has_logo:
-            print(f"🔴 LOGO ({red_count} red px, {density:.3%})")
             results["logo"] += 1
+            result_txt = f"  \033[91m🔴\033[0m {short_id}  LOGO  ({red_count} red px, {density:.3%})"
         else:
-            print(f"✅ clean ({red_count} red px, {density:.3%})")
             results["clean"] += 1
+            result_txt = f"  \033[92m✅\033[0m {short_id}  clean ({red_count} red px, {density:.3%})"
 
-        # Update DB
+        if args.verbose:
+            log_line(result_txt)
+
+        # Update DB via RPC (bypasses RLS)
         if not args.dry_run:
-            supabase_patch("listing_images", img_id, {"has_baked_logo": has_logo})
+            draw_progress(i, f"💾 updating DB {short_id}...")
+            supabase_rpc("set_has_baked_logo", {
+                "image_id": img_id,
+                "logo_value": has_logo,
+            })
 
-    print(f"\n{'=' * 50}")
-    print(f"Results: {results['logo']} with logo, {results['clean']} clean, {results['error']} errors")
-    print(f"Total processed: {sum(results.values())}/{len(images)}")
+        draw_progress(i, f"✓ {short_id} done")
+
+    # Final progress at 100%
+    elapsed_total = time.time() - start_time
+    sys.stdout.write("\r" + " " * (term_width) + "\r")
+    bar_max = min(30, term_width - 60)
+    bar_full = "█" * bar_max
+    print(f"  {bar_full} \033[92m100.0%\033[0m  {total}/{total}  "
+          f"\033[33m⏱ {fmt_time(elapsed_total)}\033[0m  \033[92mDONE\033[0m")
+
+    # Summary
+    print(f"\n  \033[1m{'─' * 56}\033[0m")
+    print(f"  \033[1mResults\033[0m")
+    print(f"  \033[1m{'─' * 56}\033[0m")
+    print(f"   🔴  With logo:  \033[91m{results['logo']}\033[0m")
+    print(f"   ✅  Clean:      \033[92m{results['clean']}\033[0m")
+    if results["error"] > 0:
+        print(f"   ⚠   Errors:     \033[93m{results['error']}\033[0m")
+    print(f"   📊  Total:      {sum(results.values())}/{total}")
+    print(f"   ⏱   Time:       {fmt_time(elapsed_total)} ({elapsed_total:.1f}s)")
+    if elapsed_total > 0:
+        print(f"   🚀  Speed:      {total / elapsed_total:.2f} images/sec")
+    print(f"  \033[1m{'─' * 56}\033[0m")
 
     if args.dry_run:
-        print("\n⚠ DRY RUN — no database changes were made")
+        print(f"\n  \033[93m⚠ DRY RUN — no database changes were made\033[0m")
 
 
 if __name__ == "__main__":
