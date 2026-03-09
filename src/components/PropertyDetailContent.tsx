@@ -1063,7 +1063,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.location}</h2>
                                     <div className="rounded-2xl overflow-hidden border border-black/5 shadow-sm">
                                         <div className="w-full aspect-[16/10] md:aspect-[16/9] relative">
-                                            <iframe0 right-0
+                                            <iframe
                                                 src={osmSrc}
                                                 width="100%"
                                                 height="100%"
@@ -1177,7 +1177,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[100] bg-black/95 select-none"
+                        className="fixed inset-0 z-[150] bg-black/95 select-none"
                         onClick={() => setShowLightbox(false)}
                         onTouchStart={handleTouchStart}
                         onTouchEnd={handleTouchEnd}

@@ -253,12 +253,12 @@ export const Footer = () => {
           {/* Row 2 (mobile) / Right (desktop): karchi + privacy + cookies */}
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-1.5">
-              <span className="text-charcoal/30 text-[11px] tracking-wide">{copy.madeBy}</span>
+              <span className="text-charcoal/30 text-[15px] tracking-wide">{copy.madeBy}</span>
               <a
                 href="https://www.karchi.xyz/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-charcoal/40 hover:text-charcoal/80 transition-colors duration-300 text-[13px] font-black tracking-tight leading-none"
+                className="text-charcoal/40 hover:text-charcoal/80 transition-colors duration-300 text-[20px] font-black tracking-tight leading-none"
                 aria-label="karchi. digital agency"
               >
                 karchi.
