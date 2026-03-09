@@ -269,7 +269,17 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     const agentName = agent?.full_name || listing?.agent_name || 'FRISCO Reality';
     const agentPhone = agent?.phone || listing?.agent_phone || CONTACT.phoneRaw;
     const agentEmail = agent?.email || listing?.agent_email || CONTACT.email;
-    const agentPhotoUrl = agent?.photo_url || null;
+
+    // Use local static images matching the contact page instead of external UC Export URLs
+    const AGENT_LOCAL_PHOTOS: Record<string, { src: string; objectFit: string }> = {
+        'Denisa Križová': { src: '/pani-krizova.jpeg', objectFit: 'object-cover object-top' },
+        'Peter Križo': { src: '/frisco-favicon.png', objectFit: 'object-contain' },
+        'Bc. Peter Križo': { src: '/frisco-favicon.png', objectFit: 'object-contain' },
+    };
+    const localPhoto = AGENT_LOCAL_PHOTOS[agentName];
+    const agentPhotoUrl = localPhoto?.src || agent?.photo_url || null;
+    const agentPhotoFit = localPhoto?.objectFit || 'object-cover object-top';
+
     const agentInitials = agentName
         .split(' ')
         .map((w: string) => w[0])
@@ -837,7 +847,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                             height={96}
                                             loading="lazy"
                                             decoding="async"
-                                            className="w-full h-full object-cover object-top"
+                                            className={`w-full h-full ${agentPhotoFit}`}
                                             onError={() => setAgentPhotoError(true)}
                                         />
                                     ) : (
