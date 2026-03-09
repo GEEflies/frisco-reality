@@ -1221,7 +1221,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                 <img
                                                     src={friscoLogo}
                                                     alt=""
-                                                    className="absolute bottom-2 right-1 w-[30%] min-w-[80px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] select-none"
+                                                    className="absolute bottom-0 right-0 w-[30%] min-w-[80px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] select-none"
                                                     draggable={false}
                                                 />
                                             )}
