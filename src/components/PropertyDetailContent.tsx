@@ -104,7 +104,7 @@ const GalleryImage = ({
                 <img
                     src={friscoLogo}
                     alt=""
-                    className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] z-20 select-none"
+                    className="absolute bottom-2 right-1 w-[20%] min-w-[70px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] z-20 select-none"
                     draggable={false}
                 />
             )}
@@ -979,7 +979,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                 <img
                                                     src={friscoLogo}
                                                     alt=""
-                                                    className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] select-none"
+                                                    className="absolute bottom-2 right-1 w-[20%] min-w-[70px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] select-none"
                                                     draggable={false}
                                                 />
                                             )}
