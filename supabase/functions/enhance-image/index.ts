@@ -68,13 +68,13 @@ Analyze the image and return a JSON object with exactly these fields:
   "prompt": "specific enhancement instructions" or null
 }
 
-DECIDE "enhance": false (SKIP) if ANY of these are true:
+DECIDE "enhance": false (SKIP) ONLY if:
 - It is NOT a photograph (floorplan, map, logo, 3D render, diagram, certificate, text overlay, infographic)
-- The photo is already high quality with good lighting, exposure, and colors — enhancement would add nothing
-- The image is so severely damaged, blurry, tiny, or corrupted that enhancement would make it worse
 - It's a screenshot, scan, or document
+- The image is so severely damaged, blurry, tiny, or corrupted that enhancement would make it worse
 
-DECIDE "enhance": true if the photo is a real photograph AND would genuinely benefit from improvement in at least one of:
+DECIDE "enhance": true for ALL real photographs, even high-quality ones. Reasons include:
+- The image contains any watermark, logo, or text overlay that should be removed
 - Dark rooms that need brighter, more balanced lighting
 - Blown-out windows where the exterior is invisible
 - Poor white balance (too blue, too yellow, too green)
@@ -83,10 +83,12 @@ DECIDE "enhance": true if the photo is a real photograph AND would genuinely ben
 - Overcast exterior where sky and colors look lifeless
 - Shadows that are too harsh or too dark
 - Overall underexposure or overexposure
+- Even if the photo is already high quality, enhance=true if it has a watermark/logo to remove
 
 When "enhance" is true, write a "prompt" that is SPECIFIC to THIS image. Do NOT use generic instructions.
 Describe exactly what adjustments this particular photo needs.
-Always end the prompt with: "Do NOT add, remove, or move any objects. Do NOT add text or watermarks. Keep it photorealistic. Return ONLY the enhanced image."
+IMPORTANT: If the image contains any watermark, logo, or branded text overlay, ALWAYS include "Remove any watermarks, logos, or text overlays baked into the image." as the FIRST instruction in the prompt.
+Always end the prompt with: "Do NOT add, remove, or move any objects. Do NOT add any new text or watermarks. Keep it photorealistic. Return ONLY the enhanced image."
 
 When "enhance" is false, set "prompt" to null.
 
@@ -120,7 +122,7 @@ async function assessImage(imageBase64: string, mimeType: string): Promise<Asses
         return {
             enhance: true,
             reason: `Assessment failed (${errMsg}) — defaulting to safe enhancement`,
-            prompt: `Enhance this real estate photo. Improve lighting and exposure for a balanced, well-lit result. Correct white balance for natural colors. Reduce noise. Sharpen details slightly. Do NOT add, remove, or move any objects. Do NOT add text or watermarks. Keep it photorealistic. Return ONLY the enhanced image.`,
+            prompt: `Enhance this real estate photo. Remove any watermarks, logos, or text overlays baked into the image. Improve lighting and exposure for a balanced, well-lit result. Correct white balance for natural colors. Reduce noise. Sharpen details slightly. Do NOT add, remove, or move any objects. Do NOT add any new text or watermarks. Keep it photorealistic. Return ONLY the enhanced image.`,
         };
     }
 }
@@ -223,8 +225,16 @@ function getMimeType(url: string): string {
     return 'image/jpeg';
 }
 
+// Default prompt for force mode — focuses on watermark removal + gentle quality improvement
+const FORCE_ENHANCE_PROMPT = `Reproduce this real estate photo with these adjustments:
+1. Remove any watermarks, logos, or text overlays baked into the image
+2. Gently improve lighting balance and color accuracy if needed
+3. Reduce any visible noise or grain
+Do NOT add, remove, or move any objects or furniture. Do NOT add any new text or watermarks. Keep it photorealistic. Return ONLY the enhanced image.`;
+
 // ---- Main enhancement logic ----
-async function enhanceImage(imageId: string, originalUrl: string): Promise<{ success: boolean; error?: string }> {
+// force=true: skip AI quality assessment, always enhance (used to re-process skipped images)
+async function enhanceImage(imageId: string, originalUrl: string, force = false): Promise<{ success: boolean; error?: string }> {
     try {
         // Download original image
         const response = await fetch(originalUrl);
@@ -252,26 +262,36 @@ async function enhanceImage(imageId: string, originalUrl: string): Promise<{ suc
         // Convert to base64
         const imageBase64 = arrayBufferToBase64(imageBuffer);
 
-        // ---- STEP 1: AI quality assessment — should we enhance this image? ----
-        const assessment = await assessImage(imageBase64, mimeType);
-        console.log(`[enhance-image] ${imageId} assessment: enhance=${assessment.enhance}, reason="${assessment.reason}"`);
+        let enhancementPrompt: string;
 
-        // ---- STEP 2: Skip if AI decided enhancement won't help ----
-        if (!assessment.enhance) {
-            console.log(`[enhance-image] ${imageId} SKIPPED — ${assessment.reason}`);
-            await supabase
-                .from('listing_images')
-                .update({
-                    enhanced_url: originalUrl,
-                    enhancement_status: 'completed',
-                })
-                .eq('id', imageId);
-            return { success: true };
+        if (force) {
+            // Force mode: skip assessment, use watermark-removal prompt
+            console.log(`[enhance-image] ${imageId} FORCE mode — skipping assessment, using watermark-removal prompt`);
+            enhancementPrompt = FORCE_ENHANCE_PROMPT;
+        } else {
+            // ---- STEP 1: AI quality assessment — should we enhance this image? ----
+            const assessment = await assessImage(imageBase64, mimeType);
+            console.log(`[enhance-image] ${imageId} assessment: enhance=${assessment.enhance}, reason="${assessment.reason}"`);
+
+            // ---- STEP 2: Skip if AI decided enhancement won't help ----
+            if (!assessment.enhance) {
+                console.log(`[enhance-image] ${imageId} SKIPPED — ${assessment.reason}`);
+                await supabase
+                    .from('listing_images')
+                    .update({
+                        enhanced_url: originalUrl,
+                        enhancement_status: 'completed',
+                    })
+                    .eq('id', imageId);
+                return { success: true };
+            }
+
+            enhancementPrompt = assessment.prompt!;
         }
 
-        // ---- STEP 3: Enhance with the AI-generated prompt specific to this image ----
-        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, assessment.prompt!);
-        console.log(`[enhance-image] ${imageId} enhanced with ${modelUsed}`);
+        // ---- STEP 3: Enhance with the prompt ----
+        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, enhancementPrompt);
+        console.log(`[enhance-image] ${imageId} enhanced with ${modelUsed}${force ? ' (FORCE)' : ''}`);
 
         // Upload enhanced image to Supabase Storage
         const extension = enhancedMimeType.split('/')[1] || 'jpeg';
@@ -358,7 +378,7 @@ Deno.serve(async (req) => {
         const url = new URL(req.url);
         const assessOnly = url.searchParams.get('assess-only') === '1';
 
-        const { imageId, originalUrl } = await req.json();
+        const { imageId, originalUrl, force } = await req.json();
 
         if (!imageId || !originalUrl) {
             return new Response(
@@ -392,7 +412,7 @@ Deno.serve(async (req) => {
             .update({ enhancement_status: 'processing' })
             .eq('id', imageId);
 
-        const result = await enhanceImage(imageId, originalUrl);
+        const result = await enhanceImage(imageId, originalUrl, force === true);
 
         return new Response(
             JSON.stringify(result),

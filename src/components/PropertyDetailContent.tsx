@@ -46,7 +46,7 @@ import {
     getLocalizedEquipmentLabel,
     getLocalizedOwnershipLabel,
 } from '@/api/mappings';
-import { getBestImageUrl, isEnhancedImage } from '@/api/listingsService';
+import { getBestImageUrl } from '@/api/listingsService';
 
 const friscoLogo = '/frisco-logo-hq.png';
 
@@ -75,7 +75,6 @@ const GalleryImage = ({
     style?: CSSProperties;
 }) => {
     const [loaded, setLoaded] = useState(false);
-    const showWatermark = isEnhancedImage(src);
     return (
         <>
             {/* Shimmer skeleton shown while image loads */}
@@ -98,15 +97,13 @@ const GalleryImage = ({
                 style={style}
                 onLoad={() => setLoaded(true)}
             />
-            {/* FRISCO watermark — only on AI-enhanced images (originals have it baked in) */}
-            {showWatermark && (
-                <img
-                    src={friscoLogo}
-                    alt=""
-                    className="absolute bottom-2 right-2 w-[14%] min-w-[36px] max-w-[72px] opacity-[0.45] pointer-events-none drop-shadow-md z-20 select-none"
-                    draggable={false}
-                />
-            )}
+            {/* FRISCO watermark — uniform on all images */}
+            <img
+                src={friscoLogo}
+                alt=""
+                className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-20 select-none"
+                draggable={false}
+            />
         </>
     );
 };
@@ -969,15 +966,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                     priority={idx === currentImageIndex}
                                                     className="object-contain"
                                                 />
-                                                {/* FRISCO watermark on enhanced images in lightbox */}
-                                                {isEnhancedImage(img) && (
-                                                    <img
-                                                        src={friscoLogo}
-                                                        alt=""
-                                                        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 w-[10%] min-w-[48px] max-w-[100px] opacity-[0.45] pointer-events-none drop-shadow-lg z-30 select-none"
-                                                        draggable={false}
-                                                    />
-                                                )}
+                                                {/* FRISCO watermark — uniform on all lightbox images */}
+                                                <img
+                                                    src={friscoLogo}
+                                                    alt=""
+                                                    className="absolute bottom-4 right-4 md:bottom-6 md:right-6 h-[24px] md:h-[32px] w-auto opacity-40 pointer-events-none drop-shadow-lg z-30 select-none"
+                                                    draggable={false}
+                                                />
                                             </>
                                         ) : null}
                                     </div>

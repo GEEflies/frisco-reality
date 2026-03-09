@@ -7,7 +7,7 @@ import { localePath } from '@/i18n/types';
 import { LocaleLink } from '@/components/LocaleLink';
 import { MAIN_LISTINGS_COPY } from '@/i18n/copy';
 import { useFeaturedListings } from '@/hooks/useListings';
-import { getPrimaryImage, isEnhancedImage } from '@/api/listingsService';
+import { getPrimaryImage } from '@/api/listingsService';
 import { formatArea, formatPriceWithUnit } from '@/api/mappings';
 import type { ListingWithImages } from '@/api/types';
 
@@ -89,15 +89,13 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
               decoding="async"
               className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
             />
-            {/* FRISCO watermark — only on AI-enhanced images (originals have it baked in) */}
-            {isEnhancedImage(image) && (
-              <img
-                src="/frisco-logo-hq.png"
-                alt=""
-                className="absolute bottom-2 right-2 w-[14%] min-w-[36px] max-w-[64px] opacity-[0.45] pointer-events-none drop-shadow-md z-10 select-none"
-                draggable={false}
-              />
-            )}
+            {/* FRISCO watermark — uniform on all images */}
+            <img
+              src="/frisco-logo-hq.png"
+              alt=""
+              className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-10 select-none"
+              draggable={false}
+            />
           </>
         ) : (
           <div className="w-full h-full bg-cream-dark flex items-center justify-center">

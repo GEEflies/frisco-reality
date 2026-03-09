@@ -104,7 +104,7 @@ async function fetchPendingImages() {
 }
 
 // ---- Call enhance-image function ----
-async function callEnhanceImage(imageId: string, originalUrl: string): Promise<boolean> {
+async function callEnhanceImage(imageId: string, originalUrl: string, force = false): Promise<boolean> {
     try {
         const response = await fetch(`${SUPABASE_URL}/functions/v1/enhance-image`, {
             method: 'POST',
@@ -112,7 +112,7 @@ async function callEnhanceImage(imageId: string, originalUrl: string): Promise<b
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${SUPABASE_KEY}`,
             },
-            body: JSON.stringify({ imageId, originalUrl }),
+            body: JSON.stringify({ imageId, originalUrl, force }),
         });
 
         if (!response.ok) {
@@ -144,6 +144,15 @@ Deno.serve(async (req) => {
     }
 
     try {
+        // Check if force mode was requested (for re-processing skipped images)
+        let force = false;
+        if (req.method === 'POST') {
+            try {
+                const body = await req.json();
+                force = body?.force === true;
+            } catch { /* no body or not JSON — that's fine, default to false */ }
+        }
+
         // Step 1: Recover stuck images
         const recovered = await recoverStuckImages();
 
@@ -167,7 +176,7 @@ Deno.serve(async (req) => {
 
         // Step 4: Fire all in parallel — one bad image won't block the rest.
         const results = await Promise.allSettled(
-            pending.map(image => callEnhanceImage(image.id, image.original_url))
+            pending.map(image => callEnhanceImage(image.id, image.original_url, force))
         );
 
         const successCount = results.filter(r => r.status === 'fulfilled' && (r as any).value === true).length;
