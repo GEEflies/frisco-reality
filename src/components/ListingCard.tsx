@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import listingImageLoader from '@/lib/imageLoader';
-import { isEnhancedImage } from '@/api/listingsService';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -19,6 +18,7 @@ interface ListingCardProps {
         label: string | number;
     }>;
     image?: string;
+    showOverlay?: boolean;
     status: string;
     statusColor?: string;
     onClick?: () => void;
@@ -31,6 +31,7 @@ export const ListingCard = ({
     description,
     features,
     image,
+    showOverlay = false,
     status,
     statusColor = "bg-navy",
     onClick
@@ -105,8 +106,8 @@ export const ListingCard = ({
                             quality={75}
                             className="object-cover will-change-transform transition-transform duration-900 ease-smooth-zoom group-hover:scale-105"
                         />
-                        {/* FRISCO watermark — only on enhanced images */}
-                        {isEnhancedImage(image) && (
+                        {/* FRISCO watermark — only when no baked-in logo */}
+                        {showOverlay && (
                             <img
                                 src="/frisco-logo-hq.png"
                                 alt=""
