@@ -73,11 +73,11 @@ export async function fetchListings(filters?: ListingFilters): Promise<ListingWi
         }
     }
 
-    // Locality filter (search in location_city, location_district, street)
+    // Locality filter — match on city name (exact match for dropdown values)
     if (filters?.locality && filters.locality !== 'all') {
         const loc = filters.locality;
         query = query.or(
-            `location_city.ilike.%${loc}%,location_district.ilike.%${loc}%,street.ilike.%${loc}%`
+            `location_city.eq.${loc},location_district.eq.${loc}`
         );
     }
 
@@ -188,12 +188,12 @@ export function getMaxPrice(listings: ListingWithImages[]): number {
 
 /**
  * Get unique localities from listings for the locality filter dropdown.
+ * Uses location_city first, then location_district, with street as fallback.
  */
 export function getUniqueLocalities(listings: ListingWithImages[]): string[] {
     const localities = new Set<string>();
     for (const listing of listings) {
         if (listing.location_city) localities.add(listing.location_city);
-        if (listing.location_district) localities.add(listing.location_district);
     }
     return Array.from(localities).sort();
 }

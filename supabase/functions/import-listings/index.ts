@@ -65,6 +65,96 @@ function toBool(value: any): boolean {
     return value === 1 || value === true || value === '1';
 }
 
+// ---- UC Location Codelist Lookup ----
+// UC sends numeric IDs for location; these maps resolve them to human-readable names.
+// Source: UC "Číselníky" (codelists) — region_id = Obec (municipality),
+// district_id = Okres, county_id = Kraj.
+// The admin.realsoft.sk/api/counter/* endpoints require auth, so we maintain
+// a local map that grows as FRISCO expands to new areas.
+
+const REGION_NAMES: Record<number, string> = {
+    // Okres Galanta
+    504009: 'Sereď',
+    504050: 'Šoporňa',
+    504114: 'Váhovce',
+    504131: 'Veľké Úľany',
+    504157: 'Vinohrady nad Váhom',
+    504001: 'Galanta',
+    504013: 'Dolná Streda',
+    504016: 'Horné Saliby',
+    504021: 'Kajal',
+    504025: 'Kráľov Brod',
+    504035: 'Mostová',
+    504040: 'Pata',
+    504045: 'Pusté Sady',
+    504055: 'Šintava',
+    504060: 'Šoporňa',
+    504070: 'Tomášikovo',
+    504075: 'Trstice',
+    504080: 'Váhovce',
+    504090: 'Vozokany',
+    504100: 'Zemianske Sady',
+    // Okres Žilina
+    518042: 'Terchová',
+    // Okres Trnava
+    503001: 'Trnava',
+    // Add more as new listings come in from UC
+};
+
+const DISTRICT_NAMES: Record<number, string> = {
+    202: 'Galanta',
+    201: 'Dunajská Streda',
+    203: 'Hlohovec',
+    204: 'Piešťany',
+    205: 'Senica',
+    206: 'Skalica',
+    207: 'Trnava',
+    501: 'Bytča',
+    502: 'Čadca',
+    503: 'Dolný Kubín',
+    504: 'Kysucké Nové Mesto',
+    505: 'Liptovský Mikuláš',
+    506: 'Martin',
+    507: 'Námestovo',
+    508: 'Ružomberok',
+    509: 'Turčianske Teplice',
+    510: 'Tvrdošín',
+    511: 'Žilina',
+};
+
+const COUNTY_NAMES: Record<number, string> = {
+    1: 'Bratislavský kraj',
+    2: 'Trnavský kraj',
+    3: 'Trenčiansky kraj',
+    4: 'Nitriansky kraj',
+    5: 'Žilinský kraj',
+    6: 'Banskobystrický kraj',
+    7: 'Prešovský kraj',
+    8: 'Košický kraj',
+};
+
+function resolveLocationCity(data: any): string | null {
+    // 1. UC citypart_string (explicit text from UC)
+    if (data.citypart_string) return data.citypart_string;
+    // 2. Lookup region_id in our codelist
+    const regionId = toNumberOrNull(data.region_id);
+    if (regionId && REGION_NAMES[regionId]) return REGION_NAMES[regionId];
+    // 3. Fallback: null
+    return null;
+}
+
+function resolveLocationDistrict(data: any): string | null {
+    const districtId = toNumberOrNull(data.district_id);
+    if (districtId && DISTRICT_NAMES[districtId]) return DISTRICT_NAMES[districtId];
+    return null;
+}
+
+function resolveLocationRegion(data: any): string | null {
+    const countyId = toNumberOrNull(data.county_id);
+    if (countyId && COUNTY_NAMES[countyId]) return COUNTY_NAMES[countyId];
+    return null;
+}
+
 // ---- Persistent flag: has the first-listing notification already been sent? ----
 // Stored as a sentinel file in Supabase Storage so it survives function restarts
 // and is not affected by test inserts/deletes. Fires exactly once, globally.
@@ -454,10 +544,10 @@ async function handleListing(data: Record<string, any>, isTestMode = false) {
         street_number: data.street_number || null,
         geo_lat: toNumberOrNull(data.gps_x),
         geo_lon: toNumberOrNull(data.gps_y),
-        // Use citypart_string for location_city if available, otherwise leave null
-        location_city: data.citypart_string || null,
-        location_district: null,  // Will be populated from UC code list in future
-        location_region: null,
+        // Resolve location names from UC codelist IDs
+        location_city: resolveLocationCity(data),
+        location_district: resolveLocationDistrict(data),
+        location_region: resolveLocationRegion(data),
 
         usable_area: toNumberOrNull(data.usable_area),
         building_area: toNumberOrNull(data.building_area),

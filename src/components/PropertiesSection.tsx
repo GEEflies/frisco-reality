@@ -174,11 +174,11 @@ export const PropertiesSection = () => {
     const handleScroll = () => {
       if (filterWrapperRef.current) {
         const rect = filterWrapperRef.current.getBoundingClientRect();
-        // Show floating button when filter wrapper is above viewport
-        // On mobile, show it sooner (offset by 250px) because the filter section is very tall
+        // Show floating button when filter wrapper top is above viewport
+        // This means: as soon as you scroll past the filter section, the button appears
         const isMobile = window.innerWidth < 768;
-        const triggerOffset = isMobile ? 250 : 0;
-        setShowFloatingFilter(rect.bottom < triggerOffset);
+        const triggerOffset = isMobile ? 100 : 60;
+        setShowFloatingFilter(rect.top < -triggerOffset);
       }
     };
 
@@ -604,7 +604,7 @@ export const PropertiesSection = () => {
                     <ListingCard
                       title={listing.title}
                       price={priceLabel}
-                      location={[listing.location_city, listing.location_district].filter(Boolean).join(', ')}
+                      location={[listing.location_city, listing.location_district].filter(Boolean).join(', ') || listing.street || 'Slovensko'}
                       description={listing.description || undefined}
                       image={image ?? undefined}
                       status={status.label}
@@ -666,7 +666,7 @@ export const PropertiesSection = () => {
 
       </div>
 
-      {/* Floating Filter Button (Desktop only) */}
+      {/* Floating Filter Button (mobile + desktop) */}
       <AnimatePresence>
         {showFloatingFilter && (
           <motion.button
@@ -675,10 +675,10 @@ export const PropertiesSection = () => {
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.3 }}
             onClick={scrollToFilters}
-            className="flex fixed bottom-8 right-8 z-50 w-16 h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
+            className="fixed bottom-8 right-8 z-50 flex w-14 h-14 md:w-16 md:h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
             aria-label={copy.showFilters}
           >
-            <SlidersHorizontal size={24} strokeWidth={2.5} />
+            <SlidersHorizontal size={22} strokeWidth={2.5} />
           </motion.button>
         )}
       </AnimatePresence>
