@@ -101,7 +101,7 @@ export const ListingCard = ({
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         quality={75}
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="object-cover will-change-transform transition-transform duration-[900ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105"
                     />
                 ) : (
                     <div className="w-full h-full bg-cream-dark flex items-center justify-center">
