@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -92,10 +93,14 @@ export const ListingCard = ({
                 </div>
 
                 {image ? (
-                    <img
+                    <Image
                         src={image}
                         alt={title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        quality={75}
+                        loading="lazy"
                     />
                 ) : (
                     <div className="w-full h-full bg-cream-dark flex items-center justify-center">

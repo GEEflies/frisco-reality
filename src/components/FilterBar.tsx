@@ -45,10 +45,12 @@ export const FilterBar = ({
         sk: {
             all: 'Všetky',
             labels: {
-                rent: 'Prenájom',
                 apartment: 'Byty',
                 house: 'Domy',
                 land: 'Pozemky',
+                commercial: 'Komerčné',
+                cottage: 'Chaty',
+                garage: 'Garáže',
                 other: 'Iné',
             },
             filterOffer: 'Filtrovať ponuku',
@@ -70,10 +72,12 @@ export const FilterBar = ({
         en: {
             all: 'All',
             labels: {
-                rent: 'Rent',
                 apartment: 'Apartments',
                 house: 'Houses',
                 land: 'Land',
+                commercial: 'Commercial',
+                cottage: 'Cottages',
+                garage: 'Garages',
                 other: 'Other',
             },
             filterOffer: 'Filter listings',
@@ -95,10 +99,12 @@ export const FilterBar = ({
         de: {
             all: 'Alle',
             labels: {
-                rent: 'Miete',
                 apartment: 'Wohnungen',
                 house: 'Häuser',
                 land: 'Grundstücke',
+                commercial: 'Gewerbe',
+                cottage: 'Ferienhäuser',
+                garage: 'Garagen',
                 other: 'Sonstiges',
             },
             filterOffer: 'Angebote filtern',
@@ -160,10 +166,12 @@ export const FilterBar = ({
 
     // Type options from dynamic data
     const typeLabels: Record<string, string> = {
-        rent: copy.labels.rent,
         apartment: copy.labels.apartment,
         house: copy.labels.house,
         land: copy.labels.land,
+        commercial: copy.labels.commercial,
+        cottage: copy.labels.cottage,
+        garage: copy.labels.garage,
         other: copy.labels.other,
     };
     

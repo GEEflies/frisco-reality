@@ -220,7 +220,7 @@ export const PropertiesSection = () => {
   const getListingStatus = (listing: typeof listings[0]) => {
     if (listing.status === 3) return { label: copy.statuses.reserved, color: 'bg-amber-500' };
     if (listing.status === 4) return { label: copy.statuses.sold, color: 'bg-red-500' };
-    if (listing.condition === 6) return { label: copy.statuses.newBuild, color: 'bg-emerald-500' };
+    if (listing.condition === 6 && listing.age && listing.age >= new Date().getFullYear() - 10) return { label: copy.statuses.newBuild, color: 'bg-emerald-500' };
     if (listing.action === 3) return { label: copy.statuses.rent, color: 'bg-sky-500' };
     return { label: copy.statuses.sale, color: 'bg-navy' };
   };
@@ -583,8 +583,7 @@ export const PropertiesSection = () => {
         {/* Properties Grid */}
         {!isLoading && !error && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            <AnimatePresence mode='popLayout'>
-              {listings.map((listing) => {
+              {listings.map((listing, idx) => {
                 const status = getListingStatus(listing);
                 const features = getFeatures(listing);
                 const image = getPrimaryImage(listing);
@@ -595,11 +594,9 @@ export const PropertiesSection = () => {
                 return (
                   <motion.div
                     key={listing.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.4 }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
                   >
                     <ListingCard
                       title={listing.title}
@@ -615,7 +612,6 @@ export const PropertiesSection = () => {
                   </motion.div>
                 );
               })}
-            </AnimatePresence>
           </div>
         )}
 

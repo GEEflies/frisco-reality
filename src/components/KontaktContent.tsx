@@ -276,7 +276,7 @@ const Kontakt = () => {
                 <div className="bg-white border border-navy/10 p-6 md:p-8 rounded-2xl h-full">
                   <div className="flex items-center gap-4 mb-5">
                     <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
-                      <img src="/r-poist.png" alt="R Poišt" className="w-full h-full object-cover" />
+                      <img src="/r-poist.webp" alt="R Poišt" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     </div>
                   </div>
                   <h3 className="text-xl md:text-2xl font-serif font-bold text-navy mb-1">Mgr. Radoslav Štrpka</h3>

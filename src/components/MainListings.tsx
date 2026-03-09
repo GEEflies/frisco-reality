@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { ChevronRight, Maximize, Home, MapPin, Trees } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -24,7 +25,7 @@ function getStatusMeta(listing: ListingWithImages, language: 'sk' | 'en' | 'de')
       color: 'bg-red-500',
     };
   }
-  if (listing.condition === 6) {
+  if (listing.condition === 6 && listing.age && listing.age >= new Date().getFullYear() - 10) {
     return {
       label: language === 'sk' ? 'Novostavba' : language === 'de' ? 'Neubau' : 'New build',
       color: 'bg-emerald-500',
@@ -81,10 +82,14 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
     <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
       <div className="relative h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
         {image ? (
-          <img
+          <Image
             src={image}
             alt={listing.title}
-            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+            fill
+            sizes="(max-width: 1024px) 100vw, 33vw"
+            className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+            quality={75}
+            loading="lazy"
           />
         ) : (
           <div className="w-full h-full bg-cream-dark flex items-center justify-center">

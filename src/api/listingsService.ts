@@ -127,6 +127,29 @@ export async function fetchListings(filters?: ListingFilters): Promise<ListingWi
 }
 
 /**
+ * Fetch ALL active, non-deleted listings (no filters).
+ * Used as the single cached data source for client-side filtering.
+ */
+export async function fetchAllActiveListings(): Promise<ListingWithImages[]> {
+    const { data, error } = await supabase
+        .from('listings')
+        .select('*, images:listing_images(*)')
+        .eq('is_deleted', false)
+        .eq('status', 1)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching all listings:', error);
+        return [];
+    }
+
+    return (data || []).map((listing: any) => ({
+        ...listing,
+        images: (listing.images || []).sort((a: ListingImage, b: ListingImage) => a.sort_order - b.sort_order),
+    }));
+}
+
+/**
  * Fetch a single listing by ID (UUID) or slug.
  */
 export async function fetchListingById(idOrSlug: string): Promise<ListingWithImages | null> {
