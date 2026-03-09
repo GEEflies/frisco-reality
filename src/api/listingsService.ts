@@ -74,7 +74,7 @@ export async function fetchListings(filters?: ListingFilters): Promise<ListingWi
     }
 
     // Locality filter (search in location_city, location_district, street)
-    if (filters?.locality) {
+    if (filters?.locality && filters.locality !== 'all') {
         const loc = filters.locality;
         query = query.or(
             `location_city.ilike.%${loc}%,location_district.ilike.%${loc}%,street.ilike.%${loc}%`
