@@ -2,7 +2,7 @@
 
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useEffect, useMemo } from 'react';
-import { Bed, Bath, Square, Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, ArrowUpDown, Check, SlidersHorizontal, SearchX, Phone, Mail } from 'lucide-react';
+import { Bed, Bath, Square, Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, ArrowUpDown, Check, SlidersHorizontal, SearchX, Phone, Mail, LayoutGrid } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FilterBar } from './FilterBar';
 import { ListingCard } from './ListingCard';
@@ -44,7 +44,7 @@ export const PropertiesSection = () => {
       rent: 'Prenájom',
       featuredStart: 'Vybrané',
       featuredAccent: 'nehnuteľnosti',
-      filters: { rent: 'Prenájom', apartment: 'Byty', house: 'Domy', land: 'Pozemky', other: 'Iné' },
+      filters: { all: 'Všetky', rent: 'Prenájom', apartment: 'Byty', house: 'Domy', land: 'Pozemky', other: 'Iné' },
       sortTitle: 'Zoradiť',
       sortBy: 'Zoradiť podľa',
       sortOptions: {
@@ -78,7 +78,7 @@ export const PropertiesSection = () => {
       rent: 'Rent',
       featuredStart: 'Featured',
       featuredAccent: 'properties',
-      filters: { rent: 'Rent', apartment: 'Apartments', house: 'Houses', land: 'Land', other: 'Other' },
+      filters: { all: 'All', rent: 'Rent', apartment: 'Apartments', house: 'Houses', land: 'Land', other: 'Other' },
       sortTitle: 'Sort',
       sortBy: 'Sort by',
       sortOptions: {
@@ -112,7 +112,7 @@ export const PropertiesSection = () => {
       rent: 'Miete',
       featuredStart: 'Ausgewählte',
       featuredAccent: 'Immobilien',
-      filters: { rent: 'Miete', apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', other: 'Sonstiges' },
+      filters: { all: 'Alle', rent: 'Miete', apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', other: 'Sonstiges' },
       sortTitle: 'Sortieren',
       sortBy: 'Sortieren nach',
       sortOptions: {
@@ -306,22 +306,30 @@ export const PropertiesSection = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.15 }}
           >
-            {/* Mobile grid: 3 on top, 2 on bottom — matching reference */}
+            {/* Mobile grid: 3 on top, 3 on bottom */}
             <div className="w-full grid grid-cols-3 gap-3 md:hidden">
               {[
+                { id: 'all', label: copy.filters.all, icon: LayoutGrid, isAll: true },
                 { id: 'rent', label: copy.filters.rent, icon: Key, isTransaction: true },
                 { id: 'apartment', label: copy.filters.apartment, icon: Building2 },
-                { id: 'house', label: copy.filters.house, icon: Home },
               ].map((cat) => {
-                const isActive = cat.isTransaction
-                  ? filters.transaction === 'rent'
-                  : filters.category === cat.id;
+                const isActive = cat.isAll
+                  ? filters.category === 'all' && filters.transaction === 'all'
+                  : cat.isTransaction
+                    ? filters.transaction === 'rent'
+                    : filters.category === cat.id;
 
                 return (
                   <button
                     key={cat.id}
                     onClick={() => {
-                      if (cat.isTransaction) {
+                      if (cat.isAll) {
+                        setFilters(prev => ({
+                          ...prev,
+                          category: 'all',
+                          transaction: 'all',
+                        }));
+                      } else if (cat.isTransaction) {
                         setFilters(prev => ({
                           ...prev,
                           transaction: prev.transaction === 'rent' ? 'all' : 'rent',
@@ -348,8 +356,9 @@ export const PropertiesSection = () => {
                 );
               })}
             </div>
-            <div className="w-full grid grid-cols-2 gap-3 md:hidden">
+            <div className="w-full grid grid-cols-3 gap-3 md:hidden">
               {[
+                { id: 'house', label: copy.filters.house, icon: Home },
                 { id: 'land', label: copy.filters.land, icon: Map },
                 { id: 'other', label: copy.filters.other, icon: Warehouse },
               ].map((cat) => {
@@ -382,21 +391,30 @@ export const PropertiesSection = () => {
             {/* Desktop: original horizontal wrap */}
             <div className="hidden md:flex flex-wrap gap-3">
               {[
+                { id: 'all', label: copy.filters.all, icon: LayoutGrid, isAll: true },
                 { id: 'rent', label: copy.filters.rent, icon: Key, isTransaction: true },
                 { id: 'apartment', label: copy.filters.apartment, icon: Building2 },
                 { id: 'house', label: copy.filters.house, icon: Home },
                 { id: 'land', label: copy.filters.land, icon: Map },
                 { id: 'other', label: copy.filters.other, icon: Warehouse },
               ].map((cat) => {
-                const isActive = cat.isTransaction
-                  ? filters.transaction === 'rent'
-                  : filters.category === cat.id;
+                const isActive = cat.isAll
+                  ? filters.category === 'all' && filters.transaction === 'all'
+                  : cat.isTransaction
+                    ? filters.transaction === 'rent'
+                    : filters.category === cat.id;
 
                 return (
                   <button
                     key={cat.id}
                     onClick={() => {
-                      if (cat.isTransaction) {
+                      if (cat.isAll) {
+                        setFilters(prev => ({
+                          ...prev,
+                          category: 'all',
+                          transaction: 'all',
+                        }));
+                      } else if (cat.isTransaction) {
                         setFilters(prev => ({
                           ...prev,
                           transaction: prev.transaction === 'rent' ? 'all' : 'rent',
