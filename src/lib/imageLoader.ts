@@ -41,6 +41,15 @@ export default function listingImageLoader({ src, width, quality }: ImageLoaderP
 }
 
 /**
+ * Build the weserv.nl URL for a given source, width, and quality.
+ * Useful for preloading images at the exact same URL that next/image will request.
+ */
+export function buildWeservUrl(src: string, width: number, quality = 75): string {
+    if (src.startsWith('/') || src.startsWith('data:')) return src;
+    return `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=${width}&q=${quality}&output=webp&we&il`;
+}
+
+/**
  * Generate a tiny blur placeholder URL for skeleton/shimmer loading.
  * Returns a 20px-wide, heavily compressed WebP — typically < 1KB.
  */

@@ -30,7 +30,7 @@ import {
     Navigation
 } from 'lucide-react';
 import Image from 'next/image';
-import listingImageLoader, { blurUrl } from '@/lib/imageLoader';
+import listingImageLoader, { blurUrl, buildWeservUrl } from '@/lib/imageLoader';
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
 import { useListing, useAgent } from '@/hooks/useListings';
@@ -357,6 +357,40 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             else prevImage();
         }
     };
+
+    // Preload ALL gallery images at display size when lightbox opens.
+    // Uses native Image() to hit the exact same weserv.nl URL that next/image will request,
+    // so the browser cache is warm and arrow navigation is instant.
+    // Zero Vercel cost — everything goes through weserv.nl CDN.
+    const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+    const preloadedRef = useRef(false);
+
+    useEffect(() => {
+        if (!showLightbox || preloadedRef.current) return;
+        preloadedRef.current = true;
+
+        // Estimate display width: ~90vw for the lightbox
+        const displayWidth = Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.9) : 1200, 1920);
+
+        images.forEach((imgSrc, idx) => {
+            if (!imgSrc || imgSrc.startsWith('/') || imgSrc.startsWith('data:')) return;
+            const img = new window.Image();
+            img.onload = () => {
+                setLoadedImages(prev => {
+                    const next = new Set(prev);
+                    next.add(idx);
+                    return next;
+                });
+            };
+            img.src = buildWeservUrl(imgSrc, displayWidth, 85);
+        });
+    }, [showLightbox]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Reset preload flag when images change (different listing)
+    useEffect(() => {
+        preloadedRef.current = false;
+        setLoadedImages(new Set());
+    }, [listing?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Loading state
     if (isLoading) {
@@ -885,39 +919,43 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             </button>
                         </div>
 
-                        {/* Main image area */}
+                        {/* Main image area — crossfade: old image stays visible under new one */}
                         <div className="flex-1 relative flex items-center justify-center min-h-0 px-4 md:px-16">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentImageIndex}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.15 }}
-                                    className="relative w-full h-full"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <GalleryImage
-                                        src={currentImage}
-                                        alt={listing.title}
-                                        sizes="90vw"
-                                        quality={85}
-                                        className="object-contain"
-                                    />
-                                </motion.div>
-                            </AnimatePresence>
-
-                            {/* Preload adjacent images (hidden, triggers browser fetch) */}
-                            {images.length > 1 && (
-                                <div className="hidden">
-                                    {[currentImageIndex - 1, currentImageIndex + 1]
-                                        .map(i => ((i % images.length) + images.length) % images.length)
-                                        .filter(i => i !== currentImageIndex)
-                                        .map(i => (
-                                            <Image key={`preload-${i}`} loader={listingImageLoader} src={images[i]} alt="" width={1} height={1} quality={85} />
-                                        ))}
-                                </div>
-                            )}
+                            <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
+                                {/* Render all images stacked; only the current one is visible.
+                                    Preloaded images transition instantly; others show shimmer then fade in. */}
+                                {images.map((img, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`absolute inset-0 transition-opacity duration-200 ease-out ${
+                                            idx === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                        }`}
+                                    >
+                                        {/* Only mount images near current to avoid loading all 30 DOM elements */}
+                                        {Math.abs(idx - currentImageIndex) <= 2 ||
+                                         (currentImageIndex <= 1 && idx >= images.length - 2) ||
+                                         (currentImageIndex >= images.length - 2 && idx <= 1) ||
+                                         loadedImages.has(idx) ? (
+                                            <Image
+                                                loader={listingImageLoader}
+                                                src={img}
+                                                alt={listing.title}
+                                                fill
+                                                sizes="90vw"
+                                                quality={85}
+                                                priority={idx === currentImageIndex}
+                                                className="object-contain"
+                                            />
+                                        ) : null}
+                                    </div>
+                                ))}
+                                {/* Shimmer overlay if current image hasn't preloaded yet */}
+                                {!loadedImages.has(currentImageIndex) && (
+                                    <div className="absolute inset-0 z-20 flex items-center justify-center">
+                                        <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Navigation arrows */}
                             {images.length > 1 && (
