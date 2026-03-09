@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'img.unitedclassifieds.sk',
       },
+      {
+        protocol: 'https',
+        hostname: 'admin.realsoft.sk',
+      },
     ],
   },
 

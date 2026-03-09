@@ -40,11 +40,11 @@ export const PropertiesSection = () => {
   const copy = {
     sk: {
       headingLabel: 'Aktuálna ponuka',
-      categoryNames: { apartment: 'Byty', house: 'Domy', land: 'Pozemky', other: 'Iné' },
+      categoryNames: { apartment: 'Byty', house: 'Domy', land: 'Pozemky', commercial: 'Komerčné', cottage: 'Chaty', garage: 'Garáže', other: 'Iné' },
       rent: 'Prenájom',
       featuredStart: 'Vybrané',
       featuredAccent: 'nehnuteľnosti',
-      filters: { all: 'Všetky', rent: 'Prenájom', apartment: 'Byty', house: 'Domy', land: 'Pozemky', other: 'Iné' },
+      filters: { all: 'Všetky', rent: 'Prenájom', apartment: 'Byty', house: 'Domy', land: 'Pozemky', commercial: 'Komerčné', cottage: 'Chaty', garage: 'Garáže', other: 'Iné' },
       sortTitle: 'Zoradiť',
       sortBy: 'Zoradiť podľa',
       sortOptions: {
@@ -74,11 +74,11 @@ export const PropertiesSection = () => {
     },
     en: {
       headingLabel: 'Current offer',
-      categoryNames: { apartment: 'Apartments', house: 'Houses', land: 'Land', other: 'Other' },
+      categoryNames: { apartment: 'Apartments', house: 'Houses', land: 'Land', commercial: 'Commercial', cottage: 'Cottages', garage: 'Garages', other: 'Other' },
       rent: 'Rent',
       featuredStart: 'Featured',
       featuredAccent: 'properties',
-      filters: { all: 'All', rent: 'Rent', apartment: 'Apartments', house: 'Houses', land: 'Land', other: 'Other' },
+      filters: { all: 'All', rent: 'Rent', apartment: 'Apartments', house: 'Houses', land: 'Land', commercial: 'Commercial', cottage: 'Cottages', garage: 'Garages', other: 'Other' },
       sortTitle: 'Sort',
       sortBy: 'Sort by',
       sortOptions: {
@@ -108,11 +108,11 @@ export const PropertiesSection = () => {
     },
     de: {
       headingLabel: 'Aktuelle Angebote',
-      categoryNames: { apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', other: 'Sonstiges' },
+      categoryNames: { apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', commercial: 'Gewerbe', cottage: 'Ferienhäuser', garage: 'Garagen', other: 'Sonstiges' },
       rent: 'Miete',
       featuredStart: 'Ausgewählte',
       featuredAccent: 'Immobilien',
-      filters: { all: 'Alle', rent: 'Miete', apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', other: 'Sonstiges' },
+      filters: { all: 'Alle', rent: 'Miete', apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', commercial: 'Gewerbe', cottage: 'Ferienhäuser', garage: 'Garagen', other: 'Sonstiges' },
       sortTitle: 'Sortieren',
       sortBy: 'Sortieren nach',
       sortOptions: {
@@ -284,13 +284,9 @@ export const PropertiesSection = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            {filters.category !== 'all' ? (
+            {filters.category && filters.category !== 'all' ? (
               <span className="uppercase">{
-                filters.category === 'apartment' ? copy.categoryNames.apartment :
-                  filters.category === 'house' ? copy.categoryNames.house :
-                    filters.category === 'land' ? copy.categoryNames.land :
-                      filters.category === 'other' ? copy.categoryNames.other :
-                        filters.category
+                (copy.categoryNames as Record<string, string>)[filters.category] || filters.category
               }</span>
             ) : filters.transaction === 'rent' ? (
               <span className="uppercase">{copy.rent}</span>

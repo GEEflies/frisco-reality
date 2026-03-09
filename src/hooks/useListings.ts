@@ -9,7 +9,7 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchAllActiveListings, fetchListingById, getMaxPrice, getUniqueLocalities, getUniqueTypes } from '@/api/listingsService';
+import { fetchAllActiveListings, fetchListingById, fetchAgentByUcId, getMaxPrice, getUniqueLocalities, getUniqueTypes } from '@/api/listingsService';
 import type { ListingFilters } from '@/api/types';
 
 // Query keys for cache management
@@ -129,6 +129,19 @@ export function useListing(id: string | undefined) {
         enabled: !!id,
         staleTime: 5 * 60 * 1000,
         gcTime: 30 * 60 * 1000,
+    });
+}
+
+/**
+ * Hook to fetch an agent by UC user ID (for listing detail pages).
+ */
+export function useAgent(agentId: string | null | undefined) {
+    return useQuery({
+        queryKey: ['agent', agentId] as const,
+        queryFn: () => fetchAgentByUcId(agentId!),
+        enabled: !!agentId,
+        staleTime: 10 * 60 * 1000,
+        gcTime: 60 * 60 * 1000,
     });
 }
 

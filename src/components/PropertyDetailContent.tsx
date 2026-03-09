@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { LocaleLink } from './LocaleLink';
 import { useRouter } from 'next/navigation';
 import { localePath } from '@/i18n/types';
@@ -32,7 +33,7 @@ import {
 import ConsentMapEmbed from '@/components/ConsentMapEmbed';
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
-import { useListing } from '@/hooks/useListings';
+import { useListing, useAgent } from '@/hooks/useListings';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import {
     getLocalizedCategoryLabel,
@@ -209,6 +210,21 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // Fetch listing data
     const { data: listing, isLoading, error } = useListing(id);
 
+    // Fetch assigned agent (for photo & contact info)
+    const { data: agent } = useAgent(listing?.agent_id);
+
+    // Derive agent display values (agent table > listing fields > fallback)
+    const agentName = agent?.full_name || listing?.agent_name || 'FRISCO Reality';
+    const agentPhone = agent?.phone || listing?.agent_phone || CONTACT.phoneRaw;
+    const agentEmail = agent?.email || listing?.agent_email || CONTACT.email;
+    const agentPhotoUrl = agent?.photo_url || null;
+    const agentInitials = agentName
+        .split(' ')
+        .map((w: string) => w[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() || 'RK';
+
     // Handle like
     const handleLike = () => {
         const newState = !isLiked;
@@ -246,7 +262,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     const handleInterest = () => {
         const subject = encodeURIComponent(`${copy.interestSubject} ${listing?.title || copy.propertyFallback}`);
         const body = encodeURIComponent(`${copy.interestBody}${listing?.title}${copy.interestBodyId}${listing?.uc_object_id || listing?.id}${copy.interestBodyUrl}${window.location.href}${copy.interestBodyEnd}`);
-        window.location.href = `mailto:${CONTACT.email}?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:${agentEmail}?subject=${subject}&body=${body}`;
     };
 
     // Image navigation
@@ -367,7 +383,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                     {/* Desktop Navigation Links - Centered */}
                     <nav className="hidden md:flex items-center gap-8">
                         <LocaleLink href="/" className="flex-shrink-0 mr-4">
-                            <img src={friscoLogo} alt="FRISCO" className="h-12 w-auto" />
+                            <Image src={friscoLogo} alt="FRISCO" width={100} height={48} className="h-12 w-auto" />
                         </LocaleLink>
                         <LocaleLink href="/" className="text-sm font-sans font-medium text-charcoal/70 hover:text-navy transition-colors relative group py-2 tracking-[0.2em] uppercase">
                             {copy.home}
@@ -460,10 +476,14 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             className="col-span-2 row-span-2 relative cursor-pointer overflow-hidden rounded-r-xl md:rounded-r-none md:rounded-l-none"
                             onClick={() => { setCurrentImageIndex(0); setShowLightbox(true); }}
                         >
-                            <img
+                            <Image
                                 src={images[0]}
                                 alt={listing.title}
-                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                fill
+                                sizes="50vw"
+                                quality={80}
+                                priority
+                                className="object-cover hover:scale-105 transition-transform duration-500"
                             />
                         </div>
 
@@ -471,13 +491,17 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         {images.slice(1, 5).map((img, idx) => (
                             <div
                                 key={idx}
-                                className="relative cursor-pointer overflow-hidden first:rounded-tr-xl last:rounded-br-xl" // Added corner rounding
+                                className="relative cursor-pointer overflow-hidden first:rounded-tr-xl last:rounded-br-xl"
                                 onClick={() => { setCurrentImageIndex(idx + 1); setShowLightbox(true); }}
                             >
-                                <img
+                                <Image
                                     src={img}
                                     alt={`${listing.title} - ${idx + 2}`}
-                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                    fill
+                                    sizes="25vw"
+                                    quality={75}
+                                    priority={idx < 1}
+                                    className="object-cover hover:scale-105 transition-transform duration-500"
                                 />
                                 {/* "All Photos" Button on last image */}
                                 {idx === 3 && images.length > 5 && (
@@ -504,16 +528,24 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                     {/* Mobile Single Image with Swipe */}
                     <div className="md:hidden relative h-[50vh]">
-                        <motion.img
+                        <motion.div
                             key={currentImageIndex}
-                            src={currentImage}
-                            alt={listing.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full relative"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.3 }}
                             onClick={() => setShowLightbox(true)}
-                        />
+                        >
+                            <Image
+                                src={currentImage}
+                                alt={listing.title}
+                                fill
+                                sizes="100vw"
+                                quality={75}
+                                priority={currentImageIndex === 0}
+                                className="object-cover"
+                            />
+                        </motion.div>
 
                         {/* Mobile Navigation */}
                         {images.length > 1 && (
@@ -669,27 +701,32 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                     {/* Sidebar - Contact */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-24 bg-white rounded-3xl p-8 border border-black/5 shadow-xl shadow-black/5">
-                            {/* Changed font for "Kontaktujte nás" - using sans instead of serif */}
                             <h3 className="text-xl font-sans font-bold text-navy mb-6 tracking-tight">{copy.contactUs}</h3>
 
-                            {/* Agent Photo Placeholder - Increased Size */}
+                            {/* Agent Photo & Name */}
                             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-black/5">
                                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-navy to-navy/70 flex items-center justify-center overflow-hidden shrink-0">
-                                    {/* Placeholder - ready for agent photo */}
-                                    <span className="text-white text-2xl font-bold">RK</span>
-                                    {/* When you have the photo, replace with:
-                  <img src="/agent-photo.jpg" alt="Realitný maklér" className="w-full h-full object-cover" />
-                  */}
+                                    {agentPhotoUrl ? (
+                                        <Image
+                                            src={agentPhotoUrl}
+                                            alt={agentName}
+                                            width={96}
+                                            height={96}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="text-white text-2xl font-bold">{agentInitials}</span>
+                                    )}
                                 </div>
                                 <div>
-                                    <p className="font-bold text-navy text-lg">FRISCO Reality</p>
+                                    <p className="font-bold text-navy text-lg">{agentName}</p>
                                     <p className="text-sm text-charcoal/60">{copy.yourPartner}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4 mb-8">
                                 <a
-                                    href={`tel:${CONTACT.phoneRaw}`}
+                                    href={`tel:${agentPhone.replace(/\s/g, '')}`}
                                     className="flex items-center gap-4 p-4 bg-cream rounded-2xl hover:bg-cream-dark transition-colors"
                                 >
                                     <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center shrink-0">
@@ -697,12 +734,12 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     </div>
                                     <div className="overflow-hidden">
                                         <p className="text-sm text-charcoal/60">{copy.phone}</p>
-                                        <p className="font-bold text-navy truncate">{CONTACT.phone}</p>
+                                        <p className="font-bold text-navy truncate">{agentPhone}</p>
                                     </div>
                                 </a>
 
                                 <a
-                                    href={`mailto:${CONTACT.email}`}
+                                    href={`mailto:${agentEmail}`}
                                     className="flex items-center gap-4 p-4 bg-cream rounded-2xl hover:bg-cream-dark transition-colors"
                                 >
                                     <div className="w-12 h-12 rounded-full bg-accent-red flex items-center justify-center shrink-0">
@@ -710,7 +747,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     </div>
                                     <div className="overflow-hidden">
                                         <p className="text-sm text-charcoal/60">{copy.email}</p>
-                                        <p className="font-bold text-navy truncate">{CONTACT.email}</p>
+                                        <p className="font-bold text-navy truncate">{agentEmail}</p>
                                     </div>
                                 </a>
                             </div>
@@ -747,12 +784,16 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <X className="w-6 h-6" />
                         </button>
 
-                        <img
-                            src={currentImage}
-                            alt={listing.title}
-                            className="max-w-[90vw] max-h-[90vh] object-contain"
-                            onClick={(e) => e.stopPropagation()}
-                        />
+                        <div className="relative max-w-[90vw] max-h-[90vh] w-[90vw] h-[90vh]" onClick={(e) => e.stopPropagation()}>
+                            <Image
+                                src={currentImage}
+                                alt={listing.title}
+                                fill
+                                sizes="90vw"
+                                quality={90}
+                                className="object-contain"
+                            />
+                        </div>
 
                         {images.length > 1 && (
                             <>
@@ -775,9 +816,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                         <button
                                             key={idx}
                                             onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                                            className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${idx === currentImageIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                            className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all relative ${idx === currentImageIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-100'}`}
                                         >
-                                            <img src={img} alt="" className="w-full h-full object-cover" />
+                                            <Image src={img} alt="" fill sizes="64px" quality={40} className="object-cover" />
                                         </button>
                                     ))}
                                 </div>
@@ -811,9 +852,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 <button
                                     key={idx}
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
-                                    className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity"
+                                    className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity relative"
                                 >
-                                    <img src={img} alt={`${copy.photo} ${idx + 1}`} className="w-full h-full object-cover" />
+                                    <Image src={img} alt={`${copy.photo} ${idx + 1}`} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={70} className="object-cover" />
                                 </button>
                             ))}
                         </div>

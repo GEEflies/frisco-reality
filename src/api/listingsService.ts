@@ -198,6 +198,25 @@ export async function fetchListingById(idOrSlug: string): Promise<ListingWithIma
 }
 
 // ============================================
+// AGENT HELPERS
+// ============================================
+
+/**
+ * Fetch an agent by their UC user ID (matches listings.agent_id).
+ */
+export async function fetchAgentByUcId(ucUserId: string): Promise<import('./types').Agent | null> {
+    const { data, error } = await supabase
+        .from('agents')
+        .select('*')
+        .eq('uc_user_id', ucUserId)
+        .eq('is_deleted', false)
+        .single();
+
+    if (error || !data) return null;
+    return data as import('./types').Agent;
+}
+
+// ============================================
 // FILTER HELPERS (for useListingFilters hook)
 // ============================================
 
