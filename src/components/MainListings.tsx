@@ -7,7 +7,7 @@ import { localePath } from '@/i18n/types';
 import { LocaleLink } from '@/components/LocaleLink';
 import { MAIN_LISTINGS_COPY } from '@/i18n/copy';
 import { useFeaturedListings } from '@/hooks/useListings';
-import { getPrimaryImage } from '@/api/listingsService';
+import { getPrimaryImage, isEnhancedImage } from '@/api/listingsService';
 import { formatArea, formatPriceWithUnit } from '@/api/mappings';
 import type { ListingWithImages } from '@/api/types';
 
@@ -81,13 +81,24 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
     <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
       <div className="relative h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
         {image ? (
-          <img
-            src={image}
-            alt={listing.title}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-          />
+          <>
+            <img
+              src={image}
+              alt={listing.title}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+            />
+            {/* FRISCO watermark — only on AI-enhanced images (originals have it baked in) */}
+            {isEnhancedImage(image) && (
+              <img
+                src="/frisco-logo-hq.png"
+                alt=""
+                className="absolute bottom-2 right-2 w-[14%] min-w-[36px] max-w-[64px] opacity-[0.45] pointer-events-none drop-shadow-md z-10 select-none"
+                draggable={false}
+              />
+            )}
+          </>
         ) : (
           <div className="w-full h-full bg-cream-dark flex items-center justify-center">
             <span className="text-black/10 font-serif text-4xl italic tracking-tighter">FRISCO</span>

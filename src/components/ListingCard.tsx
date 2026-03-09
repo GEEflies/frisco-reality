@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import listingImageLoader from '@/lib/imageLoader';
+import { isEnhancedImage } from '@/api/listingsService';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -94,15 +95,26 @@ export const ListingCard = ({
                 </div>
 
                 {image ? (
-                    <Image
-                        loader={listingImageLoader}
-                        src={image}
-                        alt={title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        quality={75}
-                        className="object-cover will-change-transform transition-transform duration-[900ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105"
-                    />
+                    <>
+                        <Image
+                            loader={listingImageLoader}
+                            src={image}
+                            alt={title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            quality={75}
+                            className="object-cover will-change-transform transition-transform duration-[900ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105"
+                        />
+                        {/* FRISCO watermark — only on AI-enhanced images (originals have it baked in) */}
+                        {isEnhancedImage(image) && (
+                            <img
+                                src="/frisco-logo-hq.png"
+                                alt=""
+                                className="absolute bottom-2 right-2 w-[14%] min-w-[36px] max-w-[64px] opacity-[0.45] pointer-events-none drop-shadow-md z-10 select-none"
+                                draggable={false}
+                            />
+                        )}
+                    </>
                 ) : (
                     <div className="w-full h-full bg-cream-dark flex items-center justify-center">
                         <span className="text-black/5 font-serif text-5xl italic tracking-tighter">FRISCO</span>
