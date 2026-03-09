@@ -82,6 +82,12 @@ export default {
         sans: ["Inter", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
       },
+      transitionDuration: {
+        '900': '900ms',
+      },
+      transitionTimingFunction: {
+        'smooth-zoom': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

@@ -103,7 +103,7 @@ export const ListingCard = ({
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             quality={75}
-                            className="object-cover will-change-transform transition-transform duration-[900ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105"
+                            className="object-cover will-change-transform transition-transform duration-900 ease-smooth-zoom group-hover:scale-105"
                         />
                         {/* FRISCO watermark — only on AI-enhanced images (originals have it baked in) */}
                         {isEnhancedImage(image) && (
