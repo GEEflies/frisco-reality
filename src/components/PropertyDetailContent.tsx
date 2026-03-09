@@ -280,13 +280,15 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     const agentPhone = agent?.phone || listing?.agent_phone || CONTACT.phoneRaw;
     const agentEmail = agent?.email || listing?.agent_email || CONTACT.email;
 
-    // Use local static images matching the contact page instead of external UC Export URLs
-    const AGENT_LOCAL_PHOTOS: Record<string, { src: string; objectFit: string }> = {
-        'Denisa Križová': { src: '/pani-krizova.jpeg', objectFit: 'object-cover object-top' },
-        'Peter Križo': { src: '/frisco-favicon.png', objectFit: 'object-contain' },
-        'Bc. Peter Križo': { src: '/frisco-favicon.png', objectFit: 'object-contain' },
-    };
-    const localPhoto = AGENT_LOCAL_PHOTOS[agentName];
+    // Use local static images matching the contact page instead of external UC Export URLs.
+    // Match by normalized first-name substring to handle all name format variations
+    // (e.g. "Bc. Peter Križo" vs "Peter Križo", NFC/NFD unicode, trailing whitespace).
+    const normName = agentName.normalize('NFC').trim().toLowerCase();
+    const localPhoto = normName.includes('denisa')
+        ? { src: '/pani-krizova.jpeg', objectFit: 'object-cover object-top' }
+        : normName.includes('peter')
+            ? { src: '/frisco-favicon.png', objectFit: 'object-contain' }
+            : null;
     const agentPhotoUrl = localPhoto?.src || agent?.photo_url || null;
     const agentPhotoFit = localPhoto?.objectFit || 'object-cover object-top';
 
