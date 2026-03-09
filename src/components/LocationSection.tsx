@@ -106,7 +106,7 @@ export const LocationSection = () => {
                         {/* Background Image & Overlay */}
                         <div className="absolute inset-0">
                             <img
-                                src="/frisco-realitka.jpeg"
+                                src="/kontakt-moz2.webp"
                                 alt={copy.officeAlt}
                                 loading="lazy"
                                 decoding="async"

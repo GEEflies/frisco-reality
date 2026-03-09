@@ -29,10 +29,12 @@ import {
     Check,
     Navigation
 } from 'lucide-react';
+import Image from 'next/image';
+import listingImageLoader from '@/lib/imageLoader';
 import ConsentMapEmbed from '@/components/ConsentMapEmbed';
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
-import { useListing } from '@/hooks/useListings';
+import { useListing, useAgent } from '@/hooks/useListings';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import {
     getLocalizedCategoryLabel,
@@ -44,8 +46,6 @@ import {
     getLocalizedHeatingLabel,
     getLocalizedEquipmentLabel,
     getLocalizedOwnershipLabel,
-    getLocalizedTitle,
-    getLocalizedDescription,
 } from '@/api/mappings';
 import { getBestImageUrl } from '@/api/listingsService';
 
@@ -57,12 +57,6 @@ const CONTACT = {
     phoneRaw: '+421905447220',
     email: 'info@frisco.sk',
     address: 'Námestie Slobody 1185/30, 926 01 Sereď',
-};
-
-// Agent photos — maps UC agent_id to local images (same photos as /kontakt page)
-const AGENT_PHOTOS: Record<string, string> = {
-    '4227448029': '/pani-krizova.jpeg',   // Denisa Križová
-    '3102962751': '/frisco-favicon.png',  // Bc. Peter Križo
 };
 
 interface PropertyDetailProps {
@@ -217,11 +211,14 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // Fetch listing data
     const { data: listing, isLoading, error } = useListing(id);
 
-    // Derive agent display values from listing fields → fallback to FRISCO defaults
-    const agentName = listing?.agent_name || 'FRISCO Reality';
-    const agentPhone = listing?.agent_phone || CONTACT.phoneRaw;
-    const agentEmail = listing?.agent_email || CONTACT.email;
-    const agentPhotoUrl = listing?.agent_id ? AGENT_PHOTOS[listing.agent_id] || null : null;
+    // Fetch assigned agent (for photo & contact info)
+    const { data: agent } = useAgent(listing?.agent_id);
+
+    // Derive agent display values (agent table > listing fields > fallback)
+    const agentName = agent?.full_name || listing?.agent_name || 'FRISCO Reality';
+    const agentPhone = agent?.phone || listing?.agent_phone || CONTACT.phoneRaw;
+    const agentEmail = agent?.email || listing?.agent_email || CONTACT.email;
+    const agentPhotoUrl = agent?.photo_url || null;
     const agentInitials = agentName
         .split(' ')
         .map((w: string) => w[0])
@@ -480,12 +477,15 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             className="col-span-2 row-span-2 relative cursor-pointer overflow-hidden rounded-r-xl md:rounded-r-none md:rounded-l-none"
                             onClick={() => { setCurrentImageIndex(0); setShowLightbox(true); }}
                         >
-                            <img
+                            <Image
+                                loader={listingImageLoader}
                                 src={images[0]}
                                 alt={listing.title}
-                                fetchPriority="high"
-                                decoding="async"
-                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                fill
+                                priority
+                                sizes="50vw"
+                                quality={80}
+                                className="object-cover hover:scale-105 transition-transform duration-500"
                             />
                         </div>
 
@@ -496,12 +496,15 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 className="relative cursor-pointer overflow-hidden first:rounded-tr-xl last:rounded-br-xl"
                                 onClick={() => { setCurrentImageIndex(idx + 1); setShowLightbox(true); }}
                             >
-                                <img
+                                <Image
+                                    loader={listingImageLoader}
                                     src={img}
                                     alt={`${listing.title} - ${idx + 2}`}
-                                    loading={idx < 1 ? undefined : 'lazy'}
-                                    decoding="async"
-                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                    fill
+                                    priority={idx === 0}
+                                    sizes="25vw"
+                                    quality={75}
+                                    className="object-cover hover:scale-105 transition-transform duration-500"
                                 />
                                 {/* "All Photos" Button on last image */}
                                 {idx === 3 && images.length > 5 && (
@@ -528,17 +531,25 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                     {/* Mobile Single Image with Swipe */}
                     <div className="md:hidden relative h-[50vh]">
-                        <motion.img
+                        <motion.div
                             key={currentImageIndex}
-                            src={currentImage}
-                            alt={listing.title}
-                            decoding="async"
-                            className="w-full h-full object-cover"
+                            className="absolute inset-0"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.3 }}
                             onClick={() => setShowLightbox(true)}
-                        />
+                        >
+                            <Image
+                                loader={listingImageLoader}
+                                src={currentImage}
+                                alt={listing.title}
+                                fill
+                                priority
+                                sizes="100vw"
+                                quality={80}
+                                className="object-cover"
+                            />
+                        </motion.div>
 
                         {/* Mobile Navigation */}
                         {images.length > 1 && (
@@ -585,7 +596,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 )}
                             </div>
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-navy mb-4">
-                                {getLocalizedTitle(listing, language)}
+                                {listing.title}
                             </h1>
                             <div className="flex items-center gap-2 text-charcoal/60 mb-6">
                                 <MapPin className="w-5 h-5 text-accent-red" />
@@ -610,11 +621,11 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         </div>
 
                         {/* Description */}
-                        {(getLocalizedDescription(listing, language) || listing.description) && (
+                        {listing.description && (
                             <div>
                                 <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.description}</h2>
                                 <p className="text-charcoal/80 leading-relaxed text-lg whitespace-pre-line">
-                                    {getLocalizedDescription(listing, language)}
+                                    {listing.description}
                                 </p>
                             </div>
                         )}
@@ -705,6 +716,8 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                             alt={agentName}
                                             width={96}
                                             height={96}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -777,13 +790,20 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <X className="w-6 h-6" />
                         </button>
 
-                        <img
-                            src={currentImage}
-                            alt={listing.title}
-                            decoding="async"
-                            className="max-w-[90vw] max-h-[90vh] object-contain"
+                        <div
+                            className="relative w-[90vw] h-[90vh]"
                             onClick={(e) => e.stopPropagation()}
-                        />
+                        >
+                            <Image
+                                loader={listingImageLoader}
+                                src={currentImage}
+                                alt={listing.title}
+                                fill
+                                sizes="90vw"
+                                quality={85}
+                                className="object-contain"
+                            />
+                        </div>
 
                         {images.length > 1 && (
                             <>
@@ -806,9 +826,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                         <button
                                             key={idx}
                                             onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                                            className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${idx === currentImageIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                            className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all relative ${idx === currentImageIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-100'}`}
                                         >
-                                            <img src={img} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                                            <Image loader={listingImageLoader} src={img} alt="" fill sizes="64px" quality={50} className="object-cover" />
                                         </button>
                                     ))}
                                 </div>
@@ -842,9 +862,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 <button
                                     key={idx}
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
-                                    className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity"
+                                    className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity relative"
                                 >
-                                    <img src={img} alt={`${copy.photo} ${idx + 1}`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                                    <Image loader={listingImageLoader} src={img} alt={`${copy.photo} ${idx + 1}`} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} className="object-cover" />
                                 </button>
                             ))}
                         </div>

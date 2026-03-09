@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
+import listingImageLoader from '@/lib/imageLoader';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -92,12 +94,14 @@ export const ListingCard = ({
                 </div>
 
                 {image ? (
-                    <img
+                    <Image
+                        loader={listingImageLoader}
                         src={image}
                         alt={title}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        quality={75}
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                 ) : (
                     <div className="w-full h-full bg-cream-dark flex items-center justify-center">

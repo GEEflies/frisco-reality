@@ -70,7 +70,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://img.unitedclassifieds.sk https://lh3.googleusercontent.com https://www.google-analytics.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://img.unitedclassifieds.sk https://images.weserv.nl https://lh3.googleusercontent.com https://www.google-analytics.com",
               "font-src 'self' https://fonts.gstatic.com",
               "frame-src https://www.google.com https://maps.google.com",
               "connect-src 'self' https://*.supabase.co https://places.googleapis.com https://api.resend.com https://www.google-analytics.com",
