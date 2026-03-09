@@ -225,6 +225,141 @@ function getMimeType(url: string): string {
     return 'image/jpeg';
 }
 
+// ============================================================
+// LOGO DETECTION — detect baked-in FRISCO red watermark
+// ============================================================
+// Port of scripts/detect_logo.py — pure TypeScript, no numpy.
+// Scans the bottom-right corner for red pixels (FRISCO logo).
+// Returns true if logo is detected, false otherwise.
+
+// Crop region: bottom-right corner where the FRISCO logo sits
+const CROP_WIDTH_RATIO = 0.32;    // rightmost 32% of width
+const CROP_HEIGHT_RATIO = 0.30;   // bottom 30% of height
+
+// HSV thresholds for FRISCO-red
+const HUE_A_LO = 0;              // 0° (red)
+const HUE_A_HI = 15;             // 15° (red-orange)
+const HUE_B_LO = 345;            // 345° (magenta-red)
+const HUE_B_HI = 360;            // 360°
+const SAT_MIN_PCT = 0.40;        // S ≥ 40%
+const VAL_MIN_PCT = 0.30;        // V ≥ 30%
+const RED_DENSITY_THRESHOLD = 0.003; // 0.3%
+const RED_PIXEL_MIN = 50;
+
+/**
+ * Convert RGB (0-255 each) to HSV (H: 0-360, S: 0-1, V: 0-1).
+ */
+function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
+    const rf = r / 255, gf = g / 255, bf = b / 255;
+    const max = Math.max(rf, gf, bf);
+    const min = Math.min(rf, gf, bf);
+    const d = max - min;
+    let h = 0;
+    if (d !== 0) {
+        if (max === rf) h = ((gf - bf) / d) % 6;
+        else if (max === gf) h = (bf - rf) / d + 2;
+        else h = (rf - gf) / d + 4;
+        h *= 60;
+        if (h < 0) h += 360;
+    }
+    const s = max === 0 ? 0 : d / max;
+    return [h, s, max];
+}
+
+/**
+ * Decode a JPEG/PNG image from raw bytes into an RGBA pixel array.
+ * Uses the browser-compatible ImageBitmap API available in Deno.
+ */
+async function decodeImageToRGBA(buffer: ArrayBuffer, mimeType: string): Promise<{ data: Uint8Array; width: number; height: number } | null> {
+    try {
+        // Deno supports createImageBitmap via the web platform API
+        const blob = new Blob([buffer], { type: mimeType });
+        // @ts-ignore — Deno supports OffscreenCanvas
+        const bitmap = await createImageBitmap(blob);
+        const w = bitmap.width;
+        const h = bitmap.height;
+        // @ts-ignore — Deno supports OffscreenCanvas
+        const canvas = new OffscreenCanvas(w, h);
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(bitmap, 0, 0);
+        const imageData = ctx.getImageData(0, 0, w, h);
+        return { data: new Uint8Array(imageData.data.buffer), width: w, height: h };
+    } catch (e) {
+        console.error('[logo-detect] Failed to decode image:', (e as Error).message);
+        return null;
+    }
+}
+
+/**
+ * Detect the FRISCO red logo in the bottom-right corner of an image.
+ * Returns { hasLogo, density, redCount }.
+ */
+async function detectFriscoLogo(imageBuffer: ArrayBuffer, mimeType: string): Promise<{ hasLogo: boolean; density: number; redCount: number }> {
+    const decoded = await decodeImageToRGBA(imageBuffer, mimeType);
+    if (!decoded) return { hasLogo: false, density: 0, redCount: 0 };
+
+    const { data, width, height } = decoded;
+
+    // Crop region: bottom-right corner
+    const cropLeft = Math.floor(width * (1 - CROP_WIDTH_RATIO));
+    const cropTop = Math.floor(height * (1 - CROP_HEIGHT_RATIO));
+    const cropW = width - cropLeft;
+    const cropH = height - cropTop;
+    const totalPixels = cropW * cropH;
+
+    if (totalPixels === 0) return { hasLogo: false, density: 0, redCount: 0 };
+
+    let redCount = 0;
+    for (let y = cropTop; y < height; y++) {
+        for (let x = cropLeft; x < width; x++) {
+            const idx = (y * width + x) * 4;
+            const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+            const [h, s, v] = rgbToHsv(r, g, b);
+
+            // Check if this pixel is FRISCO-red
+            const inRangeA = h >= HUE_A_LO && h <= HUE_A_HI;
+            const inRangeB = h >= HUE_B_LO && h <= HUE_B_HI;
+            if ((inRangeA || inRangeB) && s >= SAT_MIN_PCT && v >= VAL_MIN_PCT) {
+                redCount++;
+            }
+        }
+    }
+
+    const density = redCount / totalPixels;
+    const hasLogo = density >= RED_DENSITY_THRESHOLD && redCount >= RED_PIXEL_MIN;
+
+    console.log(`[logo-detect] crop=${cropW}x${cropH}, redPx=${redCount}, density=${(density * 100).toFixed(3)}%, logo=${hasLogo}`);
+    return { hasLogo, density, redCount };
+}
+
+/**
+ * Run logo detection on the final image and update has_baked_logo in DB.
+ * Called after enhancement is complete. Non-fatal — errors are logged but don't fail the enhancement.
+ */
+async function detectAndUpdateLogo(imageId: string, imageUrl: string): Promise<void> {
+    try {
+        const resp = await fetch(imageUrl);
+        if (!resp.ok) {
+            console.error(`[logo-detect] Failed to download ${imageId}: ${resp.status}`);
+            return;
+        }
+        const buffer = await resp.arrayBuffer();
+        const mimeType = getMimeType(imageUrl);
+        const { hasLogo } = await detectFriscoLogo(buffer, mimeType);
+
+        await supabase
+            .from('listing_images')
+            .update({ has_baked_logo: hasLogo })
+            .eq('id', imageId);
+
+        console.log(`[logo-detect] ${imageId} has_baked_logo=${hasLogo}`);
+    } catch (e) {
+        console.error(`[logo-detect] Error for ${imageId}:`, (e as Error).message);
+        // Non-fatal — the image is still enhanced, just logo flag not set.
+        // The frontend falls back to isEnhancedImage() heuristic when has_baked_logo is null.
+    }
+}
+
 // Default prompt for force mode — focuses on watermark removal + gentle quality improvement.
 // Uses generic wording (not "photo") so it works on floorplans, diagrams, and all image types.
 const FORCE_ENHANCE_PROMPT = `Edit this image: remove any watermarks, logos, or semi-transparent text overlays that are stamped on it. Reconstruct the underlying image content where the watermark was. Make no other changes — keep everything else pixel-identical. Return ONLY the cleaned image.`;
@@ -253,6 +388,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                     enhancement_status: 'completed',
                 })
                 .eq('id', imageId);
+            // Detect logo on original image
+            await detectAndUpdateLogo(imageId, originalUrl);
             return { success: true };
         }
 
@@ -280,6 +417,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                         enhancement_status: 'completed',
                     })
                     .eq('id', imageId);
+                // Detect logo on original image (skipped images may still have baked-in logo)
+                await detectAndUpdateLogo(imageId, originalUrl);
                 return { success: true };
             }
 
@@ -330,6 +469,10 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
             .eq('id', imageId);
 
         console.log(`Enhanced image ${imageId} with ${modelUsed} → ${enhancedUrl}`);
+
+        // Detect logo on the ENHANCED image (the one the user actually sees)
+        await detectAndUpdateLogo(imageId, enhancedUrl);
+
         return { success: true };
 
     } catch (error) {
@@ -347,6 +490,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                     enhancement_status: 'completed',
                 })
                 .eq('id', imageId);
+            // Detect logo on original image
+            await detectAndUpdateLogo(imageId, originalUrl);
             return { success: true, fallback: true, reason: errorMessage };
         }
 
