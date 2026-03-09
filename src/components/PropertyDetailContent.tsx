@@ -4,7 +4,7 @@ import { LocaleLink } from './LocaleLink';
 import { useRouter } from 'next/navigation';
 import { localePath } from '@/i18n/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, type CSSProperties } from 'react';
 import {
     ArrowLeft,
     Heart,
@@ -30,7 +30,7 @@ import {
     Navigation
 } from 'lucide-react';
 import Image from 'next/image';
-import listingImageLoader from '@/lib/imageLoader';
+import listingImageLoader, { blurUrl } from '@/lib/imageLoader';
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
 import { useListing, useAgent } from '@/hooks/useListings';
@@ -49,6 +49,57 @@ import {
 import { getBestImageUrl } from '@/api/listingsService';
 
 const friscoLogo = '/frisco-logo-hq.png';
+
+/**
+ * Gallery image with shimmer skeleton + fade-in on load.
+ * Wraps next/image; shows a pulsing navy/5 background until the image is
+ * decoded, then fades it in over 400 ms.
+ */
+const GalleryImage = ({
+    src,
+    alt,
+    fill = true,
+    sizes,
+    quality = 75,
+    priority = false,
+    className = '',
+    style,
+}: {
+    src: string;
+    alt: string;
+    fill?: boolean;
+    sizes?: string;
+    quality?: number;
+    priority?: boolean;
+    className?: string;
+    style?: CSSProperties;
+}) => {
+    const [loaded, setLoaded] = useState(false);
+    return (
+        <>
+            {/* Shimmer skeleton shown while image loads */}
+            {!loaded && (
+                <div className="absolute inset-0 bg-navy/5 animate-pulse" />
+            )}
+            <Image
+                loader={listingImageLoader}
+                src={src}
+                alt={alt}
+                fill={fill}
+                sizes={sizes}
+                quality={quality}
+                priority={priority}
+                placeholder={!priority && src && !src.startsWith('/') ? 'blur' : 'empty'}
+                blurDataURL={!priority && src && !src.startsWith('/') ? blurUrl(src) : undefined}
+                className={`transition-opacity duration-500 ease-out ${
+                    loaded ? 'opacity-100' : 'opacity-0'
+                } ${className}`}
+                style={style}
+                onLoad={() => setLoaded(true)}
+            />
+        </>
+    );
+};
 
 // Company contact info - synced with TopBar
 const CONTACT = {
@@ -508,15 +559,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             className="col-span-2 row-span-2 relative cursor-pointer overflow-hidden rounded-r-xl md:rounded-r-none md:rounded-l-none"
                             onClick={() => { setCurrentImageIndex(0); setShowLightbox(true); }}
                         >
-                            <Image
-                                loader={listingImageLoader}
+                            <GalleryImage
                                 src={images[0]}
                                 alt={listing.title}
-                                fill
                                 priority
                                 sizes="50vw"
                                 quality={80}
-                                className="object-cover hover:scale-105 transition-transform duration-500"
+                                className="object-cover hover:scale-105 transition-all duration-500"
                             />
                         </div>
 
@@ -527,15 +576,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 className="relative cursor-pointer overflow-hidden first:rounded-tr-xl last:rounded-br-xl"
                                 onClick={() => { setCurrentImageIndex(idx + 1); setShowLightbox(true); }}
                             >
-                                <Image
-                                    loader={listingImageLoader}
+                                <GalleryImage
                                     src={img}
                                     alt={`${listing.title} - ${idx + 2}`}
-                                    fill
                                     priority={idx === 0}
                                     sizes="25vw"
                                     quality={75}
-                                    className="object-cover hover:scale-105 transition-transform duration-500"
+                                    className="object-cover hover:scale-105 transition-all duration-500"
                                 />
                                 {/* "All Photos" Button on last image */}
                                 {idx === 3 && images.length > 5 && (
@@ -570,11 +617,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             transition={{ duration: 0.3 }}
                             onClick={() => setShowLightbox(true)}
                         >
-                            <Image
-                                loader={listingImageLoader}
+                            <GalleryImage
                                 src={currentImage}
                                 alt={listing.title}
-                                fill
                                 priority
                                 sizes="100vw"
                                 quality={80}
@@ -852,11 +897,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     className="relative w-full h-full"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    <Image
-                                        loader={listingImageLoader}
+                                    <GalleryImage
                                         src={currentImage}
                                         alt={listing.title}
-                                        fill
                                         sizes="90vw"
                                         quality={85}
                                         className="object-contain"
@@ -945,7 +988,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
                                     className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity relative"
                                 >
-                                    <Image loader={listingImageLoader} src={img} alt={`${copy.photo} ${idx + 1}`} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} className="object-cover" />
+                                    <GalleryImage src={img} alt={`${copy.photo} ${idx + 1}`} sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} className="object-cover" />
                                 </motion.button>
                             ))}
                         </div>
