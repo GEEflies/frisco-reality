@@ -935,104 +935,105 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[100] bg-black/95 flex flex-col select-none"
+                        className="fixed inset-0 z-[100] bg-black/95 select-none"
                         onClick={() => setShowLightbox(false)}
                         onTouchStart={handleTouchStart}
                         onTouchEnd={handleTouchEnd}
                     >
-                        {/* Top bar: counter + close */}
-                        <div className="flex items-center justify-between px-4 py-3 z-10" onClick={(e) => e.stopPropagation()}>
-                            <span className="text-white/80 text-sm font-medium tabular-nums">
-                                {currentImageIndex + 1} / {images.length}
-                            </span>
-                            <button
-                                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                                onClick={() => setShowLightbox(false)}
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
+                        {/* Images layer — fills entire viewport */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            {images.map((img, idx) => {
+                                const shouldMount =
+                                    Math.abs(idx - currentImageIndex) <= 2 ||
+                                    (currentImageIndex <= 1 && idx >= images.length - 2) ||
+                                    (currentImageIndex >= images.length - 2 && idx <= 1) ||
+                                    loadedImages.has(idx);
 
-                        {/* Main image area — crossfade with watermark ON the image */}
-                        <div className="flex-1 relative flex items-center justify-center min-h-0 px-4 md:px-16">
-                            <div className="relative flex items-center justify-center w-full h-full" onClick={(e) => e.stopPropagation()}>
-                                {/* Stacked images: only the current is visible. Uses plain <img>
-                                    with natural sizing so the watermark container matches the image,
-                                    not the black viewport margins. */}
-                                {images.map((img, idx) => {
-                                    const shouldMount =
-                                        Math.abs(idx - currentImageIndex) <= 2 ||
-                                        (currentImageIndex <= 1 && idx >= images.length - 2) ||
-                                        (currentImageIndex >= images.length - 2 && idx <= 1) ||
-                                        loadedImages.has(idx);
+                                if (!shouldMount) return (
+                                    <div key={idx} className="absolute inset-0 opacity-0" />
+                                );
 
-                                    if (!shouldMount) return (
-                                        <div key={idx} className="absolute inset-0 opacity-0 z-0" />
-                                    );
+                                const imgSrc = img.startsWith('/') || img.startsWith('data:')
+                                    ? img
+                                    : buildWeservUrl(img, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.9) : 1200, 1920), 85);
 
-                                    const imgSrc = img.startsWith('/') || img.startsWith('data:')
-                                        ? img
-                                        : buildWeservUrl(img, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.9) : 1200, 1920), 85);
-
-                                    return (
-                                        <div
-                                            key={idx}
-                                            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ease-out ${
-                                                idx === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-                                            }`}
-                                        >
-                                            <div className="relative inline-block max-w-full max-h-full">
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                return (
+                                    <div
+                                        key={idx}
+                                        className={`absolute inset-0 flex items-center justify-center px-2 md:px-16 transition-opacity duration-200 ease-out ${
+                                            idx === currentImageIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                                        }`}
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <div className="relative inline-block max-w-full max-h-full">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={imgSrc}
+                                                alt={listing.title}
+                                                className="block max-w-full object-contain"
+                                                style={{ maxHeight: 'calc(100vh - 120px)' }}
+                                                draggable={false}
+                                            />
+                                            {/* FRISCO watermark — positioned ON the image */}
+                                            {overlayUrls.has(img) && (
                                                 <img
-                                                    src={imgSrc}
-                                                    alt={listing.title}
-                                                    className="block max-w-full object-contain"
-                                                    style={{ maxHeight: 'calc(100vh - 140px)' }}
+                                                    src={friscoLogo}
+                                                    alt=""
+                                                    className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] select-none"
                                                     draggable={false}
                                                 />
-                                                {/* FRISCO watermark — positioned ON the image */}
-                                                {overlayUrls.has(img) && (
-                                                    <img
-                                                        src={friscoLogo}
-                                                        alt=""
-                                                        className="absolute bottom-3 right-0 h-[32px] w-auto pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] z-30 select-none"
-                                                        draggable={false}
-                                                    />
-                                                )}
-                                            </div>
+                                            )}
                                         </div>
-                                    );
-                                })}
-                                {/* Shimmer overlay if current image hasn't preloaded yet */}
-                                {!loadedImages.has(currentImageIndex) && (
-                                    <div className="absolute inset-0 z-20 flex items-center justify-center">
-                                        <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
                                     </div>
-                                )}
-                            </div>
-
-                            {/* Navigation arrows */}
-                            {images.length > 1 && (
-                                <>
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                                        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/25 active:bg-white/30 flex items-center justify-center text-white transition-colors backdrop-blur-sm"
-                                    >
-                                        <ChevronLeft className="w-7 h-7" />
-                                    </button>
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                                        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/25 active:bg-white/30 flex items-center justify-center text-white transition-colors backdrop-blur-sm"
-                                    >
-                                        <ChevronRight className="w-7 h-7" />
-                                    </button>
-                                </>
+                                );
+                            })}
+                            {/* Shimmer */}
+                            {!loadedImages.has(currentImageIndex) && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
+                                </div>
                             )}
                         </div>
 
-                        {/* Thumbnail Strip */}
+                        {/* Close button — top right, always above images */}
+                        <button
+                            className="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white active:bg-black/80 transition-colors"
+                            style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+                            onClick={(e) => { e.stopPropagation(); setShowLightbox(false); }}
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+
+                        {/* Counter — top left */}
+                        <div
+                            className="absolute top-4 left-4 z-50 bg-black/60 backdrop-blur-sm text-white/90 text-sm font-medium tabular-nums px-3 py-2 rounded-full"
+                            style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {currentImageIndex + 1} / {images.length}
+                        </div>
+
+                        {/* Navigation arrows — overlaid on image sides, always visible */}
                         {images.length > 1 && (
-                            <div className="py-3 px-4 flex justify-center z-10" onClick={(e) => e.stopPropagation()}>
+                            <>
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-50 w-11 h-11 md:w-14 md:h-14 rounded-full bg-black/50 backdrop-blur-sm active:bg-black/70 flex items-center justify-center text-white transition-colors"
+                                >
+                                    <ChevronLeft className="w-7 h-7" />
+                                </button>
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-50 w-11 h-11 md:w-14 md:h-14 rounded-full bg-black/50 backdrop-blur-sm active:bg-black/70 flex items-center justify-center text-white transition-colors"
+                                >
+                                    <ChevronRight className="w-7 h-7" />
+                                </button>
+                            </>
+                        )}
+
+                        {/* Thumbnail Strip — bottom */}
+                        {images.length > 1 && (
+                            <div className="absolute bottom-0 left-0 right-0 z-50 py-3 px-4 flex justify-center" onClick={(e) => e.stopPropagation()}>
                                 <div className="flex gap-1.5 max-w-[90vw] overflow-x-auto scrollbar-hide">
                                     {images.map((img, idx) => (
                                         <button
