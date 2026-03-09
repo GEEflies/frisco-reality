@@ -265,6 +265,7 @@ export const PropertiesSection = () => {
   ] as const;
 
   return (
+    <>
     <section id="ponuka" className="reveal relative pt-20 pb-32 bg-cream overflow-hidden min-h-screen" ref={ref}>
       <div className="container mx-auto px-4 md:px-8 relative z-10">
 
@@ -658,22 +659,24 @@ export const PropertiesSection = () => {
 
       </div>
 
-      {/* Floating Filter Button (mobile + desktop) */}
-      <AnimatePresence>
-        {showFloatingFilter && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ duration: 0.3 }}
-            onClick={scrollToFilters}
-            className="fixed bottom-8 right-8 z-50 flex w-14 h-14 md:w-16 md:h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
-            aria-label={copy.showFilters}
-          >
-            <SlidersHorizontal size={22} strokeWidth={2.5} />
-          </motion.button>
-        )}
-      </AnimatePresence>
     </section>
+
+    {/* Floating Filter Button — outside overflow-hidden section so fixed positioning works */}
+    <AnimatePresence>
+      {showFloatingFilter && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          transition={{ duration: 0.3 }}
+          onClick={scrollToFilters}
+          className="fixed bottom-8 right-8 z-50 flex w-14 h-14 md:w-16 md:h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
+          aria-label={copy.showFilters}
+        >
+          <SlidersHorizontal size={22} strokeWidth={2.5} />
+        </motion.button>
+      )}
+    </AnimatePresence>
+    </>
   );
 };
