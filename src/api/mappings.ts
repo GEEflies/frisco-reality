@@ -1066,3 +1066,33 @@ export function getLocalizedHeatingLabel(code: number, locale: string = 'sk'): s
     const labels = heatingCodeMap[locale] || heatingCodeMap['sk'];
     return labels[code] ?? '–';
 }
+
+// ============================================
+// LOCALIZED LISTING CONTENT (title / description)
+// ============================================
+
+interface HasLangData {
+    title: string;
+    description: string | null;
+    lang_data: Record<string, { title: string; description: string }> | null;
+}
+
+/**
+ * Returns the listing title in the requested language.
+ * Falls back to the Slovak title if no translation exists.
+ */
+export function getLocalizedTitle(listing: HasLangData, locale: string = 'sk'): string {
+    if (locale === 'sk') return listing.title;
+    const translated = listing.lang_data?.[locale]?.title;
+    return translated || listing.title;
+}
+
+/**
+ * Returns the listing description in the requested language.
+ * Falls back to the Slovak description if no translation exists.
+ */
+export function getLocalizedDescription(listing: HasLangData, locale: string = 'sk'): string | null {
+    if (locale === 'sk') return listing.description;
+    const translated = listing.lang_data?.[locale]?.description;
+    return translated || listing.description;
+}

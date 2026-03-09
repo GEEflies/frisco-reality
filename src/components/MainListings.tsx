@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { ChevronRight, Maximize, Home, MapPin, Trees } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -9,7 +8,7 @@ import { LocaleLink } from '@/components/LocaleLink';
 import { MAIN_LISTINGS_COPY } from '@/i18n/copy';
 import { useFeaturedListings } from '@/hooks/useListings';
 import { getPrimaryImage } from '@/api/listingsService';
-import { formatArea, formatPriceWithUnit } from '@/api/mappings';
+import { formatArea, formatPriceWithUnit, getLocalizedTitle } from '@/api/mappings';
 import type { ListingWithImages } from '@/api/types';
 
 function getStatusMeta(listing: ListingWithImages, language: 'sk' | 'en' | 'de') {
@@ -82,14 +81,12 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
     <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
       <div className="relative h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
         {image ? (
-          <Image
+          <img
             src={image}
-            alt={listing.title}
-            fill
-            sizes="(max-width: 1024px) 100vw, 33vw"
-            className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-            quality={75}
+            alt={getLocalizedTitle(listing, language)}
             loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
           />
         ) : (
           <div className="w-full h-full bg-cream-dark flex items-center justify-center">
@@ -103,7 +100,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
       </div>
 
       <div className="p-6 flex flex-col flex-grow text-left">
-        <h4 className="text-2xl font-poppins font-bold text-black mb-1 leading-tight line-clamp-2">{listing.title}</h4>
+        <h4 className="text-2xl font-poppins font-bold text-black mb-1 leading-tight line-clamp-2">{getLocalizedTitle(listing, language)}</h4>
         <h3 className="text-lg font-bold text-accent-red mb-4">{price}</h3>
         <div className="flex items-center gap-2 text-charcoal/60 text-sm mb-4">
           <MapPin className="w-4 h-4 text-accent-red" />

@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { FilterBar } from './FilterBar';
 import { ListingCard } from './ListingCard';
 import { useListings, useListingFilters } from '@/hooks/useListings';
-import { categoryLabels, transactionLabels, formatPrice, formatArea, getCategoryType, getStatusColor, statusLabels } from '@/api/mappings';
+import { categoryLabels, transactionLabels, formatPrice, formatArea, getCategoryType, getStatusColor, statusLabels, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
 import { getPrimaryImage } from '@/api/listingsService';
 import type { ListingFilters } from '@/api/types';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -595,10 +595,10 @@ export const PropertiesSection = () => {
                     transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
                   >
                     <ListingCard
-                      title={listing.title}
+                      title={getLocalizedTitle(listing, language)}
                       price={priceLabel}
                       location={[listing.location_city, listing.location_district].filter(Boolean).join(', ') || listing.street || 'Slovensko'}
-                      description={listing.description || undefined}
+                      description={getLocalizedDescription(listing, language) || undefined}
                       image={image ?? undefined}
                       status={status.label}
                       statusColor={status.color}
