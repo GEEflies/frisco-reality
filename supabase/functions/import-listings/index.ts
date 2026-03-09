@@ -31,6 +31,7 @@ const UC_WEBHOOK_USER = Deno.env.get('UC_WEBHOOK_USER')!;
 const UC_WEBHOOK_PASS = Deno.env.get('UC_WEBHOOK_PASS')!;
 const SITE_URL = Deno.env.get('SITE_URL') || 'https://frisco.sk';
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+const DEEPL_API_KEY = Deno.env.get('DEEPL_API_KEY'); // DeepL Free API key
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -672,6 +673,16 @@ async function handleListing(data: Record<string, any>, isTestMode = false) {
         }
     }
 
+    // ---- AUTO-TRANSLATE with DeepL (fire-and-forget) ----
+    // If UC didn't provide translations and we have a DeepL key, translate to EN+DE.
+    const ucLangData = data.langData || {};
+    const hasUcTranslations = ucLangData.en?.title || ucLangData.de?.title;
+    if (!hasUcTranslations && DEEPL_API_KEY) {
+        // Don't await — let it run in the background so the webhook responds fast
+        translateListingWithDeepL(listingId, data.title, data.description || null)
+            .catch(err => console.warn('[DeepL] Background translation failed:', err));
+    }
+
     return jsonResponse({
         code: responseCode,
         importId: listingId,
@@ -832,6 +843,84 @@ async function handleAgent(data: Record<string, any>) {
             importId: inserted.id,
             message: 'Agent added',
         });
+    }
+}
+
+// ============================================================
+// DEEPL TRANSLATION (fire-and-forget after upsert)
+// ============================================================
+
+/**
+ * Translate listing title+description from Slovak to EN and DE using DeepL Free API.
+ * Stores the result in the lang_data JSONB column.
+ * Non-blocking — called as fire-and-forget so it doesn't slow the webhook response.
+ */
+async function translateListingWithDeepL(listingId: string, title: string, description: string | null) {
+    if (!DEEPL_API_KEY) {
+        console.log('[DeepL] No DEEPL_API_KEY set — skipping translation');
+        return;
+    }
+
+    const DEEPL_URL = 'https://api-free.deepl.com/v2/translate';
+    const targetLangs = ['EN', 'DE'] as const;
+
+    try {
+        const langData: Record<string, { title: string; description: string }> = {};
+
+        for (const lang of targetLangs) {
+            // Batch title + description into one API call (separated, then split back)
+            const textsToTranslate = [title];
+            if (description) textsToTranslate.push(description);
+
+            const params = new URLSearchParams();
+            for (const t of textsToTranslate) {
+                params.append('text', t);
+            }
+            params.append('source_lang', 'SK');
+            params.append('target_lang', lang);
+
+            const res = await fetch(DEEPL_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString(),
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                console.error(`[DeepL] ${lang} translation failed (${res.status}): ${errText}`);
+                continue;
+            }
+
+            const json = await res.json();
+            const translations = json.translations || [];
+
+            const langKey = lang.toLowerCase(); // 'en' or 'de'
+            langData[langKey] = {
+                title: translations[0]?.text || title,
+                description: translations[1]?.text || description || '',
+            };
+
+            console.log(`[DeepL] ${lang} translated: "${langData[langKey].title.substring(0, 60)}..."`);
+        }
+
+        // Update the listing with translated content
+        if (Object.keys(langData).length > 0) {
+            const { error } = await supabase
+                .from('listings')
+                .update({ lang_data: langData })
+                .eq('id', listingId);
+
+            if (error) {
+                console.error('[DeepL] Failed to save translations:', error.message);
+            } else {
+                console.log(`[DeepL] Saved EN+DE translations for listing ${listingId}`);
+            }
+        }
+    } catch (err) {
+        console.error('[DeepL] Translation error:', (err as Error).message);
     }
 }
 
