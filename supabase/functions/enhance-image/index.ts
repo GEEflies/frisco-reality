@@ -225,12 +225,9 @@ function getMimeType(url: string): string {
     return 'image/jpeg';
 }
 
-// Default prompt for force mode — focuses on watermark removal + gentle quality improvement
-const FORCE_ENHANCE_PROMPT = `Reproduce this real estate photo with these adjustments:
-1. Remove any watermarks, logos, or text overlays baked into the image
-2. Gently improve lighting balance and color accuracy if needed
-3. Reduce any visible noise or grain
-Do NOT add, remove, or move any objects or furniture. Do NOT add any new text or watermarks. Keep it photorealistic. Return ONLY the enhanced image.`;
+// Default prompt for force mode — focuses on watermark removal + gentle quality improvement.
+// Uses generic wording (not "photo") so it works on floorplans, diagrams, and all image types.
+const FORCE_ENHANCE_PROMPT = `Edit this image: remove any watermarks, logos, or semi-transparent text overlays that are stamped on it. Reconstruct the underlying image content where the watermark was. Make no other changes — keep everything else pixel-identical. Return ONLY the cleaned image.`;
 
 // ---- Main enhancement logic ----
 // force=true: skip AI quality assessment, always enhance (used to re-process skipped images)
@@ -338,6 +335,20 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
     } catch (error) {
         const errorMessage = (error as Error).message;
         console.error(`Enhancement failed for ${imageId}:`, errorMessage);
+
+        // In force mode, if Gemini refuses to process (e.g. floorplans, diagrams),
+        // accept the original URL as-is so the image doesn't stay stuck in failed state.
+        if (force) {
+            console.log(`[enhance-image] ${imageId} FORCE fallback — Gemini can't process, accepting original URL`);
+            await supabase
+                .from('listing_images')
+                .update({
+                    enhanced_url: originalUrl,
+                    enhancement_status: 'completed',
+                })
+                .eq('id', imageId);
+            return { success: true, fallback: true, reason: errorMessage };
+        }
 
         // Increment retry_count so process-images knows how many attempts were made.
         // After 3 failures the image stays failed permanently and we fall back to

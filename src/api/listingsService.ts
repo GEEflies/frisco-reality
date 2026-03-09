@@ -34,6 +34,20 @@ export function isEnhancedImage(url: string): boolean {
 }
 
 /**
+ * Determines whether the CSS watermark overlay should be shown for a ListingImage.
+ * Uses the `has_baked_logo` flag set by the Python logo-detection script.
+ * - has_baked_logo === true  →  baked-in logo exists → do NOT show overlay
+ * - has_baked_logo === false →  no baked-in logo    → show overlay
+ * - has_baked_logo === null  →  not yet scanned      → fall back to URL check
+ */
+export function shouldShowOverlay(image: ListingImage): boolean {
+    if (image.has_baked_logo === true) return false;
+    if (image.has_baked_logo === false) return true;
+    // Fallback: not yet scanned — use URL-based heuristic
+    return isEnhancedImage(getBestImageUrl(image));
+}
+
+/**
  * Returns the primary image URL for a listing (first image, best quality).
  */
 export function getPrimaryImage(listing: ListingWithImages): string | null {

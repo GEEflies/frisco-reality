@@ -46,7 +46,7 @@ import {
     getLocalizedEquipmentLabel,
     getLocalizedOwnershipLabel,
 } from '@/api/mappings';
-import { getBestImageUrl, isEnhancedImage } from '@/api/listingsService';
+import { getBestImageUrl, shouldShowOverlay } from '@/api/listingsService';
 
 const friscoLogo = '/frisco-logo-hq.png';
 
@@ -64,6 +64,7 @@ const GalleryImage = ({
     priority = false,
     className = '',
     style,
+    showOverlay = false,
 }: {
     src: string;
     alt: string;
@@ -73,9 +74,9 @@ const GalleryImage = ({
     priority?: boolean;
     className?: string;
     style?: CSSProperties;
+    showOverlay?: boolean;
 }) => {
     const [loaded, setLoaded] = useState(false);
-    const showWatermark = isEnhancedImage(src);
     return (
         <>
             {/* Shimmer skeleton shown while image loads */}
@@ -98,8 +99,8 @@ const GalleryImage = ({
                 style={style}
                 onLoad={() => setLoaded(true)}
             />
-            {/* FRISCO watermark — only on enhanced images (unenhanced have baked-in UC watermark) */}
-            {showWatermark && (
+            {/* FRISCO watermark — only when no baked-in logo detected */}
+            {showOverlay && (
                 <img
                     src={friscoLogo}
                     alt=""
@@ -450,6 +451,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200',
             'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200',
         ];
+    // Build a Set of image URLs that should show the CSS overlay
+    // (no baked-in FRISCO logo detected by the Python scanner)
+    const overlayUrls = new Set(
+        listing.images
+            .filter(img => shouldShowOverlay(img))
+            .map(img => getBestImageUrl(img))
+    );
     totalImages.current = images.length;
 
     const currentImage = images[currentImageIndex] || '';
@@ -621,6 +629,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 priority
                                 sizes="50vw"
                                 quality={80}
+                                showOverlay={overlayUrls.has(images[0])}
                                 className="object-cover hover:scale-[1.03] duration-900 ease-smooth-zoom"
                             />
                         </div>
@@ -638,6 +647,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     priority={idx === 0}
                                     sizes="25vw"
                                     quality={75}
+                                    showOverlay={overlayUrls.has(img)}
                                     className="object-cover hover:scale-[1.03] duration-900 ease-smooth-zoom"
                                 />
                                 {/* "All Photos" Button on last image */}
@@ -679,6 +689,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 priority
                                 sizes="100vw"
                                 quality={80}
+                                showOverlay={overlayUrls.has(currentImage)}
                                 className="object-cover"
                             />
                         </motion.div>
@@ -969,8 +980,8 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                     priority={idx === currentImageIndex}
                                                     className="object-contain"
                                                 />
-                                                {/* FRISCO watermark — only on enhanced images */}
-                                                {isEnhancedImage(img) && (
+                                                {/* FRISCO watermark — only when no baked-in logo detected */}
+                                                {overlayUrls.has(img) && (
                                                     <img
                                                         src={friscoLogo}
                                                         alt=""
@@ -1059,7 +1070,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
                                     className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity relative"
                                 >
-                                    <GalleryImage src={img} alt={`${copy.photo} ${idx + 1}`} sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} className="object-cover" />
+                                    <GalleryImage src={img} alt={`${copy.photo} ${idx + 1}`} sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} showOverlay={overlayUrls.has(img)} className="object-cover" />
                                 </motion.button>
                             ))}
                         </div>
