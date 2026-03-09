@@ -4,7 +4,7 @@ import { LocaleLink } from './LocaleLink';
 import { useRouter } from 'next/navigation';
 import { localePath } from '@/i18n/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     ArrowLeft,
     Heart,
@@ -31,7 +31,6 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import listingImageLoader from '@/lib/imageLoader';
-import ConsentMapEmbed from '@/components/ConsentMapEmbed';
 import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
 import { useListing, useAgent } from '@/hooks/useListings';
@@ -207,6 +206,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     const [showAllPhotos, setShowAllPhotos] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
     const [isPonukaHovered, setIsPonukaHovered] = useState(false);
+    const [agentPhotoError, setAgentPhotoError] = useState(false);
 
     // Fetch listing data
     const { data: listing, isLoading, error } = useListing(id);
@@ -266,15 +266,45 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
         window.location.href = `mailto:${agentEmail}?subject=${subject}&body=${body}`;
     };
 
-    // Image navigation
-    const nextImage = () => {
-        if (!listing) return;
-        setCurrentImageIndex((prev) => (prev + 1) % listing.images.length);
-    };
+    // Image navigation — use the derived `images` length (works for both real & fallback)
+    const totalImages = useRef(0);
 
-    const prevImage = () => {
-        if (!listing) return;
-        setCurrentImageIndex((prev) => (prev - 1 + listing.images.length) % listing.images.length);
+    const nextImage = useCallback(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % (totalImages.current || 1));
+    }, []);
+
+    const prevImage = useCallback(() => {
+        setCurrentImageIndex((prev) => (prev - 1 + (totalImages.current || 1)) % (totalImages.current || 1));
+    }, []);
+
+    // Keyboard navigation for lightbox
+    useEffect(() => {
+        if (!showLightbox) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setShowLightbox(false);
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        // Prevent body scroll while lightbox is open
+        document.body.style.overflow = 'hidden';
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [showLightbox, nextImage, prevImage]);
+
+    // Touch swipe support for lightbox
+    const touchStartX = useRef(0);
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        const diff = touchStartX.current - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) { // 50px minimum swipe
+            if (diff > 0) nextImage();
+            else prevImage();
+        }
     };
 
     // Loading state
@@ -313,6 +343,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200',
             'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200',
         ];
+    totalImages.current = images.length;
 
     const currentImage = images[currentImageIndex] || '';
 
@@ -668,17 +699,26 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             </div>
                         </div>
 
-                        {/* Interactive Map */}
-                        {listing.geo_lat && listing.geo_lon && (
-                            <div>
-                                <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.location}</h2>
-                                <ConsentMapEmbed
-                                    src={`https://www.google.com/maps?q=${listing.geo_lat},${listing.geo_lon}&z=15&output=embed`}
-                                    className="rounded-2xl overflow-hidden border border-black/5 shadow-sm"
-                                    innerClassName="w-full aspect-[16/10] md:aspect-[16/9]"
-                                    lat={listing.geo_lat}
-                                    lon={listing.geo_lon}
-                                    footer={
+                        {/* Interactive Map — cookie-free OpenStreetMap embed */}
+                        {listing.geo_lat && listing.geo_lon && (() => {
+                            const delta = 0.008;
+                            const osmSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${listing.geo_lon - delta},${listing.geo_lat - delta},${listing.geo_lon + delta},${listing.geo_lat + delta}&layer=mapnik&marker=${listing.geo_lat},${listing.geo_lon}`;
+                            return (
+                                <div>
+                                    <h2 className="text-2xl font-serif font-bold text-navy mb-4">{copy.location}</h2>
+                                    <div className="rounded-2xl overflow-hidden border border-black/5 shadow-sm">
+                                        <div className="w-full aspect-[16/10] md:aspect-[16/9] relative">
+                                            <iframe
+                                                src={osmSrc}
+                                                width="100%"
+                                                height="100%"
+                                                style={{ border: 0 }}
+                                                allowFullScreen
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer-when-downgrade"
+                                                className="absolute inset-0 w-full h-full"
+                                            />
+                                        </div>
                                         <div className="bg-white p-4 flex items-center justify-between">
                                             <div className="flex items-center gap-2 text-charcoal/70">
                                                 <MapPin className="w-4 h-4 text-accent-red" />
@@ -696,10 +736,10 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                 {copy.navigate}
                                             </a>
                                         </div>
-                                    }
-                                />
-                            </div>
-                        )}
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </div>
 
                     {/* Sidebar - Contact */}
@@ -710,7 +750,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             {/* Agent Photo & Name */}
                             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-black/5">
                                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-navy to-navy/70 flex items-center justify-center overflow-hidden shrink-0">
-                                    {agentPhotoUrl ? (
+                                    {agentPhotoUrl && !agentPhotoError ? (
                                         <img
                                             src={agentPhotoUrl}
                                             alt={agentName}
@@ -718,7 +758,8 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                             height={96}
                                             loading="lazy"
                                             decoding="async"
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover object-top"
+                                            onError={() => setAgentPhotoError(true)}
                                         />
                                     ) : (
                                         <span className="text-white text-2xl font-bold">{agentInitials}</span>
@@ -780,59 +821,95 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-[100] bg-black/95 flex flex-col select-none"
                         onClick={() => setShowLightbox(false)}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
                     >
-                        <button
-                            className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-10"
-                            onClick={() => setShowLightbox(false)}
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
-
-                        <div
-                            className="relative w-[90vw] h-[90vh]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <Image
-                                loader={listingImageLoader}
-                                src={currentImage}
-                                alt={listing.title}
-                                fill
-                                sizes="90vw"
-                                quality={85}
-                                className="object-contain"
-                            />
+                        {/* Top bar: counter + close */}
+                        <div className="flex items-center justify-between px-4 py-3 z-10" onClick={(e) => e.stopPropagation()}>
+                            <span className="text-white/80 text-sm font-medium tabular-nums">
+                                {currentImageIndex + 1} / {images.length}
+                            </span>
+                            <button
+                                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                                onClick={() => setShowLightbox(false)}
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
                         </div>
 
-                        {images.length > 1 && (
-                            <>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                        {/* Main image area */}
+                        <div className="flex-1 relative flex items-center justify-center min-h-0 px-4 md:px-16">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentImageIndex}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="relative w-full h-full"
+                                    onClick={(e) => e.stopPropagation()}
                                 >
-                                    <ChevronLeft className="w-8 h-8" />
-                                </button>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                                >
-                                    <ChevronRight className="w-8 h-8" />
-                                </button>
+                                    <Image
+                                        loader={listingImageLoader}
+                                        src={currentImage}
+                                        alt={listing.title}
+                                        fill
+                                        sizes="90vw"
+                                        quality={85}
+                                        className="object-contain"
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
 
-                                {/* Thumbnail Strip */}
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto pb-2">
+                            {/* Preload adjacent images (hidden, triggers browser fetch) */}
+                            {images.length > 1 && (
+                                <div className="hidden">
+                                    {[currentImageIndex - 1, currentImageIndex + 1]
+                                        .map(i => ((i % images.length) + images.length) % images.length)
+                                        .filter(i => i !== currentImageIndex)
+                                        .map(i => (
+                                            <Image key={`preload-${i}`} loader={listingImageLoader} src={images[i]} alt="" width={1} height={1} quality={85} />
+                                        ))}
+                                </div>
+                            )}
+
+                            {/* Navigation arrows */}
+                            {images.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                                        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/25 active:bg-white/30 flex items-center justify-center text-white transition-colors backdrop-blur-sm"
+                                    >
+                                        <ChevronLeft className="w-7 h-7" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                                        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/25 active:bg-white/30 flex items-center justify-center text-white transition-colors backdrop-blur-sm"
+                                    >
+                                        <ChevronRight className="w-7 h-7" />
+                                    </button>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Thumbnail Strip */}
+                        {images.length > 1 && (
+                            <div className="py-3 px-4 flex justify-center z-10" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex gap-1.5 max-w-[90vw] overflow-x-auto scrollbar-hide">
                                     {images.map((img, idx) => (
                                         <button
                                             key={idx}
-                                            onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                                            className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all relative ${idx === currentImageIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                            onClick={() => setCurrentImageIndex(idx)}
+                                            className={`flex-shrink-0 w-14 h-10 md:w-16 md:h-12 rounded-md overflow-hidden border-2 transition-all duration-200 relative ${idx === currentImageIndex ? 'border-white scale-105' : 'border-transparent opacity-40 hover:opacity-80'}`}
                                         >
-                                            <Image loader={listingImageLoader} src={img} alt="" fill sizes="64px" quality={50} className="object-cover" />
+                                            <Image loader={listingImageLoader} src={img} alt="" fill sizes="64px" quality={40} className="object-cover" />
                                         </button>
                                     ))}
                                 </div>
-                            </>
+                            </div>
                         )}
                     </motion.div>
                 )}
@@ -842,12 +919,13 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             <AnimatePresence>
                 {showAllPhotos && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 40 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
                         className="fixed inset-0 z-[100] bg-white overflow-y-auto"
                     >
-                        <div className="sticky top-0 bg-white border-b border-black/5 px-6 py-4 flex items-center justify-between z-10">
+                        <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-black/5 px-6 py-4 flex items-center justify-between z-10">
                             <h2 className="text-xl font-bold">{copy.allPhotos} ({images.length})</h2>
                             <button
                                 onClick={() => setShowAllPhotos(false)}
@@ -859,13 +937,16 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                         <div className="container mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {images.map((img, idx) => (
-                                <button
+                                <motion.button
                                     key={idx}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, delay: Math.min(idx * 0.03, 0.3) }}
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
                                     className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity relative"
                                 >
                                     <Image loader={listingImageLoader} src={img} alt={`${copy.photo} ${idx + 1}`} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} className="object-cover" />
-                                </button>
+                                </motion.button>
                             ))}
                         </div>
                     </motion.div>
