@@ -92,7 +92,7 @@ const GalleryImage = ({
                 priority={priority}
                 placeholder={!priority && src && !src.startsWith('/') ? 'blur' : 'empty'}
                 blurDataURL={!priority && src && !src.startsWith('/') ? blurUrl(src) : undefined}
-                className={`transition-opacity duration-500 ease-out ${
+                className={`transition-[opacity,transform] duration-500 ease-out will-change-[opacity,transform] ${
                     loaded ? 'opacity-100' : 'opacity-0'
                 } ${className}`}
                 style={style}
@@ -621,7 +621,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 priority
                                 sizes="50vw"
                                 quality={80}
-                                className="object-cover hover:scale-105 transition-all duration-500"
+                                className="object-cover hover:scale-[1.03] duration-900 ease-smooth-zoom"
                             />
                         </div>
 
@@ -638,7 +638,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     priority={idx === 0}
                                     sizes="25vw"
                                     quality={75}
-                                    className="object-cover hover:scale-105 transition-all duration-500"
+                                    className="object-cover hover:scale-[1.03] duration-900 ease-smooth-zoom"
                                 />
                                 {/* "All Photos" Button on last image */}
                                 {idx === 3 && images.length > 5 && (
