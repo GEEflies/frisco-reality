@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import listingImageLoader from '@/lib/imageLoader';
-// Watermark is always shown on all listing images (CSS overlay)
+import { isEnhancedImage } from '@/api/listingsService';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -105,13 +105,15 @@ export const ListingCard = ({
                             quality={75}
                             className="object-cover will-change-transform transition-transform duration-900 ease-smooth-zoom group-hover:scale-105"
                         />
-                        {/* FRISCO watermark — uniform on all images */}
-                        <img
-                            src="/frisco-logo-hq.png"
-                            alt=""
-                            className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-10 select-none"
-                            draggable={false}
-                        />
+                        {/* FRISCO watermark — only on enhanced images */}
+                        {isEnhancedImage(image) && (
+                            <img
+                                src="/frisco-logo-hq.png"
+                                alt=""
+                                className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-10 select-none"
+                                draggable={false}
+                            />
+                        )}
                     </>
                 ) : (
                     <div className="w-full h-full bg-cream-dark flex items-center justify-center">

@@ -46,7 +46,7 @@ import {
     getLocalizedEquipmentLabel,
     getLocalizedOwnershipLabel,
 } from '@/api/mappings';
-import { getBestImageUrl } from '@/api/listingsService';
+import { getBestImageUrl, isEnhancedImage } from '@/api/listingsService';
 
 const friscoLogo = '/frisco-logo-hq.png';
 
@@ -75,6 +75,7 @@ const GalleryImage = ({
     style?: CSSProperties;
 }) => {
     const [loaded, setLoaded] = useState(false);
+    const showWatermark = isEnhancedImage(src);
     return (
         <>
             {/* Shimmer skeleton shown while image loads */}
@@ -97,13 +98,15 @@ const GalleryImage = ({
                 style={style}
                 onLoad={() => setLoaded(true)}
             />
-            {/* FRISCO watermark — uniform on all images */}
-            <img
-                src={friscoLogo}
-                alt=""
-                className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-20 select-none"
-                draggable={false}
-            />
+            {/* FRISCO watermark — only on enhanced images (unenhanced have baked-in UC watermark) */}
+            {showWatermark && (
+                <img
+                    src={friscoLogo}
+                    alt=""
+                    className="absolute bottom-2 right-2 h-[18px] md:h-[22px] w-auto opacity-40 pointer-events-none drop-shadow-md z-20 select-none"
+                    draggable={false}
+                />
+            )}
         </>
     );
 };
@@ -966,13 +969,15 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                                     priority={idx === currentImageIndex}
                                                     className="object-contain"
                                                 />
-                                                {/* FRISCO watermark — uniform on all lightbox images */}
-                                                <img
-                                                    src={friscoLogo}
-                                                    alt=""
-                                                    className="absolute bottom-4 right-4 md:bottom-6 md:right-6 h-[24px] md:h-[32px] w-auto opacity-40 pointer-events-none drop-shadow-lg z-30 select-none"
-                                                    draggable={false}
-                                                />
+                                                {/* FRISCO watermark — only on enhanced images */}
+                                                {isEnhancedImage(img) && (
+                                                    <img
+                                                        src={friscoLogo}
+                                                        alt=""
+                                                        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 h-[24px] md:h-[32px] w-auto opacity-40 pointer-events-none drop-shadow-lg z-30 select-none"
+                                                        draggable={false}
+                                                    />
+                                                )}
                                             </>
                                         ) : null}
                                     </div>
