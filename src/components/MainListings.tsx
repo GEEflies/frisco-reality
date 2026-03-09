@@ -7,7 +7,7 @@ import { localePath } from '@/i18n/types';
 import { LocaleLink } from '@/components/LocaleLink';
 import { MAIN_LISTINGS_COPY } from '@/i18n/copy';
 import { useFeaturedListings } from '@/hooks/useListings';
-import { getPrimaryImage, isEnhancedImage } from '@/api/listingsService';
+import { getPrimaryImage, shouldShowOverlay } from '@/api/listingsService';
 import { formatArea, formatPriceWithUnit } from '@/api/mappings';
 import { buildWeservUrl } from '@/lib/imageLoader';
 import type { ListingWithImages } from '@/api/types';
@@ -68,6 +68,8 @@ function getFeatureData(listing: ListingWithImages, language: 'sk' | 'en' | 'de'
 
 function ListingCard({ listing, language, onClick }: { listing: ListingWithImages; language: 'sk' | 'en' | 'de'; onClick: () => void }) {
   const image = getPrimaryImage(listing);
+  const primaryImg = listing.images?.sort((a, b) => a.sort_order - b.sort_order)[0];
+  const showOverlay = primaryImg ? shouldShowOverlay(primaryImg) : false;
   const status = getStatusMeta(listing, language);
   const features = getFeatureData(listing, language);
   const price = formatPriceWithUnit(
@@ -91,7 +93,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
               className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
             />
             {/* FRISCO watermark — only on enhanced images */}
-            {isEnhancedImage(image) && (
+            {showOverlay && (
               <img
                 src="/frisco-logo-hq.png"
                 alt=""

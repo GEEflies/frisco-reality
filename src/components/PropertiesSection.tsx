@@ -8,7 +8,7 @@ import { FilterBar } from './FilterBar';
 import { ListingCard } from './ListingCard';
 import { useListings, useListingFilters } from '@/hooks/useListings';
 import { categoryLabels, transactionLabels, formatPrice, formatArea, getCategoryType, getStatusColor, statusLabels, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
-import { getPrimaryImage } from '@/api/listingsService';
+import { getPrimaryImage, shouldShowOverlay } from '@/api/listingsService';
 import type { ListingFilters } from '@/api/types';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { localePath } from '@/i18n/types';
@@ -584,6 +584,7 @@ export const PropertiesSection = () => {
                 const status = getListingStatus(listing);
                 const features = getFeatures(listing);
                 const image = getPrimaryImage(listing);
+                const primaryImg = listing.images?.sort((a, b) => a.sort_order - b.sort_order)[0];
                 const priceLabel = listing.action === 3
                   ? `${formatPrice(listing.price)}/mes.`
                   : formatPrice(listing.price);
@@ -601,6 +602,7 @@ export const PropertiesSection = () => {
                       location={[listing.location_city, listing.location_district].filter(Boolean).join(', ') || listing.street || 'Slovensko'}
                       description={getLocalizedDescription(listing, language) || undefined}
                       image={image ?? undefined}
+                      showOverlay={primaryImg ? shouldShowOverlay(primaryImg) : false}
                       status={status.label}
                       statusColor={status.color}
                       features={features}
