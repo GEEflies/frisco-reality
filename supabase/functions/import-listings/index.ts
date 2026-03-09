@@ -394,27 +394,19 @@ async function handleListing(data: Record<string, any>, isTestMode = false) {
         });
     }
 
-    // ---- Validate required fields (fields marked ✔ for ALL category×action combos in UC Export spec) ----
-    // Per EXPORT spec: object_id, id, state_id, county_id, district_id, region_id, street_id, street,
-    // action, category, agent_id, title, description, status, price, price_unit, price_currency
-    // are all required (✔) for every single category and action combination.
+    // ---- Validate required fields ----
+    // NOTE: The UC Export spec marks many fields as ✔ (required), BUT in practice UC
+    // sends listings without some of them (e.g. `id` = agency internal ref, `street`
+    // for plots/land). Our DB schema already accepts those as NULLable columns.
+    // We only enforce fields that our DB schema truly requires as NOT NULL and that
+    // are essential for the listing to be meaningful.
+    // Relaxed from the original strict list after UC reported mass "Zlyhanie" errors.
     const requiredFields = [
-        'id',
-        'state_id',
-        'county_id',
-        'district_id',
-        'region_id',
-        'street_id',
-        'street',
+        // object_id is checked separately above
         'action',
         'category',
-        'agent_id',
         'title',
-        'description',
         'status',
-        'price',
-        'price_unit',
-        'price_currency',
     ];
 
     const missing: Record<string, string> = {};

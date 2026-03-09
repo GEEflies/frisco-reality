@@ -16,7 +16,7 @@ CREATE TABLE listings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     -- UC identifiers
-    uc_object_id INTEGER UNIQUE NOT NULL,       -- UC's object_id (never changes)
+    uc_object_id BIGINT UNIQUE NOT NULL,        -- UC's object_id (never changes; BIGINT — values exceed int4 max)
     agency_id TEXT,                              -- Agency's internal ID (field: id)
 
     -- Content
