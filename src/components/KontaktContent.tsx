@@ -19,7 +19,7 @@ const Kontakt = () => {
     sk: {
       toastTitle: 'Správa odoslaná',
       toastDescription: 'Ozveme sa vám čoskoro.',
-      heroAlt: 'FRISCO Tím',
+      heroAlt: 'FRISCO Reality – realitná kancelária Sereď',
       heroQuote: '"Váš úspech je náš záväzok."',
       imagePlaceholder: 'sem dáme vašu fotku',
       visitUs: 'Navštívte nás',
@@ -50,7 +50,7 @@ const Kontakt = () => {
     en: {
       toastTitle: 'Message sent',
       toastDescription: 'We will get back to you soon.',
-      heroAlt: 'FRISCO Team',
+      heroAlt: 'FRISCO Reality – real estate office in Sereď',
       heroQuote: '"Your success is our commitment."',
       imagePlaceholder: 'We will replace this with your image.',
       visitUs: 'Visit us',
@@ -81,7 +81,7 @@ const Kontakt = () => {
     de: {
       toastTitle: 'Nachricht gesendet',
       toastDescription: 'Wir melden uns in Kürze bei Ihnen.',
-      heroAlt: 'FRISCO Team',
+      heroAlt: 'FRISCO Reality – Immobilienbüro in Sereď',
       heroQuote: '"Ihr Erfolg ist unser Versprechen."',
       imagePlaceholder: 'Wir werden dies durch Ihr Bild ersetzen.',
       visitUs: 'Besuchen Sie uns',
@@ -172,9 +172,9 @@ const Kontakt = () => {
                 className="relative hidden lg:flex story-media stagger-4 aspect-[4/3] bg-navy/5 rounded-3xl border border-navy/10 overflow-hidden"
               >
                 <img
-                  src="/frisco-realitka.jpeg"
+                  src="/kontakt-frisco-realitna-kancelaria.webp"
                   alt={pageCopy.heroAlt}
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                   className="w-full h-full object-cover"
                 />
