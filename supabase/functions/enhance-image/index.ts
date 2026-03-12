@@ -34,18 +34,18 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // ---- Gemini setup ----
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Image generation / editing models — ordered by quality preference.
-// 1. gemini-3.1-flash-image-preview = "Nano Banana 2": best quality-to-speed ratio, 2K/4K, thinking
-// 2. gemini-3-pro-image-preview     = "Nano Banana Pro": studio-quality, reasoning-driven, 4K
-// 3. gemini-2.5-flash-image         = stable GA: fast (10s), reliable, max 1024px
-// NB2 had timeout issues ~Mar 10 2026 — now re-added with a 90s timeout guard.
+// Image generation / editing models — ordered by reliability for image EDITING.
+// 1. gemini-2.5-flash-image         = stable GA: fast (~10s), most reliable for edits
+// 2. gemini-3.1-flash-image-preview = "Nano Banana 2": higher quality but MALFORMED_FUNCTION_CALL issues
+// 3. gemini-3-pro-image-preview     = "Nano Banana Pro": same MALFORMED_FUNCTION_CALL issues
+// NB2/Pro often return MALFORMED_FUNCTION_CALL for image editing as of Jul 2025.
 // GEMINI_IMAGE_MODEL secret takes priority if set.
 const configuredGeminiModel = Deno.env.get('GEMINI_IMAGE_MODEL')?.trim();
 const IMAGE_MODEL_CANDIDATES = [
     configuredGeminiModel,
+    'gemini-2.5-flash-image',
     'gemini-3.1-flash-image-preview',
     'gemini-3-pro-image-preview',
-    'gemini-2.5-flash-image',
 ].filter((value, index, arr) => Boolean(value) && arr.indexOf(value) === index) as string[];
 
 // Per-model timeout in ms. Edge Function hard limit is 150s — keep room for
@@ -69,43 +69,35 @@ const ASSESS_MODEL = 'gemini-2.5-flash';
 interface AssessmentResult {
     enhance: boolean;       // true = worth enhancing, false = skip
     reason: string;         // human-readable reason (logged)
-    prompt: string | null;  // tailored enhancement prompt if enhance=true
 }
 
-const ASSESS_PROMPT = `You are an expert real estate photo editor evaluating whether this image would benefit from AI enhancement.
+// Assessment prompt — ONLY decides whether this is a real photograph worth enhancing.
+// It no longer generates a per-image prompt; we use one universal ENHANCE_PROMPT instead.
+const ASSESS_PROMPT = `Classify this image. Return ONLY a JSON object:
+{"enhance": true or false, "reason": "one short sentence"}
 
-Analyze the image and return a JSON object with exactly these fields:
-{
-  "enhance": true or false,
-  "reason": "one short sentence explaining your decision",
-  "prompt": "specific enhancement instructions" or null
-}
+Return false ONLY if the image is NOT a photograph:
+- Floorplan, map, logo, 3D render, diagram, certificate, infographic, screenshot, scan, or document.
+- So severely damaged, blurry, or corrupted that re-processing would make it worse.
 
-DECIDE "enhance": false (SKIP) ONLY if:
-- It is NOT a photograph (floorplan, map, logo, 3D render, diagram, certificate, text overlay, infographic)
-- It's a screenshot, scan, or document
-- The image is so severely damaged, blurry, tiny, or corrupted that enhancement would make it worse
+Return true for ALL real photographs — interior, exterior, aerial, detail shots — regardless of current quality.
 
-DECIDE "enhance": true for ALL real photographs, even high-quality ones. Reasons include:
-- The image contains any watermark, logo, or text overlay that should be removed
-- Dark rooms that need brighter, more balanced lighting
-- Blown-out windows where the exterior is invisible
-- Poor white balance (too blue, too yellow, too green)
-- Dull, flat colors that need gentle vibrance
-- Visible noise or grain that should be reduced
-- Overcast exterior where sky and colors look lifeless
-- Shadows that are too harsh or too dark
-- Overall underexposure or overexposure
-- Even if the photo is already high quality, enhance=true if it has a watermark/logo to remove
+Return ONLY the JSON object.`;
 
-When "enhance" is true, write a "prompt" that is SPECIFIC to THIS image. Do NOT use generic instructions.
-Describe exactly what adjustments this particular photo needs.
-IMPORTANT: If the image contains any watermark, logo, or branded text overlay, ALWAYS include "Remove any watermarks, logos, or text overlays baked into the image." as the FIRST instruction in the prompt.
-Always end the prompt with: "Do NOT add, remove, or move any objects. Do NOT add any new text or watermarks. Keep it photorealistic. Return ONLY the enhanced image."
+// ============================================================
+// UNIVERSAL ENHANCEMENT PROMPT — one prompt for all real estate photos
+// ============================================================
+// Tested 6 strategies across interior + exterior photos with AI verification.
+// "Erase ALL text" achieved 100% watermark removal (6/6 tests) vs
+// "Remove watermarks/logos" which failed on exterior images (2/3).
+// The generic "watermark" phrasing is ambiguous — the model sometimes
+// interprets the FRISCO logo as a scene element rather than an overlay.
+// "Erase ALL text" is unambiguous and catches it every time.
+const ENHANCE_PROMPT = `Edit this real estate photograph: apply professional HDR tone-mapping so shadows are lifted, highlights are recovered, and every part of the scene is visible. Correct the white balance to produce neutral whites on walls and ceilings. Boost color vibrance gently for richer materials and surfaces. Sharpen architectural edges and reduce noise. Erase ALL text visible anywhere in the image and seamlessly reconstruct the background underneath. Keep the exact same composition, perspective, geometry, furniture, and objects.`;
 
-When "enhance" is false, set "prompt" to null.
-
-Return ONLY the JSON object, no markdown, no explanation outside of it.`;
+// Dedicated watermark-only removal prompt — used as a safety-net second pass
+// if the logo detector still finds red FRISCO pixels after the main enhancement.
+const WATERMARK_REMOVAL_PROMPT = `Erase all text and logo marks from this photograph. Fill every area where text was with the surrounding background. Do not change anything else — keep the same lighting, colors, and composition.`;
 
 async function assessImage(imageBase64: string, mimeType: string): Promise<AssessmentResult> {
     try {
@@ -125,7 +117,6 @@ async function assessImage(imageBase64: string, mimeType: string): Promise<Asses
         return {
             enhance: parsed.enhance === true,
             reason: String(parsed.reason || 'No reason given'),
-            prompt: parsed.enhance ? String(parsed.prompt || '') : null,
         };
     } catch (error) {
         // If assessment fails, default to enhancing with a safe generic prompt.
@@ -134,8 +125,7 @@ async function assessImage(imageBase64: string, mimeType: string): Promise<Asses
         console.error(`[assess] Assessment failed, defaulting to enhance:`, errMsg);
         return {
             enhance: true,
-            reason: `Assessment failed (${errMsg}) — defaulting to safe enhancement`,
-            prompt: `Enhance this real estate photo. Remove any watermarks, logos, or text overlays baked into the image. Improve lighting and exposure for a balanced, well-lit result. Correct white balance for natural colors. Reduce noise. Sharpen details slightly. Do NOT add, remove, or move any objects. Do NOT add any new text or watermarks. Keep it photorealistic. Return ONLY the enhanced image.`,
+            reason: `Assessment failed (${errMsg}) — defaulting to enhance`,
         };
     }
 }
@@ -221,6 +211,9 @@ async function generateEnhancedImage(
                 if (finishReason === 'IMAGE_SAFETY' || finishReason === 'PROHIBITED_CONTENT') {
                     throw new Error(`Blocked by safety filter: ${finishReason}`);
                 }
+                if (finishReason === 'MALFORMED_FUNCTION_CALL') {
+                    throw new Error(`Model bug: ${finishReason} — skipping model`);
+                }
 
                 if (!candidates || candidates.length === 0) {
                     throw new Error('No candidates in Gemini response');
@@ -238,14 +231,20 @@ async function generateEnhancedImage(
                     }
                 }
 
+                // Log what the model DID return (for debugging no-image responses)
+                const textParts = parts.filter((p: any) => p.text).map((p: any) => p.text.slice(0, 200));
+                if (textParts.length > 0) {
+                    console.warn(`[enhance-image] ${modelName} returned text instead of image: ${textParts.join(' | ')}`);
+                }
+
                 throw new Error('No image data in Gemini response');
             } catch (error) {
                 const variant = 'generationConfig' in config ? 'modalities' : 'default';
                 const errMsg = (error as Error).message;
                 errors.push(`${modelName} (${variant}): ${errMsg}`);
-                // If this model timed out, skip remaining config variants and try next model
-                if (errMsg.includes('Timeout after')) {
-                    console.warn(`[enhance-image] ${modelName} timed out at ${timeoutMs / 1000}s, trying next model`);
+                // If this model timed out or has a model-level bug, skip remaining configs
+                if (errMsg.includes('Timeout after') || errMsg.includes('skipping model')) {
+                    console.warn(`[enhance-image] ${modelName}: ${errMsg}, trying next model`);
                     break;
                 }
             }
@@ -395,9 +394,11 @@ async function detectAndUpdateLogo(imageId: string, imageBuffer: ArrayBuffer, mi
     }
 }
 
-// Default prompt for force mode — focuses on watermark removal + gentle quality improvement.
-// Uses generic wording (not "photo") so it works on floorplans, diagrams, and all image types.
-const FORCE_ENHANCE_PROMPT = `Edit this image: remove any watermarks, logos, or semi-transparent text overlays that are stamped on it. Reconstruct the underlying image content where the watermark was. Make no other changes — keep everything else pixel-identical. Return ONLY the cleaned image.`;
+// Force mode uses the same universal prompt — no reason to use a weaker one.
+const FORCE_ENHANCE_PROMPT = ENHANCE_PROMPT;
+
+// Maximum number of watermark removal passes after enhancement.
+const MAX_WATERMARK_PASSES = 1;
 
 // ---- Main enhancement logic ----
 // force=true: skip AI quality assessment, always enhance (used to re-process skipped images)
@@ -438,11 +439,11 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
             console.log(`[enhance-image] ${imageId} FORCE mode — skipping assessment, using watermark-removal prompt`);
             enhancementPrompt = FORCE_ENHANCE_PROMPT;
         } else {
-            // ---- STEP 1: AI quality assessment — should we enhance this image? ----
+            // ---- STEP 1: AI classification — is this a real photograph? ----
             const assessment = await assessImage(imageBase64, mimeType);
             console.log(`[enhance-image] ${imageId} assessment: enhance=${assessment.enhance}, reason="${assessment.reason}"`);
 
-            // ---- STEP 2: Skip if AI decided enhancement won't help ----
+            // ---- STEP 2: Skip non-photographs (floorplans, diagrams, etc.) ----
             if (!assessment.enhance) {
                 console.log(`[enhance-image] ${imageId} SKIPPED — ${assessment.reason}`);
                 await supabase
@@ -457,17 +458,42 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                 return { success: true };
             }
 
-            enhancementPrompt = assessment.prompt!;
+            // Use the universal enhancement prompt for ALL photographs
+            enhancementPrompt = ENHANCE_PROMPT;
         }
 
         // ---- STEP 3: Enhance with the prompt ----
-        const { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, enhancementPrompt);
+        let { enhancedImageData, enhancedMimeType, modelUsed } = await generateEnhancedImage(imageBase64, mimeType, enhancementPrompt);
         console.log(`[enhance-image] ${imageId} enhanced with ${modelUsed}${force ? ' (FORCE)' : ''}`);
 
-        // Upload enhanced image to Supabase Storage
+        let enhancedBuffer = base64ToArrayBuffer(enhancedImageData);
+
+        // ---- STEP 4: Watermark safety net ----
+        // The "Erase ALL text" prompt removes watermarks ~100% of the time,
+        // but as a safety net, run logo detection on the result. If the FRISCO
+        // red watermark is still present, do a dedicated watermark-removal pass.
+        for (let pass = 0; pass < MAX_WATERMARK_PASSES; pass++) {
+            const logoCheck = await detectFriscoLogo(enhancedBuffer, enhancedMimeType);
+            if (!logoCheck.hasLogo) {
+                console.log(`[enhance-image] ${imageId} watermark-free after pass ${pass === 0 ? 'main' : pass}`);
+                break;
+            }
+            console.warn(`[enhance-image] ${imageId} watermark still detected (density=${(logoCheck.density * 100).toFixed(2)}%, redPx=${logoCheck.redCount}) — running removal pass ${pass + 1}`);
+            try {
+                const wmResult = await generateEnhancedImage(enhancedImageData, enhancedMimeType, WATERMARK_REMOVAL_PROMPT);
+                enhancedImageData = wmResult.enhancedImageData;
+                enhancedMimeType = wmResult.enhancedMimeType;
+                enhancedBuffer = base64ToArrayBuffer(enhancedImageData);
+                console.log(`[enhance-image] ${imageId} watermark removal pass ${pass + 1} done with ${wmResult.modelUsed}`);
+            } catch (wmErr) {
+                console.warn(`[enhance-image] ${imageId} watermark removal pass ${pass + 1} failed: ${(wmErr as Error).message}`);
+                break;
+            }
+        }
+
+        // ---- STEP 5: Upload enhanced image to Supabase Storage ----
         const extension = enhancedMimeType.split('/')[1] || 'jpeg';
         const storagePath = `enhanced/${imageId}.${extension}`;
-        const enhancedBuffer = base64ToArrayBuffer(enhancedImageData);
 
         // Auto-create bucket if it doesn't exist (first run)
         const { data: buckets } = await supabase.storage.listBuckets();

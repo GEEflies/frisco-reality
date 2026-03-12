@@ -4,13 +4,18 @@ import urllib.request
 import json
 import base64
 import time
+import os
+import sys
 
 img_url = (
     "https://img.unitedclassifieds.sk/foto/"
     "ZmlsdGVyczp3YXRlcm1hcmsocHVzLzYxd1NFT1o2al9mc3MsLTUsLTUsMCwzMCwzMCkvanVs/"
     "UqX7DTKz1_fss?st=kSRT0rWECHRUqU5XgRUP7eKlhMQchrqDlrKsPQ78t34&ts=1773236392&e=0"
 )
-api_key = "AIzaSyCB_oauy2LpHwTCgFY280rYJW3IBexu1AA"
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    print("Missing GEMINI_API_KEY environment variable.", file=sys.stderr)
+    sys.exit(1)
 
 print("Downloading image...")
 resp = urllib.request.urlopen(img_url, timeout=15)
