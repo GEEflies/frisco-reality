@@ -8,7 +8,7 @@ import { LocaleLink } from '@/components/LocaleLink';
 import { MAIN_LISTINGS_COPY } from '@/i18n/copy';
 import { useFeaturedListings } from '@/hooks/useListings';
 import { getPrimaryImage, shouldShowOverlay } from '@/api/listingsService';
-import { formatArea, formatPriceWithUnit } from '@/api/mappings';
+import { formatArea, formatPriceWithUnit, getLocalizedTitle } from '@/api/mappings';
 import { buildWeservUrl } from '@/lib/imageLoader';
 import { useNavLoading } from '@/components/RouteLoadingIndicator';
 import type { ListingWithImages } from '@/api/types';
@@ -73,6 +73,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
   const showOverlay = primaryImg ? shouldShowOverlay(primaryImg) : false;
   const status = getStatusMeta(listing, language);
   const features = getFeatureData(listing, language);
+  const localizedTitle = getLocalizedTitle(listing, language);
   const detailLabel = language === 'sk' ? 'Zobraziť detail' : language === 'en' ? 'View detail' : 'Details ansehen';
   const price = formatPriceWithUnit(
     listing.price,
@@ -89,7 +90,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
           <>
             <img
               src={buildWeservUrl(image, 600, 75)}
-              alt={listing.title}
+              alt={localizedTitle}
               loading="lazy"
               decoding="async"
               className="w-full h-full object-cover will-change-transform transition-transform duration-700 ease-out group-hover:scale-105"
@@ -120,7 +121,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
       </div>
 
       <div className="p-6 flex flex-col flex-grow text-left">
-        <h4 className="text-2xl font-poppins font-bold text-black mb-1 leading-tight line-clamp-2">{listing.title}</h4>
+        <h4 className="text-2xl font-poppins font-bold text-black mb-1 leading-tight line-clamp-2">{localizedTitle}</h4>
         <h3 className="text-lg font-bold text-accent-red mb-4">{price}</h3>
         <div className="flex items-center gap-2 text-charcoal/60 text-sm mb-4">
           <MapPin className="w-4 h-4 text-accent-red" />
