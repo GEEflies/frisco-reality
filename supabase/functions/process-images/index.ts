@@ -21,11 +21,135 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const SITE_URL = Deno.env.get('SITE_URL') || 'https://frisco.sk';
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+const NOTIFY_EMAIL = Deno.env.get('NOTIFY_EMAIL') || 'billikkarol1@gmail.com';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const BATCH_SIZE = 1;                // Images to process per cron run (sequential, ~76s each)
 const STUCK_TIMEOUT_MINUTES = 3;     // Reset 'processing' images older than this
+const NOTIFY_FLAG_BUCKET = 'original-images';
+const NOTIFY_FLAG_PATH = '_system/reenhancement_complete_notified.txt';
+
+async function hasCompletionNotificationBeenSent(): Promise<boolean> {
+        try {
+                const { data, error } = await supabase.storage
+                        .from(NOTIFY_FLAG_BUCKET)
+                        .download(NOTIFY_FLAG_PATH);
+                return !!data && !error;
+        } catch {
+                return false;
+        }
+}
+
+async function markCompletionNotificationSent(): Promise<void> {
+        try {
+                await supabase.storage.createBucket(NOTIFY_FLAG_BUCKET, { public: false }).catch(() => {});
+                await supabase.storage
+                        .from(NOTIFY_FLAG_BUCKET)
+                        .upload(NOTIFY_FLAG_PATH, new Blob(['1'], { type: 'text/plain' }), { upsert: true });
+        } catch (error) {
+                console.warn('Could not write completion notification flag:', (error as Error).message);
+        }
+}
+
+async function resetCompletionNotificationFlag(): Promise<void> {
+        try {
+                await supabase.storage
+                        .from(NOTIFY_FLAG_BUCKET)
+                        .remove([NOTIFY_FLAG_PATH]);
+        } catch {
+                // Ignore missing file or storage issues; next completion check will still work.
+        }
+}
+
+async function notifyEnhancementComplete(completedCount: number, failedCount: number): Promise<void> {
+        if (!RESEND_API_KEY) {
+                console.warn('RESEND_API_KEY not set — skipping completion notification');
+                return;
+        }
+
+        const alreadySent = await hasCompletionNotificationBeenSent();
+        if (alreadySent) return;
+
+        const now = new Date().toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' });
+
+        try {
+                const res = await fetch('https://api.resend.com/emails', {
+                        method: 'POST',
+                        headers: {
+                                'Authorization': `Bearer ${RESEND_API_KEY}`,
+                                'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                                from: 'FRISCO Reality <frisco@karchi.xyz>',
+                                to: [NOTIFY_EMAIL],
+                                subject: 'FRISCO: re-enhancement is finished',
+                                html: `<!DOCTYPE html>
+<html lang="sk">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 0;">
+        <tr><td align="center">
+            <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                <tr>
+                    <td style="background:#0d1b2a;padding:28px 32px;">
+                        <p style="margin:0;font-size:22px;font-weight:bold;color:#ffffff;letter-spacing:2px;">FRISCO</p>
+                        <p style="margin:4px 0 0;font-size:13px;color:#ffffff;opacity:0.6;">Rodinná realitka · Sereď a okolie</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:24px 32px 0;">
+                        <span style="display:inline-block;background:#e8f5e9;color:#2e7d32;font-size:12px;font-weight:bold;padding:5px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;">● Batch finished</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:20px 32px 28px;">
+                        <h1 style="margin:0 0 8px;font-size:22px;color:#0d1b2a;">Re-enhancement is complete</h1>
+                        <p style="margin:0 0 20px;font-size:15px;color:#555;">All queued listing images have finished processing. You can review the live site now.</p>
+                        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:24px;">
+                            <tr>
+                                <td style="padding:12px 16px;border-bottom:1px solid #e0e0e0;">
+                                    <p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;">Completed images</p>
+                                    <p style="margin:4px 0 0;font-size:15px;color:#0d1b2a;font-weight:bold;">${completedCount}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:12px 16px;border-bottom:1px solid #e0e0e0;">
+                                    <p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;">Failed images</p>
+                                    <p style="margin:4px 0 0;font-size:14px;color:#333;">${failedCount}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:12px 16px;">
+                                    <p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;">Finished at</p>
+                                    <p style="margin:4px 0 0;font-size:14px;color:#333;">${now}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <a href="${SITE_URL}/ponuka" style="display:inline-block;background:#0d1b2a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;padding:12px 22px;border-radius:6px;">Open live listings →</a>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>
+    </table>
+</body>
+</html>`,
+                        }),
+                });
+
+                if (!res.ok) {
+                        console.error('Completion notification failed:', await res.text());
+                        return;
+                }
+
+                await markCompletionNotificationSent();
+                console.log(`Completion notification sent to ${NOTIFY_EMAIL}`);
+        } catch (error) {
+                console.error('Completion notification error:', error);
+        }
+}
 
 // ---- Recovery: reset stuck 'processing' images ----
 async function recoverStuckImages(): Promise<number> {
@@ -173,11 +297,35 @@ Deno.serve(async (req) => {
             else failCount++;
         }
 
-        // Report remaining pending count
-        const { count: remaining } = await supabase
+        // Report remaining work and send one-shot email when the whole queue is finished.
+        const { count: remainingPending } = await supabase
             .from('listing_images')
             .select('id', { count: 'exact', head: true })
             .eq('enhancement_status', 'pending');
+
+        const { count: remainingProcessing } = await supabase
+            .from('listing_images')
+            .select('id', { count: 'exact', head: true })
+            .eq('enhancement_status', 'processing');
+
+        const { count: totalCompleted } = await supabase
+            .from('listing_images')
+            .select('id', { count: 'exact', head: true })
+            .eq('enhancement_status', 'completed');
+
+        const { count: totalFailed } = await supabase
+            .from('listing_images')
+            .select('id', { count: 'exact', head: true })
+            .eq('enhancement_status', 'failed');
+
+        const pendingCount = remainingPending ?? 0;
+        const processingCount = remainingProcessing ?? 0;
+
+        if (pendingCount === 0 && processingCount === 0) {
+            await notifyEnhancementComplete(totalCompleted ?? 0, totalFailed ?? 0);
+        } else {
+            await resetCompletionNotificationFlag();
+        }
 
         return new Response(
             JSON.stringify({
@@ -185,7 +333,8 @@ Deno.serve(async (req) => {
                 successCount,
                 failCount,
                 recovered,
-                remainingPending: remaining ?? 0,
+                remainingPending: pendingCount,
+                remainingProcessing: processingCount,
             }),
             { headers: { 'Content-Type': 'application/json' } },
         );
