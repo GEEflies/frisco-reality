@@ -7,8 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback, useRef, type ComponentType, type SVGProps, type CSSProperties } from 'react';
 import {
     ArrowLeft,
-    Heart,
-    Share2,
     MapPin,
     Home,
     Maximize,
@@ -25,19 +23,14 @@ import {
     Loader2,
     CheckCircle,
     Grid3X3,
-    Copy,
-    Check,
     Navigation,
     Search,
     Key,
-    Facebook,
-    Instagram,
     Globe,
 } from 'lucide-react';
 import { DE, GB, SK } from 'country-flag-icons/react/3x2';
 import Image from 'next/image';
 import listingImageLoader, { blurUrl, buildWeservUrl } from '@/lib/imageLoader';
-import confetti from 'canvas-confetti';
 import { Footer } from '@/components/Footer';
 import { useListing, useAgent } from '@/hooks/useListings';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -301,11 +294,9 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
     const router = useRouter();
     const pathname = usePathname();
-    const [isLiked, setIsLiked] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [showLightbox, setShowLightbox] = useState(false);
     const [showAllPhotos, setShowAllPhotos] = useState(false);
-    const [linkCopied, setLinkCopied] = useState(false);
     const [isPonukaHovered, setIsPonukaHovered] = useState(false);
     const [agentPhotoError, setAgentPhotoError] = useState(false);
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
@@ -382,39 +373,6 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
         .join('')
         .slice(0, 2)
         .toUpperCase() || 'RK';
-
-    // Handle like
-    const handleLike = () => {
-        const newState = !isLiked;
-        setIsLiked(newState);
-        if (newState) {
-            confetti({
-                particleCount: 30,
-                spread: 60,
-                origin: { x: 0.9, y: 0.1 },
-                colors: ['#F472B6', '#EC4899', '#DB2777'],
-            });
-        }
-    };
-
-    // Handle share
-    const handleShare = async () => {
-        const url = window.location.href;
-        const title = listing?.title || copy.propertyFallback;
-
-        if (navigator.share) {
-            try {
-                await navigator.share({ title, url });
-            } catch (err) {
-                // User cancelled or error
-            }
-        } else {
-            // Fallback: copy to clipboard
-            await navigator.clipboard.writeText(url);
-            setLinkCopied(true);
-            setTimeout(() => setLinkCopied(false), 2000);
-        }
-    };
 
     // Handle "Mám záujem" button — navigate to contact page & scroll to form
     const handleInterest = () => {
@@ -725,14 +683,6 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             <span>info@frisco.sk</span>
                         </a>
 
-                        {/* Social Icons */}
-                        <a href="https://www.facebook.com/Friscorealitka/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300" aria-label="Facebook">
-                            <Facebook size={16} strokeWidth={2} />
-                        </a>
-                        <a href="https://www.instagram.com/friscoreality/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300" aria-label="Instagram">
-                            <Instagram size={16} strokeWidth={2} />
-                        </a>
-
                         {/* Language Switcher */}
                         <div ref={languageMenuRef} className="relative">
                             <button
@@ -773,23 +723,6 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 )}
                             </AnimatePresence>
                         </div>
-
-                        {/* Divider */}
-                        <div className="w-px h-6 bg-black/10 mx-1" />
-
-                        {/* Like & Share */}
-                        <button
-                            onClick={handleLike}
-                            className={`p-2.5 rounded-full border transition-all ${isLiked ? 'bg-pink-50 border-pink-200 text-pink-500' : 'bg-white border-black/10 text-black/60 hover:border-black/20'}`}
-                        >
-                            <Heart className={`w-4.5 h-4.5 ${isLiked ? 'fill-pink-500' : ''}`} />
-                        </button>
-                        <button
-                            onClick={handleShare}
-                            className="p-2.5 rounded-full border border-black/10 bg-white text-black/60 hover:border-black/20 transition-all relative"
-                        >
-                            {linkCopied ? <Check className="w-4.5 h-4.5 text-emerald-500" /> : <Share2 className="w-4.5 h-4.5" />}
-                        </button>
                     </div>
                 </div>
             </div>
@@ -823,18 +756,6 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                             aria-label="Call"
                         >
                             <Phone size={18} />
-                        </button>
-                        <button
-                            onClick={handleLike}
-                            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all ${isLiked ? 'bg-pink-50 border-pink-200 text-pink-500' : 'bg-white border-black/10 text-black/60 hover:border-black/20'}`}
-                        >
-                            <Heart className={`w-4 h-4 ${isLiked ? 'fill-pink-500' : ''}`} />
-                        </button>
-                        <button
-                            onClick={handleShare}
-                            className="w-9 h-9 rounded-full flex items-center justify-center border border-black/10 bg-white text-black/60 hover:border-black/20 transition-all"
-                        >
-                            {linkCopied ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
                         </button>
                     </div>
                 </div>
