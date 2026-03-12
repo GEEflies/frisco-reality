@@ -341,17 +341,10 @@ export const FilterBar = ({
                 aria-label={copy.openFilters}
             >
                 <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy text-white shadow-md shadow-navy/15">
-                        <SlidersHorizontal size={18} strokeWidth={2.2} />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-bold uppercase tracking-[0.18em] text-navy">
-                            {copy.filterOffer}
-                        </span>
-                        <span className="text-xs font-medium text-charcoal/55">
-                            {copy.results(listingsCount)}
-                        </span>
-                    </div>
+                    <SlidersHorizontal size={20} strokeWidth={2.2} className="text-black" />
+                    <span className="text-sm font-bold uppercase tracking-[0.18em] text-navy">
+                        {copy.filterOffer}
+                    </span>
                 </div>
                 <ChevronDown size={18} className="text-charcoal/45" />
             </button>
