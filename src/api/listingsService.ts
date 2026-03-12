@@ -15,12 +15,26 @@ import { getCategoryType } from './mappings';
 // IMAGE URL HELPERS
 // ============================================
 
+function appendCacheBust(url: string, version?: string | null): string {
+    if (!version) return url;
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}v=${encodeURIComponent(version)}`;
+}
+
 /**
  * Returns the best available image URL for a listing image.
  * Priority: upscaled → enhanced → original
  */
 export function getBestImageUrl(image: ListingImage): string {
-    return image.upscaled_url || image.enhanced_url || image.original_url;
+    if (image.upscaled_url) {
+        return appendCacheBust(image.upscaled_url, image.updated_at);
+    }
+
+    if (image.enhanced_url) {
+        return appendCacheBust(image.enhanced_url, image.updated_at);
+    }
+
+    return image.original_url;
 }
 
 /**
@@ -38,10 +52,15 @@ export function isEnhancedImage(url: string): boolean {
  * Uses the `has_baked_logo` flag set by the Python logo-detection script.
  * - has_baked_logo === true  →  baked-in logo exists → do NOT show overlay
  * - has_baked_logo === false →  no baked-in logo    → show overlay
- * - has_baked_logo === null  →  not yet scanned      → default to showing overlay
+ * - has_baked_logo === null  →  unknown              → do NOT show overlay
+ *
+ * The overlay must never be shown on original UC images, otherwise we create
+ * the exact double-watermark problem the user reported.
  */
 export function shouldShowOverlay(image: ListingImage): boolean {
-    if (image.has_baked_logo === true) return false;
+    const baseUrl = image.upscaled_url || image.enhanced_url;
+    if (!baseUrl || !isEnhancedImage(baseUrl)) return false;
+    if (image.has_baked_logo !== false) return false;
     return true;
 }
 

@@ -116,6 +116,7 @@ export interface ListingImage {
     has_baked_logo: boolean | null;
     sort_order: number;
     created_at: string;
+    updated_at?: string;
 }
 
 export interface Agent {
