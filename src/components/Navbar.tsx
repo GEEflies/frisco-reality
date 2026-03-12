@@ -162,7 +162,7 @@ export const Navbar = () => {
             className={`absolute left-1/2 -translate-x-1/2 inset-y-3 rounded-full transition-all duration-500 ${isNavActive ? 'bg-white/95 backdrop-blur-xl border border-navy/10 shadow-lg opacity-100' : 'opacity-0'}`}
             style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}
           />
-          <div className="relative flex items-center justify-center gap-6 2xl:gap-12 flex-nowrap px-4">
+          <div className="relative flex items-center justify-between gap-6 2xl:gap-12 flex-nowrap px-8" style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}>
             <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className="relative z-10 flex-shrink-0">
               <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-16 pl-4" />
             </Link>
