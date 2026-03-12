@@ -278,26 +278,26 @@ const Sluzby = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row lg:flex-nowrap gap-4 items-center">
                 <a
                   href="tel:+421905447220"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg shrink-0"
                 >
                   <Phone className="w-5 h-5" />
-                  <span>0905 447 220</span>
+                  <span className="whitespace-nowrap">0905 447 220</span>
                 </a>
                 <a
                   href="tel:+421905740700"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg shrink-0"
                 >
                   <Phone className="w-5 h-5" />
-                  <span>0905 740 700</span>
+                  <span className="whitespace-nowrap">0905 740 700</span>
                 </a>
                 <LocaleLink
                   href="/kontakt"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20 shrink-0"
                 >
-                  <span>{copy.ctaWrite}</span>
+                  <span className="whitespace-nowrap">{copy.ctaWrite}</span>
                   <ArrowUpRight className="w-5 h-5" />
                 </LocaleLink>
               </div>

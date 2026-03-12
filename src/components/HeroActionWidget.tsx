@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Search, Building2, Home } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { localePath } from '@/i18n/types';
 
 export const HeroActionWidget = () => {
     const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy');
     const { language } = useLanguage();
     const router = useRouter();
+    const isDesktop = useIsDesktop();
 
     const copy = {
         sk: {
@@ -77,10 +79,14 @@ export const HeroActionWidget = () => {
                     {activeTab === 'buy' ? (
                         <motion.div
                             key="buy"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
+                            {...(isDesktop ? {
+                                initial: { opacity: 0, y: 10 },
+                                animate: { opacity: 1, y: 0 },
+                                exit: { opacity: 0, y: -10 },
+                                transition: { duration: 0.2 },
+                            } : {
+                                initial: false,
+                            })}
                             className="space-y-4"
                         >
                             <div className="space-y-2">
@@ -103,10 +109,14 @@ export const HeroActionWidget = () => {
                     ) : (
                         <motion.div
                             key="sell"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
+                            {...(isDesktop ? {
+                                initial: { opacity: 0, y: 10 },
+                                animate: { opacity: 1, y: 0 },
+                                exit: { opacity: 0, y: -10 },
+                                transition: { duration: 0.2 },
+                            } : {
+                                initial: false,
+                            })}
                             className="space-y-4"
                         >
                             <div className="space-y-2">

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, forwardRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import {
     Select,
     SelectContent,
@@ -27,6 +26,8 @@ interface FilterBarProps {
     localities?: string[];
     availableTypes?: string[];
     listingsCount?: number;
+    externalOpen?: boolean;
+    onExternalOpenHandled?: () => void;
 }
 
 export const FilterBar = ({
@@ -39,6 +40,8 @@ export const FilterBar = ({
     localities = [],
     availableTypes = [],
     listingsCount = 0,
+    externalOpen = false,
+    onExternalOpenHandled,
 }: FilterBarProps) => {
     const { language } = useLanguage();
     const copy = {
@@ -128,6 +131,14 @@ export const FilterBar = ({
 
     const [isOpen, setIsOpen] = useState(false);
 
+    // Allow parent to open the modal externally (e.g. floating filter button)
+    useEffect(() => {
+        if (externalOpen) {
+            setIsOpen(true);
+            onExternalOpenHandled?.();
+        }
+    }, [externalOpen, onExternalOpenHandled]);
+
     // Temp filter state for the modal (only applied on "Zobraziť")
     const [tempFilters, setTempFilters] = useState(filters);
 
@@ -199,26 +210,23 @@ export const FilterBar = ({
             </div>
 
             {/* ===== MOBILE: Bottom Sheet Modal ===== */}
-            <AnimatePresence>
-                {isOpen && (
-                    <div className="fixed inset-0 z-[110] flex items-end md:hidden">
-                        {/* Backdrop */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                        />
+            <div
+                className={`fixed inset-0 z-[110] flex items-end md:hidden transition-opacity duration-300 ${
+                    isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+                }`}
+            >
+                {/* Backdrop */}
+                <div
+                    onClick={() => setIsOpen(false)}
+                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                />
 
-                        {/* Panel */}
-                        <motion.div
-                            initial={{ y: "100%" }}
-                            animate={{ y: 0 }}
-                            exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="relative bg-white shadow-2xl overflow-hidden flex flex-col will-change-transform w-full h-[85vh] rounded-t-2xl"
-                        >
+                {/* Panel */}
+                <div
+                    className={`relative bg-white shadow-2xl overflow-hidden flex flex-col w-full h-[85vh] rounded-t-2xl transition-transform duration-300 ease-out ${
+                        isOpen ? 'translate-y-0' : 'translate-y-full'
+                    }`}
+                >
                             {/* Swipe indicator + Close button */}
                             <div className="relative pt-6 pb-3 px-6 bg-white">
                                 <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-navy/10 rounded-full" />
@@ -323,10 +331,8 @@ export const FilterBar = ({
                                     {copy.show} ({listingsCount})
                                 </button>
                             </div>
-                        </motion.div>
+                        </div>
                     </div>
-                )}
-            </AnimatePresence>
 
             {/* ===== DESKTOP: Inline Filter Bar ===== */}
             <div className="hidden md:block w-full bg-white shadow-lg border border-navy/15 rounded-2xl py-8 px-10 mb-12">

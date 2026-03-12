@@ -1,7 +1,8 @@
 'use client';
 
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect, useMemo } from 'react';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Bed, Bath, Square, Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, ArrowUpDown, Check, SlidersHorizontal, SearchX, Phone, Mail, LayoutGrid } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FilterBar } from './FilterBar';
@@ -15,10 +16,12 @@ import { localePath } from '@/i18n/types';
 import { useNavLoading } from '@/components/RouteLoadingIndicator';
 
 export const PropertiesSection = () => {
+  const defaultSort: ListingFilters['sort'] = 'newest';
   const { language } = useLanguage();
   const ref = useRef(null);
   const filterWrapperRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const isDesktop = useIsDesktop();
   const router = useRouter();
   const { startNavLoading } = useNavLoading();
   const searchParams = useSearchParams();
@@ -29,15 +32,18 @@ export const PropertiesSection = () => {
     transaction: 'all',
     locality: 'all',
     priceRange: [0, 10000000],
-    sort: 'recommended',
+    sort: defaultSort,
   });
 
   // Sort dropdown state (mobile)
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
   
-  // Floating filter button state (desktop)
+  // Floating filter button state
   const [showFloatingFilter, setShowFloatingFilter] = useState(false);
+  
+  // External open trigger for mobile FilterBar bottom sheet
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   const copy = {
     sk: {
@@ -178,8 +184,14 @@ export const PropertiesSection = () => {
         const rect = filterWrapperRef.current.getBoundingClientRect();
         // Show floating button when filter wrapper top is above viewport
         // This means: as soon as you scroll past the filter section, the button appears
-        const isMobile = window.innerWidth < 768;
-        const triggerOffset = isMobile ? 100 : 60;
+        const isMobile = window.innerWidth < 1024;
+        if (isMobile) {
+          // Keep the floating filter CTA always available on mobile/tablet.
+          setShowFloatingFilter(true);
+          return;
+        }
+
+        const triggerOffset = 60;
         setShowFloatingFilter(rect.top < -triggerOffset);
       }
     };
@@ -205,7 +217,7 @@ export const PropertiesSection = () => {
       transaction: 'all',
       locality: 'all',
       priceRange: [0, maxPrice],
-      sort: 'recommended',
+      sort: defaultSort,
     });
   };
 
@@ -276,17 +288,21 @@ export const PropertiesSection = () => {
         <div className="mb-12" ref={filterWrapperRef}>
           <motion.div
             className="text-navy font-mono text-sm tracking-[0.2em] uppercase mb-4"
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            {...(isDesktop ? {
+              initial: { opacity: 0, x: -30 },
+              animate: isInView ? { opacity: 1, x: 0 } : {},
+              transition: { duration: 0.6 },
+            } : {})}
           >
             {copy.headingLabel}
           </motion.div>
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-navy mb-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            {...(isDesktop ? {
+              initial: { opacity: 0, y: 30 },
+              animate: isInView ? { opacity: 1, y: 0 } : {},
+              transition: { duration: 0.6, delay: 0.1 },
+            } : {})}
           >
             {filters.category && filters.category !== 'all' ? (
               <span className="uppercase">{
@@ -302,9 +318,11 @@ export const PropertiesSection = () => {
           {/* Quick Category Filters */}
           <motion.div
             className="flex flex-wrap gap-3 mb-6 md:mb-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
+            {...(isDesktop ? {
+              initial: { opacity: 0, y: 20 },
+              animate: isInView ? { opacity: 1, y: 0 } : {},
+              transition: { duration: 0.6, delay: 0.15 },
+            } : {})}
           >
             {/* Mobile grid: 3 on top, 3 on bottom */}
             <div className="w-full grid grid-cols-3 gap-3 md:hidden">
@@ -444,11 +462,8 @@ export const PropertiesSection = () => {
           </motion.div>
 
           {/* Mobile: Filter + Sort Row */}
-          <motion.div
+          <div
             className="flex md:hidden gap-3 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* Filter Bar wrapper - takes most space */}
             <div className="flex-1">
@@ -464,13 +479,15 @@ export const PropertiesSection = () => {
                   category: newFilters.type,
                   priceRange: newFilters.priceRange,
                 }))}
-                sort={filters.sort || 'recommended'}
+                sort={filters.sort || defaultSort}
                 setSort={(sort) => setFilters(prev => ({ ...prev, sort: sort as ListingFilters['sort'] }))}
                 onReset={resetFilters}
                 maxPrice={maxPrice}
                 localities={localities}
                 availableTypes={availableTypes}
                 listingsCount={listings.length}
+                externalOpen={mobileFilterOpen}
+                onExternalOpenHandled={() => setMobileFilterOpen(false)}
               />
             </div>
 
@@ -479,7 +496,7 @@ export const PropertiesSection = () => {
               <button
                 onClick={() => setSortOpen(!sortOpen)}
                 className={`h-[52px] w-[52px] flex items-center justify-center rounded-xl border transition-all duration-300 shadow-sm ${
-                  sortOpen || (filters.sort && filters.sort !== 'recommended')
+                  sortOpen || (filters.sort && filters.sort !== defaultSort)
                     ? 'bg-navy text-white border-navy shadow-md'
                     : 'bg-white text-navy border-navy/10 hover:border-navy/30'
                 }`}
@@ -489,44 +506,38 @@ export const PropertiesSection = () => {
               </button>
 
               {/* Sort Dropdown */}
-              <AnimatePresence>
-                {sortOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 top-[60px] z-50 w-52 bg-white rounded-2xl border border-navy/10 shadow-xl overflow-hidden"
-                  >
-                    <div className="py-2">
-                      <div className="px-4 py-2 text-[10px] font-bold tracking-widest uppercase text-charcoal/40">
-                        {copy.sortBy}
-                      </div>
-                      {sortOptions.map((option) => (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setFilters(prev => ({ ...prev, sort: option.value }));
-                            setSortOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-4 py-3 text-sm transition-colors ${
-                            filters.sort === option.value
-                              ? 'bg-navy/5 text-navy font-semibold'
-                              : 'text-charcoal/70 hover:bg-cream'
-                          }`}
-                        >
-                          <span>{option.label}</span>
-                          {filters.sort === option.value && (
-                            <Check size={16} className="text-navy" />
-                          )}
-                        </button>
-                      ))}
+              {sortOpen && (
+                <div
+                  className="absolute right-0 top-[60px] z-50 w-52 bg-white rounded-2xl border border-navy/10 shadow-xl overflow-hidden"
+                >
+                  <div className="py-2">
+                    <div className="px-4 py-2 text-[10px] font-bold tracking-widest uppercase text-charcoal/40">
+                      {copy.sortBy}
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    {sortOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setFilters(prev => ({ ...prev, sort: option.value }));
+                          setSortOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-4 py-3 text-sm transition-colors ${
+                          filters.sort === option.value
+                            ? 'bg-navy/5 text-navy font-semibold'
+                            : 'text-charcoal/70 hover:bg-cream'
+                        }`}
+                      >
+                        <span>{option.label}</span>
+                        {filters.sort === option.value && (
+                          <Check size={16} className="text-navy" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </motion.div>
+          </div>
 
           {/* Desktop Filter Bar */}
           <motion.div
@@ -547,7 +558,7 @@ export const PropertiesSection = () => {
                 category: newFilters.type,
                 priceRange: newFilters.priceRange,
               }))}
-              sort={filters.sort || 'recommended'}
+              sort={filters.sort || defaultSort}
               setSort={(sort) => setFilters(prev => ({ ...prev, sort: sort as ListingFilters['sort'] }))}
               onReset={resetFilters}
               maxPrice={maxPrice}
@@ -595,9 +606,11 @@ export const PropertiesSection = () => {
                 return (
                   <motion.div
                     key={listing.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
+                    {...(isDesktop ? {
+                      initial: { opacity: 0, y: 12 },
+                      animate: { opacity: 1, y: 0 },
+                      transition: { duration: 0.3, delay: Math.min(idx * 0.05, 0.3) },
+                    } : {})}
                   >
                     <ListingCard
                       title={getLocalizedTitle(listing, language)}
@@ -620,8 +633,10 @@ export const PropertiesSection = () => {
         {/* Empty State */}
         {!isLoading && !error && listings.length === 0 && (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...(isDesktop ? {
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 },
+            } : {})}
             className="flex flex-col items-center justify-center pt-8 pb-20 px-6 text-center"
           >
             <div className="w-20 h-20 bg-navy/5 rounded-full flex items-center justify-center mb-8">
@@ -667,21 +682,21 @@ export const PropertiesSection = () => {
     </section>
 
     {/* Floating Filter Button — outside overflow-hidden section so fixed positioning works */}
-    <AnimatePresence>
-      {showFloatingFilter && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          transition={{ duration: 0.3 }}
-          onClick={scrollToFilters}
-          className="fixed bottom-8 right-8 z-50 flex w-14 h-14 md:w-16 md:h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
-          aria-label={copy.showFilters}
-        >
-          <SlidersHorizontal size={22} strokeWidth={2.5} />
-        </motion.button>
-      )}
-    </AnimatePresence>
+    {showFloatingFilter && (
+      <button
+        onClick={() => {
+          if (window.innerWidth < 1024) {
+            setMobileFilterOpen(true);
+          } else {
+            scrollToFilters();
+          }
+        }}
+        className="fixed bottom-8 right-8 z-50 flex w-14 h-14 md:w-16 md:h-16 items-center justify-center bg-accent-red text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-accent-red/40 transition-all duration-300"
+        aria-label={copy.showFilters}
+      >
+        <SlidersHorizontal size={22} strokeWidth={2.5} />
+      </button>
+    )}
     </>
   );
 };

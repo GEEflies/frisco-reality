@@ -334,9 +334,9 @@ export const Navbar = () => {
 
       {/* Mobile Menu Overlay - CSS transitions only, no Framer Motion */}
       <div
-        className={`fixed inset-0 top-[80px] z-[55] bg-white flex flex-col xl:hidden ${isMobileMenuOpen
-          ? 'opacity-100 visible'
-          : 'opacity-0 invisible pointer-events-none'
+        className={`fixed inset-0 top-[80px] z-[55] bg-white flex flex-col xl:hidden transition-all duration-300 ease-out ${isMobileMenuOpen
+          ? 'opacity-100 visible translate-y-0'
+          : 'opacity-0 invisible pointer-events-none -translate-y-3'
           }`}
         style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
       >
@@ -352,7 +352,7 @@ export const Navbar = () => {
             </button>
             {/* Ponuka submenu - CSS transition instead of AnimatePresence */}
             <div
-              className={`overflow-hidden pl-4 flex flex-col space-y-4 ${isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+              className={`overflow-hidden pl-4 flex flex-col space-y-4 transition-all duration-300 ease-out ${isPonukaOpen ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
                 }`}
             >
               <Link href={l('/ponuka')} className="text-lg font-sans font-semibold tracking-wide text-charcoal/80 hover:text-navy transition-colors flex items-center gap-3" onClick={(e) => handleNavClick(e, '/ponuka', true)}>

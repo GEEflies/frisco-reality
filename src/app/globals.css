@@ -287,8 +287,8 @@
     to   { opacity: 1; transform: translate3d(0, 0, 0); }
   }
 
-  .reveal,
-  .reveal-scale {
+  .js-reveal .reveal,
+  .js-reveal .reveal-scale {
     opacity: 0;
     will-change: transform, opacity;
   }
@@ -317,7 +317,7 @@
     }
   }
 
-  .rv-child {
+  .js-reveal .rv-child {
     opacity: 0;
     will-change: transform, opacity;
   }
@@ -388,8 +388,8 @@
   /* Slide variants for special elements */
   .reveal-left.revealed  { animation: reveal-slide-left  0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
   .reveal-right.revealed { animation: reveal-slide-right 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  .reveal-left,
-  .reveal-right {
+  .js-reveal .reveal-left,
+  .js-reveal .reveal-right {
     opacity: 0;
     will-change: transform, opacity;
   }

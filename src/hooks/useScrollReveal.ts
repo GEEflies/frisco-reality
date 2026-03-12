@@ -61,6 +61,10 @@ export function useScrollReveal() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    // Mark that JS is running — CSS only hides .reveal elements when
+    // this class is present, so content stays visible if JS ever fails.
+    document.documentElement.classList.add('js-reveal');
+
     const isMobileViewport = window.matchMedia(MOBILE_VIEWPORT_QUERY).matches;
     const observerOptions = isMobileViewport ? OBSERVER_OPTIONS.mobile : OBSERVER_OPTIONS.desktop;
 

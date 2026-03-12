@@ -28,7 +28,7 @@ const copy: Record<LanguageCode, {
             { label: 'Konateľ osobne', sublabel: 'pán Križo vždy dostupný' },
             { label: 'Rýchle rozhodnutia', sublabel: 'Bez čakania na "centrálu"' },
             { label: 'Miestne korene', sublabel: 'Žijeme tam, kde predávame' },
-            { label: 'Dobré meno', sublabel: 'Povesť je pre nás všetko' },
+            { label: 'Dobré meno', sublabel: 'Pre nás veľa znamená' },
         ],
     },
     en: {
@@ -145,58 +145,6 @@ export const FamilyBusinessSection = () => {
                     >
                         {t.subtitle}
                     </motion.p>
-
-                    {/* Animation Wrapper (Replacing Numbers) */}
-                    <motion.div
-                        {...(isDesktop ? { variants: fadeInUp } : {})}
-                        className={`w-full max-w-3xl mb-10 md:mb-20 relative h-20 md:h-32 flex items-center justify-center overflow-hidden ${!isDesktop ? 'rv-child' : ''}`}
-                    >
-                        {/* Abstract Wave/Trust Animation */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <svg className="w-full h-full text-navy/5" viewBox="0 0 1000 200" preserveAspectRatio="none">
-                                <motion.path
-                                    d="M0 100 Q 250 50 500 100 T 1000 100 T 1500 100 T 2000 100"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    initial={{ pathLength: 0, opacity: 0, x: 0 }}
-                                    whileInView={{ pathLength: 1, opacity: 1 }}
-                                    animate={{ x: -1000 }}
-                                    viewport={{ once: true }}
-                                    transition={{
-                                        pathLength: { duration: 2, ease: "easeInOut" },
-                                        opacity: { duration: 0.5 },
-                                        x: { repeat: Infinity, duration: 20, ease: "linear" }
-                                    }}
-                                />
-                                <motion.path
-                                    d="M0 100 Q 250 150 500 100 T 1000 100 T 1500 100 T 2000 100"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    initial={{ pathLength: 0, opacity: 0, x: 0 }}
-                                    whileInView={{ pathLength: 1, opacity: 1 }}
-                                    animate={{ x: -1000 }}
-                                    viewport={{ once: true }}
-                                    transition={{
-                                        pathLength: { duration: 2, delay: 0.2, ease: "easeInOut" },
-                                        opacity: { duration: 0.5, delay: 0.2 },
-                                        x: { repeat: Infinity, duration: 25, ease: "linear" }
-                                    }}
-                                />
-                            </svg>
-                            {/* Central FRISCO Logo Element or Emblem could go here if available, using a simple circle for now */}
-                            <motion.div
-                                initial={{ scale: 0, opacity: 0 }}
-                                whileInView={{ scale: 1, opacity: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
-                                className="absolute w-16 h-16 md:w-20 md:h-20 bg-white rounded-full border border-navy/10 flex items-center justify-center shadow-lg"
-                            >
-                                <span className="font-serif font-bold text-navy text-xl md:text-2xl">18+</span>
-                            </motion.div>
-                        </div>
-                    </motion.div>
 
                     {/* Benefits Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12 w-full px-4 md:px-0">

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Quote, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import type { LanguageCode } from '@/i18n/types';
 
 const testimonials: Record<LanguageCode, Array<{ name: string; location: string; text: string; role: string }>> = {
@@ -37,6 +38,7 @@ export const TestimonialsSection = () => {
   const { language } = useLanguage();
   const items = testimonials[language];
   const [current, setCurrent] = useState(0);
+  const isDesktop = useIsDesktop();
 
   const paginate = (newDirection: number) => {
     setCurrent((prev) => (prev + newDirection + items.length) % items.length);
@@ -62,11 +64,18 @@ export const TestimonialsSection = () => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.05 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="absolute inset-0 flex flex-col items-center justify-center will-change-transform"
+                {...(isDesktop ? {
+                  initial: { opacity: 0, scale: 0.95 },
+                  animate: { opacity: 1, scale: 1 },
+                  exit: { opacity: 0, scale: 1.05 },
+                  transition: { duration: 0.5, ease: "easeOut" },
+                } : {
+                  initial: { opacity: 0 },
+                  animate: { opacity: 1 },
+                  exit: { opacity: 0 },
+                  transition: { duration: 0.25 },
+                })}
+                className="absolute inset-0 flex flex-col items-center justify-center"
               >
                 <p className="text-3xl md:text-5xl font-serif text-navy leading-tight mb-12">
                   "{items[current].text}"
@@ -92,9 +101,11 @@ export const TestimonialsSection = () => {
             <div className="h-px w-32 bg-navy/10 overflow-hidden">
               <motion.div
                 key={current}
-                initial={{ x: "-100%" }}
-                animate={{ x: "100%" }}
-                transition={{ duration: 6, ease: "linear" }}
+                {...(isDesktop ? {
+                  initial: { x: "-100%" },
+                  animate: { x: "100%" },
+                  transition: { duration: 6, ease: "linear" },
+                } : {})}
                 className="h-full w-full bg-navy"
               />
             </div>

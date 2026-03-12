@@ -73,6 +73,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
   const showOverlay = primaryImg ? shouldShowOverlay(primaryImg) : false;
   const status = getStatusMeta(listing, language);
   const features = getFeatureData(listing, language);
+  const detailLabel = language === 'sk' ? 'Zobraziť detail' : language === 'en' ? 'View detail' : 'Details ansehen';
   const price = formatPriceWithUnit(
     listing.price,
     listing.price_currency,
@@ -82,7 +83,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
   );
 
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
+    <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
       <div className="relative h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
         {image ? (
           <>
@@ -91,7 +92,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
               alt={listing.title}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+              className="w-full h-full object-cover will-change-transform transition-transform duration-700 ease-out group-hover:scale-105"
             />
             {/* FRISCO watermark — only on enhanced images */}
             {showOverlay && (
@@ -108,7 +109,11 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
             <span className="text-black/10 font-serif text-4xl italic tracking-tighter">FRISCO</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center">
+          <span className="text-white font-medium text-lg tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+            {detailLabel}
+          </span>
+        </div>
         <span className={`absolute top-4 left-4 ${status.color} text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm z-20`}>
           {status.label}
         </span>

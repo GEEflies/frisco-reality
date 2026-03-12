@@ -10,10 +10,10 @@
  * Design:
  * 1. Claim the whole batch immediately (mark 'processing') BEFORE firing any calls.
  *    Overlapping cron runs cannot pick up the same images.
- * 2. Fire all images in PARALLEL (Promise.allSettled).
- *    A batch of 10 finishes in ~60s instead of ~600s sequential.
- * 3. 400-image bulk import completes in ~40 min (Gemini RPM is the bottleneck).
- *    A single new listing with 20 images: done in 2-3 minutes.
+ * 2. Process images with limited concurrency (MAX_CONCURRENCY) to avoid
+ *    hitting Edge Function worker limits (WORKER_LIMIT / 546 errors).
+ * 3. 400-image bulk import completes across many cron runs (1 min each).
+ *    A single new listing with 20 images: done in ~10 cron ticks.
  * 4. Stuck recovery: images in 'processing' for >3 min are reset to 'pending'.
  */
 

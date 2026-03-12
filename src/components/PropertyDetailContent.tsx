@@ -416,11 +416,10 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
         }
     };
 
-    // Handle "Mám záujem" button
+    // Handle "Mám záujem" button — navigate to contact page & scroll to form
     const handleInterest = () => {
-        const subject = encodeURIComponent(`${copy.interestSubject} ${listing?.title || copy.propertyFallback}`);
-        const body = encodeURIComponent(`${copy.interestBody}${listing?.title}${copy.interestBodyId}${listing?.uc_object_id || listing?.id}${copy.interestBodyUrl}${window.location.href}${copy.interestBodyEnd}`);
-        window.location.href = `mailto:${agentEmail}?subject=${subject}&body=${body}`;
+        const contactPath = localePath('/kontakt', language) + '#kontaktny-formular';
+        router.push(contactPath);
     };
 
     // Image navigation — use the derived `images` length (works for both real & fallback)
@@ -1099,18 +1098,18 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                     {/* Sidebar - Contact */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-24 bg-white rounded-3xl p-8 border border-black/5 shadow-xl shadow-black/5">
-                            <h3 className="text-xl font-sans font-bold text-navy mb-6 tracking-tight">{copy.contactUs}</h3>
+                        <div className="sticky top-24 bg-white rounded-2xl p-6 border border-black/5 shadow-lg shadow-black/5">
+                            <h3 className="text-lg font-sans font-bold text-navy mb-4 tracking-tight">{copy.contactUs}</h3>
 
                             {/* Agent Photo & Name */}
-                            <div className="flex items-center gap-4 mb-6 pb-6 border-b border-black/5">
-                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-navy to-navy/70 flex items-center justify-center overflow-hidden shrink-0">
+                            <div className="flex items-center gap-3 mb-5 pb-5 border-b border-black/5">
+                                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-navy to-navy/70 flex items-center justify-center overflow-hidden shrink-0">
                                     {agentPhotoUrl && !agentPhotoError ? (
                                         <img
                                             src={agentPhotoUrl}
                                             alt={agentName}
-                                            width={96}
-                                            height={96}
+                                            width={80}
+                                            height={80}
                                             loading="lazy"
                                             decoding="async"
                                             className={`w-full h-full ${agentPhotoFit}`}
@@ -1126,42 +1125,42 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4 mb-8">
+                            <div className="space-y-3 mb-6">
                                 <a
                                     href={`tel:${agentPhone.replace(/\s/g, '')}`}
-                                    className="flex items-center gap-4 p-4 bg-cream rounded-2xl hover:bg-cream-dark transition-colors"
+                                    className="flex items-center gap-3 p-3 bg-cream rounded-xl hover:bg-cream-dark transition-colors"
                                 >
-                                    <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center shrink-0">
-                                        <Phone className="w-5 h-5 text-white" />
+                                    <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center shrink-0">
+                                        <Phone className="w-4 h-4 text-white" />
                                     </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-sm text-charcoal/60">{copy.phone}</p>
-                                        <p className="font-bold text-navy truncate">{agentPhone}</p>
+                                        <p className="text-xs text-charcoal/60">{copy.phone}</p>
+                                        <p className="font-bold text-navy text-sm truncate">{agentPhone}</p>
                                     </div>
                                 </a>
 
                                 <a
                                     href={`mailto:${agentEmail}`}
-                                    className="flex items-center gap-4 p-4 bg-cream rounded-2xl hover:bg-cream-dark transition-colors"
+                                    className="flex items-center gap-3 p-3 bg-cream rounded-xl hover:bg-cream-dark transition-colors"
                                 >
-                                    <div className="w-12 h-12 rounded-full bg-accent-red flex items-center justify-center shrink-0">
-                                        <Mail className="w-5 h-5 text-white" />
+                                    <div className="w-10 h-10 rounded-full bg-accent-red flex items-center justify-center shrink-0">
+                                        <Mail className="w-4 h-4 text-white" />
                                     </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-sm text-charcoal/60">{copy.email}</p>
-                                        <p className="font-bold text-navy truncate">{agentEmail}</p>
+                                        <p className="text-xs text-charcoal/60">{copy.email}</p>
+                                        <p className="font-bold text-navy text-sm truncate">{agentEmail}</p>
                                     </div>
                                 </a>
                             </div>
 
                             <button
                                 onClick={handleInterest}
-                                className="w-full py-4 bg-navy text-white font-bold rounded-full hover:bg-navy/90 transition-colors uppercase tracking-widest text-sm"
+                                className="w-full py-3.5 bg-gradient-to-r from-accent-red to-accent-red/85 text-white font-bold rounded-full hover:from-accent-red/90 hover:to-accent-red/75 transition-all shadow-md shadow-accent-red/20 hover:shadow-lg hover:shadow-accent-red/30 uppercase tracking-widest text-sm"
                             >
                                 {copy.interested}
                             </button>
 
-                            <p className="text-center text-xs text-charcoal/50 mt-4">
+                            <p className="text-center text-xs text-charcoal/50 mt-3">
                                 ID: {listing.uc_object_id || listing.id}
                             </p>
                         </div>

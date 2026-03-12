@@ -335,17 +335,13 @@ async function detectFriscoLogo(imageBuffer: ArrayBuffer, mimeType: string): Pro
 /**
  * Run logo detection on the final image and update has_baked_logo in DB.
  * Called after enhancement is complete. Non-fatal — errors are logged but don't fail the enhancement.
+ *
+ * Accepts an in-memory buffer directly to avoid re-downloading from Supabase Storage
+ * (saves ~3 MB egress per image). Falls back to fetching from URL only if no buffer provided.
  */
-async function detectAndUpdateLogo(imageId: string, imageUrl: string): Promise<void> {
+async function detectAndUpdateLogo(imageId: string, imageBuffer: ArrayBuffer, mimeType: string): Promise<void> {
     try {
-        const resp = await fetch(imageUrl);
-        if (!resp.ok) {
-            console.error(`[logo-detect] Failed to download ${imageId}: ${resp.status}`);
-            return;
-        }
-        const buffer = await resp.arrayBuffer();
-        const mimeType = getMimeType(imageUrl);
-        const { hasLogo } = await detectFriscoLogo(buffer, mimeType);
+        const { hasLogo } = await detectFriscoLogo(imageBuffer, mimeType);
 
         await supabase
             .from('listing_images')
@@ -388,8 +384,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                     enhancement_status: 'completed',
                 })
                 .eq('id', imageId);
-            // Detect logo on original image
-            await detectAndUpdateLogo(imageId, originalUrl);
+            // Detect logo on original image (buffer already in memory — no re-download)
+            await detectAndUpdateLogo(imageId, imageBuffer, mimeType);
             return { success: true };
         }
 
@@ -417,8 +413,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                         enhancement_status: 'completed',
                     })
                     .eq('id', imageId);
-                // Detect logo on original image (skipped images may still have baked-in logo)
-                await detectAndUpdateLogo(imageId, originalUrl);
+                // Detect logo on original image (buffer already in memory — no re-download)
+                await detectAndUpdateLogo(imageId, imageBuffer, mimeType);
                 return { success: true };
             }
 
@@ -446,6 +442,7 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
             .upload(storagePath, enhancedBuffer, {
                 contentType: enhancedMimeType,
                 upsert: true,
+                cacheControl: '31536000',
             });
 
         if (uploadError) {
@@ -470,8 +467,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
 
         console.log(`Enhanced image ${imageId} with ${modelUsed} → ${enhancedUrl}`);
 
-        // Detect logo on the ENHANCED image (the one the user actually sees)
-        await detectAndUpdateLogo(imageId, enhancedUrl);
+        // Detect logo on the ENHANCED image (buffer already in memory — no re-download)
+        await detectAndUpdateLogo(imageId, enhancedBuffer, enhancedMimeType);
 
         return { success: true };
 
@@ -490,8 +487,8 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                     enhancement_status: 'completed',
                 })
                 .eq('id', imageId);
-            // Detect logo on original image
-            await detectAndUpdateLogo(imageId, originalUrl);
+            // Detect logo on original image (buffer already in memory — no re-download)
+            await detectAndUpdateLogo(imageId, imageBuffer, mimeType);
             return { success: true, fallback: true, reason: errorMessage };
         }
 
