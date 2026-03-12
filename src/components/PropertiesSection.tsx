@@ -496,7 +496,7 @@ export const PropertiesSection = () => {
             <div className="relative" ref={sortRef}>
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className={`h-[52px] w-[52px] flex items-center justify-center rounded-xl border transition-all duration-300 shadow-sm ${
+                className={`h-[50px] w-[50px] flex items-center justify-center rounded-xl border transition-all duration-300 shadow-sm ${
                   sortOpen || (filters.sort && filters.sort !== defaultSort)
                     ? 'bg-navy text-white border-navy shadow-md'
                     : 'bg-white text-navy border-navy/10 hover:border-navy/30'
