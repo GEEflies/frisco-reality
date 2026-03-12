@@ -388,7 +388,7 @@ async function detectAndUpdateLogo(imageId: string, imageBuffer: ArrayBuffer, mi
     } catch (e) {
         console.error(`[logo-detect] Error for ${imageId}:`, (e as Error).message);
         // Non-fatal — the image is still enhanced, just logo flag not set.
-        // The frontend falls back to isEnhancedImage() heuristic when has_baked_logo is null.
+        // The frontend always shows the CSS overlay on enhanced images regardless of has_baked_logo.
     }
 }
 

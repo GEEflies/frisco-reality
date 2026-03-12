@@ -159,15 +159,14 @@ export const Navbar = () => {
       <div className={`fixed top-0 left-0 right-0 z-[99] flex-col transition-all duration-300 ${isPropertyDetailPage ? 'hidden' : 'hidden xl:flex'}`}>
         <header className="relative w-full flex items-center justify-center h-24">
           <div
-            className={`absolute left-1/2 -translate-x-1/2 inset-y-3 rounded-full transition-all duration-500 ${isNavActive ? 'bg-white/95 backdrop-blur-xl border border-navy/10 shadow-lg opacity-100' : 'opacity-0'}`}
+            className={`relative flex items-center justify-between gap-4 2xl:gap-8 flex-nowrap px-6 my-3 rounded-full transition-all duration-500 ${isNavActive ? 'bg-white/95 backdrop-blur-xl border border-navy/10 shadow-lg' : ''}`}
             style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}
-          />
-          <div className="relative flex items-center justify-between gap-6 2xl:gap-12 flex-nowrap px-8" style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}>
+          >
             <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className="relative z-10 flex-shrink-0">
               <img src="/frisco-logo-hq.png" alt="FRISCO" className="h-16 pl-4" />
             </Link>
 
-            <nav className="flex items-center gap-6 2xl:gap-10 flex-nowrap">
+            <nav className="flex items-center gap-5 2xl:gap-8 flex-nowrap">
               <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className={`text-base font-sans font-medium transition-colors relative group py-2 tracking-[0.2em] uppercase whitespace-nowrap ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
                 {navCopy.home}
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
@@ -230,16 +229,16 @@ export const Navbar = () => {
 
             {/* Contact actions */}
             <div className="flex items-center gap-2">
-              <a href="tel:+421905447220" className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] bg-accent-red text-white hover:scale-105 hover:shadow-xl hover:shadow-accent-red/30 shadow-lg shadow-accent-red/20 transition-all duration-300 whitespace-nowrap flex-shrink-0">
+              <a href="tel:+421905447220" className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] bg-accent-red text-white hover:scale-105 hover:shadow-xl hover:shadow-accent-red/30 shadow-lg shadow-accent-red/20 transition-all duration-300 whitespace-nowrap flex-shrink-0">
                 <Phone size={16} className="flex-shrink-0" />
                 <span>0905 447 220</span>
               </a>
-              <a href="mailto:info@frisco.sk" className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] border bg-white/50 border-accent-red text-accent-red hover:bg-accent-red hover:text-white group shadow-sm hover:shadow-md transition-all duration-300 whitespace-nowrap flex-shrink-0">
+              <a href="mailto:info@frisco.sk" className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-sans font-bold tracking-[0.15em] border bg-white/50 border-accent-red text-accent-red hover:bg-accent-red hover:text-white group shadow-sm hover:shadow-md transition-all duration-300 whitespace-nowrap flex-shrink-0">
                 <Mail size={16} className="flex-shrink-0 group-hover:text-white transition-colors" />
                 <span>info@frisco.sk</span>
               </a>
 
-              <div className="flex items-center gap-2.5 flex-shrink-0 ml-1">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <a href="https://www.facebook.com/Friscorealitka/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center text-navy/70 hover:bg-accent-red hover:text-white hover:border-accent-red transition-all duration-300" aria-label="Facebook">
                   <Facebook size={18} strokeWidth={2} />
                 </a>

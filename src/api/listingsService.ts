@@ -49,18 +49,22 @@ export function isEnhancedImage(url: string): boolean {
 
 /**
  * Determines whether the CSS watermark overlay should be shown for a ListingImage.
- * Uses the `has_baked_logo` flag set by the Python logo-detection script.
- * - has_baked_logo === true  →  baked-in logo exists → do NOT show overlay
- * - has_baked_logo === false →  no baked-in logo    → show overlay
- * - has_baked_logo === null  →  unknown, but enhanced → show overlay
  *
- * The overlay must never be shown on original UC images, otherwise we create
- * the exact double-watermark problem the user reported.
+ * ALWAYS show the overlay on enhanced images (stored in Supabase bucket).
+ * Never show overlay on original UC images (they already have UC's own watermark).
+ *
+ * The `has_baked_logo` flag is kept for monitoring/analytics but no longer gates
+ * the overlay. Previous behaviour suppressed the overlay when has_baked_logo=true,
+ * but this caused images to appear with NO branding at all whenever:
+ *   - The AI failed to fully remove the UC watermark (logo detector flagged it)
+ *   - Red photo content triggered a false-positive detection
+ * The CSS overlay is positioned at bottom-right (same spot as any remnant UC
+ * watermark), so it effectively covers it — always showing it is strictly better
+ * than the risk of no branding.
  */
 export function shouldShowOverlay(image: ListingImage): boolean {
     const baseUrl = image.upscaled_url || image.enhanced_url;
     if (!baseUrl || !isEnhancedImage(baseUrl)) return false;
-    if (image.has_baked_logo === true) return false;
     return true;
 }
 

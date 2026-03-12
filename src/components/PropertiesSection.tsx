@@ -152,7 +152,14 @@ export const PropertiesSection = () => {
 
   // Fetch listings with filters
   const { data: listings = [], isLoading, error } = useListings(filters);
-  const { maxPrice, localities, availableTypes } = useListingFilters();
+  const {
+    maxPrice,
+    absoluteMaxPrice,
+    localities,
+    availableTypes,
+    categoryCounts,
+    transactionCounts,
+  } = useListingFilters(filters);
 
   // Initialize from URL params
   useEffect(() => {
@@ -201,25 +208,50 @@ export const PropertiesSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Update price range when max changes
+  // Clamp active price range when facet max changes.
   useEffect(() => {
-    if (maxPrice > 0) {
-      setFilters(prev => ({
+    if (maxPrice <= 0) return;
+
+    setFilters(prev => {
+      const [prevMin, prevMax] = prev.priceRange || [0, maxPrice];
+      const nextMin = Math.max(0, Math.min(prevMin, maxPrice));
+      const nextMax = Math.max(nextMin, Math.min(prevMax, maxPrice));
+      if (nextMin === prevMin && nextMax === prevMax) return prev;
+      return {
         ...prev,
-        priceRange: [0, maxPrice],
-      }));
-    }
+        priceRange: [nextMin, nextMax],
+      };
+    });
   }, [maxPrice]);
+
+  // If selected category disappears after another facet change, reset to all.
+  useEffect(() => {
+    const category = filters.category;
+    if (!category || category === 'all') return;
+    if ((categoryCounts as Record<string, number>)[category] > 0) return;
+    setFilters(prev => ({ ...prev, category: 'all' }));
+  }, [categoryCounts, filters.category]);
+
+  // If selected transaction disappears after another facet change, reset to all.
+  useEffect(() => {
+    if (filters.transaction !== 'rent' && filters.transaction !== 'sale') return;
+    if (transactionCounts[filters.transaction] > 0) return;
+    setFilters(prev => ({ ...prev, transaction: 'all' }));
+  }, [transactionCounts, filters.transaction]);
 
   const resetFilters = () => {
     setFilters({
       category: 'all',
       transaction: 'all',
       locality: 'all',
-      priceRange: [0, maxPrice],
+      priceRange: [0, absoluteMaxPrice],
       sort: defaultSort,
     });
   };
+
+  const hasAnySale = transactionCounts.sale > 0;
+  const hasAnyRent = transactionCounts.rent > 0;
+  const hasCategory = (id: string) => (categoryCounts as Record<string, number>)[id] > 0;
 
   // Scroll to filter bar
   const scrollToFilters = () => {
@@ -330,7 +362,13 @@ export const PropertiesSection = () => {
                 { id: 'all', label: copy.filters.all, icon: LayoutGrid, isAll: true },
                 { id: 'rent', label: copy.filters.rent, icon: Key, isTransaction: true },
                 { id: 'apartment', label: copy.filters.apartment, icon: Building2 },
-              ].map((cat) => {
+              ]
+              .filter((cat) => {
+                if (cat.isAll) return hasAnySale || hasAnyRent;
+                if (cat.isTransaction) return hasAnyRent;
+                return hasCategory(cat.id);
+              })
+              .map((cat) => {
                 const isActive = cat.isAll
                   ? filters.category === 'all' && filters.transaction === 'all'
                   : cat.isTransaction
@@ -379,7 +417,9 @@ export const PropertiesSection = () => {
                 { id: 'house', label: copy.filters.house, icon: Home },
                 { id: 'land', label: copy.filters.land, icon: Map },
                 { id: 'other', label: copy.filters.other, icon: Warehouse },
-              ].map((cat) => {
+              ]
+              .filter((cat) => hasCategory(cat.id))
+              .map((cat) => {
                 const isActive = filters.category === cat.id;
 
                 return (
@@ -415,7 +455,13 @@ export const PropertiesSection = () => {
                 { id: 'house', label: copy.filters.house, icon: Home },
                 { id: 'land', label: copy.filters.land, icon: Map },
                 { id: 'other', label: copy.filters.other, icon: Warehouse },
-              ].map((cat) => {
+              ]
+              .filter((cat) => {
+                if (cat.isAll) return hasAnySale || hasAnyRent;
+                if (cat.isTransaction) return hasAnyRent;
+                return hasCategory(cat.id);
+              })
+              .map((cat) => {
                 const isActive = cat.isAll
                   ? filters.category === 'all' && filters.transaction === 'all'
                   : cat.isTransaction

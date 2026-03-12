@@ -492,8 +492,8 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
             'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200',
             'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200',
         ];
-    // Build a Set of image URLs that should show the CSS overlay
-    // (no baked-in FRISCO logo detected by the Python scanner)
+    // Build a Set of image URLs that should show the CSS watermark overlay
+    // (all enhanced images get the overlay for consistent FRISCO branding)
     const overlayUrls = new Set(
         listing.images
             .filter(img => shouldShowOverlay(img))
