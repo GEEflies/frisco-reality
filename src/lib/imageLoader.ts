@@ -29,7 +29,7 @@ export default function listingImageLoader({ src, width, quality }: ImageLoaderP
         return src;
     }
 
-    const q = quality || 75;
+    const q = quality || 85;
 
     // weserv.nl params:
     // w     = target width (height auto-calculated to preserve aspect ratio)
@@ -44,7 +44,7 @@ export default function listingImageLoader({ src, width, quality }: ImageLoaderP
  * Build the weserv.nl URL for a given source, width, and quality.
  * Useful for preloading images at the exact same URL that next/image will request.
  */
-export function buildWeservUrl(src: string, width: number, quality = 75): string {
+export function buildWeservUrl(src: string, width: number, quality = 85): string {
     if (src.startsWith('/') || src.startsWith('data:')) return src;
     return `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=${width}&q=${quality}&output=webp&we&il`;
 }

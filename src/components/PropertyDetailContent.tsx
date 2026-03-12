@@ -86,7 +86,7 @@ const GalleryImage = ({
     alt,
     fill = true,
     sizes,
-    quality = 75,
+    quality = 85,
     priority = false,
     className = '',
     style,
@@ -869,7 +869,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 alt={listing.title}
                                 priority
                                 sizes="50vw"
-                                quality={80}
+                                quality={88}
                                 showOverlay={overlayUrls.has(images[0])}
                                 className="object-cover hover:scale-[1.03] duration-900 ease-smooth-zoom"
                             />
@@ -887,7 +887,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     alt={`${listing.title} - ${idx + 2}`}
                                     priority={idx === 0}
                                     sizes="25vw"
-                                    quality={75}
+                                    quality={85}
                                     showOverlay={overlayUrls.has(img)}
                                     className="object-cover hover:scale-[1.03] duration-900 ease-smooth-zoom"
                                 />
@@ -929,7 +929,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     alt={listing.title}
                                     priority={idx === 0}
                                     sizes="100vw"
-                                    quality={80}
+                                    quality={88}
                                     showOverlay={overlayUrls.has(img)}
                                     className="object-cover"
                                 />
@@ -1196,7 +1196,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                                 const imgSrc = img.startsWith('/') || img.startsWith('data:')
                                     ? img
-                                    : buildWeservUrl(img, Math.max(1200, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1200, 1920)), 85);
+                                    : buildWeservUrl(img, Math.max(1600, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1600, 2560)), 92);
 
                                 return (
                                     <div
@@ -1320,7 +1320,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                     onClick={() => { setCurrentImageIndex(idx); setShowAllPhotos(false); setShowLightbox(true); }}
                                     className="aspect-[4/3] rounded-xl overflow-hidden hover:opacity-90 transition-opacity relative"
                                 >
-                                    <GalleryImage src={img} alt={`${copy.photo} ${idx + 1}`} sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={75} showOverlay={overlayUrls.has(img)} className="object-cover" />
+                                    <GalleryImage src={img} alt={`${copy.photo} ${idx + 1}`} sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" quality={85} showOverlay={overlayUrls.has(img)} className="object-cover" />
                                 </motion.button>
                             ))}
                         </div>

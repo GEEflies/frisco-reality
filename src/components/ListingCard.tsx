@@ -103,7 +103,7 @@ export const ListingCard = ({
                             alt={title}
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            quality={75}
+                            quality={85}
                             className="object-cover will-change-transform transition-transform duration-900 ease-smooth-zoom group-hover:scale-105"
                         />
                         {/* FRISCO watermark — only when no baked-in logo */}
