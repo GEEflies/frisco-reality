@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
     Select,
@@ -12,6 +12,16 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { X, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useAllListings } from '@/hooks/useListings';
+
+const categoryCodesMap: Record<string, number[]> = {
+    apartment: [4],
+    house: [6, 8],
+    land: [3],
+    commercial: [2, 9, 7],
+    cottage: [10],
+    garage: [11],
+};
 
 interface FilterBarProps {
     filters: {
@@ -29,6 +39,7 @@ interface FilterBarProps {
     listingsCount?: number;
     externalOpen?: boolean;
     onExternalOpenHandled?: () => void;
+    transaction?: 'sale' | 'rent' | 'all';
 }
 
 export const FilterBar = ({
@@ -43,6 +54,7 @@ export const FilterBar = ({
     listingsCount = 0,
     externalOpen = false,
     onExternalOpenHandled,
+    transaction = 'all',
 }: FilterBarProps) => {
     const { language } = useLanguage();
     const copy = {
@@ -206,6 +218,78 @@ export const FilterBar = ({
         ...availableTypes.map(type => ({ value: type, label: typeLabels[type] || type })),
     ];
 
+    // ── Cascading filter counts for the mobile sheet ──
+    // Uses the cached allListings (zero extra fetch) to compute which
+    // options are valid given the *other* currently selected temp filters.
+    const { data: allListings = [] } = useAllListings();
+
+    const baseListings = useMemo(() => {
+        let result = allListings;
+        if (transaction === 'sale') result = result.filter(l => l.action === 1);
+        else if (transaction === 'rent') result = result.filter(l => l.action === 3);
+        return result;
+    }, [allListings, transaction]);
+
+    // Counts per locality given the current type + price temp filters
+    const locationCounts = useMemo(() => {
+        let pool = baseListings;
+        const typ = tempFilters.type;
+        if (typ && typ !== 'all') {
+            const codes = categoryCodesMap[typ];
+            if (codes) pool = pool.filter(l => codes.includes(l.category));
+        }
+        const [min, max] = tempFilters.priceRange;
+        if (min > 0) pool = pool.filter(l => (l.price || 0) >= min);
+        if (max > 0 && max < maxPrice) pool = pool.filter(l => (l.price || 0) <= max);
+
+        const counts: Record<string, number> = {};
+        for (const l of pool) {
+            const city = l.location_city;
+            const district = l.location_district;
+            if (city) counts[city] = (counts[city] || 0) + 1;
+            if (district && district !== city) counts[district] = (counts[district] || 0) + 1;
+        }
+        return counts;
+    }, [baseListings, tempFilters.type, tempFilters.priceRange, maxPrice]);
+
+    // Counts per type given the current locality + price temp filters
+    const typeCounts = useMemo(() => {
+        let pool = baseListings;
+        const loc = tempFilters.locality;
+        if (loc && loc !== 'all') {
+            pool = pool.filter(l => l.location_city === loc || l.location_district === loc);
+        }
+        const [min, max] = tempFilters.priceRange;
+        if (min > 0) pool = pool.filter(l => (l.price || 0) >= min);
+        if (max > 0 && max < maxPrice) pool = pool.filter(l => (l.price || 0) <= max);
+
+        const counts: Record<string, number> = {};
+        for (const l of pool) {
+            for (const [key, codes] of Object.entries(categoryCodesMap)) {
+                if (codes.includes(l.category)) {
+                    counts[key] = (counts[key] || 0) + 1;
+                    break;
+                }
+            }
+        }
+        return counts;
+    }, [baseListings, tempFilters.locality, tempFilters.priceRange, maxPrice]);
+
+    // Auto-reset a selected option to 'all' if it has zero matches
+    useEffect(() => {
+        const loc = tempFilters.locality;
+        if (loc && loc !== 'all' && (locationCounts[loc] ?? 0) === 0) {
+            setTempFilters(prev => ({ ...prev, locality: 'all' }));
+        }
+    }, [locationCounts, tempFilters.locality]);
+
+    useEffect(() => {
+        const typ = tempFilters.type;
+        if (typ && typ !== 'all' && (typeCounts[typ] ?? 0) === 0) {
+            setTempFilters(prev => ({ ...prev, type: 'all' }));
+        }
+    }, [typeCounts, tempFilters.type]);
+
     const mobileSheet = isMounted ? createPortal(
         <div
             className={`fixed inset-0 z-[250] flex items-end md:hidden transition-opacity duration-300 ${
@@ -245,19 +329,27 @@ export const FilterBar = ({
                                 {copy.locality}
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {locationOptions.map((loc) => (
-                                    <button
-                                        key={loc.value}
-                                        onClick={() => setTempFilters({ ...tempFilters, locality: loc.value })}
-                                        className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
-                                            tempFilters.locality === loc.value
-                                                ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
-                                                : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
-                                        }`}
-                                    >
-                                        {loc.label}
-                                    </button>
-                                ))}
+                                {locationOptions.map((loc) => {
+                                    const count = loc.value === 'all' ? null : (locationCounts[loc.value] ?? 0);
+                                    const disabled = count === 0;
+                                    const isSelected = tempFilters.locality === loc.value;
+                                    return (
+                                        <button
+                                            key={loc.value}
+                                            disabled={disabled}
+                                            onClick={() => !disabled && setTempFilters({ ...tempFilters, locality: loc.value })}
+                                            className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
+                                                disabled
+                                                    ? 'border-navy/5 bg-white text-charcoal/25 cursor-not-allowed'
+                                                    : isSelected
+                                                        ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
+                                                        : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
+                                            }`}
+                                        >
+                                            {loc.label}{count !== null ? ` (${count})` : ''}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -266,19 +358,27 @@ export const FilterBar = ({
                                 {copy.propertyType}
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {typeOptions.map((type) => (
-                                    <button
-                                        key={type.value}
-                                        onClick={() => setTempFilters({ ...tempFilters, type: type.value })}
-                                        className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
-                                            tempFilters.type === type.value
-                                                ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
-                                                : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
-                                        }`}
-                                    >
-                                        {type.label}
-                                    </button>
-                                ))}
+                                {typeOptions.map((type) => {
+                                    const count = type.value === 'all' ? null : (typeCounts[type.value] ?? 0);
+                                    const disabled = count === 0;
+                                    const isSelected = tempFilters.type === type.value;
+                                    return (
+                                        <button
+                                            key={type.value}
+                                            disabled={disabled}
+                                            onClick={() => !disabled && setTempFilters({ ...tempFilters, type: type.value })}
+                                            className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
+                                                disabled
+                                                    ? 'border-navy/5 bg-white text-charcoal/25 cursor-not-allowed'
+                                                    : isSelected
+                                                        ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
+                                                        : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
+                                            }`}
+                                        >
+                                            {type.label}{count !== null ? ` (${count})` : ''}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 

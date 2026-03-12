@@ -488,6 +488,7 @@ export const PropertiesSection = () => {
                 listingsCount={listings.length}
                 externalOpen={mobileFilterOpen}
                 onExternalOpenHandled={() => setMobileFilterOpen(false)}
+                transaction={filters.transaction || 'all'}
               />
             </div>
 
@@ -565,6 +566,7 @@ export const PropertiesSection = () => {
               localities={localities}
               availableTypes={availableTypes}
               listingsCount={listings.length}
+              transaction={filters.transaction || 'all'}
             />
           </motion.div>
         </div>
