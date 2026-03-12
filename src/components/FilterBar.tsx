@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
     Select,
     SelectContent,
@@ -130,6 +131,11 @@ export const FilterBar = ({
     const locale = language === 'sk' ? 'sk-SK' : language === 'de' ? 'de-DE' : 'en-US';
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     // Allow parent to open the modal externally (e.g. floating filter button)
     useEffect(() => {
@@ -185,154 +191,139 @@ export const FilterBar = ({
         garage: copy.labels.garage,
         other: copy.labels.other,
     };
-    
+
     const typeOptions = [
         { value: 'all', label: copy.all },
         ...availableTypes.map(type => ({ value: type, label: typeLabels[type] || type })),
     ];
 
-    return (
-        <>
-            {/* ===== MOBILE: Toggle Button (just the trigger) ===== */}
-            <div className="w-full md:hidden">
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="flex items-center justify-between w-full text-charcoal h-[52px] px-5 bg-white shadow-sm rounded-xl border border-navy/10"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-full bg-navy/10 flex items-center justify-center text-navy border border-navy/10">
-                            <SlidersHorizontal size={13} />
-                        </div>
-                        <span className="uppercase tracking-widest text-[11px] font-bold text-charcoal/90">{copy.filterOffer}</span>
-                    </div>
-                    <ChevronDown size={16} className="text-charcoal/50" />
-                </button>
-            </div>
-
-            {/* ===== MOBILE: Bottom Sheet Modal ===== */}
+    const mobileSheet = isMounted ? createPortal(
+        <div
+            className={`fixed inset-0 z-[250] flex items-end md:hidden transition-opacity duration-300 ${
+                isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+            }`}
+            aria-hidden={!isOpen}
+        >
             <div
-                className={`fixed inset-0 z-[110] flex items-end md:hidden transition-opacity duration-300 ${
-                    isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+                onClick={() => setIsOpen(false)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+
+            <div
+                className={`relative z-[251] flex w-full max-h-[88svh] min-h-[70svh] flex-col overflow-hidden rounded-t-[28px] border-t border-white/60 bg-white shadow-[0_-24px_80px_rgba(0,0,0,0.28)] transition-transform duration-300 ease-out ${
+                    isOpen ? 'translate-y-0' : 'translate-y-full'
                 }`}
             >
-                {/* Backdrop */}
-                <div
-                    onClick={() => setIsOpen(false)}
-                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                />
+                <div className="relative border-b border-navy/8 bg-white px-6 pb-4 pt-6">
+                    <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 rounded-full bg-navy/10" />
+                    <div className="pr-12">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-charcoal/45">{copy.filterOffer}</p>
+                        <h3 className="mt-2 text-2xl font-serif font-bold text-navy">{listingsCount} results</h3>
+                    </div>
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="absolute right-4 top-4 rounded-full p-2 transition-colors hover:bg-navy/5"
+                        aria-label="Close filters"
+                    >
+                        <X className="h-6 w-6 text-charcoal" />
+                    </button>
+                </div>
 
-                {/* Panel */}
-                <div
-                    className={`relative bg-white shadow-2xl overflow-hidden flex flex-col w-full h-[85vh] rounded-t-2xl transition-transform duration-300 ease-out ${
-                        isOpen ? 'translate-y-0' : 'translate-y-full'
-                    }`}
-                >
-                            {/* Swipe indicator + Close button */}
-                            <div className="relative pt-6 pb-3 px-6 bg-white">
-                                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-navy/10 rounded-full" />
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="absolute top-4 right-4 p-2 hover:bg-navy/5 rounded-full transition-colors"
-                                >
-                                    <X className="w-6 h-6 text-charcoal" />
-                                </button>
+                <div className="flex-1 overflow-y-auto px-6 pb-6 pt-5">
+                    <div className="space-y-8">
+                        <div className="space-y-4">
+                            <label className="text-sm font-semibold uppercase tracking-wider text-charcoal/60">
+                                {copy.locality}
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {locationOptions.map((loc) => (
+                                    <button
+                                        key={loc.value}
+                                        onClick={() => setTempFilters({ ...tempFilters, locality: loc.value })}
+                                        className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
+                                            tempFilters.locality === loc.value
+                                                ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
+                                                : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
+                                        }`}
+                                    >
+                                        {loc.label}
+                                    </button>
+                                ))}
                             </div>
+                        </div>
 
-                            {/* Content - Scrollable */}
-                            <div className="px-8 pb-8 overflow-y-auto flex-1">
-                                <div className="space-y-10">
-
-                                    {/* Location Filter */}
-                                    <div className="space-y-4">
-                                        <label className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider">
-                                            {copy.locality}
-                                        </label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {locationOptions.map((loc) => (
-                                                <button
-                                                    key={loc.value}
-                                                    onClick={() => setTempFilters({ ...tempFilters, locality: loc.value })}
-                                                    className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-all border ${
-                                                        tempFilters.locality === loc.value
-                                                            ? 'bg-navy border-navy text-white shadow-lg shadow-navy/20'
-                                                            : 'bg-white border-navy/10 hover:border-navy/30 hover:bg-cream text-charcoal/80'
-                                                    }`}
-                                                >
-                                                    {loc.label}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Type Filter */}
-                                    <div className="space-y-4">
-                                        <label className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider">
-                                            {copy.propertyType}
-                                        </label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {typeOptions.map((type) => (
-                                                <button
-                                                    key={type.value}
-                                                    onClick={() => setTempFilters({ ...tempFilters, type: type.value })}
-                                                    className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-all border ${
-                                                        tempFilters.type === type.value
-                                                            ? 'bg-navy border-navy text-white shadow-lg shadow-navy/20'
-                                                            : 'bg-white border-navy/10 hover:border-navy/30 hover:bg-cream text-charcoal/80'
-                                                    }`}
-                                                >
-                                                    {type.label}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Price Range Slider */}
-                                    <div className="space-y-5">
-                                        <label className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider">
-                                            {copy.priceRange}
-                                        </label>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-sm font-medium text-navy">
-                                                €{tempFilters.priceRange[0].toLocaleString(locale)}
-                                            </span>
-                                            <span className="text-sm font-medium text-navy">
-                                                €{tempFilters.priceRange[1].toLocaleString(locale)}
-                                            </span>
-                                        </div>
-                                        <Slider
-                                            value={tempFilters.priceRange}
-                                            max={maxPrice}
-                                            min={0}
-                                            step={10000}
-                                            minStepsBetweenThumbs={1}
-                                            onValueChange={(value) => setTempFilters({ ...tempFilters, priceRange: value as [number, number] })}
-                                            className="py-2"
-                                        />
-                                        <div className="flex justify-between items-center text-xs text-charcoal/40">
-                                            <span>€0</span>
-                                            <span>€{maxPrice.toLocaleString(locale)}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="space-y-4">
+                            <label className="text-sm font-semibold uppercase tracking-wider text-charcoal/60">
+                                {copy.propertyType}
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {typeOptions.map((type) => (
+                                    <button
+                                        key={type.value}
+                                        onClick={() => setTempFilters({ ...tempFilters, type: type.value })}
+                                        className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
+                                            tempFilters.type === type.value
+                                                ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
+                                                : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
+                                        }`}
+                                    >
+                                        {type.label}
+                                    </button>
+                                ))}
                             </div>
+                        </div>
 
-                            {/* Footer - Sticky */}
-                            <div className="p-6 border-t border-navy/10 bg-cream/30 flex flex-col gap-4 z-10 sticky bottom-0 backdrop-blur-xl">
-                                <button
-                                    onClick={resetAll}
-                                    className="text-sm text-charcoal/50 hover:text-charcoal transition-colors font-medium underline-offset-4 hover:underline"
-                                >
-                                    {copy.clearFilters}
-                                </button>
-                                <button
-                                    onClick={applyFilters}
-                                    className="w-full px-10 py-3.5 bg-navy text-white font-bold rounded-xl hover:bg-navy/90 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95"
-                                >
-                                    {copy.show} ({listingsCount})
-                                </button>
+                        <div className="space-y-5">
+                            <label className="text-sm font-semibold uppercase tracking-wider text-charcoal/60">
+                                {copy.priceRange}
+                            </label>
+                            <div className="flex items-center justify-between rounded-2xl bg-cream px-4 py-3">
+                                <span className="text-sm font-semibold text-navy">
+                                    €{tempFilters.priceRange[0].toLocaleString(locale)}
+                                </span>
+                                <span className="text-sm font-semibold text-navy">
+                                    €{tempFilters.priceRange[1].toLocaleString(locale)}
+                                </span>
+                            </div>
+                            <Slider
+                                value={tempFilters.priceRange}
+                                max={maxPrice}
+                                min={0}
+                                step={10000}
+                                minStepsBetweenThumbs={1}
+                                onValueChange={(value) => setTempFilters({ ...tempFilters, priceRange: value as [number, number] })}
+                                className="py-2"
+                            />
+                            <div className="flex items-center justify-between text-xs text-charcoal/40">
+                                <span>€0</span>
+                                <span>€{maxPrice.toLocaleString(locale)}</span>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="sticky bottom-0 z-10 flex flex-col gap-4 border-t border-navy/10 bg-white/95 p-6 backdrop-blur-xl [padding-bottom:calc(env(safe-area-inset-bottom)+1.5rem)]">
+                    <button
+                        onClick={applyFilters}
+                        className="w-full rounded-xl bg-navy py-4 text-sm font-semibold uppercase tracking-widest text-white shadow-lg transition-all duration-300 hover:bg-accent-red hover:shadow-xl"
+                    >
+                        {copy.show} ({listingsCount})
+                    </button>
+                    <button
+                        onClick={resetAll}
+                        className="text-sm font-medium text-charcoal/50 transition-colors hover:text-charcoal hover:underline underline-offset-4"
+                    >
+                        {copy.clearFilters}
+                    </button>
+                </div>
+            </div>
+        </div>,
+        document.body,
+    ) : null;
+
+    return (
+        <>
+            {mobileSheet}
 
             {/* ===== DESKTOP: Inline Filter Bar ===== */}
             <div className="hidden md:block w-full bg-white shadow-lg border border-navy/15 rounded-2xl py-8 px-10 mb-12">
