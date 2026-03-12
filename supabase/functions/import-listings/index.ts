@@ -723,13 +723,14 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
                 // Image already in DB — just update sort order.
                 // We ignore img.changed to avoid burning Gemini credits on
                 // re-enhancement. Once enhanced, it stays enhanced.
-                await supabase
+                const { error: updateErr } = await supabase
                     .from('listing_images')
                     .update({ sort_order: i })
                     .eq('id', existing.id);
+                if (updateErr) console.error(`[UC] Failed to update sort_order for image ${existing.id}:`, updateErr.message);
             } else {
                 // Truly new image URL — insert and queue for first-time enhancement
-                await supabase
+                const { error: insertErr } = await supabase
                     .from('listing_images')
                     .insert({
                         listing_id: listingId,
@@ -737,7 +738,11 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
                         enhancement_status: 'pending',
                         sort_order: i,
                     });
-                console.log(`[UC] New image queued for enhancement: ${img.url}`);
+                if (insertErr) {
+                    console.error(`[UC] Failed to insert image ${img.url}:`, insertErr.message);
+                } else {
+                    console.log(`[UC] New image queued for enhancement: ${img.url}`);
+                }
             }
         }
     } else {
@@ -750,10 +755,14 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
         }));
 
         if (rows.length > 0) {
-            await supabase
+            const { error: bulkErr } = await supabase
                 .from('listing_images')
                 .insert(rows);
-            console.log(`[UC] ${rows.length} images queued for first-time enhancement`);
+            if (bulkErr) {
+                console.error(`[UC] Failed to bulk-insert ${rows.length} images:`, bulkErr.message);
+            } else {
+                console.log(`[UC] ${rows.length} images queued for first-time enhancement`);
+            }
         }
     }
 }

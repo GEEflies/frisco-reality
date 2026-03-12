@@ -15,11 +15,8 @@
  * 5. Upload the result to Supabase Storage
  *
  * The AI decides per-image whether to enhance or skip based on:
- *   - Current quality (lighting, exposure, noise, sharpness, colors)
- *   - Whether enhancement would improve or ruin the image
  *   - Whether it's a photograph at all (floorplans, logos → skip)
- *   - Whether it's already high quality (don't fix what isn't broken)
- *   - Whether it's so poor that no enhancement can save it
+ *   - All real photographs are always enhanced, regardless of quality
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -73,16 +70,15 @@ interface AssessmentResult {
     reason: string;         // human-readable reason (logged)
 }
 
-// Assessment prompt — ONLY decides whether this is a real photograph worth enhancing.
-// It no longer generates a per-image prompt; we use one universal ENHANCE_PROMPT instead.
+// Assessment prompt — ONLY filters out non-photographs (floorplans, diagrams, etc.).
+// Every real photo gets enhanced, no exceptions.
 const ASSESS_PROMPT = `Classify this image. Return ONLY a JSON object:
 {"enhance": true or false, "reason": "one short sentence"}
 
 Return false ONLY if the image is NOT a photograph:
 - Floorplan, map, logo, 3D render, diagram, certificate, infographic, screenshot, scan, or document.
-- So severely damaged, blurry, or corrupted that re-processing would make it worse.
 
-Return true for ALL real photographs — interior, exterior, aerial, detail shots — regardless of current quality.
+Return true for ALL photographs — interior, exterior, aerial, detail shots — regardless of quality, blur, noise, or damage.
 
 Return ONLY the JSON object.`;
 
@@ -405,6 +401,10 @@ const MAX_WATERMARK_PASSES = 1;
 // ---- Main enhancement logic ----
 // force=true: skip AI quality assessment, always enhance (used to re-process skipped images)
 async function enhanceImage(imageId: string, originalUrl: string, force = false): Promise<{ success: boolean; error?: string }> {
+    // Declared outside try so the catch block (force-mode fallback) can access them.
+    let imageBuffer: ArrayBuffer | undefined;
+    let mimeType: string = getMimeType(originalUrl);
+
     try {
         // Download original image
         const response = await fetch(originalUrl);
@@ -412,8 +412,7 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
             throw new Error(`Failed to download image: ${response.status} ${response.statusText}`);
         }
 
-        const imageBuffer = await response.arrayBuffer();
-        const mimeType = getMimeType(originalUrl);
+        imageBuffer = await response.arrayBuffer();
 
         // Check image size — skip if > 10MB (Gemini limit)
         if (imageBuffer.byteLength > 10 * 1024 * 1024) {
@@ -554,8 +553,10 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
                     enhancement_status: 'completed',
                 })
                 .eq('id', imageId);
-            // Detect logo on original image (buffer already in memory — no re-download)
-            await detectAndUpdateLogo(imageId, imageBuffer, mimeType);
+            // Detect logo on original image if we managed to download it
+            if (imageBuffer) {
+                await detectAndUpdateLogo(imageId, imageBuffer, mimeType);
+            }
             return { success: true, fallback: true, reason: errorMessage };
         }
 
