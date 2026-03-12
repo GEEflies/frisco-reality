@@ -37,7 +37,7 @@ async function recoverStuckImages(): Promise<number> {
         .from('listing_images')
         .select('id')
         .eq('enhancement_status', 'processing')
-        .lt('created_at', cutoff);
+        .lt('updated_at', cutoff);
     if (stuck && stuck.length > 0) {
         const { error } = await supabase
             .from('listing_images')
@@ -54,11 +54,15 @@ async function recoverStuckImages(): Promise<number> {
     // 2. Retry failed images that haven't exhausted their 3 attempts yet.
     //    Covers temporary failures: Gemini overload, network blips, UC image briefly down.
     //    Images with retry_count >= 3 stay permanently failed — site shows original_url.
+    //    Backoff: only re-queue images that have been in 'failed' state for >5 minutes.
+    //    Prevents burning all 3 retries in 3 minutes during a Gemini outage.
+    const retryCutoff = new Date(Date.now() - 5 * 60 * 1000).toISOString();
     const { data: failedRetryable } = await supabase
         .from('listing_images')
         .select('id')
         .eq('enhancement_status', 'failed')
-        .lt('retry_count', 3);
+        .lt('retry_count', 3)
+        .lt('updated_at', retryCutoff);
     if (failedRetryable && failedRetryable.length > 0) {
         const { error } = await supabase
             .from('listing_images')
@@ -75,28 +79,15 @@ async function recoverStuckImages(): Promise<number> {
     return recovered;
 }
 
-// ---- Claim the batch: mark all as 'processing' BEFORE firing any API calls ----
-// Prevents two overlapping cron runs from grabbing the same images.
-async function claimImages(ids: string[]): Promise<void> {
-    const { error } = await supabase
-        .from('listing_images')
-        .update({ enhancement_status: 'processing' })
-        .in('id', ids);
-    if (error) console.error('Error claiming images:', error);
-}
-
-// ---- Fetch pending images ----
-async function fetchPendingImages() {
+// ---- Atomic claim: fetch + mark as 'processing' in one transaction ----
+// Uses claim_pending_images RPC with FOR UPDATE SKIP LOCKED to prevent
+// two overlapping cron runs from grabbing the same image.
+async function claimPendingImages() {
     const { data, error } = await supabase
-        .from('listing_images')
-        .select('id, original_url, listing_id')
-        .eq('enhancement_status', 'pending')
-        .is('enhanced_url', null)
-        .order('created_at', { ascending: true })
-        .limit(BATCH_SIZE);
+        .rpc('claim_pending_images', { batch_limit: BATCH_SIZE });
 
     if (error) {
-        console.error('Error fetching pending images:', error);
+        console.error('Error claiming pending images:', error);
         return [];
     }
 
@@ -156,8 +147,9 @@ Deno.serve(async (req) => {
         // Step 1: Recover stuck images
         const recovered = await recoverStuckImages();
 
-        // Step 2: Fetch pending images
-        const pending = await fetchPendingImages();
+        // Step 2: Atomically claim pending images (fetch + mark 'processing' in one query)
+        // Uses FOR UPDATE SKIP LOCKED — concurrent cron runs cannot grab the same image.
+        const pending = await claimPendingImages();
 
         if (pending.length === 0) {
             return new Response(
@@ -169,12 +161,9 @@ Deno.serve(async (req) => {
             );
         }
 
-        // Step 3: Claim batch immediately — prevents overlapping cron runs
-        // from grabbing the same images.
-        await claimImages(pending.map(img => img.id));
         console.log(`Processing ${pending.length} images sequentially...`);
 
-        // Step 4: Process images one at a time to avoid WORKER_LIMIT errors.
+        // Step 3: Process images one at a time to avoid WORKER_LIMIT errors.
         // Edge Functions have limited concurrent workers; parallel calls exhaust them.
         let successCount = 0;
         let failCount = 0;
