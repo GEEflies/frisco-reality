@@ -52,7 +52,7 @@ export function isEnhancedImage(url: string): boolean {
  * Uses the `has_baked_logo` flag set by the Python logo-detection script.
  * - has_baked_logo === true  →  baked-in logo exists → do NOT show overlay
  * - has_baked_logo === false →  no baked-in logo    → show overlay
- * - has_baked_logo === null  →  unknown              → do NOT show overlay
+ * - has_baked_logo === null  →  unknown, but enhanced → show overlay
  *
  * The overlay must never be shown on original UC images, otherwise we create
  * the exact double-watermark problem the user reported.
@@ -60,7 +60,7 @@ export function isEnhancedImage(url: string): boolean {
 export function shouldShowOverlay(image: ListingImage): boolean {
     const baseUrl = image.upscaled_url || image.enhanced_url;
     if (!baseUrl || !isEnhancedImage(baseUrl)) return false;
-    if (image.has_baked_logo !== false) return false;
+    if (image.has_baked_logo === true) return false;
     return true;
 }
 

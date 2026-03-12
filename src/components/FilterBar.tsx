@@ -331,19 +331,16 @@ export const FilterBar = ({
                             <div className="flex flex-wrap gap-2">
                                 {locationOptions.map((loc) => {
                                     const count = loc.value === 'all' ? null : (locationCounts[loc.value] ?? 0);
-                                    const disabled = count === 0;
+                                    if (count === 0) return null;
                                     const isSelected = tempFilters.locality === loc.value;
                                     return (
                                         <button
                                             key={loc.value}
-                                            disabled={disabled}
-                                            onClick={() => !disabled && setTempFilters({ ...tempFilters, locality: loc.value })}
+                                            onClick={() => setTempFilters({ ...tempFilters, locality: loc.value })}
                                             className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
-                                                disabled
-                                                    ? 'border-navy/5 bg-white text-charcoal/25 cursor-not-allowed'
-                                                    : isSelected
-                                                        ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
-                                                        : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
+                                                isSelected
+                                                    ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
+                                                    : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
                                             }`}
                                         >
                                             {loc.label}{count !== null ? ` (${count})` : ''}
@@ -360,19 +357,16 @@ export const FilterBar = ({
                             <div className="flex flex-wrap gap-2">
                                 {typeOptions.map((type) => {
                                     const count = type.value === 'all' ? null : (typeCounts[type.value] ?? 0);
-                                    const disabled = count === 0;
+                                    if (count === 0) return null;
                                     const isSelected = tempFilters.type === type.value;
                                     return (
                                         <button
                                             key={type.value}
-                                            disabled={disabled}
-                                            onClick={() => !disabled && setTempFilters({ ...tempFilters, type: type.value })}
+                                            onClick={() => setTempFilters({ ...tempFilters, type: type.value })}
                                             className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
-                                                disabled
-                                                    ? 'border-navy/5 bg-white text-charcoal/25 cursor-not-allowed'
-                                                    : isSelected
-                                                        ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
-                                                        : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
+                                                isSelected
+                                                    ? 'border-navy bg-navy text-white shadow-lg shadow-navy/20'
+                                                    : 'border-navy/10 bg-white text-charcoal/80 hover:border-navy/30 hover:bg-cream'
                                             }`}
                                         >
                                             {type.label}{count !== null ? ` (${count})` : ''}
