@@ -38,6 +38,9 @@ __pycache__/
 # env files (can opt-in for committing if needed)
 .env*
 
+# local utility scripts (contain project-specific env refs)
+scripts/*.py
+
 # vercel
 .vercel
 
