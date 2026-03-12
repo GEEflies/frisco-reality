@@ -24,7 +24,7 @@ const SUPABASE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const BATCH_SIZE = 10;               // Images to process per run (in parallel)
+const BATCH_SIZE = 1;                // Images to process per cron run (sequential, ~76s each)
 const STUCK_TIMEOUT_MINUTES = 3;     // Reset 'processing' images older than this
 
 // ---- Recovery: reset stuck 'processing' images ----
@@ -172,15 +172,17 @@ Deno.serve(async (req) => {
         // Step 3: Claim batch immediately — prevents overlapping cron runs
         // from grabbing the same images.
         await claimImages(pending.map(img => img.id));
-        console.log(`Processing ${pending.length} images in parallel...`);
+        console.log(`Processing ${pending.length} images sequentially...`);
 
-        // Step 4: Fire all in parallel — one bad image won't block the rest.
-        const results = await Promise.allSettled(
-            pending.map(image => callEnhanceImage(image.id, image.original_url, force))
-        );
-
-        const successCount = results.filter(r => r.status === 'fulfilled' && (r as any).value === true).length;
-        const failCount = results.length - successCount;
+        // Step 4: Process images one at a time to avoid WORKER_LIMIT errors.
+        // Edge Functions have limited concurrent workers; parallel calls exhaust them.
+        let successCount = 0;
+        let failCount = 0;
+        for (const image of pending) {
+            const ok = await callEnhanceImage(image.id, image.original_url, force);
+            if (ok) successCount++;
+            else failCount++;
+        }
 
         // Report remaining pending count
         const { count: remaining } = await supabase

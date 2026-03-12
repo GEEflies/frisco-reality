@@ -34,20 +34,33 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // ---- Gemini setup ----
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Image generation / editing models — these are the native image generation models.
-// gemini-3.1-flash-image-preview = "Nano Banana 2": high-efficiency, speed-optimized, Feb 2026
-// gemini-3-pro-image-preview     = "Nano Banana Pro": state-of-the-art quality, latest
-// GEMINI_IMAGE_MODEL secret takes priority.
+// Image generation / editing models — ordered by quality preference.
+// 1. gemini-3.1-flash-image-preview = "Nano Banana 2": best quality-to-speed ratio, 2K/4K, thinking
+// 2. gemini-3-pro-image-preview     = "Nano Banana Pro": studio-quality, reasoning-driven, 4K
+// 3. gemini-2.5-flash-image         = stable GA: fast (10s), reliable, max 1024px
+// NB2 had timeout issues ~Mar 10 2026 — now re-added with a 90s timeout guard.
+// GEMINI_IMAGE_MODEL secret takes priority if set.
 const configuredGeminiModel = Deno.env.get('GEMINI_IMAGE_MODEL')?.trim();
 const IMAGE_MODEL_CANDIDATES = [
     configuredGeminiModel,
     'gemini-3.1-flash-image-preview',
     'gemini-3-pro-image-preview',
+    'gemini-2.5-flash-image',
 ].filter((value, index, arr) => Boolean(value) && arr.indexOf(value) === index) as string[];
 
-// gemini-3-flash-preview: "best model in the world for multimodal understanding"
-// Used for quality assessment (text-only output). Dec 2025, latest Gemini 3 generation.
-const ASSESS_MODEL = 'gemini-3-flash-preview';
+// Per-model timeout in ms. Edge Function hard limit is 150s — keep room for
+// assessment (~5s), upload (~5s), and logo detection (~3s).
+const MODEL_TIMEOUT_MS: Record<string, number> = {
+    'gemini-3.1-flash-image-preview': 90_000,  // NB2: may hang, fail fast
+    'gemini-3-pro-image-preview':     100_000,  // Pro: slower but reliable
+    'gemini-2.5-flash-image':         60_000,   // Flash: fast, generous limit
+};
+const DEFAULT_TIMEOUT_MS = 90_000;
+
+// Assessment model: text-only output for quality evaluation.
+// gemini-3-flash-preview is unreliable (hangs/timeouts since ~Mar 10 2026).
+// gemini-2.5-flash is the stable GA fallback; gemini-3.1-flash-lite-preview is fastest.
+const ASSESS_MODEL = 'gemini-2.5-flash';
 
 // ============================================================
 // QUALITY ASSESSMENT — decides per-image whether to enhance
@@ -175,21 +188,40 @@ async function generateEnhancedImage(
             { model: modelName },
         ];
 
+        const timeoutMs = MODEL_TIMEOUT_MS[modelName] ?? DEFAULT_TIMEOUT_MS;
+
         for (const config of modelConfigs) {
             try {
                 const model = genAI.getGenerativeModel(config as any);
-                const result = await model.generateContent([
-                    prompt,
-                    {
-                        inlineData: {
-                            mimeType,
-                            data: imageBase64,
-                        },
-                    },
+
+                // Race the Gemini call against a timeout to prevent Edge Function hang
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+                const result = await Promise.race([
+                    model.generateContent([
+                        prompt,
+                        { inlineData: { mimeType, data: imageBase64 } },
+                    ]),
+                    new Promise<never>((_, reject) => {
+                        controller.signal.addEventListener('abort', () =>
+                            reject(new Error(`Timeout after ${timeoutMs / 1000}s`)));
+                    }),
                 ]);
+                clearTimeout(timer);
 
                 const responseData = result.response;
                 const candidates = responseData.candidates;
+
+                // Log finishReason — helps distinguish timeout vs safety block
+                const finishReason = candidates?.[0]?.finishReason;
+                if (finishReason && finishReason !== 'STOP') {
+                    console.warn(`[enhance-image] ${modelName} finishReason=${finishReason}`);
+                }
+                if (finishReason === 'IMAGE_SAFETY' || finishReason === 'PROHIBITED_CONTENT') {
+                    throw new Error(`Blocked by safety filter: ${finishReason}`);
+                }
+
                 if (!candidates || candidates.length === 0) {
                     throw new Error('No candidates in Gemini response');
                 }
@@ -197,6 +229,7 @@ async function generateEnhancedImage(
                 const parts = candidates[0].content?.parts || [];
                 for (const part of parts) {
                     if (part.inlineData?.data) {
+                        console.log(`[enhance-image] Success with ${modelName} (${(timeoutMs / 1000)}s budget)`);
                         return {
                             enhancedImageData: part.inlineData.data,
                             enhancedMimeType: part.inlineData.mimeType || 'image/jpeg',
@@ -208,7 +241,13 @@ async function generateEnhancedImage(
                 throw new Error('No image data in Gemini response');
             } catch (error) {
                 const variant = 'generationConfig' in config ? 'modalities' : 'default';
-                errors.push(`${modelName} (${variant}): ${(error as Error).message}`);
+                const errMsg = (error as Error).message;
+                errors.push(`${modelName} (${variant}): ${errMsg}`);
+                // If this model timed out, skip remaining config variants and try next model
+                if (errMsg.includes('Timeout after')) {
+                    console.warn(`[enhance-image] ${modelName} timed out at ${timeoutMs / 1000}s, trying next model`);
+                    break;
+                }
             }
         }
     }
