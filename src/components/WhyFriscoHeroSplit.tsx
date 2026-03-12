@@ -474,19 +474,19 @@ const TabCardContent = ({ tabs, defaultTab, headerIcon, headerLabel }: TabCardPr
     return (
         <div>
             {/* HEADER ROW: Label (Left) + Tabs (Right) */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 lg:px-8 pt-6 lg:pt-8 pb-3 lg:pb-4 border-b border-charcoal/[0.04]">
+            <div className="flex flex-wrap items-center justify-between gap-3 lg:gap-4 px-6 lg:px-8 pt-6 lg:pt-8 pb-3 lg:pb-4 border-b border-charcoal/[0.04]">
                 {/* Left: Icon + Label */}
-                <div className="flex items-center gap-3 lg:gap-4">
+                <div className="flex items-center gap-3 lg:gap-4 min-w-0">
                     <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-xl bg-accent-red flex items-center justify-center text-white shadow-sm shrink-0">
                         {headerIcon}
                     </div>
-                    <span className="text-sm lg:text-base font-bold text-navy tracking-[0.08em] uppercase whitespace-nowrap">
+                    <span className="text-sm lg:text-base font-bold text-navy tracking-[0.08em] uppercase">
                         {headerLabel}
                     </span>
                 </div>
 
                 {/* Right: Tab Switcher */}
-                <div className="flex items-center gap-1 p-0.5 rounded-full bg-charcoal/[0.04] self-start sm:self-auto">
+                <div className="flex items-center gap-1 p-0.5 rounded-full bg-charcoal/[0.04] shrink-0">
                     {tabKeys.map((key) => (
                         <button
                             key={key}

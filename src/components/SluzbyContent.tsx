@@ -265,7 +265,7 @@ const Sluzby = () => {
           >
             <div className="absolute top-0 right-0 w-96 h-96 bg-navy/5 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="relative z-10 flex flex-col lg:flex-row lg:flex-wrap items-center justify-between gap-8">
               <div className="text-center lg:text-left">
                 <span className="text-navy font-mono text-xs tracking-[0.3em] uppercase mb-4 block">
                   {copy.ctaLabel}
@@ -278,21 +278,23 @@ const Sluzby = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row lg:flex-nowrap gap-4 items-center">
-                <a
-                  href="tel:+421905447220"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg shrink-0"
-                >
-                  <Phone className="w-5 h-5" />
-                  <span className="whitespace-nowrap">0905 447 220</span>
-                </a>
-                <a
-                  href="tel:+421905740700"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg shrink-0"
-                >
-                  <Phone className="w-5 h-5" />
-                  <span className="whitespace-nowrap">0905 740 700</span>
-                </a>
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 items-center justify-center lg:justify-end">
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <a
+                    href="tel:+421905447220"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg shrink-0"
+                  >
+                    <Phone className="w-5 h-5" />
+                    <span className="whitespace-nowrap">0905 447 220</span>
+                  </a>
+                  <a
+                    href="tel:+421905740700"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-full font-bold tracking-wide hover:bg-navy/90 transition-colors shadow-lg shrink-0"
+                  >
+                    <Phone className="w-5 h-5" />
+                    <span className="whitespace-nowrap">0905 740 700</span>
+                  </a>
+                </div>
                 <LocaleLink
                   href="/kontakt"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-accent-red text-white rounded-full font-bold tracking-wide hover:bg-accent-red/90 transition-colors shadow-lg shadow-accent-red/20 shrink-0"
