@@ -24,6 +24,8 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { GoogleGenerativeAI } from 'https://esm.sh/@google/generative-ai@0.21.0';
+import jpegJs from 'https://esm.sh/jpeg-js@0.4.4';
+import UPNG from 'https://esm.sh/upng-js@2.1.0';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -306,22 +308,22 @@ function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
 
 /**
  * Decode a JPEG/PNG image from raw bytes into an RGBA pixel array.
- * Uses the browser-compatible ImageBitmap API available in Deno.
+ * Uses pure-JS decoders (jpeg-js, upng-js) that work in Deno Deploy
+ * without OffscreenCanvas or createImageBitmap.
  */
 async function decodeImageToRGBA(buffer: ArrayBuffer, mimeType: string): Promise<{ data: Uint8Array; width: number; height: number } | null> {
     try {
-        // Deno supports createImageBitmap via the web platform API
-        const blob = new Blob([buffer], { type: mimeType });
-        // @ts-ignore — Deno supports OffscreenCanvas
-        const bitmap = await createImageBitmap(blob);
-        const w = bitmap.width;
-        const h = bitmap.height;
-        // @ts-ignore — Deno supports OffscreenCanvas
-        const canvas = new OffscreenCanvas(w, h);
-        const ctx = canvas.getContext('2d')!;
-        ctx.drawImage(bitmap, 0, 0);
-        const imageData = ctx.getImageData(0, 0, w, h);
-        return { data: new Uint8Array(imageData.data.buffer), width: w, height: h };
+        if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
+            const decoded = jpegJs.decode(new Uint8Array(buffer), { useTArray: true, formatAsRGBA: true });
+            return { data: decoded.data, width: decoded.width, height: decoded.height };
+        }
+        if (mimeType === 'image/png') {
+            const img = UPNG.decode(buffer);
+            const rgba = UPNG.toRGBA8(img)[0]; // first frame
+            return { data: new Uint8Array(rgba), width: img.width, height: img.height };
+        }
+        console.warn(`[logo-detect] Unsupported image type for logo detection: ${mimeType}, skipping`);
+        return null;
     } catch (e) {
         console.error('[logo-detect] Failed to decode image:', (e as Error).message);
         return null;
