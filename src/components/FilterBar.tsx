@@ -58,11 +58,13 @@ export const FilterBar = ({
                 other: 'Iné',
             },
             filterOffer: 'Filtrovať ponuku',
+            openFilters: 'Otvoriť filtre',
             locality: 'Lokalita',
             propertyType: 'Typ nehnuteľnosti',
             priceRange: 'Cenové rozpätie',
             clearFilters: 'Zrušiť filtre',
             show: 'Zobraziť',
+            results: (count: number) => `${count} nehnuteľností`,
             allLocalities: 'Všetky lokality',
             allTypes: 'Všetky typy',
             price: 'Cena',
@@ -72,6 +74,7 @@ export const FilterBar = ({
             oldest: 'Najstaršie',
             priceAsc: 'Najlacnejšie',
             priceDesc: 'Najdrahšie',
+            closeFilters: 'Zavrieť filtre',
         },
         en: {
             all: 'All',
@@ -85,11 +88,13 @@ export const FilterBar = ({
                 other: 'Other',
             },
             filterOffer: 'Filter listings',
+            openFilters: 'Open filters',
             locality: 'Location',
             propertyType: 'Property type',
             priceRange: 'Price range',
             clearFilters: 'Clear filters',
             show: 'Show',
+            results: (count: number) => `${count} results`,
             allLocalities: 'All locations',
             allTypes: 'All types',
             price: 'Price',
@@ -99,6 +104,7 @@ export const FilterBar = ({
             oldest: 'Oldest',
             priceAsc: 'Lowest price',
             priceDesc: 'Highest price',
+            closeFilters: 'Close filters',
         },
         de: {
             all: 'Alle',
@@ -112,11 +118,13 @@ export const FilterBar = ({
                 other: 'Sonstiges',
             },
             filterOffer: 'Angebote filtern',
+            openFilters: 'Filter öffnen',
             locality: 'Standort',
             propertyType: 'Immobilientyp',
             priceRange: 'Preisspanne',
             clearFilters: 'Filter zurücksetzen',
             show: 'Anzeigen',
+            results: (count: number) => `${count} Immobilien`,
             allLocalities: 'Alle Standorte',
             allTypes: 'Alle Typen',
             price: 'Preis',
@@ -126,6 +134,7 @@ export const FilterBar = ({
             oldest: 'Älteste',
             priceAsc: 'Niedrigster Preis',
             priceDesc: 'Höchster Preis',
+            closeFilters: 'Filter schließen',
         },
     }[language];
     const locale = language === 'sk' ? 'sk-SK' : language === 'de' ? 'de-DE' : 'en-US';
@@ -218,12 +227,12 @@ export const FilterBar = ({
                     <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 rounded-full bg-navy/10" />
                     <div className="pr-12">
                         <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-charcoal/45">{copy.filterOffer}</p>
-                        <h3 className="mt-2 text-2xl font-serif font-bold text-navy">{listingsCount} results</h3>
+                        <h3 className="mt-2 text-2xl font-serif font-bold text-navy">{copy.results(listingsCount)}</h3>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
                         className="absolute right-4 top-4 rounded-full p-2 transition-colors hover:bg-navy/5"
-                        aria-label="Close filters"
+                        aria-label={copy.closeFilters}
                     >
                         <X className="h-6 w-6 text-charcoal" />
                     </button>
@@ -324,6 +333,28 @@ export const FilterBar = ({
     return (
         <>
             {mobileSheet}
+
+            <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="flex w-full items-center justify-between rounded-2xl border border-navy/12 bg-white px-4 py-3 text-left shadow-sm transition-all duration-300 hover:border-navy/25 hover:shadow-md md:hidden"
+                aria-label={copy.openFilters}
+            >
+                <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy text-white shadow-md shadow-navy/15">
+                        <SlidersHorizontal size={18} strokeWidth={2.2} />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-sm font-bold uppercase tracking-[0.18em] text-navy">
+                            {copy.filterOffer}
+                        </span>
+                        <span className="text-xs font-medium text-charcoal/55">
+                            {copy.results(listingsCount)}
+                        </span>
+                    </div>
+                </div>
+                <ChevronDown size={18} className="text-charcoal/45" />
+            </button>
 
             {/* ===== DESKTOP: Inline Filter Bar ===== */}
             <div className="hidden md:block w-full bg-white shadow-lg border border-navy/15 rounded-2xl py-8 px-10 mb-12">
