@@ -1,16 +1,16 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
-import { Bed, Bath, Square, Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, ArrowUpDown, Check, SlidersHorizontal, SearchX, Phone, Mail, LayoutGrid } from 'lucide-react';
+import { Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, SlidersHorizontal, SearchX, Phone, Mail, LayoutGrid, Square } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FilterBar } from './FilterBar';
 import { ListingCard } from './ListingCard';
 import { useListings, useListingFilters } from '@/hooks/useListings';
-import { categoryLabels, transactionLabels, formatPrice, formatArea, getCategoryType, getStatusColor, statusLabels, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
+import { formatPrice, formatArea, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
 import { getPrimaryImage, shouldShowOverlay } from '@/api/listingsService';
-import type { ListingFilters } from '@/api/types';
+import type { Listing, ListingFilters } from '@/api/types';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { localePath } from '@/i18n/types';
 import { useNavLoading } from '@/components/RouteLoadingIndicator';
@@ -36,10 +36,6 @@ export const PropertiesSection = () => {
     sort: defaultSort,
   });
 
-  // Sort dropdown state (mobile)
-  const [sortOpen, setSortOpen] = useState(false);
-  const sortRef = useRef<HTMLDivElement>(null);
-  
   // Floating filter button state
   const [showFloatingFilter, setShowFloatingFilter] = useState(false);
   
@@ -54,15 +50,6 @@ export const PropertiesSection = () => {
       featuredStart: 'Vybrané',
       featuredAccent: 'nehnuteľnosti',
       filters: { all: 'Všetky', rent: 'Prenájom', apartment: 'Byty', house: 'Domy', land: 'Pozemky', commercial: 'Komerčné', cottage: 'Chaty', garage: 'Garáže', other: 'Iné' },
-      sortTitle: 'Zoradiť',
-      sortBy: 'Zoradiť podľa',
-      sortOptions: {
-        newest: 'Najnovšie',
-        oldest: 'Najstaršie',
-        'price-asc': 'Najlacnejšie',
-        'price-desc': 'Najdrahšie',
-        recommended: 'Odporúčané',
-      },
       loading: 'Načítavam...',
       found: (count: number) => `Nájdených ${count} nehnuteľností`,
       error: 'Nastala chyba pri načítaní nehnuteľností.',
@@ -88,15 +75,6 @@ export const PropertiesSection = () => {
       featuredStart: 'Featured',
       featuredAccent: 'properties',
       filters: { all: 'All', rent: 'Rent', apartment: 'Apartments', house: 'Houses', land: 'Land', commercial: 'Commercial', cottage: 'Cottages', garage: 'Garages', other: 'Other' },
-      sortTitle: 'Sort',
-      sortBy: 'Sort by',
-      sortOptions: {
-        newest: 'Newest',
-        oldest: 'Oldest',
-        'price-asc': 'Lowest price',
-        'price-desc': 'Highest price',
-        recommended: 'Recommended',
-      },
       loading: 'Loading...',
       found: (count: number) => `${count} properties found`,
       error: 'An error occurred while loading properties.',
@@ -122,15 +100,6 @@ export const PropertiesSection = () => {
       featuredStart: 'Ausgewählte',
       featuredAccent: 'Immobilien',
       filters: { all: 'Alle', rent: 'Miete', apartment: 'Wohnungen', house: 'Häuser', land: 'Grundstücke', commercial: 'Gewerbe', cottage: 'Ferienhäuser', garage: 'Garagen', other: 'Sonstiges' },
-      sortTitle: 'Sortieren',
-      sortBy: 'Sortieren nach',
-      sortOptions: {
-        newest: 'Neueste',
-        oldest: 'Älteste',
-        'price-asc': 'Niedrigster Preis',
-        'price-desc': 'Höchster Preis',
-        recommended: 'Empfohlen',
-      },
       loading: 'Lädt...',
       found: (count: number) => `${count} Immobilien gefunden`,
       error: 'Beim Laden der Immobilien ist ein Fehler aufgetreten.',
@@ -157,7 +126,6 @@ export const PropertiesSection = () => {
     maxPrice,
     absoluteMaxPrice,
     localities,
-    availableTypes,
     categoryCounts,
     transactionCounts,
   } = useListingFilters(filters);
@@ -173,17 +141,6 @@ export const PropertiesSection = () => {
       setFilters(prev => ({ ...prev, transaction: 'rent' }));
     }
   }, [searchParams]);
-
-  // Close sort dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-        setSortOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // Track filter bar visibility for floating button
   useEffect(() => {
@@ -222,7 +179,7 @@ export const PropertiesSection = () => {
 
     setFilters(prev => {
       const [prevMin, prevMax] = prev.priceRange || [0, maxPrice];
-      let nextMin = Math.max(0, Math.min(prevMin, maxPrice));
+      const nextMin = Math.max(0, Math.min(prevMin, maxPrice));
       let nextMax = prevMax;
 
       if (nextMax > maxPrice) {
@@ -299,20 +256,11 @@ export const PropertiesSection = () => {
   };
 
   // Handle listing click
-  const handleListingClick = (listing: any) => {
+  const handleListingClick = (listing: Listing) => {
     startNavLoading();
     const identifier = listing.slug || listing.id;
     router.push(localePath(`/nehnutelnost/${identifier}`, language));
   };
-
-  // Sort options for mobile dropdown
-  const sortOptions = [
-    { value: 'newest', label: copy.sortOptions.newest },
-    { value: 'oldest', label: copy.sortOptions.oldest },
-    { value: 'price-asc', label: copy.sortOptions['price-asc'] },
-    { value: 'price-desc', label: copy.sortOptions['price-desc'] },
-    { value: 'recommended', label: copy.sortOptions.recommended },
-  ] as const;
 
   return (
     <>
@@ -510,83 +458,18 @@ export const PropertiesSection = () => {
             </div>
           </motion.div>
 
-          {/* Mobile: Filter + Sort Row */}
-          <div
-            className="flex md:hidden gap-3 mb-8"
-          >
-            {/* Filter Bar wrapper - takes most space */}
-            <div className="flex-1">
-              <FilterBar
-                filters={{
-                  locality: filters.locality || 'all',
-                  type: filters.category || 'all',
-                  priceRange: filters.priceRange || [0, maxPrice],
-                }}
-                setFilters={(newFilters) => setFilters(prev => ({
-                  ...prev,
-                  locality: newFilters.locality,
-                  category: newFilters.type,
-                  priceRange: newFilters.priceRange,
-                }))}
-                sort={filters.sort || defaultSort}
-                setSort={(sort) => setFilters(prev => ({ ...prev, sort: sort as ListingFilters['sort'] }))}
-                onReset={resetFilters}
-                maxPrice={maxPrice}
-                localities={localities}
-                availableTypes={availableTypes}
-                listingsCount={listings.length}
-                externalOpen={mobileFilterOpen}
-                onExternalOpenHandled={() => setMobileFilterOpen(false)}
-                transaction={filters.transaction || 'all'}
-              />
-            </div>
-
-            {/* Sort Button */}
-            <div className="relative" ref={sortRef}>
-              <button
-                onClick={() => setSortOpen(!sortOpen)}
-                className={`h-[50px] w-[50px] flex items-center justify-center rounded-xl border transition-all duration-300 shadow-sm ${
-                  sortOpen || (filters.sort && filters.sort !== defaultSort)
-                    ? 'bg-navy text-white border-navy shadow-md'
-                    : 'bg-white text-navy border-navy/10 hover:border-navy/30'
-                }`}
-                title={copy.sortTitle}
-              >
-                <ArrowUpDown size={18} strokeWidth={2.5} />
-              </button>
-
-              {/* Sort Dropdown */}
-              {sortOpen && (
-                <div
-                  className="absolute right-0 top-[60px] z-50 w-52 bg-white rounded-2xl border border-navy/10 shadow-xl overflow-hidden"
-                >
-                  <div className="py-2">
-                    <div className="px-4 py-2 text-[10px] font-bold tracking-widest uppercase text-charcoal/40">
-                      {copy.sortBy}
-                    </div>
-                    {sortOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          setFilters(prev => ({ ...prev, sort: option.value }));
-                          setSortOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-4 py-3 text-sm transition-colors ${
-                          filters.sort === option.value
-                            ? 'bg-navy/5 text-navy font-semibold'
-                            : 'text-charcoal/70 hover:bg-cream'
-                        }`}
-                      >
-                        <span>{option.label}</span>
-                        {filters.sort === option.value && (
-                          <Check size={16} className="text-navy" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          {/* Mobile: Filter + Sort (both handled inside FilterBar) */}
+          <div className="mb-8 md:hidden">
+            <FilterBar
+              filters={filters}
+              setFilters={setFilters}
+              onReset={resetFilters}
+              maxPrice={maxPrice}
+              localities={localities}
+              listingsCount={listings.length}
+              externalOpen={mobileFilterOpen}
+              onExternalOpenHandled={() => setMobileFilterOpen(false)}
+            />
           </div>
 
           {/* Desktop Filter Bar */}
@@ -597,25 +480,12 @@ export const PropertiesSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <FilterBar
-              filters={{
-                locality: filters.locality || 'all',
-                type: filters.category || 'all',
-                priceRange: filters.priceRange || [0, maxPrice],
-              }}
-              setFilters={(newFilters) => setFilters(prev => ({
-                ...prev,
-                locality: newFilters.locality,
-                category: newFilters.type,
-                priceRange: newFilters.priceRange,
-              }))}
-              sort={filters.sort || defaultSort}
-              setSort={(sort) => setFilters(prev => ({ ...prev, sort: sort as ListingFilters['sort'] }))}
+              filters={filters}
+              setFilters={setFilters}
               onReset={resetFilters}
               maxPrice={maxPrice}
               localities={localities}
-              availableTypes={availableTypes}
               listingsCount={listings.length}
-              transaction={filters.transaction || 'all'}
             />
           </motion.div>
         </div>
