@@ -25,6 +25,7 @@ export const PropertiesSection = () => {
   const router = useRouter();
   const { startNavLoading } = useNavLoading();
   const searchParams = useSearchParams();
+  const previousFacetMaxRef = useRef<number | null>(null);
 
   // Filter State
   const [filters, setFilters] = useState<ListingFilters>({
@@ -208,36 +209,38 @@ export const PropertiesSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Clamp active price range when facet max changes.
+  // Keep price range valid when facet max changes.
+  // Standard e-commerce behavior:
+  // - If the result set narrows, clamp to the new ceiling.
+  // - If the result set widens, restore the ceiling only when the user was
+  //   previously at the old ceiling (auto-clamped state), so we don't override
+  //   an intentional manual max.
   useEffect(() => {
     if (maxPrice <= 0) return;
 
+    const previousFacetMax = previousFacetMaxRef.current ?? maxPrice;
+
     setFilters(prev => {
       const [prevMin, prevMax] = prev.priceRange || [0, maxPrice];
-      const nextMin = Math.max(0, Math.min(prevMin, maxPrice));
-      const nextMax = Math.max(nextMin, Math.min(prevMax, maxPrice));
+      let nextMin = Math.max(0, Math.min(prevMin, maxPrice));
+      let nextMax = prevMax;
+
+      if (nextMax > maxPrice) {
+        nextMax = maxPrice;
+      } else if (maxPrice > previousFacetMax && prevMax >= previousFacetMax) {
+        nextMax = maxPrice;
+      }
+
+      nextMax = Math.max(nextMin, nextMax);
       if (nextMin === prevMin && nextMax === prevMax) return prev;
       return {
         ...prev,
         priceRange: [nextMin, nextMax],
       };
     });
+
+    previousFacetMaxRef.current = maxPrice;
   }, [maxPrice]);
-
-  // If selected category disappears after another facet change, reset to all.
-  useEffect(() => {
-    const category = filters.category;
-    if (!category || category === 'all') return;
-    if ((categoryCounts as Record<string, number>)[category] > 0) return;
-    setFilters(prev => ({ ...prev, category: 'all' }));
-  }, [categoryCounts, filters.category]);
-
-  // If selected transaction disappears after another facet change, reset to all.
-  useEffect(() => {
-    if (filters.transaction !== 'rent' && filters.transaction !== 'sale') return;
-    if (transactionCounts[filters.transaction] > 0) return;
-    setFilters(prev => ({ ...prev, transaction: 'all' }));
-  }, [transactionCounts, filters.transaction]);
 
   const resetFilters = () => {
     setFilters({

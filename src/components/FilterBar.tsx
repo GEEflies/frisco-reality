@@ -275,21 +275,6 @@ export const FilterBar = ({
         return counts;
     }, [baseListings, tempFilters.locality, tempFilters.priceRange, maxPrice]);
 
-    // Auto-reset a selected option to 'all' if it has zero matches
-    useEffect(() => {
-        const loc = tempFilters.locality;
-        if (loc && loc !== 'all' && (locationCounts[loc] ?? 0) === 0) {
-            setTempFilters(prev => ({ ...prev, locality: 'all' }));
-        }
-    }, [locationCounts, tempFilters.locality]);
-
-    useEffect(() => {
-        const typ = tempFilters.type;
-        if (typ && typ !== 'all' && (typeCounts[typ] ?? 0) === 0) {
-            setTempFilters(prev => ({ ...prev, type: 'all' }));
-        }
-    }, [typeCounts, tempFilters.type]);
-
     const mobileSheet = isMounted ? createPortal(
         <div
             className={`fixed inset-0 z-[250] flex items-end md:hidden transition-opacity duration-300 ${
