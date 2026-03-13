@@ -126,8 +126,6 @@ export const PropertiesSection = () => {
     maxPrice,
     absoluteMaxPrice,
     localities,
-    categoryCounts,
-    transactionCounts,
   } = useListingFilters(filters);
 
   // Initialize from URL params
@@ -135,11 +133,24 @@ export const PropertiesSection = () => {
     const categoryParam = searchParams.get('category');
     const typeParam = searchParams.get('type');
 
-    if (categoryParam) {
-      setFilters(prev => ({ ...prev, category: categoryParam }));
-    } else if (typeParam === 'rent') {
-      setFilters(prev => ({ ...prev, transaction: 'rent' }));
-    }
+    const nextCategory = categoryParam ?? 'all';
+    const nextTransaction = categoryParam ? 'all' : typeParam === 'rent' ? 'rent' : 'all';
+
+    const frameId = window.requestAnimationFrame(() => {
+      setFilters(prev => {
+        if (prev.category === nextCategory && prev.transaction === nextTransaction) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          category: nextCategory,
+          transaction: nextTransaction,
+        };
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
   }, [searchParams]);
 
   // Track filter bar visibility for floating button
@@ -177,26 +188,30 @@ export const PropertiesSection = () => {
 
     const previousFacetMax = previousFacetMaxRef.current ?? maxPrice;
 
-    setFilters(prev => {
-      const [prevMin, prevMax] = prev.priceRange || [0, maxPrice];
-      const nextMin = Math.max(0, Math.min(prevMin, maxPrice));
-      let nextMax = prevMax;
+    const frameId = window.requestAnimationFrame(() => {
+      setFilters(prev => {
+        const [prevMin, prevMax] = prev.priceRange || [0, maxPrice];
+        const nextMin = Math.max(0, Math.min(prevMin, maxPrice));
+        let nextMax = prevMax;
 
-      if (nextMax > maxPrice) {
-        nextMax = maxPrice;
-      } else if (maxPrice > previousFacetMax && prevMax >= previousFacetMax) {
-        nextMax = maxPrice;
-      }
+        if (nextMax > maxPrice) {
+          nextMax = maxPrice;
+        } else if (maxPrice > previousFacetMax && prevMax >= previousFacetMax) {
+          nextMax = maxPrice;
+        }
 
-      nextMax = Math.max(nextMin, nextMax);
-      if (nextMin === prevMin && nextMax === prevMax) return prev;
-      return {
-        ...prev,
-        priceRange: [nextMin, nextMax],
-      };
+        nextMax = Math.max(nextMin, nextMax);
+        if (nextMin === prevMin && nextMax === prevMax) return prev;
+        return {
+          ...prev,
+          priceRange: [nextMin, nextMax],
+        };
+      });
     });
 
     previousFacetMaxRef.current = maxPrice;
+
+    return () => window.cancelAnimationFrame(frameId);
   }, [maxPrice]);
 
   const resetFilters = () => {
@@ -208,10 +223,6 @@ export const PropertiesSection = () => {
       sort: defaultSort,
     });
   };
-
-  const hasAnySale = transactionCounts.sale > 0;
-  const hasAnyRent = transactionCounts.rent > 0;
-  const hasCategory = (id: string) => (categoryCounts as Record<string, number>)[id] > 0;
 
   // Scroll to filter bar
   const scrollToFilters = () => {
@@ -314,11 +325,6 @@ export const PropertiesSection = () => {
                 { id: 'rent', label: copy.filters.rent, icon: Key, isTransaction: true },
                 { id: 'apartment', label: copy.filters.apartment, icon: Building2 },
               ]
-              .filter((cat) => {
-                if (cat.isAll) return hasAnySale || hasAnyRent;
-                if (cat.isTransaction) return hasAnyRent;
-                return hasCategory(cat.id);
-              })
               .map((cat) => {
                 const isActive = cat.isAll
                   ? filters.category === 'all' && filters.transaction === 'all'
@@ -369,7 +375,6 @@ export const PropertiesSection = () => {
                 { id: 'land', label: copy.filters.land, icon: Map },
                 { id: 'other', label: copy.filters.other, icon: Warehouse },
               ]
-              .filter((cat) => hasCategory(cat.id))
               .map((cat) => {
                 const isActive = filters.category === cat.id;
 
@@ -407,11 +412,6 @@ export const PropertiesSection = () => {
                 { id: 'land', label: copy.filters.land, icon: Map },
                 { id: 'other', label: copy.filters.other, icon: Warehouse },
               ]
-              .filter((cat) => {
-                if (cat.isAll) return hasAnySale || hasAnyRent;
-                if (cat.isTransaction) return hasAnyRent;
-                return hasCategory(cat.id);
-              })
               .map((cat) => {
                 const isActive = cat.isAll
                   ? filters.category === 'all' && filters.transaction === 'all'
