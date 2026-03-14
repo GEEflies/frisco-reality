@@ -36,7 +36,7 @@ const HeroDesktop = () => {
 
             {/* Main Headline */}
             <h1
-              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap story-rise stagger-2"
+              className="text-[clamp(2.35rem,4.8vw,4.4rem)] font-serif font-bold text-navy tracking-tight leading-[1.1] mb-8 whitespace-nowrap story-rise stagger-2"
             >
               {copy.titleLine1}
               <br />

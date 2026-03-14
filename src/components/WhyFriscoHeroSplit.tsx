@@ -347,7 +347,7 @@ const WhyFriscoHeroSplit = () => {
                     <span className="inline-block px-4 py-1.5 rounded-full border border-navy/10 bg-white/60 text-xs font-mono tracking-[0.2em] text-navy uppercase mb-6 backdrop-blur-sm shadow-sm">
                         {copy.badge}
                     </span>
-                    <h1 className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight leading-snug md:leading-none">
+                    <h1 className="text-[clamp(2.35rem,5.8vw,5rem)] font-serif font-bold text-navy tracking-tight leading-snug md:leading-none">
                         {copy.title} <span className="text-accent-red italic pb-2">{copy.accent}</span>
                     </h1>
                 </div>

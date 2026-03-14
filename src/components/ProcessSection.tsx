@@ -159,7 +159,7 @@ export const ProcessSection = () => {
             {copy.badge}
           </span>
           <h2
-            className="rv-child text-5xl md:text-7xl font-serif font-bold text-navy"
+            className="rv-child text-[clamp(2.2rem,5.1vw,4.5rem)] font-serif font-bold text-navy"
           >
             {copy.titleStart} <span className="italic relative inline-block">
               {copy.titleAccent}

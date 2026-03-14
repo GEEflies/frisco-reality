@@ -96,7 +96,7 @@ const PredajAPrenajom = () => {
                             </div>
 
                             <h1
-                                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight leading-[1.1] mb-8 animate-fade-in-up stagger-2"
+                                className="text-[clamp(2.5rem,6.2vw,5rem)] font-serif font-bold tracking-tight leading-[1.1] mb-8 animate-fade-in-up stagger-2"
                             >
                                 {copy.heroTitleStart} <br />
                                 <span className="text-accent-red italic">{copy.heroTitleAccent}</span>.

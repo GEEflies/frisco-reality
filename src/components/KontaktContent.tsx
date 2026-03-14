@@ -153,7 +153,7 @@ const Kontakt = () => {
                 </span>
 
                 <h1
-                  className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
+                  className="text-[clamp(2.5rem,6.2vw,5rem)] font-serif font-bold text-navy tracking-tight mb-6 story-rise stagger-2"
                 >
                   <span className="inline-block whitespace-nowrap">{copy.heroTitleStart}</span>
                   <br />
