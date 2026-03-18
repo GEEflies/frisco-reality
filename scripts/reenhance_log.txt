@@ -1,0 +1,113 @@
+Found 96 images with baked logos to re-enhance
+
+Across 11 listings:
+  66113066... 16 images
+  6afc4add... 16 images
+  714b9bad... 14 images
+  c723eea0... 9 images
+  bda5c150... 8 images
+  cb948597... 8 images
+  354176ab... 7 images
+  1d4fa3aa... 6 images
+  f0067056... 6 images
+  510fec01... 4 images
+  ffe442aa... 2 images
+
+[1/96] d403ca98 sort=1 OK 99.6s {"success":true}
+[2/96] aa64a2bb sort=5 OK 54.8s {"success":true}
+[3/96] 98172d83 sort=8 OK 98.6s {"success":true}
+[4/96] 1fec7cac sort=10 OK 100.7s {"success":true}
+[5/96] 0b56cabd sort=11 OK 100.4s {"success":true}
+[6/96] 2b6f5917 sort=12 OK 26.4s {"success":true}
+[7/96] 1524ba24 sort=0 OK 101.8s {"success":true}
+[8/96] ebb1c5c7 sort=2 OK 35.0s {"success":true}
+[9/96] a0592105 sort=4 OK 99.9s {"success":true}
+[10/96] 43f87d77 sort=5 OK 33.6s {"success":true}
+[11/96] 89b07040 sort=6 OK 102.8s {"success":true}
+[12/96] 2b5b6880 sort=11 OK 100.4s {"success":true}
+[13/96] fc323f24 sort=14 OK 99.7s {"success":true}
+[14/96] 99a7bce2 sort=2 OK 31.8s {"success":true}
+[15/96] 7162d83a sort=3 OK 32.0s {"success":true}
+[16/96] bd38ee15 sort=5 OK 100.4s {"success":true}
+[17/96] 5bdaea47 sort=12 OK 52.0s {"success":true}
+[18/96] 13fdeb29 sort=1 OK 104.9s {"success":true}
+[19/96] 0627715f sort=2 OK 102.8s {"success":true}
+[20/96] 2faa3afb sort=3 OK 51.2s {"success":true}
+[21/96] c55d55cd sort=4 OK 103.1s {"success":true}
+[22/96] f78e3a53 sort=5 OK 99.8s {"success":true}
+[23/96] 8627998e sort=7 OK 101.5s {"success":true}
+[24/96] b7125c2d sort=8 OK 56.7s {"success":true}
+[25/96] cfacfd57 sort=9 OK 32.9s {"success":true}
+[26/96] 5e56ea1b sort=10 OK 52.6s {"success":true}
+[27/96] a64122cc sort=13 OK 101.3s {"success":true}
+[28/96] 92be7821 sort=14 OK 67.8s {"success":true}
+[29/96] fa2e45df sort=15 OK 33.7s {"success":true}
+[30/96] 3c41826e sort=16 OK 32.9s {"success":true}
+[31/96] 107977e1 sort=17 OK 37.3s {"success":true}
+[32/96] 390c729b sort=18 OK 98.8s {"success":true}
+[33/96] 97b181e2 sort=19 OK 100.2s {"success":true}
+[34/96] cfcd0784 sort=0 OK 90.1s {"success":true}
+[35/96] afb4de03 sort=1 OK 14.1s {"success":true}
+[36/96] 963be939 sort=2 OK 9.4s {"success":true}
+[37/96] 056b2ce5 sort=3 OK 43.8s {"success":true}
+[38/96] c9f61e09 sort=4 OK 39.8s {"success":true}
+[39/96] 4860f5bf sort=5 OK 102.9s {"success":true}
+[40/96] 600af9a0 sort=6 OK 101.0s {"success":true}
+[41/96] 415a9367 sort=7 OK 50.2s {"success":true}
+[42/96] 7c37e6ff sort=8 OK 98.0s {"success":true}
+[43/96] ca9e7f30 sort=9 OK 74.1s {"success":true}
+[44/96] 1dbe2a07 sort=12 OK 38.0s {"success":true}
+[45/96] fd29db79 sort=13 OK 47.8s {"success":true}
+[46/96] e493ee09 sort=14 OK 23.4s {"success":true}
+[47/96] 1cd9b8a9 sort=17 OK 101.4s {"success":true}
+[48/96] a8698124 sort=18 OK 34.5s {"success":true}
+[49/96] ec80d843 sort=19 OK 101.9s {"success":true}
+[50/96] 9436578e sort=0 OK 61.3s {"success":true}
+[51/96] 9278b4e4 sort=1 OK 40.6s {"success":true}
+[52/96] 6e5d1be0 sort=3 OK 23.9s {"success":true}
+[53/96] 4441b2e7 sort=5 OK 44.5s {"success":true}
+[54/96] d712e061 sort=6 OK 26.4s {"success":true}
+[55/96] 89fa5f75 sort=9 OK 87.1s {"success":true}
+[56/96] 7da43bb1 sort=10 OK 100.1s {"success":true}
+[57/96] 2fb23c4b sort=12 OK 37.3s {"success":true}
+[58/96] 936c25b2 sort=15 OK 83.6s {"success":true}
+[59/96] ac449415 sort=17 OK 99.1s {"success":true}
+[60/96] 1970637e sort=19 OK 17.9s {"success":true}
+[61/96] 58212c11 sort=22 OK 99.1s {"success":true}
+[62/96] 2d164367 sort=23 OK 33.5s {"success":true}
+[63/96] 55dc7dfa sort=24 OK 48.5s {"success":true}
+[64/96] c4c34b42 sort=0 OK 49.2s {"success":true}
+[65/96] 41ac3ce6 sort=1 OK 39.6s {"success":true}
+[66/96] 9e087aaf sort=3 OK 101.2s {"success":true}
+[67/96] 4954cd9e sort=4 OK 100.0s {"success":true}
+[68/96] ae20decd sort=8 OK 104.1s {"success":true}
+[69/96] 64796811 sort=9 OK 26.2s {"success":true}
+[70/96] 85b8ff08 sort=10 OK 26.8s {"success":true}
+[71/96] 758aa45e sort=11 OK 100.6s {"success":true}
+[72/96] 923959f2 sort=3 OK 99.5s {"success":true}
+[73/96] 8826c439 sort=4 OK 30.2s {"success":true}
+[74/96] d7d69b15 sort=5 OK 99.7s {"success":true}
+[75/96] 101a3c2c sort=7 OK 29.1s {"success":true}
+[76/96] aaa01d98 sort=10 OK 75.0s {"success":true}
+[77/96] 607ad7b5 sort=12 OK 59.0s {"success":true}
+[78/96] 27acb23b sort=14 OK 47.2s {"success":true}
+[79/96] 490b1146 sort=16 OK 104.8s {"success":true}
+[80/96] 2301fc3c sort=18 OK 39.2s {"success":true}
+[81/96] 13fa2a9f sort=6 OK 30.1s {"success":true}
+[82/96] 11658d6e sort=8 OK 33.1s {"success":true}
+[83/96] 619c4a1a sort=9 OK 33.0s {"success":true}
+[84/96] 1227286f sort=10 OK 98.6s {"success":true}
+[85/96] 428a8cf7 sort=11 OK 65.7s {"success":true}
+[86/96] a1128494 sort=14 OK 45.8s {"success":true}
+[87/96] e1792cec sort=19 OK 101.3s {"success":true}
+[88/96] 56e5c243 sort=20 OK 84.1s {"success":true}
+[89/96] 4b8b65fe sort=1 OK 52.1s {"success":true}
+[90/96] 501c0c73 sort=4 OK 24.6s {"success":true}
+[91/96] 62254061 sort=9 OK 39.5s {"success":true}
+[92/96] bfc35e8f sort=12 OK 99.2s {"success":true}
+[93/96] 06c00cee sort=18 OK 29.2s {"success":true}
+[94/96] 50d0a846 sort=19 OK 38.1s {"success":true}
+[95/96] 18d806af sort=1 OK 73.3s {"success":true}
+[96/96] e6de3d6f sort=2 OK 33.9s {"success":true}
+
+Done in 6234s — 96 OK, 0 failed
