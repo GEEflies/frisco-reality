@@ -28,6 +28,13 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY')!;
 
+// ---- Cloudflare R2 config (S3-compatible) ----
+const R2_ACCOUNT_ID = Deno.env.get('R2_ACCOUNT_ID')!;
+const R2_ACCESS_KEY_ID = Deno.env.get('R2_ACCESS_KEY_ID')!;
+const R2_SECRET_ACCESS_KEY = Deno.env.get('R2_SECRET_ACCESS_KEY')!;
+const R2_BUCKET_NAME = Deno.env.get('R2_BUCKET_NAME') || 'frisco-images';
+const R2_PUBLIC_URL = Deno.env.get('R2_PUBLIC_URL')!; // e.g. https://pub-xxxxx.r2.dev
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ---- Gemini setup ----
@@ -147,6 +154,82 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
         bytes[i] = binary.charCodeAt(i);
     }
     return bytes.buffer;
+}
+
+// ---- Cloudflare R2 upload (S3-compatible with AWS Signature V4) ----
+
+async function hmacSha256(key: ArrayBuffer, message: string): Promise<ArrayBuffer> {
+    const cryptoKey = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    return crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(message));
+}
+
+async function sha256Hex(data: ArrayBuffer | Uint8Array): Promise<string> {
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Upload a file to Cloudflare R2 using AWS Signature V4.
+ * No extra dependencies needed — uses Web Crypto API available in Deno.
+ */
+async function uploadToR2(path: string, body: ArrayBuffer, contentType: string): Promise<string> {
+    const endpoint = `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+    const region = 'auto';
+    const service = 's3';
+    const method = 'PUT';
+    const now = new Date();
+    const dateStamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const dateOnly = dateStamp.slice(0, 8);
+    const scope = `${dateOnly}/${region}/${service}/aws4_request`;
+
+    const payloadHash = await sha256Hex(body);
+
+    const headers: Record<string, string> = {
+        'Host': `${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+        'Content-Type': contentType,
+        'x-amz-content-sha256': payloadHash,
+        'x-amz-date': dateStamp,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+    };
+
+    // Canonical request
+    const signedHeaderKeys = Object.keys(headers).sort().map(k => k.toLowerCase());
+    const signedHeaders = signedHeaderKeys.join(';');
+    const canonicalHeaders = signedHeaderKeys.map(k => `${k}:${headers[Object.keys(headers).find(h => h.toLowerCase() === k)!]}`).join('\n') + '\n';
+    const canonicalUri = `/${R2_BUCKET_NAME}/${path}`;
+    const canonicalRequest = [method, canonicalUri, '', canonicalHeaders, signedHeaders, payloadHash].join('\n');
+
+    // String to sign
+    const canonicalRequestHash = await sha256Hex(new TextEncoder().encode(canonicalRequest));
+    const stringToSign = ['AWS4-HMAC-SHA256', dateStamp, scope, canonicalRequestHash].join('\n');
+
+    // Signing key
+    let signingKey: ArrayBuffer = new TextEncoder().encode(`AWS4${R2_SECRET_ACCESS_KEY}`).buffer;
+    for (const part of [dateOnly, region, service, 'aws4_request']) {
+        signingKey = await hmacSha256(signingKey, part);
+    }
+
+    // Signature
+    const signatureBuffer = await hmacSha256(signingKey, stringToSign);
+    const signature = [...new Uint8Array(signatureBuffer)].map(b => b.toString(16).padStart(2, '0')).join('');
+
+    const authorization = `AWS4-HMAC-SHA256 Credential=${R2_ACCESS_KEY_ID}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+
+    const response = await fetch(`${endpoint}/${R2_BUCKET_NAME}/${path}`, {
+        method,
+        headers: { ...headers, 'Authorization': authorization },
+        body,
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`R2 upload failed (${response.status}): ${errorText}`);
+    }
+
+    // Return the public URL
+    const publicUrl = `${R2_PUBLIC_URL}/${path}`;
+    console.log(`[r2-upload] Uploaded ${path} → ${publicUrl}`);
+    return publicUrl;
 }
 
 async function generateEnhancedImage(
@@ -492,35 +575,11 @@ async function enhanceImage(imageId: string, originalUrl: string, force = false)
             }
         }
 
-        // ---- STEP 5: Upload enhanced image to Supabase Storage ----
+        // ---- STEP 5: Upload enhanced image to Cloudflare R2 ----
         const extension = enhancedMimeType.split('/')[1] || 'jpeg';
         const storagePath = `enhanced/${imageId}.${extension}`;
 
-        // Auto-create bucket if it doesn't exist (first run)
-        const { data: buckets } = await supabase.storage.listBuckets();
-        if (!buckets?.find(b => b.name === 'enhanced-images')) {
-            await supabase.storage.createBucket('enhanced-images', { public: true });
-            console.log('[enhance-image] Created enhanced-images bucket');
-        }
-
-        const { error: uploadError } = await supabase.storage
-            .from('enhanced-images')
-            .upload(storagePath, enhancedBuffer, {
-                contentType: enhancedMimeType,
-                upsert: true,
-                cacheControl: '31536000',
-            });
-
-        if (uploadError) {
-            throw new Error(`Storage upload failed: ${uploadError.message}`);
-        }
-
-        // Get public URL
-        const { data: publicUrlData } = supabase.storage
-            .from('enhanced-images')
-            .getPublicUrl(storagePath);
-
-        const enhancedUrl = publicUrlData.publicUrl;
+        const enhancedUrl = await uploadToR2(storagePath, enhancedBuffer, enhancedMimeType);
 
         // Update DB
         await supabase

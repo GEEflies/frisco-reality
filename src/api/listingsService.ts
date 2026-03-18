@@ -38,13 +38,14 @@ export function getBestImageUrl(image: ListingImage): string {
 }
 
 /**
- * Checks whether an image URL points to an AI-enhanced version (Supabase bucket)
+ * Checks whether an image URL points to an AI-enhanced version (R2 bucket or legacy Supabase bucket)
  * rather than the original UC export image (which already has a baked-in watermark).
  * Used to conditionally overlay the FRISCO logo on enhanced images so the watermark
  * is consistent across all listing photos.
  */
 export function isEnhancedImage(url: string): boolean {
-    return url.includes('/storage/v1/object/public/enhanced-images/');
+    return url.includes('/storage/v1/object/public/enhanced-images/')
+        || url.includes('.r2.dev/');
 }
 
 /**
