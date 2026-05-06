@@ -28,6 +28,12 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY')!;
 
+// Kill-switch for AI enhancement. Default OFF — Gemini image-gen left the free tier
+// in March 2026, so the pipeline runs Gemini-free unless this is explicitly set to 'true'.
+// When false, enhanceImage() short-circuits and the frontend serves original_url via
+// getBestImageUrl() fallback.
+const AI_ENHANCEMENT_ENABLED = Deno.env.get('AI_ENHANCEMENT_ENABLED') === 'true';
+
 // ---- Cloudflare R2 config (S3-compatible) ----
 const R2_ACCOUNT_ID = Deno.env.get('R2_ACCOUNT_ID')!;
 const R2_ACCESS_KEY_ID = Deno.env.get('R2_ACCESS_KEY_ID')!;
@@ -484,6 +490,24 @@ const MAX_WATERMARK_PASSES = 1;
 // ---- Main enhancement logic ----
 // force=true: skip AI quality assessment, always enhance (used to re-process skipped images)
 async function enhanceImage(imageId: string, originalUrl: string, force = false): Promise<{ success: boolean; error?: string }> {
+    // Short-circuit when AI is disabled. No download, no Gemini calls. Mark completed with
+    // enhanced_url left null — getBestImageUrl() returns original_url and the gallery renders.
+    if (!AI_ENHANCEMENT_ENABLED) {
+        console.log(`[enhance-image] ${imageId} SKIPPED — AI_ENHANCEMENT_ENABLED=false`);
+        const { error } = await supabase
+            .from('listing_images')
+            .update({
+                enhancement_status: 'completed',
+                retry_count: 0,
+                updated_at: new Date().toISOString(),
+            })
+            .eq('id', imageId);
+        if (error) {
+            return { success: false, error: error.message };
+        }
+        return { success: true };
+    }
+
     // Declared outside try so the catch block (force-mode fallback) can access them.
     let imageBuffer: ArrayBuffer | undefined;
     let mimeType: string = getMimeType(originalUrl);
