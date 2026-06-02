@@ -357,10 +357,10 @@ const Kontakt = () => {
                     icon={Clock}
                     title={pageCopy.hours}
                     content={language === 'sk'
-                      ? <><span className="font-bold">Po - Pi:</span> 9-12, 13-16</>
+                      ? <><span className="font-bold">Po - Pi:</span> 9-12, 13-17</>
                       : language === 'en'
-                        ? <><span className="font-bold">Mon - Fri:</span> 9-12, 13-16</>
-                        : <><span className="font-bold">Mo - Fr:</span> 9-12, 13-16</>}
+                        ? <><span className="font-bold">Mon - Fri:</span> 9-12, 13-17</>
+                        : <><span className="font-bold">Mo - Fr:</span> 9-12, 13-17</>}
                   />
                   <ContactCard
                     icon={FileText}

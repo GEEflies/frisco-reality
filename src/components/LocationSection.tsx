@@ -202,7 +202,7 @@ export const LocationSection = () => {
                                 <div className="space-y-3 text-sm md:text-base pl-[3.25rem]">
                                     <div className="flex items-center gap-x-3 border-b border-gray-50 pb-2">
                                         <span className="font-bold text-navy">{copy.weekdays}</span>
-                                        <span className="text-charcoal/80">9-12, 13-16</span>
+                                        <span className="text-charcoal/80">9-12, 13-17</span>
                                     </div>
                                 </div>
                             </div>

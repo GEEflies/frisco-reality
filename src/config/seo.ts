@@ -37,7 +37,7 @@ export const COMPANY_INFO = {
     facebook: 'https://www.facebook.com/Friscorealitka/',
   },
   openingHours: [
-    'Mo-Fr 09:00-12:00,13:00-16:00',
+    'Mo-Fr 09:00-12:00,13:00-17:00',
   ],
 };
 
@@ -95,7 +95,7 @@ export function getOrganizationSchema(language: SeoLanguage = 'sk') {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '13:00',
-        closes: '16:00',
+        closes: '17:00',
       },
     ],
     sameAs: [
@@ -260,7 +260,7 @@ export function getLocalBusinessSchema(language: SeoLanguage = 'sk') {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '13:00',
-        closes: '16:00',
+        closes: '17:00',
       },
     ],
     sameAs: [
