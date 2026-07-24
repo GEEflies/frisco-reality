@@ -13,14 +13,10 @@ import { fetchAllActiveListings, fetchListingById, fetchAgentByUcId, getMaxPrice
 import { getCategoryType } from '@/api/mappings';
 import type { ListingFilters } from '@/api/types';
 
-// Query keys for cache management
-export const listingKeys = {
-    all: ['listings'] as const,
-    lists: () => [...listingKeys.all, 'list'] as const,
-    list: () => [...listingKeys.lists(), 'active'] as const,
-    details: () => [...listingKeys.all, 'detail'] as const,
-    detail: (id: string) => [...listingKeys.details(), id] as const,
-};
+// Query keys live in a server-safe module so server components can prefetch the
+// same cache these hooks read. Re-exported here to preserve the existing API.
+export { listingKeys } from '@/api/queryKeys';
+import { listingKeys } from '@/api/queryKeys';
 
 type FilterExclusions = {
     transaction?: boolean;

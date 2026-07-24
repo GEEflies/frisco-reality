@@ -146,7 +146,7 @@ const HeroDesktop = () => {
 
               {/* Corner Logo */}
               <img
-                src="/frisco-logo-hq.png"
+                src="/frisco-logo-hq.webp"
                 alt="FRISCO"
                 className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
               />

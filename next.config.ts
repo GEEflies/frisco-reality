@@ -96,6 +96,16 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Cache video assets aggressively (hero loops are content-stable — rename the file if you ever change it)
+      {
+        source: '/(.*)\\.(mp4|webm|ogg)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
   },
 

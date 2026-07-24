@@ -74,6 +74,17 @@ const friscoLogo = '/frisco-logo-hq.png';
  * Wraps next/image; shows a pulsing navy/5 background until the image is
  * decoded, then fades it in over 400 ms.
  */
+
+// Lightbox image sizing — capped at 1920px (retina-sharp; 2560 was overkill and
+// roughly doubled the bytes) and shared by BOTH the preloader and the render so the
+// preloaded URL is exactly the one shown (previously they differed, wasting the preload).
+const LIGHTBOX_QUALITY = 85;
+const lightboxImageWidth = (): number =>
+    Math.min(
+        Math.max(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1600, 1600),
+        1920,
+    );
+
 const GalleryImage = ({
     src,
     alt,
@@ -426,33 +437,34 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // so the browser cache is warm and arrow navigation is instant.
     // Zero Vercel cost — everything goes through weserv.nl CDN.
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-    const preloadedRef = useRef(false);
 
+    // Warm ONLY the current photo + 2 neighbors on each side (not all ~20 at once),
+    // at the exact width/quality the lightbox renders — so the photo you're looking at
+    // isn't fighting the whole gallery for bandwidth. Re-runs as you navigate, so the
+    // next/previous photos are already cached by the time you swipe to them.
     useEffect(() => {
-        if (!showLightbox || preloadedRef.current) return;
-        preloadedRef.current = true;
-
-        // Request high-res images — at least 1200px wide even on mobile
-        // so the lightbox looks sharp (mobile screens are 2-3x DPR)
-        const displayWidth = Math.max(1200, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1200, 1920));
-
-        images.forEach((imgSrc, idx) => {
-            if (!imgSrc || imgSrc.startsWith('/') || imgSrc.startsWith('data:')) return;
+        if (!showLightbox) return;
+        const w = lightboxImageWidth();
+        for (let d = -2; d <= 2; d++) {
+            const idx = currentImageIndex + d;
+            if (idx < 0 || idx >= images.length) continue;
+            const imgSrc = images[idx];
+            if (!imgSrc || imgSrc.startsWith('/') || imgSrc.startsWith('data:')) continue;
             const img = new window.Image();
             img.onload = () => {
                 setLoadedImages(prev => {
+                    if (prev.has(idx)) return prev;
                     const next = new Set(prev);
                     next.add(idx);
                     return next;
                 });
             };
-            img.src = buildWeservUrl(imgSrc, displayWidth, 85);
-        });
-    }, [showLightbox]); // eslint-disable-line react-hooks/exhaustive-deps
+            img.src = buildWeservUrl(imgSrc, w, LIGHTBOX_QUALITY);
+        }
+    }, [showLightbox, currentImageIndex]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Reset preload flag when images change (different listing)
+    // Reset cache tracking when the listing changes
     useEffect(() => {
-        preloadedRef.current = false;
         setLoadedImages(new Set());
     }, [listing?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -837,7 +849,11 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                     {/* Mobile Single Image with Swipe — stacked crossfade (no white flash) */}
                     <div className="md:hidden relative h-[50vh]">
-                        {images.map((img, idx) => (
+                        {images.map((img, idx) => {
+                            // Only mount the visible photo + its immediate neighbors so a
+                            // mobile listing doesn't download all ~20 images the moment it opens.
+                            const near = Math.abs(idx - currentImageIndex) <= 1;
+                            return (
                             <div
                                 key={idx}
                                 className={`absolute inset-0 transition-opacity duration-300 ease-out ${
@@ -845,17 +861,20 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
                                 }`}
                                 onClick={() => setShowLightbox(true)}
                             >
+                                {near && (
                                 <GalleryImage
                                     src={img}
                                     alt={listing.title}
                                     priority={idx === 0}
                                     sizes="100vw"
-                                    quality={88}
+                                    quality={85}
                                     showOverlay={overlayUrls.has(img)}
                                     className="object-cover"
                                 />
+                                )}
                             </div>
-                        ))}
+                            );
+                        })}
 
                         {/* Mobile Navigation */}
                         {images.length > 1 && (
@@ -1117,7 +1136,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
 
                                 const imgSrc = img.startsWith('/') || img.startsWith('data:')
                                     ? img
-                                    : buildWeservUrl(img, Math.max(1600, Math.min(typeof window !== 'undefined' ? Math.round(window.innerWidth * window.devicePixelRatio) : 1600, 2560)), 92);
+                                    : buildWeservUrl(img, lightboxImageWidth(), LIGHTBOX_QUALITY);
 
                                 return (
                                     <div

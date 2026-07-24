@@ -1,9 +1,13 @@
 import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { HeroSection } from '@/components/HeroSection';
 import { SITE_URL, getBreadcrumbSchema } from '@/config/seo';
 import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { fetchAllActiveListings } from '@/api/listingsService';
+import { listingKeys } from '@/api/queryKeys';
 
 const HOME_SEO: Record<LanguageCode, { title: string; description: string; ogTitle: string; ogDescription: string; breadcrumbHome: string }> = {
   sk: {
@@ -73,20 +77,31 @@ export default async function Home() {
     { name: localized.breadcrumbHome, url: SITE_URL },
   ]);
 
-
+  // Prefetch listings on the server so the featured cards are baked into the
+  // initial HTML (crawlable content + no client-fetch flash) rather than
+  // appearing only after React Query runs on the client. Seeds the exact same
+  // ['listings','list','active'] cache the homepage hooks already read, so the
+  // client hydrates instantly and won't refetch (5-min staleTime).
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: listingKeys.list(),
+    queryFn: fetchAllActiveListings,
+  });
 
   return (
-    <main className="homepage-motion overflow-x-clip">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <HeroSection />
-      <MainListings />
-      <AboutSection />
-      <ProcessSection />
-      <ContactSection />
-      <Footer />
-    </main>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <main className="homepage-motion overflow-x-clip">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
+        <HeroSection />
+        <MainListings />
+        <AboutSection />
+        <ProcessSection />
+        <ContactSection />
+        <Footer />
+      </main>
+    </HydrationBoundary>
   );
 }

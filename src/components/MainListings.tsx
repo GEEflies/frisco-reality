@@ -98,7 +98,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
             {/* FRISCO watermark — only on enhanced images */}
             {showOverlay && (
               <img
-                src="/frisco-logo-hq.png"
+                src="/frisco-logo-hq.webp"
                 alt=""
                 className="absolute bottom-0 right-0 w-[20%] min-w-[70px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] z-10 select-none"
                 draggable={false}

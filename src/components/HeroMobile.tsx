@@ -6,7 +6,7 @@ import RotatingWord from "./RotatingWord";
 import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_MOBILE_COPY } from '@/i18n/copy';
-const friscoLogo = '/frisco-logo-hq.png';
+const friscoLogo = '/frisco-logo-hq.webp';
 // Mobile-optimised video: 720p, CRF 28, ~2.3 MB (vs 5.5 MB original)
 const HERO_VIDEO_URL = '/videos/hero-mobile-720p.mp4';
 

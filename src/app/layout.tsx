@@ -159,6 +159,23 @@ export default async function RootLayout({
       <head>
         <link rel="dns-prefetch" href="//fcvswlurtchqorgnwclw.supabase.co" />
         <link rel="preconnect" href="https://fcvswlurtchqorgnwclw.supabase.co" crossOrigin="" />
+        {/* Preload the hero poster (LCP element) so it paints before the
+            video element + its metadata load. Scoped by viewport so each
+            device only fetches the poster it will actually display. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/hero-poster-desktop.webp"
+          media="(min-width: 1024px)"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/hero-poster-mobile.webp"
+          media="(max-width: 1023px)"
+          fetchPriority="high"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

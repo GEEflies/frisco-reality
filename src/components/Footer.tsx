@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowUpRight, Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react';
 import { LocaleLink } from './LocaleLink';
-const friscoLogo = '/frisco-logo-hq.png';
+const friscoLogo = '/frisco-logo-hq.webp';
 import { GoogleReviewsBadge } from './GoogleReviewsBadge';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { FOOTER_COPY } from '@/i18n/copy';

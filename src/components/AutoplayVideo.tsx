@@ -94,7 +94,11 @@ const AutoplayVideo = ({ src, className, poster }: AutoplayVideoProps) => {
       ) : (
         /* Placeholder – same dimensions, no download */
         poster ? (
-          <img src={poster} alt="" className="w-full h-full object-cover" />
+          // lazy: when this hero is the hidden (off-target) variant it sits in a
+          // display:none parent and never intersects, so the browser skips the
+          // download entirely. The on-target poster is fetched eagerly via the
+          // <link rel="preload"> in the root layout, so LCP is unaffected.
+          <img src={poster} alt="" loading="lazy" className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-navy/5" />
         )
