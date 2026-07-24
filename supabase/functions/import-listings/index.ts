@@ -696,15 +696,24 @@ async function handleListing(data: Record<string, any>, isTestMode = false) {
 // ============================================================
 async function handleImages(listingId: string, images: Array<{ url: string; changed: boolean }>, isUpdate: boolean) {
     if (isUpdate) {
-        // Get existing images for this listing
+        // Get existing images for this listing, keyed by position (sort_order).
+        //
+        // We dedupe by sort_order, NOT by original_url. UC's Export API returns a
+        // fresh, opaque image URL on every scrape — the path token AND the st=/ts=
+        // signature both rotate — so the same photo never has a stable URL across
+        // imports. Matching by URL therefore never hit, and every re-import inserted
+        // the whole photo set again, stacking duplicate rows (often a broken
+        // thumbnail from one scrape plus the full-size image from another).
+        // Position is stable: UC sends photos in a consistent order, so photo i on
+        // one scrape is photo i on the next.
         const { data: existingImages } = await supabase
             .from('listing_images')
-            .select('id, original_url, enhanced_url, upscaled_url, enhancement_status')
+            .select('id, sort_order, original_url, enhanced_url, upscaled_url, enhancement_status')
             .eq('listing_id', listingId)
             .order('sort_order', { ascending: true });
 
-        const existingByUrl = new Map(
-            (existingImages || []).map(img => [img.original_url, img])
+        const existingByPosition = new Map(
+            (existingImages || []).map(img => [img.sort_order, img])
         );
 
         // NOTE: We intentionally do NOT delete images that UC no longer sends.
@@ -713,23 +722,31 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
         // in the DB with its enhanced version intact. Manual cleanup can be done
         // through the Supabase dashboard if needed.
 
-        // Upsert images — NEVER re-enhance an already completed image.
+        // Upsert by position — NEVER re-enhance an already completed image.
         // Enhancement happens exactly once: new image → pending → cron → completed.
         for (let i = 0; i < images.length; i++) {
             const img = images[i];
-            const existing = existingByUrl.get(img.url);
+            const existing = existingByPosition.get(i);
 
             if (existing) {
-                // Image already in DB — just update sort order.
-                // We ignore img.changed to avoid burning Gemini credits on
-                // re-enhancement. Once enhanced, it stays enhanced.
-                const { error: updateErr } = await supabase
-                    .from('listing_images')
-                    .update({ sort_order: i })
-                    .eq('id', existing.id);
-                if (updateErr) console.error(`[UC] Failed to update sort_order for image ${existing.id}:`, updateErr.message);
+                const isEnhanced = existing.enhancement_status === 'completed' && existing.enhanced_url;
+                if (isEnhanced) {
+                    // Already enhanced — keep the enhanced version untouched.
+                    // (The rotated original_url points at the same photo anyway.)
+                    continue;
+                }
+                // Not yet enhanced: refresh the original_url to the newest signed URL
+                // so the enhancement cron fetches a valid (and often higher-quality)
+                // source. This self-heals broken/low-res originals from earlier scrapes.
+                if (existing.original_url !== img.url) {
+                    const { error: updateErr } = await supabase
+                        .from('listing_images')
+                        .update({ original_url: img.url })
+                        .eq('id', existing.id);
+                    if (updateErr) console.error(`[UC] Failed to refresh original_url for image ${existing.id}:`, updateErr.message);
+                }
             } else {
-                // Truly new image URL — insert and queue for first-time enhancement
+                // New position (listing gained a photo) — insert and queue for enhancement.
                 const { error: insertErr } = await supabase
                     .from('listing_images')
                     .insert({
@@ -741,7 +758,7 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
                 if (insertErr) {
                     console.error(`[UC] Failed to insert image ${img.url}:`, insertErr.message);
                 } else {
-                    console.log(`[UC] New image queued for enhancement: ${img.url}`);
+                    console.log(`[UC] New image queued for enhancement at position ${i}`);
                 }
             }
         }

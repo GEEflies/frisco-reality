@@ -166,6 +166,9 @@ CREATE INDEX idx_listings_created ON listings(created_at DESC);
 CREATE INDEX idx_listings_not_deleted ON listings(is_deleted) WHERE is_deleted = FALSE;
 CREATE INDEX idx_listing_images_listing ON listing_images(listing_id);
 CREATE INDEX idx_listing_images_status ON listing_images(enhancement_status);
+-- At most one image row per photo position — backstops the position-based dedup
+-- in import-listings so re-imports can never stack duplicate rows for one photo.
+CREATE UNIQUE INDEX idx_listing_images_listing_position ON listing_images(listing_id, sort_order);
 CREATE INDEX idx_agents_uc_user_id ON agents(uc_user_id);
 
 -- ============================================
