@@ -12,24 +12,8 @@ export default function RotatingWord({ words, className = "" }: RotatingWordProp
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [displayedText, setDisplayedText] = useState(words[0]);
     const [isDeleting, setIsDeleting] = useState(false);
-    // Gate the perpetual typewriter loop on (a) reduced-motion preference and
-    // (b) tab visibility. Without this, the setTimeout→setState loop re-renders
-    // the hero forever — even in a background tab, and even in the hidden
-    // (off-screen) hero variant — needlessly occupying the main thread (INP).
-    const [animate, setAnimate] = useState(false);
 
     useEffect(() => {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (reduceMotion) return; // leave the first word rendered statically
-
-        const sync = () => setAnimate(document.visibilityState === 'visible');
-        sync();
-        document.addEventListener('visibilitychange', sync);
-        return () => document.removeEventListener('visibilitychange', sync);
-    }, []);
-
-    useEffect(() => {
-        if (!animate) return;
         const word = words[currentWordIndex];
 
         let typeSpeed = isDeleting ? 50 : 100; // Deleting is faster
@@ -59,7 +43,7 @@ export default function RotatingWord({ words, className = "" }: RotatingWordProp
         }, typeSpeed);
 
         return () => clearTimeout(timer);
-    }, [animate, displayedText, isDeleting, currentWordIndex, words]);
+    }, [displayedText, isDeleting, currentWordIndex, words]);
 
     return (
         <span className={`inline-flex items-center ${className}`}>
