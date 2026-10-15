@@ -30,7 +30,8 @@ const HeroMobile = () => {
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start story-rise stagger-2">
+                {/* Desktop hero holds the page <h1>; this copy is display:none on desktop, so use an ARIA heading to keep one <h1> in the HTML */}
+                <div role="heading" aria-level={1} className="text-4xl sm:text-[2.75rem] md:text-6xl font-serif font-bold text-navy tracking-tight leading-[1.1] mb-5 flex flex-col items-start story-rise stagger-2">
                     <span className="whitespace-nowrap">{copy.title}</span>
                     <span className="block h-[2.6rem] sm:h-[3.1rem] md:h-[4.2rem] overflow-hidden text-navy/90 flex items-center gap-2">
                         {copy.verbPrefix && (
@@ -38,7 +39,7 @@ const HeroMobile = () => {
                         )}
                         <RotatingWord words={copy.verbs} className="text-accent-red text-left" />
                     </span>
-                </h1>
+                </div>
 
                 {/* Subheadline / Value Prop */}
                 <p className="text-charcoal/70 text-sm md:text-xl font-normal leading-relaxed mb-6 story-soft stagger-3">

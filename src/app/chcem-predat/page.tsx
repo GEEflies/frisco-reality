@@ -1,7 +1,7 @@
 import ChcemPredatContent from '@/components/ChcemPredatContent';
 import type { Metadata } from 'next';
 import { SITE_URL, getServiceSchema, getBreadcrumbSchema, getFAQSchema } from '@/config/seo';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, {
@@ -16,8 +16,8 @@ const COPY: Record<LanguageCode, {
   faqs: { question: string; answer: string }[];
 }> = {
   sk: {
-    metaTitle: 'Chcem predať nehnuteľnosť – bezplatné ohodnotenie a predaj',
-    metaDescription: 'Predajte svoju nehnuteľnosť rýchlo a za najlepšiu cenu s FRISCO Reality. Bezplatné ohodnotenie, profesionálny home staging, prémiová prezentácia a kompletný právny servis.',
+    metaTitle: 'Predaj nehnuteľnosti – bezplatné ohodnotenie',
+    metaDescription: 'Predajte nehnuteľnosť rýchlo a za najlepšiu cenu s FRISCO Reality. Bezplatné ohodnotenie, home staging, prémiová prezentácia a kompletný právny servis.',
     ogTitle: 'Chcem predať nehnuteľnosť | FRISCO Reality',
     ogDescription: 'Predajte nehnuteľnosť za najlepšiu cenu. Bezplatné ohodnotenie a kompletný servis.',
     serviceName: 'Predaj nehnuteľností',
@@ -31,7 +31,7 @@ const COPY: Record<LanguageCode, {
     ],
   },
   en: {
-    metaTitle: 'I want to sell a property – free valuation and sales service',
+    metaTitle: 'Sell a property – free valuation & full service',
     metaDescription: 'Sell your property faster and at the right price with FRISCO Reality. Free valuation, home staging, premium presentation, and complete legal support.',
     ogTitle: 'Sell a property | FRISCO Reality',
     ogDescription: 'Sell your property at the best achievable price with full support.',
@@ -46,7 +46,7 @@ const COPY: Record<LanguageCode, {
     ],
   },
   de: {
-    metaTitle: 'Ich möchte eine Immobilie verkaufen – kostenlose Bewertung und Verkauf',
+    metaTitle: 'Immobilie verkaufen – kostenlose Bewertung',
     metaDescription: 'Verkaufen Sie Ihre Immobilie schneller und zum passenden Preis mit FRISCO Reality. Kostenlose Bewertung, Home Staging, Premium-Präsentation und kompletter Rechtsservice.',
     ogTitle: 'Immobilie verkaufen | FRISCO Reality',
     ogDescription: 'Verkaufen Sie Ihre Immobilie zum bestmöglichen Preis mit Komplettservice.',
@@ -70,18 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: copy.metaTitle,
     description: copy.metaDescription,
-    alternates: buildLanguageAlternates(path, language),
-    openGraph: {
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-      url: `${SITE_URL}${path}`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-    },
+    ...buildPageSocialMetadata({ title: copy.ogTitle, description: copy.ogDescription, path, language }),
   };
 }
 

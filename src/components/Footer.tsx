@@ -117,8 +117,14 @@ export const Footer = () => {
             <h3 className="text-charcoal/50 text-sm font-semibold uppercase tracking-widest mb-6">{copy.services}</h3>
             <ul className="space-y-3">
               {copy.servicesItems.map(item => (
-                <li key={item}>
-                  <span className="text-charcoal/80 text-sm lg:text-base">{item}</span>
+                <li key={item.label}>
+                  {item.href ? (
+                    <LocaleLink href={item.href} onClick={scrollToTop} className="text-charcoal/80 hover:text-accent-red transition-colors text-sm lg:text-base">
+                      {item.label}
+                    </LocaleLink>
+                  ) : (
+                    <span className="text-charcoal/80 text-sm lg:text-base">{item.label}</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -264,7 +270,7 @@ export const Footer = () => {
                 karchi.
               </a>
             </div>
-            <LocaleLink href="/cookies" className="hover:text-navy transition-colors">{copy.cookies}</LocaleLink>
+            <LocaleLink href="/ochrana-osobnych-udajov#cookies" className="hover:text-navy transition-colors">{copy.cookies}</LocaleLink>
             <span className="text-charcoal/20">|</span>
             <LocaleLink href="/ochrana-osobnych-udajov" className="hover:text-navy transition-colors">{copy.privacy}</LocaleLink>
           </div>

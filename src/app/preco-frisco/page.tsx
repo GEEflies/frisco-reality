@@ -1,7 +1,7 @@
 import SluzbyContent from '@/components/SluzbyContent';
 import type { Metadata } from 'next';
 import { SITE_URL, getServiceSchema, getBreadcrumbSchema, getFAQSchema } from '@/config/seo';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, {
@@ -16,8 +16,8 @@ const COPY: Record<LanguageCode, {
   faqs: { question: string; answer: string }[];
 }> = {
   sk: {
-    title: 'Prečo FRISCO Reality – Služby a výhody prémiovej realitky',
-    description: 'Prečo si vybrať FRISCO Reality? Bezplatné ohodnotenie nehnuteľnosti, profesionálny home staging, prémiová foto a video prezentácia, právny servis a osobný prístup rodinnej firmy.',
+    title: 'Prečo FRISCO Reality – služby a výhody prémiovej realitky',
+    description: 'Prečo FRISCO Reality? Bezplatné ohodnotenie, profesionálny home staging, prémiová foto a video prezentácia, právny servis a osobný prístup rodinnej firmy.',
     ogTitle: 'Prečo FRISCO Reality | Služby prémiovej realitnej kancelárie',
     ogDescription: 'Bezplatné ohodnotenie, home staging, profesionálna prezentácia a osobný prístup.',
     serviceName: 'Služby FRISCO Reality',
@@ -31,7 +31,7 @@ const COPY: Record<LanguageCode, {
     ],
   },
   en: {
-    title: 'Why FRISCO Reality – Premium real estate services and value',
+    title: 'Why FRISCO Reality – premium real estate services and value',
     description: 'Why choose FRISCO Reality? Free valuation, home staging, premium photo/video presentation, legal support, and a personal family approach.',
     ogTitle: 'Why FRISCO Reality | Premium real estate services',
     ogDescription: 'Free valuation, home staging, premium presentation, and personal support.',
@@ -46,7 +46,7 @@ const COPY: Record<LanguageCode, {
     ],
   },
   de: {
-    title: 'Warum FRISCO Reality – Leistungen und Vorteile einer Premium-Agentur',
+    title: 'Warum FRISCO Reality – Leistungen und Vorteile der Agentur',
     description: 'Warum FRISCO Reality? Kostenlose Immobilienbewertung, professionelles Home Staging, Premium-Foto- und Videopräsentation, Rechtsservice und persönlicher Familienansatz.',
     ogTitle: 'Warum FRISCO Reality | Premium-Immobilienservices',
     ogDescription: 'Kostenlose Bewertung, Home Staging, professionelle Präsentation und persönlicher Service.',
@@ -68,20 +68,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const path = '/preco-frisco';
 
   return {
-    title: copy.title,
+    title: { absolute: copy.title },
     description: copy.description,
-    alternates: buildLanguageAlternates(path, language),
-    openGraph: {
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-      url: `${SITE_URL}${path}`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-    },
+    ...buildPageSocialMetadata({ title: copy.ogTitle, description: copy.ogDescription, path, language }),
   };
 }
 

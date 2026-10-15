@@ -286,7 +286,7 @@ export const PropertiesSection = () => {
           >
             {copy.headingLabel}
           </motion.div>
-          <motion.h2
+          <motion.h1
             className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-navy mb-8"
             {...(isDesktop ? {
               initial: { opacity: 0, y: 30 },
@@ -303,7 +303,7 @@ export const PropertiesSection = () => {
             ) : (
               <>{copy.featuredStart} <span className="text-accent-red italic">{copy.featuredAccent}</span></>
             )}
-          </motion.h2>
+          </motion.h1>
 
           {/* Quick Category Filters */}
           <motion.div

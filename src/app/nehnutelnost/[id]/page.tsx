@@ -1,9 +1,12 @@
 import PropertyDetailContent from '@/components/PropertyDetailContent';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { listingKeys } from '@/api/queryKeys';
 import type { Metadata } from 'next';
-import { fetchListingById, getPrimaryImage } from '@/api/listingsService';
-import { getLocalizedCategoryLabel } from '@/api/mappings';
-import { SITE_URL, DEFAULT_OG_IMAGE, getRealEstateListingSchema, getBreadcrumbSchema } from '@/config/seo';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { fetchListingById, fetchAgentByUcId, getPrimaryImage } from '@/api/listingsService';
+import { getLocalizedCategoryLabel, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
+import { SITE_URL, getRealEstateListingSchema, getBreadcrumbSchema } from '@/config/seo';
+import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 // Export API numeric currency codes → ISO 4217
@@ -74,35 +77,58 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
   // Export API uses numeric currency codes — map to ISO for Intl
   const currencyCode = CURRENCY_MAP[listing.price_currency] || 'EUR';
   const priceFormatted = new Intl.NumberFormat(localized.locale, { style: 'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(listing.price);
-  
-  const title = `${listing.title} | ${categoryLabel}${location ? ` – ${location}` : ''}`;
-  const description = listing.description
-    ? `${listing.title} – ${priceFormatted}${location ? ` ${localized.locationIn} ${location}` : ''}. ${listing.usable_area ? `${localized.areaLabel} ${listing.usable_area} m².` : ''} ${listing.rooms_count ? `${listing.rooms_count} ${localized.roomsLabel}.` : ''} ${listing.description.slice(0, 120)}...`
-    : `${categoryLabel} ${localized.saleIn}${location ? ` ${localized.locationIn} ${location}` : ''} – ${priceFormatted}.`;
+
+  // Keep the rendered <title> <= 65 chars where possible: the root layout template
+  // appends " | FRISCO Reality", so use the bare listing title as an absolute title
+  // when the suffix would not fit (never truncate the listing title itself).
+  // Listings without a translation fall back to the Slovak title; add the localized
+  // category so EN/DE titles stay unique across language versions.
+  const localizedTitle = getLocalizedTitle(listing, language);
+  const baseTitle = language !== 'sk' && localizedTitle === listing.title
+    ? `${localizedTitle} – ${categoryLabel}`
+    : localizedTitle;
+  const BRAND_SUFFIX = ' | FRISCO Reality';
+  const title = baseTitle.length + BRAND_SUFFIX.length <= 65
+    ? baseTitle
+    : { absolute: baseTitle };
+
+  const MAX_DESC = 160;
+  const summary = [
+    `${localizedTitle} – ${priceFormatted}${location ? ` ${localized.locationIn} ${location}` : ''}.`,
+    listing.usable_area ? `${localized.areaLabel} ${listing.usable_area} m².` : '',
+    listing.rooms_count ? `${listing.rooms_count} ${localized.roomsLabel}.` : '',
+  ].filter(Boolean).join(' ');
+  const rawDescription = (getLocalizedDescription(listing, language) || '').replace(/\s+/g, ' ').trim();
+  let description: string;
+  if (rawDescription) {
+    const full = `${summary} ${rawDescription}`;
+    if (full.length <= MAX_DESC) {
+      description = full;
+    } else {
+      const room = MAX_DESC - 1; // reserve one char for the ellipsis
+      const cut = full.slice(0, room + 1);
+      const lastSpace = cut.lastIndexOf(' ');
+      const base = (lastSpace > 70 ? cut.slice(0, lastSpace) : full.slice(0, room)).replace(/[\s,.;:–-]+$/, '');
+      description = `${base}…`;
+    }
+  } else {
+    description = `${categoryLabel} ${localized.saleIn}${location ? ` ${localized.locationIn} ${location}` : ''} – ${priceFormatted}.`;
+  }
 
   const primaryImage = getPrimaryImage(listing);
   const pagePath = `/nehnutelnost/${listing.slug || listing.id}`;
-  const pageUrl = `${SITE_URL}${pagePath}`;
 
   return {
     title,
-    description: description.slice(0, 160),
-    alternates: buildLanguageAlternates(pagePath, language),
-    openGraph: {
-      title: `${listing.title} – ${priceFormatted}`,
-      description: description.slice(0, 200),
-      url: pageUrl,
+    description,
+    ...buildPageSocialMetadata({
+      title: `${localizedTitle} – ${priceFormatted}`,
+      description,
+      path: pagePath,
+      language,
       type: 'article',
-      images: primaryImage
-        ? [{ url: primaryImage, width: 1200, height: 630, alt: listing.title }]
-        : [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: 'FRISCO Reality' }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${listing.title} – ${priceFormatted}`,
-      description: description.slice(0, 200),
-      images: primaryImage ? [primaryImage] : [DEFAULT_OG_IMAGE],
-    },
+      image: primaryImage ? { url: primaryImage, width: 1200, height: 630, alt: localizedTitle } : null,
+    }),
   };
 }
 
@@ -148,8 +174,20 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
     );
   }
 
+  // Seed the React Query cache with the listing already fetched above (same key
+  // as useListing) so the client component renders real content in the SSR HTML.
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(listingKeys.detail(id), listing ?? null);
+  if (listing?.agent_id) {
+    const agentId = listing.agent_id;
+    await queryClient.prefetchQuery({
+      queryKey: ['agent', agentId] as const,
+      queryFn: () => fetchAgentByUcId(agentId),
+    });
+  }
+
   return (
-    <>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       {jsonLdScripts.map((schema, i) => (
         <script
           key={i}
@@ -158,6 +196,6 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         />
       ))}
       <PropertyDetailContent id={id} />
-    </>
+    </HydrationBoundary>
   );
 }

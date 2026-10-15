@@ -1,7 +1,7 @@
 import ChcemPrenajatContent from '@/components/ChcemPrenajatContent';
 import type { Metadata } from 'next';
 import { SITE_URL, getServiceSchema, getBreadcrumbSchema, getFAQSchema } from '@/config/seo';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, {
@@ -16,7 +16,7 @@ const COPY: Record<LanguageCode, {
   faqs: { question: string; answer: string }[];
 }> = {
   sk: {
-    metaTitle: 'Chcem prenajať nehnuteľnosť – správa a prenájom',
+    metaTitle: 'Prenájom nehnuteľnosti – nájomca a správa',
     metaDescription: 'Prenajmite svoju nehnuteľnosť s istotou cez FRISCO Reality. Nájdeme vám spoľahlivého nájomcu, pripravíme nájomnú zmluvu a postaráme sa o celý proces prenájmu od A po Z.',
     ogTitle: 'Chcem prenajať nehnuteľnosť | FRISCO Reality',
     ogDescription: 'Nájdeme vám ideálneho nájomcu. Kompletný servis pri prenájme nehnuteľností.',
@@ -30,7 +30,7 @@ const COPY: Record<LanguageCode, {
     ],
   },
   en: {
-    metaTitle: 'I want to rent out a property – full rental management',
+    metaTitle: 'Rent out a property – full rental management',
     metaDescription: 'Rent out your property with confidence via FRISCO Reality. We find reliable tenants, prepare agreements, and handle the full rental process.',
     ogTitle: 'Rent out a property | FRISCO Reality',
     ogDescription: 'We find qualified tenants and manage the full rental process for you.',
@@ -44,7 +44,7 @@ const COPY: Record<LanguageCode, {
     ],
   },
   de: {
-    metaTitle: 'Ich möchte eine Immobilie vermieten – Verwaltung und Vermietung',
+    metaTitle: 'Immobilie vermieten – Mietersuche und Verwaltung',
     metaDescription: 'Vermieten Sie Ihre Immobilie sicher mit FRISCO Reality. Wir finden zuverlässige Mieter, erstellen den Mietvertrag und begleiten den gesamten Vermietungsprozess.',
     ogTitle: 'Immobilie vermieten | FRISCO Reality',
     ogDescription: 'Wir finden passende Mieter und übernehmen den kompletten Vermietungsservice.',
@@ -67,18 +67,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: copy.metaTitle,
     description: copy.metaDescription,
-    alternates: buildLanguageAlternates(path, language),
-    openGraph: {
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-      url: `${SITE_URL}${path}`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-    },
+    ...buildPageSocialMetadata({ title: copy.ogTitle, description: copy.ogDescription, path, language }),
   };
 }
 

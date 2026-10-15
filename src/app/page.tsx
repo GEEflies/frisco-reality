@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { HeroSection } from '@/components/HeroSection';
 import { SITE_URL, getBreadcrumbSchema } from '@/config/seo';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 import { getQueryClient } from '@/lib/getQueryClient';
 import { fetchAllActiveListings } from '@/api/listingsService';
@@ -18,15 +18,15 @@ const HOME_SEO: Record<LanguageCode, { title: string; description: string; ogTit
     breadcrumbHome: 'Domov',
   },
   en: {
-    title: 'FRISCO Reality | Premium Real Estate in Slovakia – Sales & Rentals',
-    description: 'Looking for premium property in Slovakia? FRISCO Reality is a family real estate agency for apartments, houses, land, and commercial spaces with professional presentation and free valuation.',
+    title: 'FRISCO Reality | Real Estate in Slovakia – Sales & Rentals',
+    description: 'Looking for property in Slovakia? FRISCO Reality is a family agency for apartments, houses, land and commercial spaces, with free valuation.',
     ogTitle: 'FRISCO Reality | Premium Real Estate in Slovakia',
     ogDescription: 'Premium real estate agency focused on sales and rentals with a personal family approach.',
     breadcrumbHome: 'Home',
   },
   de: {
-    title: 'FRISCO Reality | Premium-Immobilien in der Slowakei – Verkauf & Vermietung',
-    description: 'Suchen Sie Premium-Immobilien in der Slowakei? FRISCO Reality ist eine familiengeführte Immobilienagentur für Wohnungen, Häuser, Grundstücke und Gewerbeobjekte mit professioneller Präsentation und kostenloser Bewertung.',
+    title: 'FRISCO Reality | Immobilien Slowakei – Kauf & Miete',
+    description: 'Immobilien in der Slowakei? FRISCO Reality ist eine familiengeführte Agentur für Wohnungen, Häuser, Grundstücke und Gewerbe – mit kostenloser Bewertung.',
     ogTitle: 'FRISCO Reality | Premium-Immobilien in der Slowakei',
     ogDescription: 'Premium-Immobilienagentur für Verkauf und Vermietung mit persönlichem Familienansatz.',
     breadcrumbHome: 'Startseite',
@@ -40,12 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: localized.title,
     description: localized.description,
-    alternates: buildLanguageAlternates('/', language),
-    openGraph: {
-      title: localized.ogTitle,
-      description: localized.ogDescription,
-      url: SITE_URL,
-    },
+    ...buildPageSocialMetadata({ title: localized.ogTitle, description: localized.ogDescription, path: '/', language }),
   };
 }
 

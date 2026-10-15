@@ -1,7 +1,7 @@
 import PredajAPrenajomContent from '@/components/PredajAPrenajomContent';
 import type { Metadata } from 'next';
 import { SITE_URL, getBreadcrumbSchema } from '@/config/seo';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, {
@@ -46,18 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: copy.title,
     description: copy.description,
-    alternates: buildLanguageAlternates(path, language),
-    openGraph: {
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-      url: `${SITE_URL}${path}`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: copy.ogTitle,
-      description: copy.ogDescription,
-    },
+    ...buildPageSocialMetadata({ title: copy.ogTitle, description: copy.ogDescription, path, language }),
   };
 }
 

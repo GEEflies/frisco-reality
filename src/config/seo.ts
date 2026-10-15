@@ -10,7 +10,7 @@ export const SITE_LANGUAGE = 'sk';
 
 type SeoLanguage = 'sk' | 'en' | 'de';
 
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image.png`;
 
 export const COMPANY_INFO = {
   name: 'FRISCO, s.r.o.',

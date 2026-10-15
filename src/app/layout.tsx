@@ -104,7 +104,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: 'website',
       locale: localized.locale,
-      url: SITE_URL,
+      url: alternates.canonical,
       siteName: SITE_NAME,
       title: localized.ogTitle,
       description: localized.ogDescription,

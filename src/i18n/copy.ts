@@ -512,7 +512,7 @@ export const FOOTER_COPY: Record<LanguageCode, {
   cookies: string;
   madeBy: string;
   navItems: Array<{ label: string; href: string }>;
-  servicesItems: string[];
+  servicesItems: Array<{ label: string; href?: string }>;
 }> = {
   sk: {
     title: 'O vašu nehnuteľnosť sa postaráme ako o',
@@ -535,9 +535,15 @@ export const FOOTER_COPY: Record<LanguageCode, {
       { label: 'Domov', href: '/' },
       { label: 'Prečo FRISCO?', href: '/preco-frisco' },
       { label: 'Ponuka', href: '/ponuka' },
+      { label: 'Predaj a prenájom', href: '/predaj-a-prenajom' },
       { label: 'Kontakt', href: '/kontakt' },
     ],
-    servicesItems: ['Predaj nehnuteľností', 'Prenájom', 'Development', 'Investície'],
+    servicesItems: [
+      { label: 'Predaj nehnuteľností', href: '/chcem-predat' },
+      { label: 'Prenájom', href: '/chcem-prenajat' },
+      { label: 'Development' },
+      { label: 'Investície' },
+    ],
   },
   en: {
     title: 'We care for your property as if it were our',
@@ -560,9 +566,15 @@ export const FOOTER_COPY: Record<LanguageCode, {
       { label: 'Home', href: '/' },
       { label: 'Why FRISCO?', href: '/preco-frisco' },
       { label: 'Listings', href: '/ponuka' },
+      { label: 'Sales & rentals', href: '/predaj-a-prenajom' },
       { label: 'Contact', href: '/kontakt' },
     ],
-    servicesItems: ['Property sales', 'Rentals', 'Development', 'Investments'],
+    servicesItems: [
+      { label: 'Property sales', href: '/chcem-predat' },
+      { label: 'Rentals', href: '/chcem-prenajat' },
+      { label: 'Development' },
+      { label: 'Investments' },
+    ],
   },
   de: {
     title: 'Wir kümmern uns um Ihre Immobilie wie um unsere',
@@ -585,8 +597,14 @@ export const FOOTER_COPY: Record<LanguageCode, {
       { label: 'Startseite', href: '/' },
       { label: 'Warum FRISCO?', href: '/preco-frisco' },
       { label: 'Angebot', href: '/ponuka' },
+      { label: 'Verkauf & Vermietung', href: '/predaj-a-prenajom' },
       { label: 'Kontakt', href: '/kontakt' },
     ],
-    servicesItems: ['Immobilienverkauf', 'Vermietung', 'Entwicklung', 'Investitionen'],
+    servicesItems: [
+      { label: 'Immobilienverkauf', href: '/chcem-predat' },
+      { label: 'Vermietung', href: '/chcem-prenajat' },
+      { label: 'Entwicklung' },
+      { label: 'Investitionen' },
+    ],
   },
 };
