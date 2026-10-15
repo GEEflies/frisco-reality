@@ -4,7 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, SlidersHorizontal, SearchX, Phone, Mail, LayoutGrid, Square } from 'lucide-react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { FilterBar } from './FilterBar';
 import { ListingCard } from './ListingCard';
 import { useListings, useListingFilters } from '@/hooks/useListings';
@@ -22,7 +22,6 @@ export const PropertiesSection = () => {
   const filterWrapperRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const isDesktop = useIsDesktop();
-  const router = useRouter();
   const { startNavLoading } = useNavLoading();
   const searchParams = useSearchParams();
   const previousFacetMaxRef = useRef<number | null>(null);
@@ -267,11 +266,8 @@ export const PropertiesSection = () => {
   };
 
   // Handle listing click
-  const handleListingClick = (listing: Listing) => {
-    startNavLoading();
-    const identifier = listing.slug || listing.id;
-    router.push(localePath(`/nehnutelnost/${identifier}`, language));
-  };
+  const getListingHref = (listing: Listing) =>
+    localePath(`/nehnutelnost/${listing.slug || listing.id}`, language);
 
   return (
     <>
@@ -543,7 +539,8 @@ export const PropertiesSection = () => {
                       status={status.label}
                       statusColor={status.color}
                       features={features}
-                      onClick={() => handleListingClick(listing)}
+                      href={getListingHref(listing)}
+                      onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)) startNavLoading(); }}
                     />
                   </motion.div>
                 );

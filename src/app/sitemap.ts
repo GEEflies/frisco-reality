@@ -85,7 +85,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const { data: listings, error } = await supabase
         .from('listings')
         .select('id, slug, updated_at')
-        .eq('status', 'active')
+        .eq('is_deleted', false)
+        .eq('status', 1) // 1 = Aktívna (Export API)
         .order('updated_at', { ascending: false });
 
       if (!error && listings) {

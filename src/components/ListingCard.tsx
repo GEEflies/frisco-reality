@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import listingImageLoader from '@/lib/imageLoader';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -21,7 +22,9 @@ interface ListingCardProps {
     showOverlay?: boolean;
     status: string;
     statusColor?: string;
-    onClick?: () => void;
+    /** Detail page URL; rendered as a real <a href> for crawlability. */
+    href: string;
+    onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export const ListingCard = ({
@@ -34,6 +37,7 @@ export const ListingCard = ({
     showOverlay = false,
     status,
     statusColor = "bg-navy",
+    href,
     onClick
 }: ListingCardProps) => {
     const { language } = useLanguage();
@@ -67,7 +71,8 @@ export const ListingCard = ({
     };
 
     return (
-        <div
+        <Link
+            href={href}
             onClick={onClick}
             className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group border border-black/5 flex flex-col h-full cursor-pointer relative"
         >
@@ -80,6 +85,8 @@ export const ListingCard = ({
 
                 {/* Heart Icon */}
                 <button
+                    type="button"
+                    aria-label="Like"
                     onClick={handleLike}
                     className={`absolute top-4 right-4 bg-white/90 hover:bg-white p-2.5 rounded-full shadow-sm z-20 transition-all duration-300 active:scale-90 ${isLiked ? 'text-pink-500' : 'text-black'}`}
                 >
@@ -158,6 +165,6 @@ export const ListingCard = ({
                     ))}
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };

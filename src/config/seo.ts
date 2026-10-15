@@ -3,7 +3,7 @@
  * All SEO constants, structured data helpers, and metadata defaults
  */
 
-export const SITE_URL = 'https://frisco.sk';
+export const SITE_URL = 'https://www.frisco.sk';
 export const SITE_NAME = 'FRISCO Reality';
 export const SITE_LOCALE = 'sk_SK';
 export const SITE_LANGUAGE = 'sk';

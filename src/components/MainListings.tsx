@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronRight, Maximize, Home, MapPin, Trees } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { localePath } from '@/i18n/types';
 import { LocaleLink } from '@/components/LocaleLink';
@@ -67,7 +67,8 @@ function getFeatureData(listing: ListingWithImages, language: 'sk' | 'en' | 'de'
   return features.slice(0, 2);
 }
 
-function ListingCard({ listing, language, onClick }: { listing: ListingWithImages; language: 'sk' | 'en' | 'de'; onClick: () => void }) {
+function ListingCard({ listing, language, onClick }: { listing: ListingWithImages; language: 'sk' | 'en' | 'de'; onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }) {
+  const href = localePath(`/nehnutelnost/${listing.slug || listing.id}`, language);
   const image = getPrimaryImage(listing);
   const primaryImg = listing.images?.sort((a, b) => a.sort_order - b.sort_order)[0];
   const showOverlay = primaryImg ? shouldShowOverlay(primaryImg) : false;
@@ -84,7 +85,7 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
   );
 
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
+    <Link href={href} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-black/5 flex flex-col h-full relative group cursor-pointer" onClick={onClick}>
       <div className="relative h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
         {image ? (
           <>
@@ -136,14 +137,13 @@ function ListingCard({ listing, language, onClick }: { listing: ListingWithImage
           ))}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
 export const MainListings = () => {
   const { language } = useLanguage();
   const copy = MAIN_LISTINGS_COPY[language];
-  const router = useRouter();
   const { startNavLoading } = useNavLoading();
   const { data: listings, isLoading } = useFeaturedListings(3);
 
@@ -166,7 +166,7 @@ export const MainListings = () => {
                   key={listing.id}
                   listing={listing}
                   language={language}
-                  onClick={() => { startNavLoading(); router.push(localePath(`/nehnutelnost/${listing.slug || listing.id}`, language)); }}
+                  onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)) startNavLoading(); }}
                 />
               ))
             : copy.cards.map((card, index) => (
@@ -200,7 +200,7 @@ export const MainListings = () => {
                   key={listing.id}
                   listing={listing}
                   language={language}
-                  onClick={() => { startNavLoading(); router.push(localePath(`/nehnutelnost/${listing.slug || listing.id}`, language)); }}
+                  onClick={(e) => { if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)) startNavLoading(); }}
                 />
               ))
             : copy.cards.slice(0, 2).map((card, index) => (
