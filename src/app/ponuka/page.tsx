@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/getQueryClient';
-import { fetchAllActiveListings } from '@/api/listingsService';
+import { getCachedActiveListings } from '@/api/listingsServer';
 import { listingKeys } from '@/api/queryKeys';
 import { Footer } from '@/components/Footer';
 import { PropertiesSection } from '@/components/PropertiesSection';
@@ -72,7 +72,7 @@ export default async function Ponuka() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: listingKeys.list(),
-    queryFn: fetchAllActiveListings,
+    queryFn: getCachedActiveListings,
   });
 
   return (

@@ -22,22 +22,6 @@ function appendCacheBust(url: string, version?: string | null): string {
 }
 
 /**
- * Returns the best available image URL for a listing image.
- * Priority: upscaled → enhanced → original
- */
-export function getBestImageUrl(image: ListingImage): string {
-    if (image.upscaled_url) {
-        return appendCacheBust(image.upscaled_url, image.updated_at);
-    }
-
-    if (image.enhanced_url) {
-        return appendCacheBust(image.enhanced_url, image.updated_at);
-    }
-
-    return image.original_url;
-}
-
-/**
  * Checks whether an image URL points to an AI-enhanced version (R2 bucket or legacy Supabase bucket)
  * rather than the original UC export image (which already has a baked-in watermark).
  * Used to conditionally overlay the FRISCO logo on enhanced images so the watermark
@@ -49,24 +33,35 @@ export function isEnhancedImage(url: string): boolean {
 }
 
 /**
+ * Returns the stored enhanced/upscaled URL only when it is a real enhanced output
+ * (R2 or legacy Supabase enhanced-images bucket). Some rows hold a stale UC signed
+ * URL in enhanced_url; those must be ignored in favour of original_url.
+ */
+function getEnhancedOutputUrl(image: ListingImage): string | null {
+    if (image.upscaled_url && isEnhancedImage(image.upscaled_url)) return image.upscaled_url;
+    if (image.enhanced_url && isEnhancedImage(image.enhanced_url)) return image.enhanced_url;
+    return null;
+}
+
+/**
+ * Returns the best available image URL for a listing image.
+ * Priority: real enhanced output (upscaled -> enhanced) -> original
+ */
+export function getBestImageUrl(image: ListingImage): string {
+    const enhanced = getEnhancedOutputUrl(image);
+    if (enhanced) return appendCacheBust(enhanced, image.updated_at);
+    return image.original_url;
+}
+
+/**
  * Determines whether the CSS watermark overlay should be shown for a ListingImage.
  *
- * ALWAYS show the overlay on enhanced images (stored in Supabase bucket).
- * Never show overlay on original UC images (they already have UC's own watermark).
- *
- * The `has_baked_logo` flag is kept for monitoring/analytics but no longer gates
- * the overlay. Previous behaviour suppressed the overlay when has_baked_logo=true,
- * but this caused images to appear with NO branding at all whenever:
- *   - The AI failed to fully remove the UC watermark (logo detector flagged it)
- *   - Red photo content triggered a false-positive detection
- * The CSS overlay is positioned at bottom-right (same spot as any remnant UC
- * watermark), so it effectively covers it — always showing it is strictly better
- * than the risk of no branding.
+ * Show the overlay only when the displayed image is a real enhanced output
+ * (R2 / legacy Supabase bucket). Original UC images already carry UC's own
+ * watermark, so no overlay there.
  */
 export function shouldShowOverlay(image: ListingImage): boolean {
-    const baseUrl = image.upscaled_url || image.enhanced_url;
-    if (!baseUrl || !isEnhancedImage(baseUrl)) return false;
-    return true;
+    return getEnhancedOutputUrl(image) !== null;
 }
 
 /**
@@ -82,6 +77,17 @@ export function getPrimaryImage(listing: ListingWithImages): string | null {
 // FETCH LISTINGS
 // ============================================
 
+/** listing_images columns the UI actually uses (avoid `*`). */
+const LISTING_IMAGE_COLUMNS = 'id, listing_id, original_url, enhanced_url, upscaled_url, sort_order, updated_at';
+const LISTING_WITH_IMAGES_SELECT = `*, images:listing_images(${LISTING_IMAGE_COLUMNS})`;
+
+function withSortedImages(listing: any): ListingWithImages {
+    return {
+        ...listing,
+        images: (listing.images || []).sort((a: ListingImage, b: ListingImage) => a.sort_order - b.sort_order),
+    };
+}
+
 /**
  * Fetch active, non-deleted listings with their images.
  * Supports filtering by category type, transaction (sale/rent), locality, price range, and sorting.
@@ -90,7 +96,7 @@ export async function fetchListings(filters?: ListingFilters): Promise<ListingWi
     // Build query — only active, non-deleted listings
     let query = supabase
         .from('listings')
-        .select('*, images:listing_images(*)')
+        .select(LISTING_WITH_IMAGES_SELECT)
         .eq('is_deleted', false)
         .eq('status', 1); // 1 = Aktívna (Export API)
 
@@ -166,81 +172,78 @@ export async function fetchListings(filters?: ListingFilters): Promise<ListingWi
     }
 
     // Sort images by sort_order within each listing
-    return (data || []).map((listing: any) => ({
-        ...listing,
-        images: (listing.images || []).sort((a: ListingImage, b: ListingImage) => a.sort_order - b.sort_order),
-    }));
+    return (data || []).map(withSortedImages);
+}
+
+/**
+ * Query ALL active, non-deleted listings. THROWS on database error/timeout so
+ * callers (e.g. the server-side cache) can avoid caching an empty result.
+ * Pass an AbortSignal to enforce a timeout.
+ */
+export async function queryAllActiveListings(signal?: AbortSignal): Promise<ListingWithImages[]> {
+    let query = supabase
+        .from('listings')
+        .select(LISTING_WITH_IMAGES_SELECT)
+        .eq('is_deleted', false)
+        .eq('status', 1)
+        .order('created_at', { ascending: false });
+    if (signal) query = query.abortSignal(signal);
+
+    const { data, error } = await query;
+    if (error) throw new Error(`Error fetching all listings: ${error.message}`);
+
+    return (data || []).map(withSortedImages);
 }
 
 /**
  * Fetch ALL active, non-deleted listings (no filters).
- * Used as the single cached data source for client-side filtering.
+ * Used as the single cached data source for client-side filtering (React Query).
+ * Swallows errors and returns [] (client behaviour). Server components should use
+ * getCachedActiveListings from listingsServer.ts instead.
  */
 export async function fetchAllActiveListings(): Promise<ListingWithImages[]> {
-    const { data, error } = await supabase
-        .from('listings')
-        .select('*, images:listing_images(*)')
-        .eq('is_deleted', false)
-        .eq('status', 1)
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error('Error fetching all listings:', error);
+    try {
+        return await queryAllActiveListings();
+    } catch (err) {
+        console.error(err);
         return [];
     }
-
-    return (data || []).map((listing: any) => ({
-        ...listing,
-        images: (listing.images || []).sort((a: ListingImage, b: ListingImage) => a.sort_order - b.sort_order),
-    }));
 }
 
 /**
- * Fetch a single listing by ID (UUID) or slug.
+ * Query a single listing by ID (UUID) or slug. Returns null when it does not
+ * exist; THROWS on database error/timeout.
  */
-export async function fetchListingById(idOrSlug: string): Promise<ListingWithImages | null> {
-    // Try by slug first, then by UUID
+export async function queryListingById(idOrSlug: string, signal?: AbortSignal): Promise<ListingWithImages | null> {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
 
-    let query;
-    if (isUuid) {
-        query = supabase
+    const run = async (column: 'id' | 'slug') => {
+        let query = supabase
             .from('listings')
-            .select('*, images:listing_images(*)')
-            .eq('id', idOrSlug)
-            .single();
-    } else {
-        query = supabase
-            .from('listings')
-            .select('*, images:listing_images(*)')
-            .eq('slug', idOrSlug)
-            .single();
-    }
+            .select(LISTING_WITH_IMAGES_SELECT)
+            .eq(column, idOrSlug)
+            .limit(1);
+        if (signal) query = query.abortSignal(signal);
+        const { data, error } = await query;
+        if (error) throw new Error(`Error fetching listing ${idOrSlug}: ${error.message}`);
+        return data && data.length > 0 ? withSortedImages(data[0]) : null;
+    };
 
-    const { data, error } = await query;
+    // UUIDs match listings.id; anything else can only be a slug (a non-UUID
+    // string would make the id lookup fail with an invalid-uuid error).
+    return run(isUuid ? 'id' : 'slug');
+}
 
-    if (error || !data) {
-        // If slug lookup failed, try UUID anyway (fallback)
-        if (!isUuid) {
-            const { data: fallback } = await supabase
-                .from('listings')
-                .select('*, images:listing_images(*)')
-                .eq('id', idOrSlug)
-                .single();
-            if (fallback) {
-                return {
-                    ...fallback,
-                    images: (fallback.images || []).sort((a: any, b: any) => a.sort_order - b.sort_order),
-                } as ListingWithImages;
-            }
-        }
+/**
+ * Fetch a single listing by ID (UUID) or slug. Swallows errors (returns null).
+ */
+export async function fetchListingById(idOrSlug: string): Promise<ListingWithImages | null> {
+    try {
+        return await queryListingById(idOrSlug);
+    } catch (err) {
+        console.error(err);
         return null;
     }
-
-    return {
-        ...data,
-        images: (data.images || []).sort((a: any, b: any) => a.sort_order - b.sort_order),
-    } as ListingWithImages;
 }
 
 // ============================================
@@ -248,18 +251,32 @@ export async function fetchListingById(idOrSlug: string): Promise<ListingWithIma
 // ============================================
 
 /**
- * Fetch an agent by their UC user ID (matches listings.agent_id).
+ * Query an agent by UC user ID (matches listings.agent_id). Returns null when
+ * not found; THROWS on database error/timeout.
  */
-export async function fetchAgentByUcId(ucUserId: string): Promise<import('./types').Agent | null> {
-    const { data, error } = await supabase
+export async function queryAgentByUcId(ucUserId: string, signal?: AbortSignal): Promise<import('./types').Agent | null> {
+    let query = supabase
         .from('agents')
         .select('*')
         .eq('uc_user_id', ucUserId)
         .eq('is_deleted', false)
-        .single();
+        .limit(1);
+    if (signal) query = query.abortSignal(signal);
+    const { data, error } = await query;
+    if (error) throw new Error(`Error fetching agent ${ucUserId}: ${error.message}`);
+    return data && data.length > 0 ? (data[0] as import('./types').Agent) : null;
+}
 
-    if (error || !data) return null;
-    return data as import('./types').Agent;
+/**
+ * Fetch an agent by their UC user ID (matches listings.agent_id).
+ */
+export async function fetchAgentByUcId(ucUserId: string): Promise<import('./types').Agent | null> {
+    try {
+        return await queryAgentByUcId(ucUserId);
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 }
 
 // ============================================

@@ -112,10 +112,7 @@ export interface ListingImage {
     original_url: string;
     enhanced_url: string | null;
     upscaled_url: string | null;
-    enhancement_status: 'pending' | 'processing' | 'completed' | 'failed';
-    has_baked_logo: boolean | null;
     sort_order: number;
-    created_at: string;
     updated_at?: string;
 }
 

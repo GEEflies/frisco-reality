@@ -6,7 +6,7 @@ import { SITE_URL, getBreadcrumbSchema } from '@/config/seo';
 import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 import { getQueryClient } from '@/lib/getQueryClient';
-import { fetchAllActiveListings } from '@/api/listingsService';
+import { getCachedActiveListings } from '@/api/listingsServer';
 import { listingKeys } from '@/api/queryKeys';
 
 const HOME_SEO: Record<LanguageCode, { title: string; description: string; ogTitle: string; ogDescription: string; breadcrumbHome: string }> = {
@@ -80,7 +80,7 @@ export default async function Home() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: listingKeys.list(),
-    queryFn: fetchAllActiveListings,
+    queryFn: getCachedActiveListings,
   });
 
   return (

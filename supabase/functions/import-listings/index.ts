@@ -644,18 +644,6 @@ async function handleListing(data: Record<string, any>, isTestMode = false) {
     if (data.images && Array.isArray(data.images)) {
         await handleImages(listingId, data.images, !!existing);
 
-        // Kick off image processing immediately — don't wait for the next cron tick.
-        // Fire-and-forget: if it fails the cron (every 1 min) will pick it up anyway.
-        if (data.images.length > 0) {
-            fetch(`${SUPABASE_URL}/functions/v1/process-images`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                },
-                body: JSON.stringify({ trigger: 'import' }),
-            }).catch(err => console.warn('[UC] process-images trigger failed (cron will retry):', err));
-        }
     }
 
     // ---- FIRST-LISTING NOTIFICATION ----
@@ -706,11 +694,16 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
         // thumbnail from one scrape plus the full-size image from another).
         // Position is stable: UC sends photos in a consistent order, so photo i on
         // one scrape is photo i on the next.
-        const { data: existingImages } = await supabase
+        const { data: existingImages, error: existingErr } = await supabase
             .from('listing_images')
-            .select('id, sort_order, original_url, enhanced_url, upscaled_url, enhancement_status')
+            .select('id, sort_order, original_url')
             .eq('listing_id', listingId)
             .order('sort_order', { ascending: true });
+        if (existingErr) {
+            // Without the existing rows every photo would look new; bail out instead.
+            console.error(`[UC] Failed to read images for listing ${listingId}, skipping image sync:`, existingErr.message);
+            return;
+        }
 
         const existingByPosition = new Map(
             (existingImages || []).map(img => [img.sort_order, img])
@@ -722,22 +715,14 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
         // in the DB with its enhanced version intact. Manual cleanup can be done
         // through the Supabase dashboard if needed.
 
-        // Upsert by position — NEVER re-enhance an already completed image.
-        // Enhancement happens exactly once: new image → pending → cron → completed.
+        // Upsert by position. AI enhancement was removed (2026-10-26), so images are
+        // stored as 'completed' straight away and nothing is queued.
         for (let i = 0; i < images.length; i++) {
             const img = images[i];
             const existing = existingByPosition.get(i);
 
             if (existing) {
-                const isEnhanced = existing.enhancement_status === 'completed' && existing.enhanced_url;
-                if (isEnhanced) {
-                    // Already enhanced — keep the enhanced version untouched.
-                    // (The rotated original_url points at the same photo anyway.)
-                    continue;
-                }
-                // Not yet enhanced: refresh the original_url to the newest signed URL
-                // so the enhancement cron fetches a valid (and often higher-quality)
-                // source. This self-heals broken/low-res originals from earlier scrapes.
+                // Refresh original_url to the newest signed URL (UC rotates them).
                 if (existing.original_url !== img.url) {
                     const { error: updateErr } = await supabase
                         .from('listing_images')
@@ -746,28 +731,28 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
                     if (updateErr) console.error(`[UC] Failed to refresh original_url for image ${existing.id}:`, updateErr.message);
                 }
             } else {
-                // New position (listing gained a photo) — insert and queue for enhancement.
+                // New position (listing gained a photo).
                 const { error: insertErr } = await supabase
                     .from('listing_images')
                     .insert({
                         listing_id: listingId,
                         original_url: img.url,
-                        enhancement_status: 'pending',
+                        enhancement_status: 'completed',
                         sort_order: i,
                     });
                 if (insertErr) {
                     console.error(`[UC] Failed to insert image ${img.url}:`, insertErr.message);
                 } else {
-                    console.log(`[UC] New image queued for enhancement at position ${i}`);
+                    console.log(`[UC] New image added at position ${i}`);
                 }
             }
         }
     } else {
-        // New listing — insert all images as pending for first-time enhancement
+        // New listing — insert all images
         const rows = images.map((img, i) => ({
             listing_id: listingId,
             original_url: img.url,
-            enhancement_status: 'pending',
+            enhancement_status: 'completed',
             sort_order: i,
         }));
 
@@ -778,7 +763,7 @@ async function handleImages(listingId: string, images: Array<{ url: string; chan
             if (bulkErr) {
                 console.error(`[UC] Failed to bulk-insert ${rows.length} images:`, bulkErr.message);
             } else {
-                console.log(`[UC] ${rows.length} images queued for first-time enhancement`);
+                console.log(`[UC] ${rows.length} images inserted`);
             }
         }
     }

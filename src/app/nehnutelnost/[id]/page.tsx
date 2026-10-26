@@ -3,7 +3,8 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/getQueryClient';
 import { listingKeys } from '@/api/queryKeys';
 import type { Metadata } from 'next';
-import { fetchListingById, fetchAgentByUcId, getPrimaryImage } from '@/api/listingsService';
+import { getPrimaryImage } from '@/api/listingsService';
+import { getCachedAgentByUcId, getCachedListingById } from '@/api/listingsServer';
 import { getLocalizedCategoryLabel, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
 import { SITE_URL, getRealEstateListingSchema, getBreadcrumbSchema } from '@/config/seo';
 import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
@@ -18,7 +19,7 @@ interface PropertyDetailPageProps {
 
 export async function generateMetadata({ params }: PropertyDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const listing = await fetchListingById(id);
+  const listing = await getCachedListingById(id);
   const language = await resolveServerLanguage();
 
   const copy: Record<LanguageCode, {
@@ -134,7 +135,7 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { id } = await params;
-  const listing = await fetchListingById(id);
+  const listing = await getCachedListingById(id);
   const language = await resolveServerLanguage();
   const breadcrumbHome = language === 'de' ? 'Startseite' : language === 'en' ? 'Home' : 'Domov';
   const breadcrumbOffer = language === 'de' ? 'Angebot' : language === 'en' ? 'Listings' : 'Ponuka';
@@ -182,7 +183,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
     const agentId = listing.agent_id;
     await queryClient.prefetchQuery({
       queryKey: ['agent', agentId] as const,
-      queryFn: () => fetchAgentByUcId(agentId),
+      queryFn: () => getCachedAgentByUcId(agentId),
     });
   }
 
