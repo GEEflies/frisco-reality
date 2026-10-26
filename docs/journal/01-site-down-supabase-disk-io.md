@@ -166,3 +166,18 @@ Extra:
 - Navbar logos `fetchPriority="high"`.
 - To tell the owner: before 11–33 s or no load; now server response ~0.1–0.6 s. Don't promise "never again"
   (still free Supabase plan).
+
+### Shipped a113f8d, verified live (Vercel success)
+Site-wide audit on the local prod build: 59 internal links OK, no hydration/page errors. Fixed from it:
+CSP blocked canvas-confetti's blob worker → `worker-src 'self' blob:`. False positives checked by hand:
+reveal sections caught mid-animation, route-loading overlay, card hover overlays, `/_vercel/insights` 404
+(local only), `/api/google-reviews` 429 (local requests share one rate-limit bucket; prod is a CDN HIT).
+
+Live on www.frisco.sk after deploy (Playwright, mobile 390×844):
+| page | before | after |
+|---|---|---|
+| / mobile | 9.0 MB, LCP 1.43 s | 2.2 MB, LCP 0.47 s |
+| /chcem-prenajat mobile | 4.2 MB | 2.4 MB |
+| /chcem-predat mobile | 3.7 MB | ~2.3 MB |
+| / desktop | 6.7 MB | 4.3 MB |
+Each viewport fetches only its own hero video; both play. /en 200, /sk/ponuka → 308 /ponuka (proxy OK).
