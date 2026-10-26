@@ -1,7 +1,7 @@
 # frisco.sk docs
 
 ## Status (2026-10-26)
-Fixed 2026-10-26: AI image enhancement removed (its cron log drained Supabase disk IO), listings cached, /ponuka blank-screen fixed, speed pass live (mobile homepage 9.0 → 2.2 MB). See journal 01.
+Fixed 2026-10-26: AI image enhancement removed (its cron log drained Supabase disk IO), listings cached, /ponuka blank-screen fixed, speed pass live (mobile homepage 9.0 → 2.2 MB). Open items + owner message draft: end of journal 01.
 
 ## Index
 - [seo.md](seo.md): SEO overhaul and next steps

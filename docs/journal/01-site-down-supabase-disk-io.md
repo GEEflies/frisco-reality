@@ -181,3 +181,32 @@ Live on www.frisco.sk after deploy (Playwright, mobile 390×844):
 | /chcem-predat mobile | 3.7 MB | ~2.3 MB |
 | / desktop | 6.7 MB | 4.3 MB |
 Each viewport fetches only its own hero video; both play. /en 200, /sk/ponuka → 308 /ponuka (proxy OK).
+
+## Session close: owner message + open items
+User asked what to tell the owner (Denisa Križová), who was upset about the outage. Advice: use measured
+numbers (not "5 s → 3 s"), explain cause / fix / prevention, don't promise "never again" (free Supabase plan).
+Draft given to the user (not sent by me; user sends it):
+
+> Dobrý deň, pani Križová,
+> web frisco.sk už funguje normálne. Ospravedlňujem sa za komplikácie.
+> **Čo sa stalo:** Funkcia na automatické vylepšovanie fotiek nehnuteľností bežala na pozadí každú minútu.
+> Postupne zahltila databázu, ktorá prestala stíhať, a web sa načítaval 11 až 33 sekúnd alebo vôbec.
+> **Čo sme spravili:** Túto funkciu sme úplne odstránili, keďže sa nevyužívala. Web sa teraz načíta za menej
+> ako sekundu. Ponuka nehnuteľností sa ukladá do rýchlej pamäte, takže web zobrazí ponuku, aj keby mala
+> databáza výpadok. Opravili sme aj stránku Ponuka, ktorá sa niekedy zobrazila prázdna, kým sa neposunulo
+> nadol. Zmenšili sme videá a obrázky, takže na mobile sa úvodná stránka načíta so štvrtinou dát.
+> Web sme celý prešli a skontrolovali na počítači aj na mobile. Ak by ste si všimli čokoľvek nezvyčajné,
+> dajte mi prosím vedieť.
+> S pozdravom, Karol
+
+(Mobile line updated to "štvrtinou" — measured 9.0 → 2.2 MB after the push.)
+
+Open items (nothing in progress):
+- Free Supabase pauses after ~1 week without traffic; and Nano (0.5 GB) can over-commit again. Real fix if
+  it recurs: Micro compute (~$10/mo) — owner's decision.
+- R2 bucket + Gemini/R2 secrets from the removed enhancement still exist; delete only with the user's OK.
+- Unused indexes idx_listings_action / idx_listings_category (harmless).
+- Desktop homepage LCP ~2.6 s live (typewriter word in the hero becomes a new LCP candidate); option:
+  reserve the word's size or exclude it — not done.
+- All routes dynamic (language via cookies/headers); static-pages refactor deliberately not done.
+- `docs/seo.md` is untracked and not from this session; left alone.
