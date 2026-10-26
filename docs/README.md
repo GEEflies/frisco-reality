@@ -1,7 +1,7 @@
 # frisco.sk docs
 
 ## Status (2026-10-26)
-Site is slow or not loading: Supabase DB is starved of disk IO. See journal 01. Not fixed yet.
+Fixed 2026-10-26: AI image enhancement removed (its cron log drained Supabase disk IO), listings reads cached. See journal 01.
 
 ## Index
 - [seo.md](seo.md): SEO overhaul and next steps

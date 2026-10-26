@@ -34,3 +34,34 @@ and `listing_images` bloat from earlier duplicate re-imports.
 2. Code: give the homepage a revalidate cache (ISR) so a slow DB can't take the whole site down;
    run the image cron every 10–15 min (or only when images are pending) and purge `cron.job_run_details`.
 3. Upgrade Supabase compute to Micro (~$10/month): user/client decision.
+
+## Correction + fix (same day, later turns)
+User: "we don't need the enhancement of the images because they don't use it" — do it ASAP.
+
+Confirmed after restarting the project (dashboard, 09:52):
+- Data is tiny: 41 listings (16 active), 651 images (424 kB), DB 14 MB after cleanup.
+- The cron's own log `cron.job_run_details` was **334k rows / 127 MB**, by far the largest thing in the DB:
+  1,440 runs/day since March, never purged. That is the IO drain.
+- Correction to the earlier note: idle cron runs made 3 queries (2 recovery SELECTs + claim RPC), not the
+  4 count(exact) queries; those only ran when an image was processed.
+- AI enhancement was already switched off (`AI_ENHANCEMENT_ENABLED` not `true`), so the cron did no useful work.
+
+Done:
+- Live: `cron.unschedule('process-pending-images')`, `truncate cron.job_run_details`, dropped RPCs
+  claim_pending_images / reset_all_for_reenhancement / reset_listing_for_reenhancement / set_has_baked_logo,
+  deleted edge functions process-images + enhance-image, redeployed import-listings (verify_jwt stays false).
+- Commit 11cb852 (pushed, Vercel production deploy succeeded):
+  - migration `20261026120000_remove_image_enhancement.sql` records the live changes
+  - import-listings: no enhancement queue/kick; new images stored as 'completed'; always refreshes rotated
+    original_url; aborts image sync if it can't read existing rows
+  - `src/api/listingsServer.ts`: homepage, /ponuka, listing detail read through `unstable_cache` (5 min,
+    tag `listings`), 8 s timeout, last-good fallback — page views no longer hit Supabase each time
+  - enhanced_url only used when it is a real R2 / legacy enhanced output (some rows held stale UC URLs)
+
+Verified: www.frisco.sk TTFB 0.3 s (was 11–33 s), /ponuka shows all 16 active listings, sitemap 200.
+
+Open:
+- `src/app/sitemap.ts` still queries listings directly (uncached); low traffic, fine for now.
+- New listings show up within 5 min (cache); import-listings could call revalidateTag('listings') if faster is needed.
+- Columns enhanced_url / enhancement_status / has_baked_logo / upscaled_url left in place (harmless).
+- R2 bucket with old enhanced images and Gemini/R2 secrets are still there; delete only if the client confirms.
