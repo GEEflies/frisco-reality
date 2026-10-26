@@ -102,3 +102,13 @@ The Vercel budget note above is wrong. frisco-realitka is deployed under the **G
 Pro team. The billik WARN is unrelated to frisco. The local Vercel CLI is logged in as billikwork, so it
 can't see this project; use the GitHub deployment statuses (`gh api repos/GEEflies/frisco-reality/...`)
 to check deploys. The dub1 region change deployed fine on that account.
+
+## Decision + verification (same day)
+User asked me to decide as an engineer. Decision: no static-pages/i18n-routing refactor. It touches the
+SEO routing (canonical/hreflang) for a gain (fewer Vercel invocations) this small site doesn't need.
+Verified instead:
+- Cache: 120 production page views (/, /ponuka, /en, /de) → 0 listings queries in pg_stat_statements.
+- Failure path: local build pointed at a dead DB address → /, /ponuka and a detail page all return 200 in
+  ~8.0 s (timeout + fallback), and the error is logged. Before the fix a stalled DB meant 30–120 s hangs.
+Watch: free Supabase projects pause after ~1 week of inactivity. The every-minute cron used to keep it awake;
+now only cache refreshes (visits) and UC imports do. That's fine while the site gets weekly traffic.
