@@ -95,3 +95,10 @@ Further ideas, not done:
   the URL would let most pages be static (fewer Vercel function invocations = lower cost).
 - sitemap.ts reads Supabase directly (hourly revalidate, fine).
 - If the free Nano keeps over-committing memory, the only real fix is Micro compute (~$10/mo).
+
+## Correction: Vercel account
+The Vercel budget note above is wrong. frisco-realitka is deployed under the **GEEflies** Vercel account
+(deploy URLs `*-geeflies-projects.vercel.app`; not in `vercel project ls --scope billik`), not the billik
+Pro team. The billik WARN is unrelated to frisco. The local Vercel CLI is logged in as billikwork, so it
+can't see this project; use the GitHub deployment statuses (`gh api repos/GEEflies/frisco-reality/...`)
+to check deploys. The dub1 region change deployed fine on that account.
