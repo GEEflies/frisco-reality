@@ -65,3 +65,33 @@ Open:
 - New listings show up within 5 min (cache); import-listings could call revalidateTag('listings') if faster is needed.
 - Columns enhanced_url / enhancement_status / has_baked_logo / upscaled_url left in place (harmless).
 - R2 bucket with old enhanced images and Gemini/R2 secrets are still there; delete only if the client confirms.
+
+## Deeper research + optimizations (same day, next turn)
+User: "research a bit more what might be causing this whole thing … see what we could optimize, supabase or code-wise".
+
+Root cause, refined:
+- Free Nano = 0.5 GB RAM, 5 MB/s / 250 IOPS baseline, burst only from a daily IO budget. Supabase docs: when
+  memory runs out the OS swaps (1 GB swap disk) and swap IO drains the budget.
+- Dashboard: memory commitment 1.56 GB (SEVERE) before, still 1.12 GB SEVERE after restart. The box
+  over-commits even idle (Postgres + PostgREST + Storage API + exporter + pg_net + pg_cron workers).
+- Every-minute cron → pg_net HTTP → edge function → 3+ queries, plus 1,440 log rows/day (334k, 127 MB), on
+  top of per-request uncached listings joins from Vercel functions in **iad1 (US)** talking to the DB in
+  **eu-west-1**. Once the budget hit 5 MB/s, queries stalled, piled up, used more memory → more swap: spiral.
+- Free plan keeps only 1 day of metrics, so the exact start date can't be seen.
+
+Done this turn:
+- Live DB: dropped extensions pg_cron + pg_net (nothing uses them now; their workers idle until next
+  restart), set search_path on update_listing_images_updated_at (security advisor warning).
+- Commit f1b6cdd: `vercel.json` `regions: ["dub1"]`. Verified `x-vercel-id: fra1::dub1::…`, warm TTFB 0.3–0.6 s.
+- Since restart, pg_stat_statements: listings join 2–69 ms; nothing heavy left.
+
+Advisors still open (low value): unused indexes idx_listings_action / idx_listings_category (tiny tables).
+
+Vercel budget: `vercel-usage.sh` → VERDICT WARN, team run-rate $23.34 vs $20 credit, $1.69 billed on top.
+The user believed frisco is on a free Vercel plan; it is on the billik Pro team. Flagged to the user for the founder.
+
+Further ideas, not done:
+- Every route is dynamic (ƒ) because resolveServerLanguage reads headers/cookies; moving language fully to
+  the URL would let most pages be static (fewer Vercel function invocations = lower cost).
+- sitemap.ts reads Supabase directly (hourly revalidate, fine).
+- If the free Nano keeps over-committing memory, the only real fix is Micro compute (~$10/mo).
