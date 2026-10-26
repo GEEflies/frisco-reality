@@ -112,3 +112,57 @@ Verified instead:
   ~8.0 s (timeout + fallback), and the error is logged. Before the fix a stalled DB meant 30–120 s hangs.
 Watch: free Supabase projects pause after ~1 week of inactivity. The every-minute cron used to keep it awake;
 now only cache refreshes (visits) and UC imports do. That's fine while the site gets weekly traffic.
+
+## /ponuka blank until scroll (same day, next turn)
+User: "when I click … /ponuka … it loads white screen. When I scroll it down, it only then loads all of the listings."
+Cause: the listings section had `.reveal` (opacity 0 until IntersectionObserver adds `.revealed`) and the
+observer used `threshold: 0.15/0.18`. The grid is 4000+ px tall, so 15 % of it can never be on screen:
+it stayed invisible until scrolled. Also a hydration warning (observer touched a Suspense subtree before
+hydration) and the navbar PONUKA item was a div (no real link, no keyboard focus).
+Fix (a65eca8): observer uses `threshold: 0` + negative bottom rootMargin; listings section no longer uses
+`.reveal`, framer `useInView` uses `amount: 'some'`; PONUKA is a `<Link>`. Verified in Chrome: 16 cards visible
+at load, no hydration error.
+
+## Maintenance / speed pass (same day, next turn)
+User: "let's call this a maintenance of the website … find something to optimize for, like speed, load".
+Measured with a Playwright script (TTFB, LCP, CLS, bytes per page, desktop 1512×745 + mobile 390×844) on
+production, then a site-wide audit (console errors, content hidden at load/after scroll, 4xx, broken images,
+internal links) on a local production build.
+
+Found and fixed:
+- **Mobile homepage downloaded 9.0 MB**: both hero videos. The desktop hero used a bare `<video autoPlay>`;
+  Chrome fetches autoplay video even under `display:none`. Desktop hero now uses `AutoplayVideo`
+  (IntersectionObserver, never fires when hidden). Mobile homepage now 3.2 MB, each viewport fetches only
+  its own video (checked both play).
+- Desktop hero video re-encoded 1920p 3.1 Mbps → 1280p CRF 26 (5.9 → 3.4 MB, visually identical at display
+  size). New filename `hero-desktop-1280.mp4` because /public files are served `immutable, max-age=1y`:
+  never replace a public file under the same name.
+- **/ponuka CLS 0.36** (intermittent): the Suspense fallback was 400 px, so on a slow stream the footer
+  painted in view and jumped away. Fallback is now `min-h-screen`.
+- `/predaj-a-prenajom` mobile video pointed at a 404 (`/hero-video.mp4`); dead `head.tsx` files in
+  chcem-predat/chcem-prenajat (App Router ignores them) removed.
+- Images: pani-krizova 172 → 71 KB, nehnutelnosti logo 74 → 10 KB, hero-property 145 → 44 KB (WebP,
+  right-sized); listing cards and pages use the existing 12 KB `frisco-logo-hq.webp` instead of the 63 KB PNG
+  (PNG kept for the schema.org logo). Old files left in /public so external links don't break.
+- `canvas-confetti` loaded on demand (only fires on a like-click / animation end).
+- `middleware.ts` → `proxy.ts` (Next 16 deprecation); matcher now excludes files, `/api` and `/_next`, so
+  images/videos/fonts no longer invoke the proxy on every request.
+
+Checked, left as is:
+- Fonts 190 KB: Inter + Playfair variable, latin + latin-ext both needed for Slovak diacritics.
+- Listing detail 622 KB is mostly OpenStreetMap's own embed JS inside a lazy, cookie-free iframe.
+- Desktop LCP ~2.1 s is the typewriter word (each longer typed word is a new LCP candidate); under 2.5 s.
+- All routes are dynamic (language via cookies/headers); TTFB is already ~90 ms from dub1.
+
+## Mobile homepage: logo + hero video slow (same day, next turn)
+User on a phone: page text loads fast, but "the logo and the hero video loaded really slowly".
+Cause on production: the desktop hero's bare `<video autoPlay>` sits in the HTML, so phones start the 5.7 MB
+desktop video at once, next to the 2.3 MB mobile one; both saturate the connection, and the 12 KB logo and
+the mobile video wait behind them. Fixed by the AutoplayVideo change above (not live until this push).
+Extra:
+- Mobile hero video re-encoded from the 1080p master: 960 px, CRF 30, 2.4 → 1.4 MB (`hero-mobile-960.mp4`).
+- Sell/rent mobile videos 960 px CRF 29: 2.8 → 1.4 MB and 3.5 → 1.8 MB (`*-mobile-960.mp4`).
+  Frames compared side by side at 3× phone scale: no visible difference.
+- Navbar logos `fetchPriority="high"`.
+- To tell the owner: before 11–33 s or no load; now server response ~0.1–0.6 s. Don't promise "never again"
+  (still free Supabase plan).

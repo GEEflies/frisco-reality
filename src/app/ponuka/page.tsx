@@ -80,8 +80,10 @@ export default async function Ponuka() {
     <main className="min-h-screen bg-cream">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
       <div className="pt-20">
+        {/* fallback as tall as PropertiesSection (min-h-screen): a 400px one let the
+            footer paint in view and jump away once the cards streamed in (CLS 0.36) */}
         <Suspense fallback={
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-8 w-8 animate-spin text-navy/20" />
           </div>
         }>

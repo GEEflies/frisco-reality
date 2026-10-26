@@ -8,7 +8,7 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { CHCEM_PRENAJAT_HERO_COPY } from '@/i18n/copy';
 
 const DESKTOP_VIDEO = '/videos/chcem-prenajat-frisco_optimized.mp4';
-const MOBILE_VIDEO = '/videos/prenajat-mobile-720p.mp4';
+const MOBILE_VIDEO = '/videos/prenajat-mobile-960.mp4';
 
 const pageCopyByLanguage = {
     sk: {
@@ -159,7 +159,7 @@ const ChcemPrenajat = () => {
                                     <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-2xl shadow-navy/10">
                                         <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                         <img
-                                            src="/frisco-logo-hq.png"
+                                            src="/frisco-logo-hq.webp"
                                             alt="FRISCO"
                                             className="absolute bottom-2 right-4 z-30 w-16 opacity-80 pointer-events-none drop-shadow-lg"
                                         />
@@ -194,7 +194,7 @@ const ChcemPrenajat = () => {
                                 <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 transform transition-transform hover:scale-[1.01] duration-700">
                                     <div className="absolute inset-0 bg-navy/5 z-10 pointer-events-none" />
                                     <img
-                                        src="/frisco-logo-hq.png"
+                                        src="/frisco-logo-hq.webp"
                                         alt="FRISCO"
                                         className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
                                     />

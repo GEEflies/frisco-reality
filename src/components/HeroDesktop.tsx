@@ -3,11 +3,12 @@
 import { Search, Home, Key } from "lucide-react";
 
 import RotatingWord from "./RotatingWord";
+import AutoplayVideo from "./AutoplayVideo";
 import { LocaleLink } from "./LocaleLink";
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { HERO_DESKTOP_COPY } from '@/i18n/copy';
 
-const HERO_VIDEO_URL = '/videos/hero-video.mp4';
+const HERO_VIDEO_URL = '/videos/hero-desktop-1280.mp4';
 
 const HeroDesktop = () => {
   const { language } = useLanguage();
@@ -151,17 +152,13 @@ const HeroDesktop = () => {
                 className="absolute bottom-2 right-4 z-30 w-24 opacity-80 pointer-events-none drop-shadow-lg"
               />
 
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
+              {/* AutoplayVideo, not a bare autoplay <video>: Chrome downloads autoplay
+                  video even under display:none, so phones fetched this file too. */}
+              <AutoplayVideo
+                src={HERO_VIDEO_URL}
                 poster="/hero-poster-desktop.webp"
-                className="w-full h-full object-cover"
-              >
-                <source src={HERO_VIDEO_URL} type="video/mp4" />
-              </video>
+                className="w-full h-full"
+              />
             </div>
           </div>
 

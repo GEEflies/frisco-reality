@@ -43,7 +43,7 @@ const persistLanguageCookie = (response: NextResponse, language: LanguageCode) =
   });
 };
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { nextUrl } = request;
   const { pathname } = nextUrl;
 
@@ -93,6 +93,8 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
+// Exclude files (any path with a dot), /api and /_next in the matcher itself so
+// images, videos and fonts never invoke the proxy at all.
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/|api/|.*\\..*).*)'],
 };

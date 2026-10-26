@@ -26,7 +26,6 @@ const steps = [
 ];
 
 
-import confetti from 'canvas-confetti';
 
 const S_CURVE_PATH = "M 25 0 C 25 0, 25 18, 50 18 C 75 18, 75 32, 75 32 C 75 32, 75 46, 50 46 C 25 46, 25 60, 32.5 80";
 
@@ -61,7 +60,8 @@ export const ProcessSection = () => {
     const colors = ['#ff0000', '#0066ff', '#00cc44', '#ffcc00', '#ff69b4', '#ff6600', '#9933ff'];
 
     // Single subtle burst from bottom-right
-    confetti({
+    // loaded on demand: it only fires after a click / animation end
+    import('canvas-confetti').then(({ default: confetti }) => confetti({
       particleCount: 40,
       angle: 120,
       spread: 60,
@@ -73,7 +73,7 @@ export const ProcessSection = () => {
       scalar: 0.8,
       startVelocity: 35,
       ticks: 150,
-    });
+    }));
   };
 
   // Guard to fire confetti only once

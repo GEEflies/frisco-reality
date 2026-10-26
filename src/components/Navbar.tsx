@@ -163,7 +163,7 @@ export const Navbar = () => {
             style={{ width: 'calc(100% - 2rem)', maxWidth: language === 'de' ? '1600px' : '1375px' }}
           >
             <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className="relative z-10 flex-shrink-0">
-              <img src="/frisco-logo-hq.webp" alt="FRISCO" className="h-16 pl-4" />
+              <img src="/frisco-logo-hq.webp" alt="FRISCO" fetchPriority="high" className="h-16 pl-4" />
             </Link>
 
             <nav className="flex items-center gap-5 2xl:gap-8 flex-nowrap">
@@ -311,7 +311,7 @@ export const Navbar = () => {
         }}
       >
         <Link href={l('/')} onClick={(e) => handleNavClick(e, '/')} className="relative z-10 flex items-center">
-          <img src="/frisco-logo-hq.webp" alt="FRISCO" className="h-14 w-auto object-contain transition-all duration-300" />
+          <img src="/frisco-logo-hq.webp" alt="FRISCO" fetchPriority="high" className="h-14 w-auto object-contain transition-all duration-300" />
         </Link>
         <div className="flex items-center gap-2">
           {/* Mail button */}

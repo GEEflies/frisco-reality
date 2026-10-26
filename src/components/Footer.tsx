@@ -236,7 +236,7 @@ export const Footer = () => {
                   rel="noopener noreferrer"
                   className="inline-block opacity-90 hover:opacity-100 transition-opacity"
                 >
-                  <img src="/nehnutelnosti-logo.png" alt="Nehnuteľnosti.sk" loading="lazy" decoding="async" className="max-h-8 w-auto object-contain object-left" />
+                  <img src="/nehnutelnosti-logo.webp" alt="Nehnuteľnosti.sk" loading="lazy" decoding="async" className="max-h-8 w-auto object-contain object-left" />
                 </a>
               </div>
 

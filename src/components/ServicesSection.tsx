@@ -4,7 +4,7 @@ import { Home, Key, Briefcase, Building2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 const property1 = '/property-1.jpg';
 const property3 = '/property-3.jpg';
-const heroProperty = '/hero-property.jpg';
+const heroProperty = '/hero-property.webp';
 
 const services = [
   {

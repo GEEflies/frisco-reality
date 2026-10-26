@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import listingImageLoader from '@/lib/imageLoader';
 import { MapPin, Heart, LucideIcon } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { useLanguage } from '@/i18n/LanguageProvider';
 
 interface ListingCardProps {
@@ -56,7 +55,8 @@ export const ListingCard = ({
             const x = (rect.left + rect.width / 2) / window.innerWidth;
             const y = (rect.top + rect.height / 2) / window.innerHeight;
 
-            confetti({
+            // loaded on demand: it only fires after a click / animation end
+            import('canvas-confetti').then(({ default: confetti }) => confetti({
                 particleCount: 25,
                 spread: 40,
                 origin: { x, y },
@@ -66,7 +66,7 @@ export const ListingCard = ({
                 scalar: 0.7,
                 startVelocity: 15,
                 disableForReducedMotion: true
-            });
+            }));
         }
     };
 
@@ -116,7 +116,7 @@ export const ListingCard = ({
                         {/* FRISCO watermark — only when no baked-in logo */}
                         {showOverlay && (
                             <img
-                                src="/frisco-logo-hq.png"
+                                src="/frisco-logo-hq.webp"
                                 alt=""
                                 className="absolute bottom-0 right-0 w-[20%] min-w-[70px] h-auto pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] z-10 select-none"
                                 draggable={false}

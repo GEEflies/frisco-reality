@@ -133,7 +133,7 @@ function LoadingOverlay() {
 
                     {/* Logo */}
                     <img
-                        src="/frisco-logo-hq.png"
+                        src="/frisco-logo-hq.webp"
                         alt="FRISCO"
                         draggable={false}
                         className="h-6 select-none"

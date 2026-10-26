@@ -67,7 +67,7 @@ const withLanguagePrefix = (path: string, lang: LanguageCode) => {
     return `/${lang}${path}`;
 };
 
-const friscoLogo = '/frisco-logo-hq.png';
+const friscoLogo = '/frisco-logo-hq.webp';
 
 /**
  * Gallery image with shimmer skeleton + fade-in on load.
@@ -371,7 +371,7 @@ const PropertyDetailContent = ({ id }: PropertyDetailProps) => {
     // (e.g. "Bc. Peter Križo" vs "Peter Križo", NFC/NFD unicode, trailing whitespace).
     const normName = agentName.normalize('NFC').trim().toLowerCase();
     const localPhoto = normName.includes('denisa')
-        ? { src: '/pani-krizova.jpeg', objectFit: 'object-cover object-top' }
+        ? { src: '/pani-krizova.webp', objectFit: 'object-cover object-top' }
         : normName.includes('peter')
             ? { src: '/frisco-favicon.png', objectFit: 'object-contain' }
             : null;

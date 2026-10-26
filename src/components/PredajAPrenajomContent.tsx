@@ -7,7 +7,7 @@ import { ContactSection } from '@/components/ContactSection';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import AutoplayVideo from '@/components/AutoplayVideo';
 
-const heroProperty = '/hero-property.jpg';
+const heroProperty = '/hero-property.webp';
 
 const PredajAPrenajom = () => {
     const { language } = useLanguage();
@@ -155,7 +155,8 @@ const PredajAPrenajom = () => {
                                 <div className="absolute -top-10 -left-10 w-40 h-40 bg-navy/5 rounded-full blur-3xl" />
                                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-navy/10 aspect-[4/3]">
                                     <AutoplayVideo
-                                        src="/hero-video.mp4"
+                                        src="/videos/hero-mobile-960.mp4"
+                                        poster="/hero-poster-desktop.webp"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>

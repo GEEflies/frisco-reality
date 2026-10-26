@@ -214,7 +214,7 @@ const Kontakt = () => {
                 <div className="bg-white border border-navy/10 rounded-2xl overflow-hidden h-full flex flex-col">
                   <div className="h-[350px] md:h-[400px] overflow-hidden">
                     <img
-                      src="/pani-krizova.jpeg"
+                      src="/pani-krizova.webp"
                       alt="Denisa Križová"
                       loading="lazy"
                       decoding="async"

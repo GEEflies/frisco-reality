@@ -73,6 +73,7 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
+              "worker-src 'self' blob:", // canvas-confetti renders in a blob: Web Worker
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.supabase.co https://*.r2.dev https://img.unitedclassifieds.sk https://images.weserv.nl https://lh3.googleusercontent.com https://www.google-analytics.com https://tile.openstreetmap.org https://admin.realsoft.sk",
               "font-src 'self' https://fonts.gstatic.com",
