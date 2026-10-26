@@ -6,14 +6,18 @@ import { usePathname } from 'next/navigation';
 const MOBILE_VIEWPORT_QUERY = '(max-width: 1023px)';
 const REVEAL_TARGET_SELECTOR = '.reveal:not(.revealed), .reveal-scale:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed)';
 
+// threshold 0 + a negative bottom margin: an element reveals once its top edge is
+// a bit inside the viewport, whatever its height. A ratio threshold (e.g. 0.15)
+// never fires for sections taller than ~6x the viewport — /ponuka's listings
+// grid (4000+ px) stayed invisible until the user scrolled.
 const OBSERVER_OPTIONS = {
   mobile: {
-    threshold: 0.06,
+    threshold: 0,
     rootMargin: '0px 0px -10% 0px',
   },
   desktop: {
-    threshold: 0.15,
-    rootMargin: '0px 0px -60px 0px',
+    threshold: 0,
+    rootMargin: '0px 0px -12% 0px',
   },
 } as const;
 

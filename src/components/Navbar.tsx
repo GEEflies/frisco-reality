@@ -174,13 +174,13 @@ export const Navbar = () => {
 
               {/* Ponuka Dropdown */}
               <div className="relative w-max h-full flex items-center" onMouseEnter={() => setIsPonukaHovered(true)} onMouseLeave={() => setIsPonukaHovered(false)}>
-                <div className={`text-base font-sans font-medium transition-colors relative py-2 tracking-[0.2em] uppercase whitespace-nowrap cursor-pointer flex items-center gap-1.5 group ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
+                <Link href={l('/ponuka')} onClick={(e) => { setIsPonukaHovered(false); handleNavClick(e, '/ponuka'); }} onFocus={() => setIsPonukaHovered(true)} aria-haspopup="menu" aria-expanded={isPonukaHovered} className={`text-base font-sans font-medium transition-colors relative py-2 tracking-[0.2em] uppercase whitespace-nowrap cursor-pointer flex items-center gap-1.5 group ${isNavActive ? 'text-charcoal/80 hover:text-navy' : 'text-charcoal/70 hover:text-navy'}`}>
                   {navCopy.offer}
                   <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${isPonukaHovered ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                   <span className="absolute bottom-0 left-0 right-4 h-[1px] bg-navy scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right group-hover:origin-left" />
-                </div>
+                </Link>
                 <AnimatePresence>
                   {isPonukaHovered && (
                     <motion.div

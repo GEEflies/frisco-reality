@@ -20,7 +20,7 @@ export const PropertiesSection = () => {
   const { language } = useLanguage();
   const ref = useRef(null);
   const filterWrapperRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const isInView = useInView(ref, { once: true, amount: 'some' });
   const isDesktop = useIsDesktop();
   const { startNavLoading } = useNavLoading();
   const searchParams = useSearchParams();
@@ -271,7 +271,7 @@ export const PropertiesSection = () => {
 
   return (
     <>
-    <section id="ponuka" className="reveal relative pt-20 pb-32 bg-cream overflow-hidden min-h-screen" ref={ref}>
+    <section id="ponuka" className="relative pt-20 pb-32 bg-cream overflow-hidden min-h-screen" ref={ref}>
       <div className="container mx-auto px-4 md:px-8 relative z-10">
 
         {/* Header */}
