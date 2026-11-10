@@ -257,10 +257,10 @@ const Kontakt = () => {
                   </p>
                   <p className="text-charcoal/65 text-sm leading-relaxed mb-5">
                     {language === 'sk'
-                      ? 'Za 18 rokov v realitách už zažil všetko. Pán Križo je pri každom dôležitom rozhodnutí, rokuje o cene a povie vám veci na rovinu, bez zbytočných sľubov.'
+                      ? 'Za 19 rokov v realitách už zažil všetko. Pán Križo je pri každom dôležitom rozhodnutí, rokuje o cene a povie vám veci na rovinu, bez zbytočných sľubov.'
                       : language === 'en'
-                        ? 'In 18 years in real estate, he has seen it all. Mr. Križo is there for every important decision, negotiates prices, and tells it like it is, without empty promises.'
-                        : 'In 18 Jahren in der Immobilienbranche hat er alles gesehen. Herr Križo ist bei jeder wichtigen Entscheidung dabei, verhandelt Preise und sagt Ihnen die Dinge direkt, ohne leere Versprechungen.'}
+                        ? 'In 19 years in real estate, he has seen it all. Mr. Križo is there for every important decision, negotiates prices, and tells it like it is, without empty promises.'
+                        : 'In 19 Jahren in der Immobilienbranche hat er alles gesehen. Herr Križo ist bei jeder wichtigen Entscheidung dabei, verhandelt Preise und sagt Ihnen die Dinge direkt, ohne leere Versprechungen.'}
                   </p>
                   <a href="tel:+421905740700" className="group/link inline-flex items-center gap-2 text-charcoal/50 hover:text-navy transition-colors">
                     <div className="p-2 rounded-full border border-navy/10 group-hover/link:border-navy group-hover/link:bg-navy/5 transition-all">

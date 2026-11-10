@@ -21,7 +21,7 @@ const copy: Record<LanguageCode, {
         badgeDesktop: 'Rodinná firma',
         headlineDesktopPrefix: 'Sme rodinná firma, ',
         headlineWhich: 'ktorá si už',
-        headlineYears: '18 rokov',
+        headlineYears: '19 rokov',
         headlineSuffix: 'zakladá na kvalite a dôvere.',
         subtitle: 'Pomáhame klientom v Seredi a okolí nájsť ich vysnívaný domov a spravovať nehnuteľnosti bez zbytočných komplikácií.',
         benefits: [
@@ -36,7 +36,7 @@ const copy: Record<LanguageCode, {
         badgeDesktop: 'Family business',
         headlineDesktopPrefix: 'We are a family business ',
         headlineWhich: 'that for',
-        headlineYears: '18 years',
+        headlineYears: '19 years',
         headlineSuffix: 'has been built on quality and trust.',
         subtitle: 'We help clients in Sereď and the surrounding area find their dream home and manage property without unnecessary complications.',
         benefits: [
@@ -51,7 +51,7 @@ const copy: Record<LanguageCode, {
         badgeDesktop: 'Familienunternehmen',
         headlineDesktopPrefix: 'Wir sind ein Familienunternehmen, ',
         headlineWhich: 'das seit',
-        headlineYears: '18 Jahren',
+        headlineYears: '19 Jahren',
         headlineSuffix: 'auf Qualität und Vertrauen setzt.',
         subtitle: 'Wir helfen Kunden in Sereď und Umgebung, ihr Traumhaus zu finden und Immobilien unkompliziert zu verwalten.',
         benefits: [

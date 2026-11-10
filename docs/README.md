@@ -8,3 +8,4 @@ Fixed 2026-10-26: AI image enhancement removed (its cron log drained Supabase di
 - [duplicate-listing-images-fix.md](duplicate-listing-images-fix.md)
 - Journal
   - [01 — Site down: Supabase disk IO starved](journal/01-site-down-supabase-disk-io.md)
+  - [02 — 18 → 19 years across the site](journal/02-19-years.md)
