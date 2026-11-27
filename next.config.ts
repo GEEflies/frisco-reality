@@ -157,6 +157,11 @@ const nextConfig: NextConfig = {
     return {
       beforeFiles: [],
       afterFiles: [
+        // On Vercel, client-side navigations and prefetches of "/" arrive as the
+        // internal paths /index.rsc and /index.segments/…, which the "/" rule below
+        // doesn't match (without these, a click to the SK home did a full reload).
+        { source: '/index.rsc', destination: '/sk.rsc' },
+        { source: '/index.segments/:path*', destination: '/sk.segments/:path*' },
         { source: '/', destination: '/sk' },
         {
           source: '/:first((?!(?:en|de|sk|_next|_vercel)(?:/|$))[^/]+)/:rest*',
