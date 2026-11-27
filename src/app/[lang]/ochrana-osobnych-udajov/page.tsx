@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import PrivacyContent from '@/components/PrivacyContent';
-import { buildLanguageAlternates, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildLanguageAlternates, languageFromParams, type LangPageProps } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, { title: string; description: string }> = {
@@ -18,8 +18,8 @@ const COPY: Record<LanguageCode, { title: string; description: string }> = {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const language = await resolveServerLanguage();
+export async function generateMetadata({ params }: LangPageProps): Promise<Metadata> {
+  const language = await languageFromParams(params);
   const copy = COPY[language];
 
   return {

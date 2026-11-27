@@ -8,7 +8,7 @@ import { PropertiesSection } from '@/components/PropertiesSection';
 import { Loader2 } from 'lucide-react';
 import type { Metadata } from 'next';
 import { SITE_URL, getBreadcrumbSchema } from '@/config/seo';
-import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, languageFromParams, type LangPageProps } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, {
@@ -45,8 +45,11 @@ const COPY: Record<LanguageCode, {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const language = await resolveServerLanguage();
+// ISR: regenerated at most every 5 min; the uc-import webhook expires it at once.
+export const revalidate = 300;
+
+export async function generateMetadata({ params }: LangPageProps): Promise<Metadata> {
+  const language = await languageFromParams(params);
   const copy = COPY[language];
   const path = '/ponuka';
 
@@ -57,8 +60,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Ponuka() {
-  const language = await resolveServerLanguage();
+export default async function Ponuka({ params }: LangPageProps) {
+  const language = await languageFromParams(params);
   const copy = COPY[language];
   const breadcrumbJsonLd = JSON.stringify(
     getBreadcrumbSchema([
@@ -69,11 +72,10 @@ export default async function Ponuka() {
 
   // Prefetch the all-listings query (same key/fn as useAllListings) so the cards
   // are rendered into the server HTML.
+  // Fetched directly (not prefetchQuery, which swallows errors): if the DB fails during
+  // an ISR regeneration the render throws and the last good page stays cached.
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: listingKeys.list(),
-    queryFn: getCachedActiveListings,
-  });
+  queryClient.setQueryData(listingKeys.list(), await getCachedActiveListings());
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

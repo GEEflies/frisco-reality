@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, Suspense, type Dispatch, type SetStateAction } from 'react';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Building2, Home, Map, Key, Warehouse, Maximize, Trees, Loader2, SlidersHorizontal, SearchX, Phone, Mail, LayoutGrid, Square } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
@@ -15,6 +15,42 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { localePath } from '@/i18n/types';
 import { useNavLoading } from '@/components/RouteLoadingIndicator';
 
+/**
+ * Applies ?category= / ?type= from the URL to the filters (same logic as before, moved
+ * out of PropertiesSection). useSearchParams() makes a statically rendered page bail
+ * out to the nearest Suspense fallback; keeping it in this small child, behind its own
+ * Suspense, keeps the listing cards in the prerendered HTML of /ponuka.
+ */
+const UrlFilterSync = ({ setFilters }: { setFilters: Dispatch<SetStateAction<ListingFilters>> }) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    const typeParam = searchParams.get('type');
+
+    const nextCategory = categoryParam ?? 'all';
+    const nextTransaction = categoryParam ? 'all' : typeParam === 'rent' ? 'rent' : 'all';
+
+    const frameId = window.requestAnimationFrame(() => {
+      setFilters(prev => {
+        if (prev.category === nextCategory && prev.transaction === nextTransaction) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          category: nextCategory,
+          transaction: nextTransaction,
+        };
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [searchParams, setFilters]);
+
+  return null;
+};
+
 export const PropertiesSection = () => {
   const defaultSort: ListingFilters['sort'] = 'newest';
   const { language } = useLanguage();
@@ -23,7 +59,6 @@ export const PropertiesSection = () => {
   const isInView = useInView(ref, { once: true, amount: 'some' });
   const isDesktop = useIsDesktop();
   const { startNavLoading } = useNavLoading();
-  const searchParams = useSearchParams();
   const previousFacetMaxRef = useRef<number | null>(null);
 
   // Filter State
@@ -126,31 +161,6 @@ export const PropertiesSection = () => {
     absoluteMaxPrice,
     localities,
   } = useListingFilters(filters);
-
-  // Initialize from URL params
-  useEffect(() => {
-    const categoryParam = searchParams.get('category');
-    const typeParam = searchParams.get('type');
-
-    const nextCategory = categoryParam ?? 'all';
-    const nextTransaction = categoryParam ? 'all' : typeParam === 'rent' ? 'rent' : 'all';
-
-    const frameId = window.requestAnimationFrame(() => {
-      setFilters(prev => {
-        if (prev.category === nextCategory && prev.transaction === nextTransaction) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          category: nextCategory,
-          transaction: nextTransaction,
-        };
-      });
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [searchParams]);
 
   // Track filter bar visibility for floating button
   useEffect(() => {
@@ -271,6 +281,9 @@ export const PropertiesSection = () => {
 
   return (
     <>
+    <Suspense fallback={null}>
+      <UrlFilterSync setFilters={setFilters} />
+    </Suspense>
     <section id="ponuka" className="relative pt-20 pb-32 bg-cream overflow-hidden min-h-screen" ref={ref}>
       <div className="container mx-auto px-4 md:px-8 relative z-10">
 

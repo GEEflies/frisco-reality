@@ -1,7 +1,7 @@
 import ChcemPredatContent from '@/components/ChcemPredatContent';
 import type { Metadata } from 'next';
 import { SITE_URL, getServiceSchema, getBreadcrumbSchema, getFAQSchema } from '@/config/seo';
-import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, languageFromParams, type LangPageProps } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 const COPY: Record<LanguageCode, {
@@ -62,8 +62,8 @@ const COPY: Record<LanguageCode, {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const language = await resolveServerLanguage();
+export async function generateMetadata({ params }: LangPageProps): Promise<Metadata> {
+  const language = await languageFromParams(params);
   const copy = COPY[language];
   const path = '/chcem-predat';
 
@@ -74,8 +74,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function ChcemPredatPage() {
-  const language = await resolveServerLanguage();
+export default async function ChcemPredatPage({ params }: LangPageProps) {
+  const language = await languageFromParams(params);
   const copy = COPY[language];
 
   const serviceJsonLd = getServiceSchema({

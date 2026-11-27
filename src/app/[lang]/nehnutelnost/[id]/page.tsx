@@ -4,23 +4,37 @@ import { getQueryClient } from '@/lib/getQueryClient';
 import { listingKeys } from '@/api/queryKeys';
 import type { Metadata } from 'next';
 import { getPrimaryImage } from '@/api/listingsService';
-import { getCachedAgentByUcId, getCachedListingById } from '@/api/listingsServer';
+import { getCachedActiveListings, getCachedAgentByUcId, getCachedListingById } from '@/api/listingsServer';
 import { getLocalizedCategoryLabel, getLocalizedTitle, getLocalizedDescription } from '@/api/mappings';
 import { SITE_URL, getRealEstateListingSchema, getBreadcrumbSchema } from '@/config/seo';
-import { buildPageSocialMetadata, resolveServerLanguage } from '@/i18n/serverLanguage';
+import { buildPageSocialMetadata, languageFromParams } from '@/i18n/serverLanguage';
 import type { LanguageCode } from '@/i18n/types';
 
 // Export API numeric currency codes → ISO 4217
 const CURRENCY_MAP: Record<number, string> = { 1: 'EUR', 3: 'CZK', 4: 'GBP', 5: 'USD', 6: 'PLN', 7: 'HUF', 8: 'RON', 9: 'RSD' };
 
 interface PropertyDetailPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ lang: string; id: string }>;
+}
+
+// ISR: active listings are prerendered at build, others render on first visit and are
+// cached. The uc-import webhook expires the `listings` tag, so imports show at once;
+// 300 s is the backstop (e.g. DeepL EN/DE text that arrives after the webhook).
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  try {
+    const listings = await getCachedActiveListings();
+    return listings.map((listing) => ({ id: listing.slug || listing.id }));
+  } catch {
+    return []; // DB down at build: every listing renders on first visit instead
+  }
 }
 
 export async function generateMetadata({ params }: PropertyDetailPageProps): Promise<Metadata> {
   const { id } = await params;
+  const language = await languageFromParams(params);
   const listing = await getCachedListingById(id);
-  const language = await resolveServerLanguage();
 
   const copy: Record<LanguageCode, {
     notFoundTitle: string;
@@ -135,8 +149,8 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { id } = await params;
+  const language = await languageFromParams(params);
   const listing = await getCachedListingById(id);
-  const language = await resolveServerLanguage();
   const breadcrumbHome = language === 'de' ? 'Startseite' : language === 'en' ? 'Home' : 'Domov';
   const breadcrumbOffer = language === 'de' ? 'Angebot' : language === 'en' ? 'Listings' : 'Ponuka';
   const categoryFallback = language === 'de' ? 'Immobilie' : language === 'en' ? 'Property' : 'Nehnuteľnosť';

@@ -2,8 +2,9 @@ import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/config/seo';
 import { supabase, isSupabaseConfigured } from '@/api/supabaseClient';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 3600; // Revalidate every hour
+// ISR: regenerated at most hourly; the uc-import webhook also revalidates it. If the
+// DB query fails the regeneration throws, so the last good sitemap stays served.
+export const revalidate = 3600;
 
 const buildAlternates = (path: string) => {
   const normalized = path.startsWith('/') ? path : `/${path}`;
@@ -81,26 +82,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let listingPages: MetadataRoute.Sitemap = [];
 
   if (isSupabaseConfigured) {
-    try {
-      const { data: listings, error } = await supabase
-        .from('listings')
-        .select('id, slug, updated_at')
-        .eq('is_deleted', false)
-        .eq('status', 1) // 1 = Aktívna (Export API)
-        .order('updated_at', { ascending: false });
+    const { data: listings, error } = await supabase
+      .from('listings')
+      .select('id, slug, updated_at')
+      .eq('is_deleted', false)
+      .eq('status', 1) // 1 = Aktívna (Export API)
+      .order('updated_at', { ascending: false });
 
-      if (!error && listings) {
-        listingPages = listings.map((listing: { id: string; slug: string | null; updated_at: string }) => ({
-          url: `${SITE_URL}/nehnutelnost/${listing.slug || listing.id}`,
-          lastModified: new Date(listing.updated_at),
-          changeFrequency: 'weekly' as const,
-          priority: 0.6,
-          alternates: buildAlternates(`/nehnutelnost/${listing.slug || listing.id}`),
-        }));
-      }
-    } catch (error) {
+    if (error || !listings) {
+      // Throw instead of caching a sitemap without listings for an hour.
       console.error('[sitemap] Error fetching listings:', error);
+      throw new Error('[sitemap] listings query failed');
     }
+
+    listingPages = listings.map((listing: { id: string; slug: string | null; updated_at: string }) => ({
+      url: `${SITE_URL}/nehnutelnost/${listing.slug || listing.id}`,
+      lastModified: new Date(listing.updated_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+      alternates: buildAlternates(`/nehnutelnost/${listing.slug || listing.id}`),
+    }));
   }
 
   return [...staticPages, ...listingPages];

@@ -1,37 +1,20 @@
-import { cookies, headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { SITE_URL, DEFAULT_OG_IMAGE } from '@/config/seo';
-import { DEFAULT_LANGUAGE, isLanguageCode, LANGUAGE_COOKIE_KEY, type LanguageCode } from '@/i18n/types';
+import { DEFAULT_LANGUAGE, isLanguageCode, type LanguageCode } from '@/i18n/types';
 
-const LANGUAGE_REQUEST_HEADER = 'x-frisco-language';
+/** Props of every page/layout under `app/[lang]`. */
+export type LangPageProps = { params: Promise<{ lang: string }> };
 
-const parseAcceptLanguage = (acceptLanguageHeader: string | null): LanguageCode => {
-  if (!acceptLanguageHeader) return DEFAULT_LANGUAGE;
-
-  const firstMatch = acceptLanguageHeader
-    .split(',')
-    .map((part) => part.trim().toLowerCase())
-    .find((part) => part.length > 0);
-
-  if (!firstMatch) return DEFAULT_LANGUAGE;
-
-  if (firstMatch.startsWith('de')) return 'de';
-  if (firstMatch.startsWith('en')) return 'en';
-  if (firstMatch.startsWith('sk')) return 'sk';
-
-  return DEFAULT_LANGUAGE;
-};
-
-export const resolveServerLanguage = async (): Promise<LanguageCode> => {
-  const headersStore = await headers();
-  const fromHeader = headersStore.get(LANGUAGE_REQUEST_HEADER);
-  if (isLanguageCode(fromHeader)) return fromHeader;
-
-  const cookieStore = await cookies();
-  const fromCookie = cookieStore.get(LANGUAGE_COOKIE_KEY)?.value;
-  if (isLanguageCode(fromCookie)) return fromCookie;
-
-  return parseAcceptLanguage(headersStore.get('accept-language'));
+/**
+ * The page language comes from the URL only (`app/[lang]`): `/en/...` and `/de/...` directly,
+ * bare Slovak URLs through the `/sk` rewrite in next.config.ts. No headers or cookies are read,
+ * so every page can be prerendered and served from the CDN.
+ */
+export const languageFromParams = async (params: LangPageProps['params']): Promise<LanguageCode> => {
+  const { lang } = await params;
+  if (!isLanguageCode(lang)) notFound();
+  return lang;
 };
 
 const withLanguagePrefix = (path: string, language: LanguageCode) => {

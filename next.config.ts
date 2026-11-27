@@ -123,7 +123,48 @@ const nextConfig: NextConfig = {
         destination: '/:lang/preco-frisco',
         permanent: true,
       },
+      // Slovak is served on bare paths; /sk/... was a 308 from the old proxy.
+      {
+        source: '/sk',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/sk/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+      // Old cookie page (was app/cookies/page.tsx with permanentRedirect).
+      {
+        source: '/cookies',
+        destination: '/ochrana-osobnych-udajov#cookies',
+        permanent: true,
+      },
+      {
+        source: '/:lang(en|de)/cookies',
+        destination: '/:lang/ochrana-osobnych-udajov#cookies',
+        permanent: true,
+      },
     ];
+  },
+
+  // Language comes from the path: every page lives in app/[lang]/ and is prerendered
+  // for sk/en/de. Slovak keeps its bare URLs (/ponuka, not /sk/ponuka) through these
+  // rewrites, which run after real files and routes (/_next, /api/*, /sitemap.xml,
+  // /robots.txt, /manifest.webmanifest, public files) so those are never rewritten.
+  // No middleware and no cookie, so the CDN can cache every page.
+  async rewrites() {
+    return {
+      beforeFiles: [],
+      afterFiles: [
+        { source: '/', destination: '/sk' },
+        {
+          source: '/:first((?!(?:en|de|sk|_next|_vercel)(?:/|$))[^/]+)/:rest*',
+          destination: '/sk/:first/:rest*',
+        },
+      ],
+      fallback: [],
+    };
   },
 };
 
